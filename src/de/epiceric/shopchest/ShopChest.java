@@ -24,6 +24,7 @@ import de.epiceric.shopchest.event.InteractShop;
 import de.epiceric.shopchest.event.NotifyUpdate;
 import de.epiceric.shopchest.event.ProtectChest;
 import de.epiceric.shopchest.event.RegenerateShopItem;
+import de.epiceric.shopchest.event.RegenerateShopItemAfterRemove;
 import de.epiceric.shopchest.event.UpdateHolograms;
 import de.epiceric.shopchest.shop.Hologram;
 import de.epiceric.shopchest.shop.Shop;
@@ -33,7 +34,6 @@ import de.epiceric.shopchest.utils.JsonBuilder.HoverAction;
 import de.epiceric.shopchest.utils.Metrics;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
-import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
@@ -74,12 +74,6 @@ public class ShopChest extends JavaPlugin{
         perm = rsp.getProvider();
         return perm != null;
     }
-	
-	
-	@Override
-	public void onLoad() {
-		getLogger().info(Utils.getVersion());
-	}
 	
 	@Override
 	public void onEnable() {
@@ -162,6 +156,7 @@ public class ShopChest extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new InteractShop(this), this);
 		getServer().getPluginManager().registerEvents(new NotifyUpdate(), this);
 		getServer().getPluginManager().registerEvents(new ProtectChest(), this);
+		if (getServer().getPluginManager().getPlugin("ClearLag") != null) getServer().getPluginManager().registerEvents(new RegenerateShopItemAfterRemove(), this);
 
 		
 	}
