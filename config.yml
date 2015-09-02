@@ -1,0 +1,250 @@
+# ===============================================
+# == Default Configuration File of 'ShopChest' ==
+# ===============================================
+#
+# Lines starting with '#' are comments and are ignored by the server.
+#
+# If you are using special characters be sure to save this file in ANSI encoding!
+#
+# Color Codes (Must be BEFORE Formatting Codes):
+# &0 = Black
+# &1 = Dark Blue
+# &2 = Dark Green
+# &3 = Dark Aqua
+# &4 = Dark Red
+# &5 = Dark Purple
+# &6 = Gold
+# &7 = Gray
+# &8 = Dark Gray
+# &9 = Blue
+# &a = Green
+# &b = Aqua
+# &c = Red
+# &d = Light Purple
+# &e = Yellow
+# &f = White
+#
+# Formatting Codes (Must be AFTER Color Codes):
+# &k = Obfuscated
+# &l = Bold
+# &m = Strikethrough
+# &n = Underline
+# &o = Italic
+# &r = Reset
+# \n = Extra line
+
+# Set the main command you have to enter to manage the shops (default: "/shop ...")
+# DO NOT USE COLOR-/FORMATTING CODES HERE!
+main-command-name: "shop"
+
+# Set the maximal distance to the shop where the player can see the hologram.
+# Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
+maximal-distance: 1.75
+
+# Set the currency symbol after price values
+currency-symbol: $
+
+# Set whether the buy price must be greater than or equal sell price.
+buy-greater-or-equal-sell: true
+
+# Set the minimum prices for each individual Item. Not per Stack, per single Item!
+# To add an item DELETE THE '[]' after 'minimum-prices:' and follow the format below.
+# Important: You must have exactly 2 spaces between the text and the edge (Just like the other properties)
+# You can find the item names in the 'item_names.txt' file.
+minimum-prices: []
+#  "STONE:1": 0.5
+#  "DIAMOND_SWORD": 100
+
+
+messages:
+
+  # Set the message when a shop is created at the clicked chest.
+  shop-created: "&6Shop created."
+
+  # Set the message when the clicked chest already is a shop.
+  chest-already-shop: "&cChest already is shop."
+
+  # Set the message when the clicked shop is removed.
+  shop-removed: "&6Shop removed."
+
+  # Set the message when the clicked chest is not a shop.
+  chest-no-shop: "&cChest is not a shop."
+
+  shop-info:
+
+    # Set the message the player gets in the first row after entering '/shop info'.
+    # Usable regex: %VENDOR%
+    vendor: "&6Vendor: %VENDOR%"
+
+    # Set the message the player gets in the second row after entering '/shop info'.
+    # Usable regex: %AMOUNT%, %ITEMNAME%
+    product: "&6Product: %AMOUNT% x %ITEMNAME%"
+
+    # Set the message the player gets in the third row after entering '/shop info' if the item is enchanted
+    # Usable regex: %ENCHANTMENT%
+    enchantments: "&6Enchantments: %ENCHANTMENT%"
+
+    # Set the message the player gets in the third/fourth row after entering '/shop info'.
+    # Usable regex: %BUY-PRICE%, %SELL-PRICE%, %CURRENCY-SYMBOL%
+    price: "&6Price: Buy: %BUY-PRICE%%CURRENCY-SYMBOL%, Sell: %SELL-PRICE%%CURRENCY-SYMBOL%"
+
+    # If the sell price or buy price is disabled, this message will be displayed instead of the price and the currency symbol in the message above.
+    disabled: "&7Disabled&6"
+    
+    # Set the message the player gets in the fourth/fifth row after entering '/shop info'...
+    # ...when the shop is infinite.
+    is-infinite: "&6Type: Infinite"
+    
+    # ...when the shop is not infinite.
+    is-not-infinite: "&6Type: Normal"
+
+  # Set the message when the clicked block is not a chest.
+  block-no-chest: "&cBlock is not a chest"
+
+  # Set the message when the player tries to create a shop with sell price and buy price set to 0
+  buy-and-sell-disabled: "&cYou can't create a shop with buying and selling disabled."
+  
+  # Set the message when the player successfully bought something.
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%, %VENDOR%
+  buy-success: "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a from &6%VENDOR%&a."
+  
+  # Set the message when the player successfully bought something.
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%, %VENDOR%
+  sell-success: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a to &6%VENDOR%&a."
+
+  # Set the message when the inventory is full when the player is buying something.
+  not-enough-inventory-space: "&cNot enough space in inventory."
+  
+  # Set the message when the shops' inventory is full when the player is selling something.
+  chest-not-enough-inventory-space: "&cShop is full."
+
+  # Set the message when the player doesn't have enough money to buy something.
+  not-enough-money: "&cNot enough money."
+
+  # Set the message when the player doesn't have enough items to sell.
+  not-enough-items: "&cNot enough items."
+
+  # Set the message when the shop is out of stock.
+  out-of-stock: "&cShop out of stock."
+
+  # Set the message when an error occurred.
+  # Usable regex: %ERROR%
+  error-occurred: "&cAn error occurred: %ERROR%"
+
+  # Set the message when the arguments <AMOUNT> and <PRICE> of '/shop create' are not a number.
+  amount-and-price-not-number: "&cAmount and price must be a number."
+
+  # Set the message when the player doesn't hold an item in the hand.
+  no-item-in-hand: "&cNo item in hand"
+
+  # Set the message when the player must click a chest to create a shop.
+  click-chest-to-create-shop: "&aClick a chest to create a shop."
+
+  # Set the message when the player must click a shop to remove it.
+  click-chest-to-remove-shop: "&aClick a shop-chest to remove the shop."
+
+  # Set the message when the player must click a shop to retrieve information.
+  click-chest-for-info: "&aClick a shop to retrieve information."
+
+  # Set the message when the player opened a shop.
+  # Usable regex: %VENDOR%
+  opened-shop: "&aYou opened %VENDOR%'s shop."
+
+  # Set the message when the player tries to break a shop.
+  cannot-break-shop: "&cYou can't break a shop."
+
+  # Set the message when the player tries to sell a broken item.
+  cannot-sell-broken-item: "&cYou can't sell a broken item."
+  
+  # Set the message when the entered buy price is below the minimum price.
+  # Usable regex: %MIN-PRICE%, %CURRENCY-SYMBOL%
+  buy-price-too-low: "&cThe buy price must be higher than %MIN-PRICE%%CURRENCY-SYMBOL%."
+  
+  # Set the message when the entered sell price is below the minimum price.
+  # Usable regex: %MIN-PRICE%, %CURRENCY-SYMBOL%
+  sell-price-too-low: "&cThe sell price must be higher than %MIN-PRICE%%CURRENCY-SYMBOL%."
+
+  # Set the message when buying is disabled at the shop.
+  buying-disabled: "&cBuying is disabled at this shop."
+  
+  # Set the message when selling is disabled at the shop.
+  selling-disabled: "&cSelling is disabled at this shop."
+  
+  # Set the message when reloading is done.
+  # Usable regex: %AMOUNT% (Amount of shops)
+  reloaded-shops: "&aSuccessfully reloaded %AMOUNT% shop/s."
+
+  update:
+
+    # Set the message when an update is available.
+    # Unfortunately only the last colored part of the text (if you have multiple colors) becomes clickable (default: only '&chere' is clickable).
+    # Usable regex: %VERSION%
+    update-available: "&l&6Version &c%VERSION% &6of &cShopChest &6is available &chere."
+    
+    # Set the message you get when hovering over the available message.
+    click-to-download: "Click to download"
+    
+    # Set the message when no update is available.
+    no-update: "&l&6No new update available."
+    
+    # Set the message when the update checker is started.
+    checking: "&l&6Checking for Updates..."
+  
+  hologram:
+  
+    # Set the message in the second row of the shops' hologram when the player can buy and sell an item.
+    # Usable regex: %BUY-PRICE%, %SELL-PRICE%, %CURRENCY-SYMBOL%
+    buy-and-sell: "Buy %BUY-PRICE%%CURRENCY-SYMBOL% | %SELL-PRICE%%CURRENCY-SYMBOL% Sell"
+    
+    # Set the message in the second row of the shops' hologram when the player can only buy an item.
+    # Usable regex: %BUY-PRICE%, %CURRENCY-SYMBOL%
+    only-buy: "Buy %BUY-PRICE%%CURRENCY-SYMBOL%"
+    
+    # Set the message in the second row of the shops' hologram when the player can only sell an item.
+    # Usable regex: %SELL-PRICE%, %CURRENCY-SYMBOL%
+    only-sell: "Sell %SELL-PRICE%%CURRENCY-SYMBOL%"
+    
+  no-permission:
+
+    # Set the message when a not permitted player tries to create a shop.
+    create: "&cYou don't have permission to create a shop."
+
+    # Set the message when a not permitted player tries to create an infinite shop.
+    create-infinite: "&cYou don't have permission to create an infinite shop."
+
+    # Set the message when a not permitted player tries to open another players' shop.
+    open-others: "&cYou don't have permission to open this chest."
+
+    # Set the message when a not permitted player tries to buy something.
+    buy: "&cYou don't have permission to buy something."
+
+    # Set the message when a not permitted player tries to sell something.
+    sell: "&cYou don't have permission to sell something."
+
+    # Set the message when a not permitted player tries to remove another players' shop.
+    remove-others: "&cYou don't have permission to remove this shop."
+    
+    # Set the message when a not permitted player tries to reload the shops.
+    reload: "&cYou don't have permission to reload the shops."
+    
+    # Set the message when a not permitted player tries to check for updates.
+    update: "&cYou don't have permission to check for updates."
+
+  command-description:
+
+    # Set the command description message for '/<main-command> create' when you type '/<main-command>'. 
+    create: "Create a shop."
+
+    # Set the command description message for '/<main-command> remove' when you type '/<main-command>'. 
+    remove: "Remove a shop."
+
+    # Set the command description message for '/<main-command> info' when you type '/<main-command>'. 
+    info: "Retrieve shop information."
+    
+    # Set the command description message for '/<main-command> reload' when you type '/<main-command>'.
+    reload: "Reload shops."
+    
+    # Set the command description message for '/<main-command> update' when you type '/<main-command>'.
+    update: "Check for Updates."
+
+# End of file.
