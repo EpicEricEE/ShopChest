@@ -80,7 +80,7 @@ public class Shop {
 		
 		Block b = shopLocation.getBlock();
 		
-		if (b.getType().equals(Material.CHEST)) {
+		if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
 			
 			Chest c = (Chest) b.getState();
 			InventoryHolder ih = c.getInventory().getHolder();
