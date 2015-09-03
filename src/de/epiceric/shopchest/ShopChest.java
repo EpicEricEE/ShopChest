@@ -26,17 +26,22 @@ import de.epiceric.shopchest.event.ProtectChest;
 import de.epiceric.shopchest.event.RegenerateShopItem;
 import de.epiceric.shopchest.event.RegenerateShopItemAfterRemove;
 import de.epiceric.shopchest.event.UpdateHolograms;
-import de.epiceric.shopchest.shop.Hologram;
+import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.interfaces.utils.Utils_R1;
+import de.epiceric.shopchest.interfaces.utils.Utils_R2;
+import de.epiceric.shopchest.interfaces.utils.Utils_R3;
 import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.utils.JsonBuilder;
-import de.epiceric.shopchest.utils.JsonBuilder.ClickAction;
-import de.epiceric.shopchest.utils.JsonBuilder.HoverAction;
+import de.epiceric.shopchest.interfaces.JsonBuilder;
+import de.epiceric.shopchest.interfaces.JsonBuilder.ClickAction;
+import de.epiceric.shopchest.interfaces.JsonBuilder.HoverAction;
+import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R1;
+import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R2;
+import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R3;
 import de.epiceric.shopchest.utils.Metrics;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
 
 public class ShopChest extends JavaPlugin{
 
@@ -52,6 +57,8 @@ public class ShopChest extends JavaPlugin{
 	public static boolean isUpdateNeeded = false;
 	public static String latestVersion = "";
 	public static String downloadLink = "";
+	
+	public static Utils utils;
 	
 	public static ShopChest getInstance() {
 		return instance;
@@ -97,6 +104,17 @@ public class ShopChest extends JavaPlugin{
 	        logger.severe("[ShopChest] [PluginMetrics] Could not submit stats.");
 	    }
 		
+		switch (Utils.getVersion(getServer())) {
+		
+		case "v1_8_R1": utils = new Utils_R1(); break;
+		case "v1_8_R2": utils = new Utils_R2(); break;
+		case "v1_8_R3": utils = new Utils_R3(); break;
+		default:
+			logger.severe("[ShopChest] Incompatible Server Version!");
+			getServer().getPluginManager().disablePlugin(this);
+			return;	
+		}
+		
 		setupPermissions();
 		
 		instance = this;
@@ -118,7 +136,13 @@ public class ShopChest extends JavaPlugin{
 		if (isUpdateNeeded) {
 			for (Player p : getServer().getOnlinePlayers()) {
 				if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
-					JsonBuilder jb = new JsonBuilder(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink);
+					JsonBuilder jb;
+					switch (Utils.getVersion(getServer())) {
+						case "v1_8_R1": jb = new JsonBuilder_R1(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
+						case "v1_8_R2": jb = new JsonBuilder_R2(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
+						case "v1_8_R3": jb = new JsonBuilder_R3(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
+						default: return;
+					}		
 					jb.sendJson(p);
 				
 				}
@@ -165,21 +189,7 @@ public class ShopChest extends JavaPlugin{
 	@Override
 	public void onDisable() {
 		
-		for (Shop shop : ShopUtils.getShops()) {
-			Hologram hologram = shop.getHologram();
-			
-			for (Player p : getServer().getOnlinePlayers()) {
-				hologram.hidePlayer(p);
-			}
-			
-			for (Object o : hologram.getEntities()) {
-				EntityArmorStand e = (EntityArmorStand) o;
-				e.getWorld().removeEntity(e);
-			}
-
-			
-			shop.getItem().remove();
-		}
+		utils.removeShops();
 		
 	}
 	

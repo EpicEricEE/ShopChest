@@ -1,7 +1,6 @@
 package de.epiceric.shopchest.shop;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -19,6 +18,11 @@ import org.bukkit.util.Vector;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.interfaces.Hologram;
+import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.interfaces.hologram.Hologram_R1;
+import de.epiceric.shopchest.interfaces.hologram.Hologram_R2;
+import de.epiceric.shopchest.interfaces.hologram.Hologram_R3;
 import de.epiceric.shopchest.utils.ItemNames;
 
 public class Shop {
@@ -137,8 +141,13 @@ public class Shop {
 		else if ((buyPrice > 0) && (sellPrice > 0)) holoText[1] = Config.hologram_buy_sell(buyPrice, sellPrice);
 		else holoText[1] = Config.hologram_buy_sell(buyPrice, sellPrice);
 		
-		hologram = new Hologram(holoText, holoLocation);
-		
+		switch (Utils.getVersion(plugin.getServer())) {
+			case "v1_8_R1": hologram = new Hologram_R1(holoText, holoLocation); break;
+			case "v1_8_R2": hologram = new Hologram_R2(holoText, holoLocation); break;
+			case "v1_8_R3": hologram = new Hologram_R3(holoText, holoLocation); break;
+			default: return null;
+		}
+			
 		return hologram;
 				
 	}

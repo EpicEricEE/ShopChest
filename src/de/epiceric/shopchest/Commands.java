@@ -4,32 +4,25 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.shop.Hologram;
-import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ClickType;
-import de.epiceric.shopchest.utils.JsonBuilder;
+import de.epiceric.shopchest.interfaces.JsonBuilder;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
-import de.epiceric.shopchest.utils.JsonBuilder.ClickAction;
-import de.epiceric.shopchest.utils.JsonBuilder.HoverAction;
-import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.interfaces.JsonBuilder.ClickAction;
+import de.epiceric.shopchest.interfaces.JsonBuilder.HoverAction;
+import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import de.epiceric.shopchest.utils.UpdateChecker;
-
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.permission.Permission;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
 
 public class Commands extends BukkitCommand {
 
@@ -165,67 +158,35 @@ public class Commands extends BukkitCommand {
 	
 	private void checkUpdates(Player player) {
 		
-		JsonBuilder jb = new JsonBuilder().parse(Config.checking_update());
-		jb.sendJson(player);
+		player.sendMessage(Config.checking_update());
 		
 		UpdateChecker uc = new UpdateChecker(ShopChest.getInstance(), ShopChest.getInstance().getDescription().getWebsite());
 		if (uc.updateNeeded()) {
 			ShopChest.latestVersion = uc.getVersion();
 			ShopChest.downloadLink = uc.getLink();
 			ShopChest.isUpdateNeeded = true;
-			JsonBuilder jb2 = new JsonBuilder(Config.update_available(ShopChest.latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink);
-			jb2.sendJson(player);
+			
+			JsonBuilder jb;
+			switch (Utils.getVersion(plugin.getServer())) {
+				case "v1_8_R1": jb = new JsonBuilder_R1(Config.update_available(ShopChest.latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink); break;
+				case "v1_8_R2": jb = new JsonBuilder_R2(Config.update_available(ShopChest.latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink); break;
+				case "v1_8_R3": jb = new JsonBuilder_R3(Config.update_available(ShopChest.latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink); break;
+				default: return;
+			}		
+			jb.sendJson(player);
+			
 		} else {
 			ShopChest.latestVersion = "";
 			ShopChest.downloadLink = "";
 			ShopChest.isUpdateNeeded = false;
-			JsonBuilder jb3 = new JsonBuilder().parse(Config.no_new_update());
-			jb3.sendJson(player);
+			player.sendMessage(Config.no_new_update());
 		}
 		
 	}
 	
 	private void reload(Player player) {
 		
-		for (Shop shop : ShopUtils.getShops()) {
-			Hologram hologram = shop.getHologram();
-			
-			shop.getItem().remove();
-			ShopUtils.removeShop(shop);
-			
-			for (Player p : ShopChest.getInstance().getServer().getOnlinePlayers()) {
-				hologram.hidePlayer(p);
-			}
-
-			for (Object o : hologram.getEntities()) {
-				EntityArmorStand e = (EntityArmorStand) o;
-				e.getWorld().removeEntity(e);
-			}			
-						
-			
-		}
-		
-		for (String key : ShopChest.getInstance().shopChests.getKeys(false)) {
-			
-			OfflinePlayer vendor = ShopChest.getInstance().shopChests.getOfflinePlayer(key + ".vendor");
-			int locationX = ShopChest.getInstance().shopChests.getInt(key + ".location.x");
-			int locationY = ShopChest.getInstance().shopChests.getInt(key + ".location.y");
-			int locationZ = ShopChest.getInstance().shopChests.getInt(key + ".location.z");
-			World locationWorld = ShopChest.getInstance().getServer().getWorld(ShopChest.getInstance().shopChests.getString(key + ".location.world"));
-			Location location = new Location(locationWorld, locationX, locationY, locationZ);
-			ItemStack product = ShopChest.getInstance().shopChests.getItemStack(key + ".product");
-			double buyPrice = ShopChest.getInstance().shopChests.getDouble(key + ".price.buy");
-			double sellPrice = ShopChest.getInstance().shopChests.getDouble(key + ".price.sell");
-			boolean infinite = ShopChest.getInstance().shopChests.getBoolean(key + ".infinite");
-			
-			ShopUtils.addShop(new Shop(ShopChest.getInstance(), vendor, product, location, buyPrice, sellPrice, infinite));
-			
-		}
-		
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()));
-		}
-		
+		ShopChest.utils.reload();		
 		player.sendMessage(Config.reloaded_shops(ShopChest.getInstance().shopChests.getKeys(false).size()));
 		
 	}

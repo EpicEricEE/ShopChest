@@ -27,7 +27,8 @@ import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.EnchantmentNames;
 import de.epiceric.shopchest.utils.ItemNames;
 import de.epiceric.shopchest.utils.ShopUtils;
-import de.epiceric.shopchest.utils.Utils;
+import de.epiceric.shopchest.interfaces.Utils;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
