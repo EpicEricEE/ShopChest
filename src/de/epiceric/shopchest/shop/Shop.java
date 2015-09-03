@@ -2,6 +2,7 @@ package de.epiceric.shopchest.shop;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
@@ -48,19 +50,19 @@ public class Shop {
 		Item item;
 		Location itemLocation;
 		ItemStack itemStack;
+		ItemMeta itemMeta = product.getItemMeta().clone();
+		itemMeta.setDisplayName(UUID.randomUUID().toString());
+		
+		ArrayList<String> lore = new ArrayList<>();
+		lore.add("Shop Item");
+		itemMeta.setLore(lore);
 		
 		itemLocation = new Location(location.getWorld(), hologram.getLocation().getX(), location.getY() + 1, hologram.getLocation().getZ());
 		itemStack = new ItemStack(product.getType(), 1, product.getDurability());
-		itemStack.setItemMeta(product.getItemMeta());
-		
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add("This is an Item of ShopChest");
-		lore.add("This text is just to prevent merging.");
-		lore.add("ID: " + String.valueOf(new Random().nextInt()));
-
-		itemStack.getItemMeta().setLore(lore);
+		itemStack.setItemMeta(itemMeta);		
 		
 		item = location.getWorld().dropItem(itemLocation, itemStack);
+		item.getItemStack().getItemMeta().setDisplayName(UUID.randomUUID().toString());
 		item.setVelocity(new Vector(0, 0, 0));
 		item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
 		
