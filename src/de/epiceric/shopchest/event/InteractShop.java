@@ -55,9 +55,7 @@ public class InteractShop implements Listener{
 		
 		Block b = e.getClickedBlock();
 		Player p = e.getPlayer();
-		
-		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + p.getName() + " clicked block.");
-		
+				
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			
 			if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -70,9 +68,7 @@ public class InteractShop implements Listener{
 						
 						case CREATE:
 							e.setCancelled(true);
-							
-							Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + p.getName() + " created shop.");
-							
+														
 							if (!p.isOp() || !perm.has(p, "shopchest.create.protected")) {
 								if (ShopChest.lockette) {
 									if (Lockette.isProtected(b)) {
@@ -112,8 +108,6 @@ public class InteractShop implements Listener{
 							
 						case INFO:
 							e.setCancelled(true);
-
-							Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + p.getName() + " retrieved info.");
 							
 							if (ShopUtils.isShop(b.getLocation())) {
 								
@@ -129,8 +123,6 @@ public class InteractShop implements Listener{
 							
 						case REMOVE:
 							e.setCancelled(true);
-
-							Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + p.getName() + " removed shop.");
 							
 							if (ShopUtils.isShop(b.getLocation())) {
 								
