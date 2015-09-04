@@ -13,5 +13,6 @@ public class Regex {
 	public static String version = "%VERSION%";
 	public static String buyPrice = "%BUY-PRICE%";
 	public static String sellPrice = "%SELL-PRICE%";
+	public static String limit = "%LIMIT%";
 	
 }

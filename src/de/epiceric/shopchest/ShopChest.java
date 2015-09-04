@@ -182,7 +182,7 @@ public class ShopChest extends JavaPlugin{
 		if (!itemNamesFile.exists())
 			try {itemNamesFile.createNewFile();} catch (IOException e) {e.printStackTrace();}
 		
-		copy(getResource("item_names"), itemNamesFile);
+		copy(getResource("item_names.txt"), itemNamesFile);
 			
 		shopChests = YamlConfiguration.loadConfiguration(shopChestsFile);
 		

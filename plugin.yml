@@ -2,7 +2,7 @@
 
 name: ShopChest
 main: de.epiceric.shopchest.ShopChest
-version: 1.4.11.1
+version: 1.5.0
 author: EpicEric
 website: https://www.spigotmc.org/resources/shopchest.11431/
 depend: [Vault]
@@ -20,6 +20,7 @@ permissions:
       shopchest.notification.update: true
       shopchest.reload: true
       shopchest.update: true
+      shopchest.limits: true
   shopchest.create:
     description: Allows you to create a shop.
     default: true
@@ -54,3 +55,6 @@ permissions:
   shopchest.update:
     description: Allows you to check for updates.
     default: op
+  shopchest.limits:
+    description: Allows you to view shop limits.
+    default: true

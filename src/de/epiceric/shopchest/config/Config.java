@@ -10,8 +10,12 @@ public class Config {
 	private static ShopChest plugin = ShopChest.getInstance();
 	
 	public static Set<String> minimum_prices() {return (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);}
+	public static Set<String> shopLimits_group() {return (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);}
+	public static Set<String> shopLimits_player() {return (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);}
+	
  	public static boolean buy_greater_or_equal_sell() {return plugin.getConfig().getBoolean("buy-greater-or-equal-sell");}
 	public static double maximal_distance() {return plugin.getConfig().getDouble("maximal-distance");}
+	public static int default_limit() {return plugin.getConfig().getInt("shop-limits.default");}
 	
 	public static String main_command_name() { return plugin.getConfig().getString("main-command-name");}
 	public static String currency_symbol() { return plugin.getConfig().getString("currency-symbol").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
@@ -36,6 +40,7 @@ public class Config {
 	public static String cmdDesc_info() { return plugin.getConfig().getString("messages.command-description.info").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String cmdDesc_reload() { return plugin.getConfig().getString("messages.command-description.reload").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String cmdDesc_update() { return plugin.getConfig().getString("messages.command-description.update").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
+	public static String cmdDesc_limits() { return plugin.getConfig().getString("messages.command-description.limits").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String shopInfo_isInfinite() { return plugin.getConfig().getString("messages.shop-info.is-infinite").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");};
 	public static String shopInfo_isNormal() { return plugin.getConfig().getString("messages.shop-info.is-not-infinite").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");};
 	public static String noPermission_create() { return plugin.getConfig().getString("messages.no-permission.create").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
@@ -46,6 +51,7 @@ public class Config {
 	public static String noPermission_sell() { return plugin.getConfig().getString("messages.no-permission.sell").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String noPermission_reload() { return plugin.getConfig().getString("messages.no-permission.reload").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String noPermission_update() { return plugin.getConfig().getString("messages.no-permission.update").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
+	public static String noPermission_limits() { return plugin.getConfig().getString("messages.no-permission.limits").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String cannot_break_shop() { return plugin.getConfig().getString("messages.cannot-break-shop").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String cannot_sell_broken_item() { return plugin.getConfig().getString("messages.cannot-sell-broken-item").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String disabled() {return plugin.getConfig().getString("messages.shop-info.disabled").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
@@ -55,6 +61,10 @@ public class Config {
  	public static String checking_update() {return plugin.getConfig().getString("messages.update.checking").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String no_new_update() {return plugin.getConfig().getString("messages.update.no-update").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String click_to_download() {return plugin.getConfig().getString("messages.update.click-to-download").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
+ 	
+ 	public static String limit_reached(int limit) {
+ 		return plugin.getConfig().getString("messages.shop-limit-reached").replace(Regex.limit, String.valueOf(limit)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+ 	}
 
  	public static String reloaded_shops(int amount) {
  		return plugin.getConfig().getString("messages.reloaded-shops").replace(Regex.amount, String.valueOf(amount)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
@@ -122,5 +132,9 @@ public class Config {
 	
 	public static String sell_success(int amount, String itemName, double sellPrice, String vendor) {
 		return plugin.getConfig().getString("messages.sell-success").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, String.valueOf(sellPrice)).replace(Regex.vendor, vendor).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+	}
+	
+	public static String occupied_shop_slots(int limit, int amount) {
+		return plugin.getConfig().getString("messages.occupied-shop-slots").replace(Regex.limit, String.valueOf(limit)).replace(Regex.amount, String.valueOf(amount)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
 	}
 }

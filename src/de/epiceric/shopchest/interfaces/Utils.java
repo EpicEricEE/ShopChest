@@ -29,4 +29,8 @@ public abstract class Utils {
 	    return packageName.substring(packageName.lastIndexOf('.') + 1);
 	}
 	
+	public static boolean isUUID(String string) {
+		return string.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}");		
+	}
+	
 }

@@ -49,12 +49,35 @@ buy-greater-or-equal-sell: true
 
 # Set the minimum prices for each individual Item. Not per Stack, per single Item!
 # To add an item DELETE THE '[]' after 'minimum-prices:' and follow the format below.
-# Important: You must have exactly 2 spaces between the text and the edge (Just like the other properties)
+# Important: You must have exactly 2 spaces between the text and the edge.
 # You can find the item names in the 'item_names.txt' file.
 minimum-prices: []
 #  "STONE:1": 0.5
 #  "DIAMOND_SWORD": 100
 
+
+# Priority: default < group < player
+shop-limits:
+  
+  # Set the amount of shops anyone who's not listed in the sections below can have.
+  # If you don't want the players to have a limit, set the value to -1.
+  default: 5
+  
+  # Set the amount of shops a player in a specific permission group can have.
+  # If you don't want the group to have a limit, set the value to -1.
+  # To add an item DELETE THE '[]' after 'group:' and follow the format below.
+  # Important: You must have exactly 4 spaces between the text and the edge.
+  group: []
+  #  "VIP": 10
+
+  # Set the amount of shops a specific player can have.
+  # You can add a player by its name or by its UUID, but please do NOT provide the name and the UUID.
+  # If you don't want the player to have a limit, set the value to -1.
+  # To add an item DELETE THE '[]' after 'player:' and follow the format below.
+  # Important: You must have exactly 4 spaces between the text and the edge.
+  player: []
+  #  "EpicEric": 50
+  #  "898afbbe-6566-4a0f-b0ac-145868b3cb12": 50
 
 messages:
 
@@ -173,6 +196,14 @@ messages:
   # Set the message when reloading is done.
   # Usable regex: %AMOUNT% (Amount of shops)
   reloaded-shops: "&aSuccessfully reloaded %AMOUNT% shop/s."
+  
+  # Set the message when the players' shop limit is reached.
+  # Usable regex: %LIMIT%
+  shop-limit-reached: "&cYou reached your limit of &6%LIMIT% &cshop/s."
+  
+  # Set the message that shows the player how many shop slots of his shop limit he has occupied.
+  # Usable regex: %LIMIT%, %AMOUNT% (Amount of shops)
+  occupied-shop-slots: "&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied."
 
   update:
 
@@ -230,6 +261,9 @@ messages:
     # Set the message when a not permitted player tries to check for updates.
     update: "&cYou don't have permission to check for updates."
 
+    # Set the message when a not permitted player tries to view the shop limits.
+    limits: "&cYou don't have permission to view the shop limits."
+
   command-description:
 
     # Set the command description message for '/<main-command> create' when you type '/<main-command>'. 
@@ -246,5 +280,8 @@ messages:
     
     # Set the command description message for '/<main-command> update' when you type '/<main-command>'.
     update: "Check for Updates."
+
+    # Set the command description message for '/<main-command> limits' when you type '/<main-command>'.
+    limits: "View shop limits."
 
 # End of file.

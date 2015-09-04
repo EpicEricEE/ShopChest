@@ -1,10 +1,13 @@
 package de.epiceric.shopchest;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -13,13 +16,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.interfaces.JsonBuilder.ClickAction;
 import de.epiceric.shopchest.interfaces.JsonBuilder.HoverAction;
 import de.epiceric.shopchest.interfaces.Utils;
-import de.epiceric.shopchest.interfaces.jsonbuilder.*;
+import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R1;
+import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R2;
+import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R3;
+import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ClickType.EnumClickType;
+import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.permission.Permission;
@@ -63,7 +70,7 @@ public class Commands extends BukkitCommand {
 					if (perm.has(p, "shopchest.create")) {
 						
 						if (args.length == 4) {
-							
+														
 							create(args, false, p);
 							return true;
 							
@@ -140,6 +147,18 @@ public class Commands extends BukkitCommand {
 						return true;
 					}
 					
+				} else if (args[0].equalsIgnoreCase("limits")) {
+					
+					if (perm.has(p, "shopchest.limits")) {
+						p.sendMessage(Config.occupied_shop_slots(ShopUtils.getShopLimit(p), ShopUtils.getShopAmount(p)));
+						return true;
+					} else {
+						p.sendMessage(Config.noPermission_limits());
+					}
+					
+				} else {
+					sendBasicHelpMessage(p);
+					return true;
 				}
 					
 				return true;
@@ -195,6 +214,14 @@ public class Commands extends BukkitCommand {
 		int amount;
 		double buyPrice, sellPrice;
 		
+		int limit = ShopUtils.getShopLimit(p);
+	
+		if (limit != -1) {							
+			if (ShopUtils.getShopAmount(p) >= limit) {
+				p.sendMessage(Config.limit_reached(limit));
+				return;
+			}
+		}
 		
 		try {
 			amount = Integer.parseInt(args[1]);
@@ -286,7 +313,8 @@ public class Commands extends BukkitCommand {
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " remove - " + Config.cmdDesc_remove());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " info - " + Config.cmdDesc_info());		
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " reload - " + Config.cmdDesc_reload());	
-		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " update - " + Config.cmdDesc_update());		
+		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " update - " + Config.cmdDesc_update());	
+		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " limits - " + Config.cmdDesc_limits());		
 		
 	}
 	
