@@ -16,8 +16,13 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yi.acru.bukkit.Lockette.Lockette;
+
+import com.griefcraft.lwc.LWC;
+import com.griefcraft.lwc.LWCPlugin;
 
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.InteractShop;
@@ -53,6 +58,8 @@ public class ShopChest extends JavaPlugin{
 	public static Logger logger = Logger.getLogger("Minecraft");
 	public static Economy econ = null;
 	public static Permission perm = null;
+	public static LWC lwc = null;
+	public static boolean lockette = false;
 	
 	public static boolean isUpdateNeeded = false;
 	public static String latestVersion = "";
@@ -103,7 +110,7 @@ public class ShopChest extends JavaPlugin{
 	    } catch (IOException e) {
 	        logger.severe("[ShopChest] [PluginMetrics] Could not submit stats.");
 	    }
-		
+				
 		switch (Utils.getVersion(getServer())) {
 		
 		case "v1_8_R1": utils = new Utils_R1(); break;
@@ -113,6 +120,19 @@ public class ShopChest extends JavaPlugin{
 			logger.severe("[ShopChest] Incompatible Server Version!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;	
+		}
+		
+		if (getServer().getPluginManager().getPlugin("LWC") != null) {
+			Plugin lwcp = getServer().getPluginManager().getPlugin("LWC");
+			lwc = ((LWCPlugin) lwcp).getLWC();
+		} else {
+			lwc = null;
+		}
+		
+		if (getServer().getPluginManager().getPlugin("Lockette") != null) {
+			lockette = true;
+		} else {
+			lockette = false;
 		}
 		
 		setupPermissions();

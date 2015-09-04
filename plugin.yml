@@ -2,11 +2,11 @@
 
 name: ShopChest
 main: de.epiceric.shopchest.ShopChest
-version: 1.4.10
+version: 1.4.11
 author: EpicEric
 website: https://www.spigotmc.org/resources/shopchest.11431/
 depend: [Vault]
-softdepend: [ClearLag]
+softdepend: [ClearLag, LWC, Lockette]
 
 permissions:
   shopchest.*:
@@ -25,6 +25,11 @@ permissions:
     default: true
   shopchest.create.infinite:
     description: Allows you to create an infinite shop.
+    children:
+      shopchest.create: true
+    default: op
+  shopchest.create.protected:
+    description: Allows you to create a shop on a protected chest.
     children:
       shopchest.create: true
     default: op
