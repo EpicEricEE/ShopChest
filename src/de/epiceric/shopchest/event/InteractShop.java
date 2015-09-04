@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -32,7 +33,7 @@ import de.epiceric.shopchest.utils.EnchantmentNames;
 import de.epiceric.shopchest.utils.ItemNames;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.interfaces.Utils;
-
+import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -55,6 +56,8 @@ public class InteractShop implements Listener{
 		Block b = e.getClickedBlock();
 		Player p = e.getPlayer();
 		
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + p.getName() + " clicked block.");
+		
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			
 			if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -67,6 +70,8 @@ public class InteractShop implements Listener{
 						
 						case CREATE:
 							e.setCancelled(true);
+							
+							Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + p.getName() + " created shop.");
 							
 							if (!p.isOp() || !perm.has(p, "shopchest.create.protected")) {
 								if (ShopChest.lockette) {
@@ -87,7 +92,8 @@ public class InteractShop implements Listener{
 										}
 									}
 								}
-							}														
+							}							
+							
 
 							if (!ShopUtils.isShop(b.getLocation())) {
 								ClickType clickType = ClickType.getPlayerClickType(p);
@@ -107,6 +113,8 @@ public class InteractShop implements Listener{
 						case INFO:
 							e.setCancelled(true);
 
+							Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + p.getName() + " retrieved info.");
+							
 							if (ShopUtils.isShop(b.getLocation())) {
 								
 								Shop shop = ShopUtils.getShop(b.getLocation());
@@ -122,6 +130,8 @@ public class InteractShop implements Listener{
 						case REMOVE:
 							e.setCancelled(true);
 
+							Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + p.getName() + " removed shop.");
+							
 							if (ShopUtils.isShop(b.getLocation())) {
 								
 								Shop shop = ShopUtils.getShop(b.getLocation());
