@@ -54,7 +54,7 @@ public abstract class Database {
     }
     
     public int getNextFreeID() {    	    	
-    	for (int i = 1; i <= getCount(); i++) {
+    	for (int i = 1; i < getCount() + 1; i++) {
     		if (getProduct(i) == null) {
     			return i;
     		} else {
@@ -120,7 +120,7 @@ public abstract class Database {
     }
     
     public void removeShop(Shop shop) {
-    	
+    	   	
     	int id = getShopID(shop);
     	if (id == 0) return;
     	
@@ -131,6 +131,7 @@ public abstract class Database {
         try {
             conn = getSQLConnection();
             ps = conn.prepareStatement("DELETE FROM " + table + " where id = " + id + ";");     
+            ps.executeUpdate();
         } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
         } finally {
