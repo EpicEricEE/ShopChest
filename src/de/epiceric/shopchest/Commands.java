@@ -383,7 +383,8 @@ public class Commands extends BukkitCommand {
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " info - " + Config.cmdDesc_info());		
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " reload - " + Config.cmdDesc_reload());	
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " update - " + Config.cmdDesc_update());	
-		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " limits - " + Config.cmdDesc_limits());		
+		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " limits - " + Config.cmdDesc_limits());	
+		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " compile - Compile shops.yml to shops.db (Highly Recommended)");
 		
 	}
 	

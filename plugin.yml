@@ -58,3 +58,6 @@ permissions:
   shopchest.limits:
     description: Allows you to view shop limits.
     default: true
+  shopchest.compile:
+    description: Allows you to compile shops.yml to shops.db
+    default: op
