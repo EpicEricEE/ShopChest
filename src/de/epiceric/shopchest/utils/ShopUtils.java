@@ -91,6 +91,7 @@ public class ShopUtils {
 				Chest r = (Chest) dc.getRightSide();
 				Chest l = (Chest) dc.getLeftSide();
 				
+				shop.getItem().remove();
 				shopLocation.remove(r.getLocation());
 				shopLocation.remove(l.getLocation());
 				return;

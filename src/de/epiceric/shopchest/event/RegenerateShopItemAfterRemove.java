@@ -19,7 +19,7 @@ public class RegenerateShopItemAfterRemove implements Listener {
 			}
 		}
 		
-		if (containsShopItem) ShopChest.utils.reload();
+		if (containsShopItem) ShopChest.utils.reload(null);
 	}
 
 

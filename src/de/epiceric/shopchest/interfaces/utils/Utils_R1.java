@@ -1,13 +1,10 @@
 package de.epiceric.shopchest.interfaces.utils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.ItemStack;
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.Hologram;
 import de.epiceric.shopchest.shop.Shop;
@@ -17,7 +14,7 @@ import net.minecraft.server.v1_8_R1.EntityArmorStand;
 public class Utils_R1 extends Utils {
 
 	@Override
-	public void reload() {
+	public void reload(Player player) {
 
 		for (Shop shop : ShopUtils.getShops()) {
 			Hologram hologram = shop.getHologram();
@@ -37,22 +34,24 @@ public class Utils_R1 extends Utils {
 			
 		}
 		
-		for (String key : ShopChest.getInstance().shopChests.getKeys(false)) {
+		int count = 0;
+		
+		for (int id = 1; id < ShopChest.sqlite.getCount() + 1; id++) {
 			
-			OfflinePlayer vendor = ShopChest.getInstance().shopChests.getOfflinePlayer(key + ".vendor");
-			int locationX = ShopChest.getInstance().shopChests.getInt(key + ".location.x");
-			int locationY = ShopChest.getInstance().shopChests.getInt(key + ".location.y");
-			int locationZ = ShopChest.getInstance().shopChests.getInt(key + ".location.z");
-			World locationWorld = ShopChest.getInstance().getServer().getWorld(ShopChest.getInstance().shopChests.getString(key + ".location.world"));
-			Location location = new Location(locationWorld, locationX, locationY, locationZ);
-			ItemStack product = ShopChest.getInstance().shopChests.getItemStack(key + ".product");
-			double buyPrice = ShopChest.getInstance().shopChests.getDouble(key + ".price.buy");
-			double sellPrice = ShopChest.getInstance().shopChests.getDouble(key + ".price.sell");
-			boolean infinite = ShopChest.getInstance().shopChests.getBoolean(key + ".infinite");
+			try {
+				Shop shop = ShopChest.sqlite.getShop(id);
+				shop.createHologram();
+				shop.createItem();				
+				ShopUtils.addShop(shop);
+			} catch (NullPointerException e) {
+				continue;
+			}
 			
-			ShopUtils.addShop(new Shop(ShopChest.getInstance(), vendor, product, location, buyPrice, sellPrice, infinite));
+			count++;
 			
 		}
+		
+		if (player != null) player.sendMessage(Config.reloaded_shops(count));
 		
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()));

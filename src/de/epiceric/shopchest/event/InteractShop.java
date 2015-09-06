@@ -1,6 +1,5 @@
 package de.epiceric.shopchest.event;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,11 +8,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -22,18 +19,17 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
-import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Protection;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.EnchantmentNames;
 import de.epiceric.shopchest.utils.ItemNames;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.interfaces.Utils;
-import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -43,11 +39,10 @@ public class InteractShop implements Listener{
 	private ShopChest plugin;
 	private Permission perm = ShopChest.perm;
 	private Economy econ = ShopChest.econ;
-	private YamlConfiguration shopChests;
+	private SQLite sqlite = ShopChest.sqlite;
 	
 	public InteractShop(ShopChest plugin) {
 		this.plugin = plugin;
-		shopChests = plugin.shopChests;
 	}
 	
 	@EventHandler
@@ -231,18 +226,10 @@ public class InteractShop implements Listener{
 	private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, boolean infinite) {
 		
 		Shop shop = new Shop(plugin, executor, product, location, buyPrice, sellPrice, infinite);
+		shop.createHologram();
+		shop.createItem();
 		
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".vendor", executor);
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".location.world", location.getWorld().getName());
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".location.x", location.getBlockX());
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".location.y", location.getBlockY());
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".location.z", location.getBlockZ());
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".product", product);
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".price.buy", buyPrice);
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".price.sell", sellPrice);
-		shopChests.set(ShopUtils.getConfigTitle(location) + ".infinite", infinite);
-		
-		try {shopChests.save(plugin.shopChestsFile);} catch (IOException ex) {ex.printStackTrace();}
+		sqlite.addShop(shop);
 		
 		ShopUtils.addShop(shop);
 		executor.sendMessage(Config.shop_created());
@@ -255,12 +242,10 @@ public class InteractShop implements Listener{
 	
 	private void remove(Player executor, Shop shop) {
 		
-		shop.getItem().remove();
 		ShopUtils.removeShop(shop);
 		
-		shopChests.set(ShopUtils.getConfigTitle(shop.getLocation()), null);
-		try {shopChests.save(plugin.shopChestsFile);} catch (IOException ex) {ex.printStackTrace();}
-		
+		sqlite.removeShop(shop);
+
 		for (Player player : plugin.getServer().getOnlinePlayers()) {
 			shop.getHologram().hidePlayer(player);
 		}

@@ -15,7 +15,7 @@ public class Config {
 	
  	public static boolean buy_greater_or_equal_sell() {return plugin.getConfig().getBoolean("buy-greater-or-equal-sell");}
 	public static double maximal_distance() {return plugin.getConfig().getDouble("maximal-distance");}
-	public static int default_limit() {return plugin.getConfig().getInt("shop-limits.default");}
+	public static int default_limit() {return plugin.getConfig().getInt("shop-limits.default");}	
 	
 	public static String main_command_name() { return plugin.getConfig().getString("main-command-name");}
 	public static String currency_symbol() { return plugin.getConfig().getString("currency-symbol").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}

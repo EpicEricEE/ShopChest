@@ -45,11 +45,9 @@ public class Shop {
 		this.buyPrice = buyPrice;
 		this.sellPrice = sellPrice;
 		this.infinite = infinite;				
-		this.hologram = createHologram(product, location, buyPrice, sellPrice);	
-		this.item = createItem(product, location);
 	}
 	
-	public Item createItem(ItemStack product, Location location) {
+	public void createItem() {
 		
 		Item item;
 		Location itemLocation;
@@ -70,19 +68,16 @@ public class Shop {
 		item.setVelocity(new Vector(0, 0, 0));
 		item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
 		
-		return item;
-		
+		this.item = item;
 	}
 	
-	public Hologram createHologram(ItemStack product, Location shopLocation, double buyPrice, double sellPrice) {
-		
+	public void createHologram() {
+				
 		boolean doubleChest;
-		
-		Hologram hologram;
-		
+				
 		Chest[] chests = new Chest[2];
 		
-		Block b = shopLocation.getBlock();
+		Block b = location.getBlock();
 		
 		if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
 			
@@ -106,7 +101,7 @@ public class Shop {
 			}
 			
 		} else {
-			return null;
+			return;
 		}
 		
 		Location holoLocation;
@@ -145,11 +140,9 @@ public class Shop {
 			case "v1_8_R1": hologram = new Hologram_R1(holoText, holoLocation); break;
 			case "v1_8_R2": hologram = new Hologram_R2(holoText, holoLocation); break;
 			case "v1_8_R3": hologram = new Hologram_R3(holoText, holoLocation); break;
-			default: return null;
+			default: return;
 		}
-			
-		return hologram;
-				
+							
 	}
 	
 	public OfflinePlayer getVendor() {
