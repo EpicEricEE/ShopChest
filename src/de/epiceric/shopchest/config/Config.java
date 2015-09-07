@@ -134,6 +134,14 @@ public class Config {
 		return plugin.getConfig().getString("messages.sell-success").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, String.valueOf(sellPrice)).replace(Regex.vendor, vendor).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
 	}
 	
+	public static String someone_bought(int amount, String itemName, double sellPrice, String player) {
+		return plugin.getConfig().getString("messages.someone-bought").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, String.valueOf(sellPrice)).replace(Regex.player, player).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+	}
+	
+	public static String someone_sold(int amount, String itemName, double sellPrice, String player) {
+		return plugin.getConfig().getString("messages.someone-sold").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, String.valueOf(sellPrice)).replace(Regex.player, player).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+	}
+	
 	public static String occupied_shop_slots(int limit, int amount) {
 		return plugin.getConfig().getString("messages.occupied-shop-slots").replace(Regex.limit, String.valueOf(limit)).replace(Regex.amount, String.valueOf(amount)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
 	}

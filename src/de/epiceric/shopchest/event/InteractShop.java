@@ -342,6 +342,7 @@ public class InteractShop implements Listener{
 											leftAmount--;
 										} else if (leftAmount == 0) {
 											executor.sendMessage(Config.buy_success(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), shop.getVendor().getName()));
+											if (shop.getVendor().isOnline()) shop.getVendor().getPlayer().sendMessage(Config.someone_bought(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
 											return;
 										}
 									}
@@ -416,6 +417,7 @@ public class InteractShop implements Listener{
 										leftAmount--;
 									} else if (leftAmount == 0) {
 										executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
+										if (shop.getVendor().isOnline()) shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
 										return;
 									}
 								}

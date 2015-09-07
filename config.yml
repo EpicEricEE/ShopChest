@@ -131,9 +131,17 @@ messages:
   # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%, %VENDOR%
   buy-success: "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a from &6%VENDOR%&a."
   
-  # Set the message when the player successfully bought something.
+  # Set the message when the player successfully sold something.
   # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%, %VENDOR%
   sell-success: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a to &6%VENDOR%&a."
+
+  # Set the message when a player bought something from the players' shop.
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%, %PLAYER%
+  someone-bought: "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a from your shop."
+  
+  # Set the message when a player sold something to the players' shop.
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%, %PLAYER%
+  someone-sold: "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a from your shop."
 
   # Set the message when the inventory is full when the player is buying something.
   not-enough-inventory-space: "&cNot enough space in inventory."
