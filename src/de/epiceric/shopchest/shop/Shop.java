@@ -101,6 +101,11 @@ public class Shop {
 			}
 			
 		} else {
+			try {
+				throw new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return;
 		}
 		

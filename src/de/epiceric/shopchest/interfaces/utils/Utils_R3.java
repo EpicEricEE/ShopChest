@@ -36,7 +36,7 @@ public class Utils_R3 extends Utils {
 		
 		int count = 0;
 		
-		for (int id = 1; id < ShopChest.sqlite.getCount() + 1; id++) {
+		for (int id = 1; id < ShopChest.sqlite.getHighestID() + 1; id++) {
 			
 			try {
 				Shop shop = ShopChest.sqlite.getShop(id);

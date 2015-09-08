@@ -54,25 +54,25 @@ public abstract class Database {
     }
     
     public int getNextFreeID() {    	    	
-    	for (int i = 1; i < getCount() + 1; i++) {
+    	for (int i = 1; i < getHighestID() + 1; i++) {
     		if (getProduct(i) == null) {
     			return i;
     		} else {
-    			if (i == getCount()) {
+    			if (i == getHighestID()) {
     				return i + 1;
     			}
     		}
     	}
     	
-    	return 0;
+    	return 1;
     }
     
-    public int getCount() {
+    public int getHighestID() {
     	Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         
-        int highestID = 0;
+        int highestID = 1;
         try {
             conn = getSQLConnection();
             ps = conn.prepareStatement("SELECT * FROM " + table + ";");
@@ -97,13 +97,13 @@ public abstract class Database {
                 plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
             }
         }
-        return -1;    
+        return 0;    
     }
 
     public int getShopID(Shop shop) {
     	
     	
-    	for (int i = 1; i < getCount() + 1; i++) {
+    	for (int i = 1; i < getHighestID() + 1; i++) {
     		
     		try {
         		Shop s = getShop(i);

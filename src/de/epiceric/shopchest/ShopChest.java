@@ -83,6 +83,7 @@ public class ShopChest extends JavaPlugin{
         return perm != null;
     }
 	
+	
 	@Override
 	public void onEnable() {
 		
@@ -107,6 +108,9 @@ public class ShopChest extends JavaPlugin{
 	        logger.severe("Could not submit stats.");
 	    }
 
+		reloadConfig();
+		saveDefaultConfig();
+		
 		sqlite =  new SQLite(this);	
 		sqlite.load();
 		
@@ -137,8 +141,7 @@ public class ShopChest extends JavaPlugin{
 		setupPermissions();
 		
 		instance = this;
-		reloadConfig();
-		saveDefaultConfig();
+
 		
 		UpdateChecker uc = new UpdateChecker(this, getDescription().getWebsite());
 		logger.info("Checking for Updates");
@@ -206,7 +209,7 @@ public class ShopChest extends JavaPlugin{
 				
 		int count = 0;
 		
-		for (int id = 1; id < sqlite.getCount() + 1; id++) {
+		for (int id = 1; id < sqlite.getHighestID() + 1; id++) {
 			
 			try {
 				Shop shop = sqlite.getShop(id);
