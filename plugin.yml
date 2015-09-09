@@ -2,11 +2,12 @@
 
 name: ShopChest
 main: de.epiceric.shopchest.ShopChest
-version: 1.5.5
+version: 1.5.6
 author: EpicEric
 website: https://www.spigotmc.org/resources/shopchest.11431/
 depend: [Vault]
 softdepend: [ClearLag, LWC, Lockette]
+loadbefore: [ItemTags]
 
 permissions:
   shopchest.*:

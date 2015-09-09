@@ -1,22 +1,13 @@
 package de.epiceric.shopchest;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +20,6 @@ import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R1;
 import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R2;
 import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R3;
-import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
@@ -161,12 +151,6 @@ public class Commands extends BukkitCommand {
 						p.sendMessage(Config.noPermission_limits());
 					}
 					
-				} else if (args[0].equalsIgnoreCase("compile")){
-					
-					if (perm.has(p, "shopchest.compile")) {
-						compile(p);
-					}
-					
 				} else {
 					sendBasicHelpMessage(p);
 					return true;
@@ -183,65 +167,6 @@ public class Commands extends BukkitCommand {
 			return true;
 			
 		}
-		
-	}
-	
-	private void compile(Player player) {
-		
-		player.sendMessage(" ");
-		player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Starting Compilation...");
-		player.sendMessage(ChatColor.GOLD + "This command will be removed in the next update. Be sure to compile the shops in this version!");
-		player.sendMessage(ChatColor.GOLD + "Please execute this command only once or the whole plugin will get messed up and all shops must be deleted!");
-		
-		File shopChestDataFolder = new File(plugin.getDataFolder(), "data");
-		if (!shopChestDataFolder.exists()) {
-			player.sendMessage(ChatColor.RED + "Cannot find shops.yml file.");
-			player.sendMessage(ChatColor.RED + "Be sure it's located in \"/plugins/ShopChest/data/shops.yml\"");
-			player.sendMessage(" ");
-			return;
-		}
-		
-		File shopChestsFile = new File(shopChestDataFolder, "shops.yml");
-		if (!shopChestsFile.exists()) {
-			player.sendMessage(ChatColor.RED + "Cannot find shops.yml file.");
-			player.sendMessage(ChatColor.RED + "Be sure it's located in \"/plugins/ShopChest/data/shops.yml\"");
-			player.sendMessage(" ");
-			return;
-		}
-		
-		YamlConfiguration shopChests = YamlConfiguration.loadConfiguration(shopChestsFile);
-		
-		Set<String> keys = shopChests.getKeys(false);
-		
-		for (String key : keys) {
-			
-			OfflinePlayer vendor = shopChests.getOfflinePlayer(key + ".vendor");
-			int locationX = shopChests.getInt(key + ".location.x");
-			int locationY = shopChests.getInt(key + ".location.y");
-			int locationZ = shopChests.getInt(key + ".location.z");
-			World locationWorld = plugin.getServer().getWorld(shopChests.getString(key + ".location.world"));
-			Location location = new Location(locationWorld, locationX, locationY, locationZ);
-			ItemStack product = shopChests.getItemStack(key + ".product");
-			double buyPrice = shopChests.getDouble(key + ".price.buy");
-			double sellPrice = shopChests.getDouble(key + ".price.sell");
-			boolean infinite = shopChests.getBoolean(key + ".infinite");
-			
-			ShopChest.sqlite.addShop(new Shop(plugin, vendor, product, location, buyPrice, sellPrice, infinite));
-			
-		}
-
-		
-		player.sendMessage(ChatColor.GREEN + "Successfully compiled " + String.valueOf(keys.size()) + " Shops.");
-		
-		try {
-			Files.delete(shopChestsFile.toPath());
-			Files.delete(shopChestDataFolder.toPath());
-			player.sendMessage(ChatColor.GREEN + "Successfully deleted data folder.");
-		} catch (IOException e) {
-			player.sendMessage(ChatColor.RED + "Could not delete data folder. You may delete it yourself.");
-		}
-		
-		player.sendMessage(" ");
 		
 	}
 	
@@ -384,7 +309,6 @@ public class Commands extends BukkitCommand {
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " reload - " + Config.cmdDesc_reload());	
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " update - " + Config.cmdDesc_update());	
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " limits - " + Config.cmdDesc_limits());	
-		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " compile - Compile shops.yml to shops.db (Highly Recommended)");
 		
 	}
 	

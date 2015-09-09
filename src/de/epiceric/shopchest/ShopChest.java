@@ -20,6 +20,7 @@ import com.griefcraft.lwc.LWCPlugin;
 
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.InteractShop;
+import de.epiceric.shopchest.event.ItemCustomNameListener;
 import de.epiceric.shopchest.event.NotifyUpdate;
 import de.epiceric.shopchest.event.ProtectChest;
 import de.epiceric.shopchest.event.RegenerateShopItem;
@@ -192,8 +193,9 @@ public class ShopChest extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new InteractShop(this), this);
 		getServer().getPluginManager().registerEvents(new NotifyUpdate(), this);
 		getServer().getPluginManager().registerEvents(new ProtectChest(), this);
+		getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
+		
 		if (getServer().getPluginManager().getPlugin("ClearLag") != null) getServer().getPluginManager().registerEvents(new RegenerateShopItemAfterRemove(), this);
-
 		
 	}
 

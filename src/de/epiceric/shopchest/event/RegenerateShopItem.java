@@ -9,10 +9,8 @@ import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class RegenerateShopItem implements Listener {
-
+	
 	public RegenerateShopItem() {}
-	
-	
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onItemDespawn(ItemDespawnEvent e) {
@@ -24,6 +22,5 @@ public class RegenerateShopItem implements Listener {
 	public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
 		if (e.getItem().hasMetadata("shopItem")) e.setCancelled(true);
 	}
-
 	
 }
