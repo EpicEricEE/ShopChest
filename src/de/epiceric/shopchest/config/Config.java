@@ -86,6 +86,10 @@ public class Config {
 		return plugin.getConfig().getString("messages.update.update-available").replace(Regex.version, version);
 	}
 	
+	public static String hologram_format(int amount, String itemName) {
+		return plugin.getConfig().getString("messages.hologram.format").replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+	}
+	
 	public static String hologram_buy_sell(double buyPrice, double sellPrice) {
 		return plugin.getConfig().getString("messages.hologram.buy-and-sell").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, String.valueOf(buyPrice)).replace(Regex.sellPrice, String.valueOf(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
 	}

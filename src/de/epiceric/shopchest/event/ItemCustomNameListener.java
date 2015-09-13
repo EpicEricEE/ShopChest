@@ -7,7 +7,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 
 public class ItemCustomNameListener implements Listener {
 	
-	@EventHandler(priority=EventPriority.HIGH)
+	@EventHandler(priority=EventPriority.MONITOR)
 	public void onItemSpawn(ItemSpawnEvent e) {
 		if (e.getEntity().hasMetadata("shopItem")) {
 			e.getEntity().setCustomNameVisible(false);

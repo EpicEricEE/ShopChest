@@ -64,9 +64,9 @@ public class Shop {
 		itemStack.setItemMeta(itemMeta);		
 		
 		item = location.getWorld().dropItem(itemLocation, itemStack);
-		item.getItemStack().getItemMeta().setDisplayName(UUID.randomUUID().toString());
 		item.setVelocity(new Vector(0, 0, 0));
 		item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
+		item.setCustomNameVisible(false);
 		
 		this.item = item;
 	}
@@ -131,10 +131,9 @@ public class Shop {
 				
 			}
 			
-		} else holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
+		} else holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);	
 		
-		
-		holoText[0] = String.valueOf(product.getAmount()) + " x " + ItemNames.lookup(product);
+		holoText[0] = Config.hologram_format(product.getAmount(), ItemNames.lookup(product));
 		
 		if ((buyPrice <= 0) && (sellPrice > 0)) holoText[1] = Config.hologram_sell(sellPrice);
 		else if ((buyPrice > 0) && (sellPrice <= 0)) holoText[1] = Config.hologram_buy(buyPrice);

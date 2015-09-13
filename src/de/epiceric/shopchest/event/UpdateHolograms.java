@@ -20,27 +20,30 @@ public class UpdateHolograms implements Listener{
 		Player p = e.getPlayer();
 		Location playerLocation = p.getLocation();
 		
-		for (Shop shop : ShopUtils.getShops()) {
+		for (Shop shop : ShopUtils.getShops()) {			
 			
-			Location shopLocation = shop.getLocation();
-			
-			if (playerLocation.getWorld().equals(shopLocation.getWorld())) {
+			if (shop.getHologram() != null) {
 				
-				if (playerLocation.distance(shop.getHologram().getLocation()) <= Config.maximal_distance()) {
+				Location shopLocation = shop.getLocation();
+				
+				if (playerLocation.getWorld().equals(shopLocation.getWorld())) {
 					
-					if (!shop.getHologram().isVisible(p)) {
-						shop.getHologram().showPlayer(p);
-					}
-					
-				} else {
-					
-					if (shop.getHologram().isVisible(p)) {
-						shop.getHologram().hidePlayer(p);
+					if (playerLocation.distance(shop.getHologram().getLocation()) <= Config.maximal_distance()) {
+						
+						if (!shop.getHologram().isVisible(p)) {
+							shop.getHologram().showPlayer(p);
+						}
+						
+					} else {
+						
+						if (shop.getHologram().isVisible(p)) {
+							shop.getHologram().hidePlayer(p);
+						}
+						
 					}
 					
 				}
-				
-			}
+			}					
 			
 		}
 		

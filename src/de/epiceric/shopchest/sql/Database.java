@@ -182,7 +182,6 @@ public abstract class Database {
         return null;    
     }
 
-    @SuppressWarnings("deprecation")
 	public OfflinePlayer getVendor(int id) {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -194,7 +193,7 @@ public abstract class Database {
             rs = ps.executeQuery();
             while(rs.next()){
                 if(rs.getInt("id") == id){
-                    return (Utils.isUUID(rs.getString("vendor"))) ? Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor"))) : Bukkit.getOfflinePlayer(rs.getString("vendor"));
+                    return Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
                 }
             }
         } catch (SQLException ex) {

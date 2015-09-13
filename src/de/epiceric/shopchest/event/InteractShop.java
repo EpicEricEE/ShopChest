@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
 import com.griefcraft.model.Protection;
@@ -123,7 +124,7 @@ public class InteractShop implements Listener{
 								
 								Shop shop = ShopUtils.getShop(b.getLocation());
 								
-								if (shop.getVendor().equals(p) || perm.has(p, "shopchest.removeOther")) {
+								if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || perm.has(p, "shopchest.removeOther")) {
 									remove(p, shop);
 								} else {
 									p.sendMessage(Config.noPermission_removeOthers());
@@ -144,7 +145,7 @@ public class InteractShop implements Listener{
 							e.setCancelled(true);
 							Shop shop = ShopUtils.getShop(b.getLocation());
 							
-							if (p.equals(shop.getVendor())) {
+							if (p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
 								e.setCancelled(false);
 								return;
 							} else {
@@ -195,7 +196,7 @@ public class InteractShop implements Listener{
 					if (ShopUtils.isShop(b.getLocation())) {
 						Shop shop = ShopUtils.getShop(b.getLocation());
 						
-						if (!p.equals(shop.getVendor())) {
+						if (!p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
 							if (shop.getSellPrice() > 0) {
 								if (perm.has(p, "shopchest.sell")) {
 									if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
@@ -262,8 +263,15 @@ public class InteractShop implements Listener{
 		String price = Config.shopInfo_price(shop.getBuyPrice(), shop.getSellPrice());
 		String infinite = (shop.isInfinite() ? Config.shopInfo_isInfinite() : Config.shopInfo_isNormal());
 		
+		Map<Enchantment, Integer> enchantmentMap;
 		
-		Map<Enchantment, Integer> enchantmentMap = shop.getProduct().getItemMeta().getEnchants();
+		if (shop.getProduct().getItemMeta() instanceof EnchantmentStorageMeta) {
+			EnchantmentStorageMeta esm = (EnchantmentStorageMeta) shop.getProduct().getItemMeta();
+			enchantmentMap = esm.getStoredEnchants();
+		} else {
+			enchantmentMap = shop.getProduct().getEnchantments();
+		}
+		
 		Enchantment[] enchantments = enchantmentMap.keySet().toArray(new Enchantment[enchantmentMap.size()]);
 		
 		for (int i = 0; i < enchantments.length; i++) {

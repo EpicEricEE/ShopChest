@@ -155,6 +155,9 @@ messages:
   # Set the message when the player doesn't have enough items to sell.
   not-enough-items: "&cNot enough items."
 
+  # Set the message when the vendor doesn't have enough money to buy something from the player
+  vendor-not-enough-money: "&cVendor has not enough money."
+
   # Set the message when the shop is out of stock.
   out-of-stock: "&cShop out of stock."
 
@@ -231,15 +234,19 @@ messages:
   
   hologram:
   
-    # Set the message in the second row of the shops' hologram when the player can buy and sell an item.
+    # Set the text in the first row of the shops' hologram
+    # Usable regex: %ITEMNAME%, %AMOUNT%
+    format: "%AMOUNT% * %ITEMNAME%"
+  
+    # Set the text in the second row of the shops' hologram when the player can buy and sell an item.
     # Usable regex: %BUY-PRICE%, %SELL-PRICE%, %CURRENCY-SYMBOL%
     buy-and-sell: "Buy %BUY-PRICE%%CURRENCY-SYMBOL% | %SELL-PRICE%%CURRENCY-SYMBOL% Sell"
     
-    # Set the message in the second row of the shops' hologram when the player can only buy an item.
+    # Set the text in the second row of the shops' hologram when the player can only buy an item.
     # Usable regex: %BUY-PRICE%, %CURRENCY-SYMBOL%
     only-buy: "Buy %BUY-PRICE%%CURRENCY-SYMBOL%"
     
-    # Set the message in the second row of the shops' hologram when the player can only sell an item.
+    # Set the text in the second row of the shops' hologram when the player can only sell an item.
     # Usable regex: %SELL-PRICE%, %CURRENCY-SYMBOL%
     only-sell: "Sell %SELL-PRICE%%CURRENCY-SYMBOL%"
     
