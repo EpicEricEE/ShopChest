@@ -39,6 +39,8 @@ import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R1;
 import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R2;
 import de.epiceric.shopchest.interfaces.jsonbuilder.JsonBuilder_R3;
 import de.epiceric.shopchest.utils.Metrics;
+import de.epiceric.shopchest.utils.Metrics.Graph;
+import de.epiceric.shopchest.utils.Metrics.Plotter;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import net.milkbowl.vault.economy.Economy;
@@ -104,6 +106,37 @@ public class ShopChest extends JavaPlugin{
 		
 		try {
 	        Metrics metrics = new Metrics(this);
+	        Graph shopType = metrics.createGraph("Shop Type");
+	        
+	        shopType.addPlotter(new Plotter("Infinite") {
+				
+				@Override
+				public int getValue() {					
+					int value = 0;
+					
+					for (Shop shop : ShopUtils.getShops()) {
+						if (shop.isInfinite()) value++;
+					}
+					
+					return value;
+				}
+			});
+	        
+	        shopType.addPlotter(new Plotter("Normal") {
+				
+				@Override
+				public int getValue() {
+					int value = 0;
+					
+					for (Shop shop : ShopUtils.getShops()) {
+						if (!shop.isInfinite()) value++;
+					}
+					
+					return value;
+				}
+				
+			});
+	        
 	        metrics.start();
 	    } catch (IOException e) {
 	        logger.severe("Could not submit stats.");
