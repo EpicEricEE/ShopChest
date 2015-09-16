@@ -16,6 +16,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.yi.acru.bukkit.Lockette.Lockette;
@@ -257,11 +258,16 @@ public class InteractShop implements Listener{
 	
 	private void info(Player executor, Shop shop) {
 				
+		Chest c = (Chest) shop.getLocation().getBlock().getState();
+		
+		int amount = Utils.getAmount(c.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta());
+		
 		String vendor = Config.shopInfo_vendor(shop.getVendor().getName());
 		String product = Config.shopInfo_product(shop.getProduct().getAmount(), ItemNames.lookup(shop.getProduct()));
 		String enchantmentString = "";
 		String price = Config.shopInfo_price(shop.getBuyPrice(), shop.getSellPrice());
 		String infinite = (shop.isInfinite() ? Config.shopInfo_isInfinite() : Config.shopInfo_isNormal());
+		String stock = Config.shopInfo_stock(amount);
 		
 		Map<Enchantment, Integer> enchantmentMap;
 		
@@ -289,6 +295,7 @@ public class InteractShop implements Listener{
 		executor.sendMessage(" ");
 		executor.sendMessage(vendor);
 		executor.sendMessage(product);
+		executor.sendMessage(stock);
 		if (enchantmentString.length() > 0) executor.sendMessage(Config.shopInfo_enchantment(enchantmentString));
 		executor.sendMessage(price);
 		executor.sendMessage(infinite);

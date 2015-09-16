@@ -37,8 +37,7 @@ public class Commands extends BukkitCommand {
 		this.plugin = plugin;
 	}
 	
-	public static void registerCommand(Command command, ShopChest plugin)
-            throws ReflectiveOperationException {
+	public static void registerCommand(Command command, ShopChest plugin) throws ReflectiveOperationException {
             Method commandMap = plugin.getServer().getClass().getMethod("getCommandMap");
             Object cmdmap = commandMap.invoke(plugin.getServer());
             Method register = cmdmap.getClass().getMethod("register", String.class,Command.class);
@@ -238,6 +237,22 @@ public class Commands extends BukkitCommand {
 			return;
 		}
 		
+		for (String item : Config.blacklist()) {
+			
+			ItemStack itemStack;
+			
+			if (item.contains(":")) {
+				itemStack = new ItemStack(Material.getMaterial(item.split(":")[0]), 1, Short.parseShort(item.split(":")[1]));
+			} else {
+				itemStack = new ItemStack(Material.getMaterial(item), 1);
+			}
+			
+			if (itemStack.getType().equals(p.getItemInHand().getType()) && itemStack.getDurability() == p.getItemInHand().getDurability()) {
+				p.sendMessage(Config.cannot_sell_item());
+				return;
+			}
+		}
+		
 		for (String key : Config.minimum_prices()) {
 			
 			ItemStack itemStack;
@@ -249,7 +264,7 @@ public class Commands extends BukkitCommand {
 				itemStack = new ItemStack(Material.getMaterial(key), 1);								
 			}
 			
-			if (itemStack.getType().equals(p.getItemInHand().getType())) {						
+			if (itemStack.getType().equals(p.getItemInHand().getType()) && itemStack.getDurability() == p.getItemInHand().getDurability()) {						
 				if (buyEnabled) {					
 					if ((buyPrice <= amount * price) && (buyPrice > 0)) {						
 						p.sendMessage(Config.buyPrice_too_low(amount * price));

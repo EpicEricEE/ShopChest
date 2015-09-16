@@ -1,6 +1,8 @@
 package de.epiceric.shopchest.config;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import de.epiceric.shopchest.ShopChest;
@@ -12,6 +14,8 @@ public class Config {
 	public static Set<String> minimum_prices() {return (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);}
 	public static Set<String> shopLimits_group() {return (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);}
 	public static Set<String> shopLimits_player() {return (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);}
+	
+	public static List<String> blacklist() {return (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");};
 	
  	public static boolean buy_greater_or_equal_sell() {return plugin.getConfig().getBoolean("buy-greater-or-equal-sell");}
 	public static double maximal_distance() {return plugin.getConfig().getDouble("maximal-distance");}
@@ -61,6 +65,7 @@ public class Config {
  	public static String checking_update() {return plugin.getConfig().getString("messages.update.checking").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String no_new_update() {return plugin.getConfig().getString("messages.update.no-update").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String click_to_download() {return plugin.getConfig().getString("messages.update.click-to-download").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
+ 	public static String cannot_sell_item() {return plugin.getConfig().getString("messages.cannot-sell-item").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	
  	public static String limit_reached(int limit) {
  		return plugin.getConfig().getString("messages.shop-limit-reached").replace(Regex.limit, String.valueOf(limit)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
@@ -148,5 +153,9 @@ public class Config {
 	
 	public static String occupied_shop_slots(int limit, int amount) {
 		return plugin.getConfig().getString("messages.occupied-shop-slots").replace(Regex.limit, String.valueOf(limit)).replace(Regex.amount, String.valueOf(amount)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+	}
+	
+	public static String shopInfo_stock(int amount) {
+		return plugin.getConfig().getString("messages.shop-info.stock").replace(Regex.amount, String.valueOf(amount)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
 	}
 }

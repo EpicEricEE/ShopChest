@@ -55,6 +55,13 @@ minimum-prices: []
 #  "STONE:1": 0.5
 #  "DIAMOND_SWORD": 100
 
+# Set the items of which a player can't create a shop.
+# To add an item DELETE THE '[]' after 'blacklist:' and follow format below.
+# Important: You must have exactly 2 spaces between the text and edge.
+# You can find the item names in the 'item_names.txt' file. 
+blacklist: []
+#  - "STONE:1"
+#  - "DIAMOND_BLOCK"
 
 # Priority: default < group < player
 shop-limits:
@@ -95,30 +102,34 @@ messages:
 
   shop-info:
 
-    # Set the message the player gets in the first row after entering '/shop info'.
+    # Set the vendor message the player gets after entering '/shop info'.
     # Usable regex: %VENDOR%
     vendor: "&6Vendor: %VENDOR%"
 
-    # Set the message the player gets in the second row after entering '/shop info'.
+    # Set the product message the player gets after entering '/shop info'.
     # Usable regex: %AMOUNT%, %ITEMNAME%
     product: "&6Product: %AMOUNT% x %ITEMNAME%"
 
-    # Set the message the player gets in the third row after entering '/shop info' if the item is enchanted
+    # Set the in-stock message the player after entering '/shop info'.
+    # Usable regex: %AMOUNT%
+    stock: "&6In Stock: %AMOUNT%"
+
+    # Set the enchantments message the player gets after entering '/shop info' if the item is enchanted
     # Usable regex: %ENCHANTMENT%
     enchantments: "&6Enchantments: %ENCHANTMENT%"
 
-    # Set the message the player gets in the third/fourth row after entering '/shop info'.
+    # Set the price message the player gets after entering '/shop info'.
     # Usable regex: %BUY-PRICE%, %SELL-PRICE%, %CURRENCY-SYMBOL%
     price: "&6Price: Buy: %BUY-PRICE%%CURRENCY-SYMBOL%, Sell: %SELL-PRICE%%CURRENCY-SYMBOL%"
 
     # If the sell price or buy price is disabled, this message will be displayed instead of the price and the currency symbol in the message above.
     disabled: "&7Disabled&6"
     
-    # Set the message the player gets in the fourth/fifth row after entering '/shop info'...
-    # ...when the shop is infinite.
+    # Set the infinite message the player gets after entering '/shop info' ...
+    # ... when the shop is infinite.
     is-infinite: "&6Type: Infinite"
     
-    # ...when the shop is not infinite.
+    # ... when the shop is not infinite.
     is-not-infinite: "&6Type: Normal"
 
   # Set the message when the clicked block is not a chest.
@@ -215,6 +226,9 @@ messages:
   # Set the message that shows the player how many shop slots of his shop limit he has occupied.
   # Usable regex: %LIMIT%, %AMOUNT% (Amount of shops)
   occupied-shop-slots: "&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied."
+
+  # Set the message when the player tries to create a shop with an item which is listed in the blacklist.
+  cannot-sell-item: "&cYou cannot create a shop with this item."
 
   update:
 
