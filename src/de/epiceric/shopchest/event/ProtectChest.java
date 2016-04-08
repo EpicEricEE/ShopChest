@@ -31,7 +31,7 @@ public class ProtectChest implements Listener {
 	public void onBlockPlace(BlockPlaceEvent e) {
 		Block b = e.getBlockPlaced();
 		if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-			
+						
 			Chest c = (Chest) b.getState();
 			InventoryHolder ih = c.getInventory().getHolder();
 			
@@ -40,23 +40,28 @@ public class ProtectChest implements Listener {
 				Chest r = (Chest) dc.getRightSide();
 				Chest l = (Chest) dc.getLeftSide();
 				
-				if (ShopUtils.isShop(r.getLocation()) || ShopUtils.isShop(l.getLocation())) {
+				if (ShopUtils.isShop(r.getLocation()) || ShopUtils.isShop(l.getLocation())) {					
 					Shop shop;
 					
 					if (b.getLocation().equals(r.getLocation())) {
 						shop = ShopUtils.getShop(l.getLocation());
 						ShopUtils.removeShop(shop);
+						ShopChest.sqlite.removeShop(shop);
 					} else if (b.getLocation().equals(l.getLocation())) {
 						shop = ShopUtils.getShop(r.getLocation());
 						ShopUtils.removeShop(shop);
+						ShopChest.sqlite.removeShop(shop);
 					} else {
 						return;
 					}
 					
-					shop.getItem().remove();
+					if (shop.hasItem()) shop.getItem().remove();
 					
 					Shop newShop = new Shop(ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.isInfinite());
+					newShop.createHologram();
+					newShop.createItem();
 					ShopUtils.addShop(newShop);
+					ShopChest.sqlite.addShop(newShop);
 					
 				}		
 				

@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,9 +21,7 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Hologram;
 import de.epiceric.shopchest.interfaces.Utils;
-import de.epiceric.shopchest.interfaces.hologram.Hologram_R1;
-import de.epiceric.shopchest.interfaces.hologram.Hologram_R2;
-import de.epiceric.shopchest.interfaces.hologram.Hologram_R3;
+import de.epiceric.shopchest.interfaces.hologram.*;
 import de.epiceric.shopchest.utils.ItemNames;
 
 public class Shop {
@@ -45,6 +44,12 @@ public class Shop {
 		this.buyPrice = buyPrice;
 		this.sellPrice = sellPrice;
 		this.infinite = infinite;				
+	}
+	
+	public void removeHologram() {
+		for (Player player : plugin.getServer().getOnlinePlayers()) {
+			getHologram().hidePlayer(player);
+		}
 	}
 	
 	public void createItem() {
@@ -141,9 +146,10 @@ public class Shop {
 		else holoText[1] = Config.hologram_buy_sell(buyPrice, sellPrice);
 		
 		switch (Utils.getVersion(plugin.getServer())) {
-			case "v1_8_R1": hologram = new Hologram_R1(holoText, holoLocation); break;
-			case "v1_8_R2": hologram = new Hologram_R2(holoText, holoLocation); break;
-			case "v1_8_R3": hologram = new Hologram_R3(holoText, holoLocation); break;
+			case "v1_8_R1": hologram = new Hologram_1_8_R1(holoText, holoLocation); break;
+			case "v1_8_R2": hologram = new Hologram_1_8_R2(holoText, holoLocation); break;
+			case "v1_8_R3": hologram = new Hologram_1_8_R3(holoText, holoLocation); break;
+			case "v1_9_R1": hologram = new Hologram_1_9_R1(holoText, holoLocation); break;
 			default: return;
 		}
 							
@@ -179,6 +185,10 @@ public class Shop {
 	
 	public Item getItem() {
 		return item;
+	}
+	
+	public boolean hasItem() {
+		return item != null;
 	}
 	
 }

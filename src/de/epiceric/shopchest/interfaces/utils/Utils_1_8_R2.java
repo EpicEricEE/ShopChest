@@ -3,15 +3,16 @@ package de.epiceric.shopchest.interfaces.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.Hologram;
+import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
+import net.minecraft.server.v1_8_R2.EntityArmorStand;
 
-public class Utils_R3 extends Utils {
+public class Utils_1_8_R2 extends Utils {
 
 	@Override
 	public void reload(Player player) {
@@ -19,7 +20,7 @@ public class Utils_R3 extends Utils {
 		for (Shop shop : ShopUtils.getShops()) {
 			Hologram hologram = shop.getHologram();
 			
-			shop.getItem().remove();
+			if (shop.hasItem()) shop.getItem().remove();
 			ShopUtils.removeShop(shop);
 			
 			for (Player p : ShopChest.getInstance().getServer().getOnlinePlayers()) {
@@ -63,6 +64,7 @@ public class Utils_R3 extends Utils {
 	
 	@Override
 	public void removeShops() {
+		
 		for (Shop shop : ShopUtils.getShops()) {
 			Hologram hologram = shop.getHologram();
 			
@@ -76,9 +78,9 @@ public class Utils_R3 extends Utils {
 			}
 
 			
-			shop.getItem().remove();
+			if (shop.hasItem()) shop.getItem().remove();
 			
-		}	
+		}		
 	}
 
 

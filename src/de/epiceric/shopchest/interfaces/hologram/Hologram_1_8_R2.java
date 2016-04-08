@@ -6,15 +6,15 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 
 import de.epiceric.shopchest.interfaces.Hologram;
-import net.minecraft.server.v1_8_R3.EntityArmorStand;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_8_R2.EntityArmorStand;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R2.PacketPlayOutSpawnEntityLiving;
 
-public class Hologram_R3 implements Hologram {
+public class Hologram_1_8_R2 implements Hologram {
 	 
     private List<EntityArmorStand> entitylist = new ArrayList<EntityArmorStand>();
     private String[] text;
@@ -24,13 +24,13 @@ public class Hologram_R3 implements Hologram {
         
     private HashMap<OfflinePlayer, Boolean> visible = new HashMap<OfflinePlayer, Boolean>();
 
-    public Hologram_R3(String[] text, Location location) {
+    public Hologram_1_8_R2(String[] text, Location location) {
             this.text = text;
             this.location = location;
             create();
     }
     
-    public Hologram_R3(String text, Location location) {
+    public Hologram_1_8_R2(String text, Location location) {
         this.text = new String[] {text};
         this.location = location;
         create();

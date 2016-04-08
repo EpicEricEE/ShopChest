@@ -5,28 +5,28 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import net.minecraft.server.v1_8_R1.ChatSerializer;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 
 
-public class JsonBuilder_R1 implements JsonBuilder {
+public class JsonBuilder_1_8_R3 implements JsonBuilder {
      
         /* JsonBuilder by FisheyLP */
            
         private List<String> extras = new ArrayList<String>();
      
         
-        public JsonBuilder_R1(String... text) {
+        public JsonBuilder_1_8_R3(String... text) {
             for(String extra : text)
                 parse(extra);
         }
      
         @Override
-        public JsonBuilder_R1 parse(String text) {
+        public JsonBuilder_1_8_R3 parse(String text) {
                String regex = "[&§]{1}([a-fA-Fl-oL-O0-9]){1}";
                text = text.replaceAll(regex, "§$1");
                if(!Pattern.compile(regex).matcher(text).find()) {
@@ -47,34 +47,34 @@ public class JsonBuilder_R1 implements JsonBuilder {
            }
         
         @Override
-        public JsonBuilder_R1 withText(String text) {
+        public JsonBuilder_1_8_R3 withText(String text) {
             extras.add("{text:\"" + text + "\"}");
             return this;
         }
      
         @Override
-        public JsonBuilder_R1 withColor(ChatColor color) {
+        public JsonBuilder_1_8_R3 withColor(ChatColor color) {
             String c = color.name().toLowerCase();
             addSegment(color.isColor() ? "color:" + c : c + ":true");
             return this;
         }
      
         @Override
-        public JsonBuilder_R1 withColor(String color) {
+        public JsonBuilder_1_8_R3 withColor(String color) {
             while(color.length() != 1) color = color.substring(1).trim();
             withColor(ChatColor.getByChar(color));
             return this;
         }
      
         @Override
-        public JsonBuilder_R1 withClickEvent(ClickAction action, String value) {
+        public JsonBuilder_1_8_R3 withClickEvent(ClickAction action, String value) {
             addSegment("clickEvent:{action:" + action.toString().toLowerCase()
                     + ",value:\"" + value + "\"}");
             return this;
         }
      
         @Override
-        public JsonBuilder_R1 withHoverEvent(HoverAction action, String value) {
+        public JsonBuilder_1_8_R3 withHoverEvent(HoverAction action, String value) {
             addSegment("hoverEvent:{action:" + action.toString().toLowerCase()
                     + ",value:\"" + value + "\"}");
             return this;

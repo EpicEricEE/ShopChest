@@ -14,7 +14,7 @@ import net.minecraft.server.v1_8_R1.EntityArmorStand;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_8_R1.PacketPlayOutSpawnEntityLiving;
 
-public class Hologram_R1 implements Hologram {
+public class Hologram_1_8_R1 implements Hologram {
 	 
     private List<EntityArmorStand> entitylist = new ArrayList<EntityArmorStand>();
     private String[] text;
@@ -24,13 +24,13 @@ public class Hologram_R1 implements Hologram {
         
     private HashMap<OfflinePlayer, Boolean> visible = new HashMap<OfflinePlayer, Boolean>();
 
-    public Hologram_R1(String[] text, Location location) {
+    public Hologram_1_8_R1(String[] text, Location location) {
             this.text = text;
             this.location = location;
             create();
     }
     
-    public Hologram_R1(String text, Location location) {
+    public Hologram_1_8_R1(String text, Location location) {
         this.text = new String[] {text};
         this.location = location;
         create();

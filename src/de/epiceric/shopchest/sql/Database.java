@@ -123,7 +123,7 @@ public abstract class Database {
     	int id = getShopID(shop);
     	if (id == 0) return;
     	
-    	shop.getItem().remove();
+    	if (shop.hasItem()) shop.getItem().remove();
     	    	
     	Connection conn = null;
         PreparedStatement ps = null;
