@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
@@ -103,16 +102,6 @@ public class ShopUtils {
 		shopLocation.remove(shop.getLocation());
 		
 	}
-	
-	public static String getConfigTitle(Location location) {
-		World w = location.getWorld();
-		int x = location.getBlockX();
-		int y = location.getBlockY();
-		int z = location.getBlockZ();
-		
-		return w.getName() + "_" + String.valueOf(x) + "_" + String.valueOf(y) +  "_" + String.valueOf(z);
-	}
-	
 
 	public static int getShopLimit(Player p) {
 		int limit = Config.default_limit();

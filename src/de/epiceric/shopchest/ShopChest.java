@@ -31,8 +31,6 @@ import de.epiceric.shopchest.interfaces.utils.*;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import de.epiceric.shopchest.interfaces.JsonBuilder.ClickAction;
-import de.epiceric.shopchest.interfaces.JsonBuilder.HoverAction;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import de.epiceric.shopchest.utils.Metrics;
 import de.epiceric.shopchest.utils.Metrics.Graph;
@@ -45,6 +43,7 @@ import net.milkbowl.vault.permission.Permission;
 public class ShopChest extends JavaPlugin{
 
 	private static ShopChest instance;
+	private static UpdateChecker uc;
 	
 	public static Statement statement;
 	public static Logger logger;
@@ -84,7 +83,7 @@ public class ShopChest extends JavaPlugin{
 	
 	
 	@Override
-	public void onEnable() {
+	public void onEnable() {	
 		
 		logger = getLogger();
 		
@@ -174,7 +173,7 @@ public class ShopChest extends JavaPlugin{
 		instance = this;
 
 		
-		UpdateChecker uc = new UpdateChecker(this, getDescription().getWebsite());
+		if (uc == null) uc = new UpdateChecker(this, getDescription().getWebsite());
 		logger.info("Checking for Updates");
 		if(uc.updateNeeded()) {
 			latestVersion = uc.getVersion();
@@ -191,10 +190,10 @@ public class ShopChest extends JavaPlugin{
 				if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
 					JsonBuilder jb;
 					switch (Utils.getVersion(getServer())) {
-						case "v1_8_R1": jb = new JsonBuilder_1_8_R1(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
-						case "v1_8_R2": jb = new JsonBuilder_1_8_R2(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
-						case "v1_8_R3": jb = new JsonBuilder_1_8_R3(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
-						case "v1_9_R1": jb = new JsonBuilder_1_9_R1(Config.update_available(latestVersion)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, downloadLink); break;
+						case "v1_8_R1": jb = new JsonBuilder_1_8_R1(Config.update_available(latestVersion)); break;
+						case "v1_8_R2": jb = new JsonBuilder_1_8_R2(Config.update_available(latestVersion)); break;
+						case "v1_8_R3": jb = new JsonBuilder_1_8_R3(Config.update_available(latestVersion)); break;
+						case "v1_9_R1": jb = new JsonBuilder_1_9_R1(Config.update_available(latestVersion)); break;
 						default: return;
 					}		
 					jb.sendJson(p);

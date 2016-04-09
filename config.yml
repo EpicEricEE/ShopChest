@@ -41,6 +41,12 @@ main-command-name: "shop"
 # Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
 maximal-distance: 1.75
 
+# Set whether the shops' chest should be protected by hoppers
+hopper-protection: true
+
+# Set whether the shops' chest should be protected by explosions
+explosion-protection: true
+
 # Set the currency symbol after price values
 currency-symbol: $
 
@@ -233,7 +239,6 @@ messages:
   update:
 
     # Set the message when an update is available.
-    # Unfortunately only the last colored part of the text (if you have multiple colors) becomes clickable (default: only '&chere' is clickable).
     # Usable regex: %VERSION%
     update-available: "&l&6Version &c%VERSION% &6of &cShopChest &6is available &chere."
     

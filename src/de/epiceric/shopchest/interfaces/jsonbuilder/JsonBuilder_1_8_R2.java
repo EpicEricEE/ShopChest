@@ -8,6 +8,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
 import net.minecraft.server.v1_8_R2.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_8_R2.PacketPlayOutChat;
@@ -30,7 +32,7 @@ public class JsonBuilder_1_8_R2 implements JsonBuilder {
                String regex = "[&§]{1}([a-fA-Fl-oL-O0-9]){1}";
                text = text.replaceAll(regex, "§$1");
                if(!Pattern.compile(regex).matcher(text).find()) {
-                  withText(text);
+                  withText(text).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink); 
                   return this;
                }
                String[] words = text.split(regex);
@@ -39,7 +41,7 @@ public class JsonBuilder_1_8_R2 implements JsonBuilder {
                for(String word : words) {
                    try {
                        if(index != words[0].length())
-                   withText(word).withColor("§"+text.charAt(index - 1));
+                   withText(word).withColor("§"+text.charAt(index - 1)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink);
                    } catch(Exception e){}
                    index += word.length() + 2;
                }
@@ -48,14 +50,14 @@ public class JsonBuilder_1_8_R2 implements JsonBuilder {
         
         @Override
         public JsonBuilder_1_8_R2 withText(String text) {
-            extras.add("{text:\"" + text + "\"}");
+            extras.add("{\"text\":\"" + text + "\"}");
             return this;
         }
      
         @Override
         public JsonBuilder_1_8_R2 withColor(ChatColor color) {
             String c = color.name().toLowerCase();
-            addSegment(color.isColor() ? "color:" + c : c + ":true");
+            addSegment(color.isColor() ? "\"color\":\"" + c + "\"" : "\"" + c + "\"" + ":true");
             return this;
         }
      
@@ -68,15 +70,15 @@ public class JsonBuilder_1_8_R2 implements JsonBuilder {
      
         @Override
         public JsonBuilder_1_8_R2 withClickEvent(ClickAction action, String value) {
-            addSegment("clickEvent:{action:" + action.toString().toLowerCase()
-                    + ",value:\"" + value + "\"}");
+            addSegment("\"clickEvent\":{\"action\":\"" + action.toString().toLowerCase()
+                    + "\",\"value\":\"" + value + "\"}");
             return this;
         }
      
         @Override
         public JsonBuilder_1_8_R2 withHoverEvent(HoverAction action, String value) {
-            addSegment("hoverEvent:{action:" + action.toString().toLowerCase()
-                    + ",value:\"" + value + "\"}");
+            addSegment("\"hoverEvent\":{\"action\":\"" + action.toString().toLowerCase()
+                    + "\",\"value\":\"" + value + "\"}");
             return this;
         }
      
@@ -90,8 +92,8 @@ public class JsonBuilder_1_8_R2 implements JsonBuilder {
      
         @Override
         public String toString() {
-            if(extras.size() <= 1) return extras.size() == 0 ? "{text:\"\"}" : extras.get(0);
-            String text = extras.get(0).substring(0, extras.get(0).length() - 1) + ",extra:[";
+            if(extras.size() <= 1) return extras.size() == 0 ? "{\"text\":\"\"}" : extras.get(0);
+            String text = extras.get(0).substring(0, extras.get(0).length() - 1) + ",\"extra\":[";
             extras.remove(0);;
             for (String extra : extras)
                 text = text + extra + ",";
@@ -100,7 +102,7 @@ public class JsonBuilder_1_8_R2 implements JsonBuilder {
         }
      
         @Override
-        public void sendJson(Player p) {
+        public void sendJson(Player p) {    	
         		((CraftPlayer) p).getHandle().playerConnection.sendPacket(
             			new PacketPlayOutChat(ChatSerializer.a(toString())));
         	
