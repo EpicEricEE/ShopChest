@@ -19,21 +19,6 @@ public class SQLite extends Database {
         dbname = "shops";
     }
 
-    public String SQLiteCreateTokensTable = "CREATE TABLE IF NOT EXISTS shop_list (" +
-    		"`id` int(11) NOT NULL," +
-            "`vendor` varchar(32) NOT NULL," +
-            "`product` varchar(32) NOT NULL," +
-            "`world` varchar(32) NOT NULL," +
-            "`x` int(11) NOT NULL," +
-            "`y` int(11) NOT NULL," +
-            "`z` int(11) NOT NULL," +
-            "`buyprice` float(32) NOT NULL," +
-            "`sellprice` float(32) NOT NULL," +
-            "`infinite` boolean NOT NULL," +
-            "PRIMARY KEY (`id`)" +
-            ");";
-
- 
     // SQL creation stuff, You can leave the below stuff untouched.
     public Connection getSQLConnection() {
         File dataFolder = new File(plugin.getDataFolder(), dbname+".db");

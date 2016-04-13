@@ -29,6 +29,7 @@ import de.epiceric.shopchest.event.UpdateHolograms;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.utils.*;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
@@ -110,7 +111,7 @@ public class ShopChest extends JavaPlugin{
 					int value = 0;
 					
 					for (Shop shop : ShopUtils.getShops()) {
-						if (shop.isInfinite()) value++;
+						if (shop.getShopType() == ShopType.INFINITE) value++;
 					}
 					
 					return value;
@@ -124,13 +125,29 @@ public class ShopChest extends JavaPlugin{
 					int value = 0;
 					
 					for (Shop shop : ShopUtils.getShops()) {
-						if (!shop.isInfinite()) value++;
+						if (shop.getShopType() == ShopType.NORMAL) value++;
 					}
 					
 					return value;
 				}
 				
 			});
+	        
+	        shopType.addPlotter(new Plotter("Admin") {
+
+				@Override
+				public int getValue() {
+					int value = 0;
+					
+					for (Shop shop : ShopUtils.getShops()) {
+						if (shop.getShopType() == ShopType.ADMIN) value++;
+					}
+					
+					return value;
+					
+				}        	
+	        	
+	        });
 	        
 	        metrics.start();
 	    } catch (IOException e) {

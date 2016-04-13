@@ -16,6 +16,7 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
@@ -61,7 +62,7 @@ public class Commands extends BukkitCommand {
 						
 						if (args.length == 4) {
 														
-							create(args, false, p);
+							create(args, ShopType.NORMAL, p);
 							return true;
 							
 							
@@ -71,7 +72,7 @@ public class Commands extends BukkitCommand {
 								
 								if (perm.has(p, "shopchest.create.infinite")) {
 									
-									create(args, true, p);
+									create(args, ShopType.INFINITE, p);
 									return true;
 									
 								} else {
@@ -83,8 +84,14 @@ public class Commands extends BukkitCommand {
 								
 							} else if (args[4].equalsIgnoreCase("normal")){
 								
-								create(args, false, p);
+								create(args, ShopType.NORMAL, p);
 								return true;
+								
+							} else if (args[4].equalsIgnoreCase("admin")) {
+								
+								create(args, ShopType.ADMIN, p);
+								return true;
+								
 								
 							} else {
 								
@@ -200,7 +207,7 @@ public class Commands extends BukkitCommand {
 		
 	}
 	
-	private void create(String[] args, boolean infinite, Player p) {
+	private void create(String[] args, ShopType shopType, Player p) {
 		int amount;
 		double buyPrice, sellPrice;
 		
@@ -298,7 +305,7 @@ public class Commands extends BukkitCommand {
 			}			
 		}
 		
-		ClickType.addPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, infinite));	
+		ClickType.addPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));	
 		p.sendMessage(Config.click_chest_to_create());
 		
 	}
@@ -315,7 +322,7 @@ public class Commands extends BukkitCommand {
 	
 	private void sendBasicHelpMessage(Player player) {
 		
-		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " create <amount> <buy-price> <sell-price> [infinite|normal]- " + Config.cmdDesc_create());
+		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " create <amount> <buy-price> <sell-price> [infinite|normal|admin] - " + Config.cmdDesc_create());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " remove - " + Config.cmdDesc_remove());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " info - " + Config.cmdDesc_info());		
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " reload - " + Config.cmdDesc_reload());	

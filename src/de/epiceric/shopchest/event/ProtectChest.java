@@ -88,7 +88,7 @@ public class ProtectChest implements Listener {
 					
 					if (shop.hasItem()) shop.getItem().remove();
 					
-					Shop newShop = new Shop(ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.isInfinite());
+					Shop newShop = new Shop(ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
 					newShop.createHologram();
 					newShop.createItem();
 					ShopUtils.addShop(newShop);

@@ -26,6 +26,12 @@ import de.epiceric.shopchest.utils.ItemNames;
 
 public class Shop {
 
+	public enum ShopType {
+		NORMAL,
+		INFINITE,
+		ADMIN;
+	}
+	
 	private ShopChest plugin;
 	private OfflinePlayer vendor;
 	private ItemStack product;
@@ -34,16 +40,16 @@ public class Shop {
 	private Item item;
 	private double buyPrice;
 	private double sellPrice;
-	private boolean infinite;
+	private ShopType shopType;
 	
-	public Shop(ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, boolean infinite) {
+	public Shop(ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
 		this.plugin = plugin;
 		this.vendor = vendor;
 		this.product = product;
 		this.location = location;
 		this.buyPrice = buyPrice;
 		this.sellPrice = sellPrice;
-		this.infinite = infinite;				
+		this.shopType = shopType;				
 	}
 	
 	public void removeHologram() {
@@ -175,8 +181,8 @@ public class Shop {
 		return sellPrice;
 	}
 	
-	public boolean isInfinite() {
-		return infinite;
+	public ShopType getShopType() {
+		return shopType;
 	}
 	
 	public Hologram getHologram() {

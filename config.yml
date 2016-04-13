@@ -135,8 +135,11 @@ messages:
     # ... when the shop is infinite.
     is-infinite: "&6Type: Infinite"
     
-    # ... when the shop is not infinite.
-    is-not-infinite: "&6Type: Normal"
+    # ... when the shop is normal.
+    is-normal: "&6Type: Normal"
+    
+    # ... when the shop is an admin shop.
+    is-admin: "&6Type: Admin"
 
   # Set the message when the clicked block is not a chest.
   block-no-chest: "&cBlock is not a chest"
@@ -148,9 +151,17 @@ messages:
   # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%, %VENDOR%
   buy-success: "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a from &6%VENDOR%&a."
   
+  # Set the message when the player successfully bought something from an admin shop.
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%
+  buy-success-admin: "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a."
+  
   # Set the message when the player successfully sold something.
   # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%, %VENDOR%
   sell-success: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a to &6%VENDOR%&a."
+  
+  # Set the message when the player successfully sold something to an admin shop.
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%
+  sell-success-admin: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a."
 
   # Set the message when a player bought something from the players' shop.
   # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%, %PLAYER%

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -16,9 +17,25 @@ import org.bukkit.inventory.ItemStack;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.ShopUtils;
 
 public abstract class Database {
+	
+	public String SQLiteCreateTokensTable = "CREATE TABLE IF NOT EXISTS shop_list (" +
+    		"`id` int(11) NOT NULL," +
+            "`vendor` varchar(32) NOT NULL," +
+            "`product` varchar(32) NOT NULL," +
+            "`world` varchar(32) NOT NULL," +
+            "`x` int(11) NOT NULL," +
+            "`y` int(11) NOT NULL," +
+            "`z` int(11) NOT NULL," +
+            "`buyprice` float(32) NOT NULL," +
+            "`sellprice` float(32) NOT NULL," +
+            "`shoptype` varchar(32) NOT NULL," +
+            "PRIMARY KEY (`id`)" +
+            ");";
+	
     ShopChest plugin;
     Connection connection;
     // The name of the table we created back in SQLite class.
@@ -30,7 +47,7 @@ public abstract class Database {
     public Location location = null;
     public double buyPrice = 0;
     public double sellPrice = 0;
-    public boolean infinite = false;
+    public ShopType shopType = ShopType.NORMAL;
     
     public Database(ShopChest instance){
         plugin = instance;
@@ -49,6 +66,38 @@ public abstract class Database {
          
         } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+        }
+    }
+    
+    public void renameColumnInfiniteToShopType() {
+    	Connection conn = null;
+    	Statement s = null;
+    	try {
+    		conn = getSQLConnection();
+    		s = conn.createStatement();
+    		s.execute("ALTER TABLE " + table + " RENAME TO " + table + "_old");
+    		s.close();
+    		s.execute(SQLiteCreateTokensTable);
+    		s.close();
+    		s.execute("INSERT INTO " + table + "(id, vendor, product, world, x, y, z, buyprice, sellprice, shoptype) SELECT id, vendor, product, world, x, y, z, buyprice, sellprice, infinite FROM " + table + "_old");
+    		s.close();
+    		conn.close();
+    		
+    		conn = getSQLConnection();
+    		s = conn.createStatement();
+    		s.execute("DROP TABLE " + table + "_old");
+    		s.close();
+    	} catch (SQLException ex) {
+    		 plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+    	} finally {
+            try {
+                if (s != null)
+                    s.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException ex) {
+                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+            }
         }
     }
     
@@ -389,7 +438,7 @@ public abstract class Database {
         return 0;    
     }
     
-    public boolean isInfinite(int id) {
+    public ShopType getShopType(int id) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -400,10 +449,22 @@ public abstract class Database {
             rs = ps.executeQuery();
             while(rs.next()){
                 if(rs.getInt("id") == id){
-                    return rs.getBoolean("infinite");
+                	if (rs.getString("shoptype").equals("0") || rs.getString("shoptype").equals("1")) {
+                		ps = conn.prepareStatement("UPDATE " + table + " SET shoptype = REPLACE(shoptype, '0', 'NORMAL')");
+                		ps.executeUpdate();
+                		ps.close();
+                		ps = conn.prepareStatement("UPDATE " + table + " SET shoptype = REPLACE(shoptype, '1', 'INFINITE')");
+                		ps.executeUpdate();
+                		return getShopType(id);
+                	}
+                    return ShopType.valueOf(rs.getString("shoptype"));
                 }
             }
         } catch (SQLException ex) {
+        	if (ex.getMessage().equals("no such column: 'shoptype'")){
+        		renameColumnInfiniteToShopType();
+        		return getShopType(id);
+        	}
             plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
         } finally {
             try {
@@ -416,7 +477,7 @@ public abstract class Database {
             }
         }
         
-        return false;    
+        return ShopType.NORMAL;    
     }
     
     public Shop getShop(int id) {
@@ -425,10 +486,10 @@ public abstract class Database {
     	ItemStack product = getProduct(id);
     	double buyPrice = getBuyPrice(id);
     	double sellPrice = getSellPrice(id);
-    	boolean infinite = isInfinite(id);
+    	ShopType shopType = getShopType(id);
     	
     	if (ShopUtils.isShop(location)) return ShopUtils.getShop(location);
-    	else return new Shop(plugin, vendor, product, location, buyPrice, sellPrice, infinite);
+    	else return new Shop(plugin, vendor, product, location, buyPrice, sellPrice, shopType);
     }
 
 
@@ -437,7 +498,7 @@ public abstract class Database {
         PreparedStatement ps = null;
         try {
             conn = getSQLConnection();
-            ps = conn.prepareStatement("REPLACE INTO " + table + " (id,vendor,product,world,x,y,z,buyprice,sellprice,infinite) VALUES(?,?,?,?,?,?,?,?,?,?)");
+            ps = conn.prepareStatement("REPLACE INTO " + table + " (id,vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?)");
             
             ps.setInt(1, id);                             
             ps.setString(2, shop.getVendor().getUniqueId().toString());
@@ -448,7 +509,7 @@ public abstract class Database {
             ps.setInt(7, shop.getLocation().getBlockZ());
             ps.setDouble(8, shop.getBuyPrice());
             ps.setDouble(9, shop.getSellPrice());
-            ps.setBoolean(10, shop.isInfinite());
+            ps.setString(10, shop.getShopType().toString());
             
             ps.executeUpdate();
             return;

@@ -25,6 +25,7 @@ import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.EnchantmentNames;
@@ -92,9 +93,9 @@ public class InteractShop implements Listener{
 								ItemStack product = clickType.getProduct();
 								double buyPrice = clickType.getBuyPrice();
 								double sellPrice = clickType.getSellPrice();
-								boolean infinite = clickType.isInfinite();
+								ShopType shopType = clickType.getShopType();
 								
-								create(p, b.getLocation(), product, buyPrice, sellPrice, infinite);
+								create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
 							} else {
 								p.sendMessage(Config.chest_already_shop());
 							}
@@ -165,7 +166,7 @@ public class InteractShop implements Listener{
 										e.setCancelled(true);
 
 										if (perm.has(p, "shopchest.buy")) {
-											if (shop.isInfinite()) {
+											if (shop.getShopType() == ShopType.INFINITE || shop.getShopType() == ShopType.ADMIN) {
 												buy(p, shop);
 											} else {
 												Chest c = (Chest) b.getState();
@@ -224,9 +225,9 @@ public class InteractShop implements Listener{
 		
 	}
 	
-	private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, boolean infinite) {
+	private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
 		
-		Shop shop = new Shop(plugin, executor, product, location, buyPrice, sellPrice, infinite);
+		Shop shop = new Shop(plugin, executor, product, location, buyPrice, sellPrice, shopType);
 		shop.createHologram();
 		shop.createItem();
 		
@@ -263,8 +264,12 @@ public class InteractShop implements Listener{
 		String product = Config.shopInfo_product(shop.getProduct().getAmount(), ItemNames.lookup(shop.getProduct()));
 		String enchantmentString = "";
 		String price = Config.shopInfo_price(shop.getBuyPrice(), shop.getSellPrice());
-		String infinite = (shop.isInfinite() ? Config.shopInfo_isInfinite() : Config.shopInfo_isNormal());
+		String shopType;
 		String stock = Config.shopInfo_stock(amount);
+		
+		if (shop.getShopType() == ShopType.NORMAL) shopType = Config.shopInfo_isNormal();
+		else if (shop.getShopType() == ShopType.INFINITE) shopType = Config.shopInfo_isInfinite();
+		else shopType = Config.shopInfo_isAdmin();
 		
 		Map<Enchantment, Integer> enchantmentMap;
 		
@@ -295,7 +300,7 @@ public class InteractShop implements Listener{
 		executor.sendMessage(stock);
 		if (enchantmentString.length() > 0) executor.sendMessage(Config.shopInfo_enchantment(enchantmentString));
 		executor.sendMessage(price);
-		executor.sendMessage(infinite);
+		executor.sendMessage(shopType);
 		executor.sendMessage(" ");
 		
 		
@@ -333,22 +338,24 @@ public class InteractShop implements Listener{
 				for (int value : slotFree.values()) {
 					freeAmount += value;
 				}
-				
-				EconomyResponse r = econ.withdrawPlayer(executor, shop.getBuyPrice());
-				EconomyResponse r2 = econ.depositPlayer(shop.getVendor(), shop.getBuyPrice());
-				
-				if (r.transactionSuccess()) {				
-					if (r2.transactionSuccess()) {					
-						if (freeAmount >= leftAmount) {						
-							for (int slot : slotFree.keySet()) {
-								if (leftAmount >= 0) {
-									int amountInSlot = -(slotFree.get(slot) - product.getMaxStackSize());
-									if (amountInSlot == -0) amountInSlot = 0;
-									for (int i = amountInSlot; i < product.getMaxStackSize() + 1; i++) {
+								
+				if (freeAmount >= leftAmount) {
+					
+					EconomyResponse r = econ.withdrawPlayer(executor, shop.getBuyPrice());
+					EconomyResponse r2 = null;
+					if (shop.getShopType() != ShopType.ADMIN) r2 = econ.depositPlayer(shop.getVendor(), shop.getBuyPrice());
+					
+					if (r.transactionSuccess()) {
+						if (r2 != null) {
+							if (r2.transactionSuccess()) {
+								for (int slot : slotFree.keySet()) {
+									int amountInSlot = product.getMaxStackSize() - slotFree.get(slot);
+									
+									for (int i = amountInSlot; i < product.getMaxStackSize(); i++) {
 										if (leftAmount > 0) {
 											ItemStack boughtProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
 											boughtProduct.setItemMeta(product.clone().getItemMeta());
-											if (!shop.isInfinite()) c.getInventory().removeItem(boughtProduct);
+											if (shop.getShopType() == ShopType.NORMAL) c.getInventory().removeItem(boughtProduct);
 											inventory.addItem(boughtProduct);
 											executor.updateInventory();
 											leftAmount--;
@@ -357,19 +364,35 @@ public class InteractShop implements Listener{
 											if (shop.getVendor().isOnline()) shop.getVendor().getPlayer().sendMessage(Config.someone_bought(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
 											return;
 										}
-									}
+									}									
 								}
-							}							
+							} else {
+								executor.sendMessage(Config.error_occurred(r2.errorMessage));
+							}
 						} else {
-							executor.sendMessage(Config.not_enough_inventory_space());
+							for (int slot : slotFree.keySet()) {
+								int amountInSlot = product.getMaxStackSize() - slotFree.get(slot);
+								
+								for (int i = amountInSlot; i < product.getMaxStackSize(); i++) {
+									if (leftAmount > 0) {
+										ItemStack boughtProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
+										boughtProduct.setItemMeta(product.clone().getItemMeta());
+										inventory.addItem(boughtProduct);
+										executor.updateInventory();
+										leftAmount--;
+									} else if (leftAmount == 0) {
+										executor.sendMessage(Config.buy_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice()));
+										return;
+									}
+								}									
+							}
 						}
 					} else {
-						executor.sendMessage(Config.error_occurred(r2.errorMessage));
-					}
+						executor.sendMessage(Config.error_occurred(r.errorMessage));
+					}				
 				} else {
-					executor.sendMessage(Config.error_occurred(r.errorMessage));
-				}
-				
+					executor.sendMessage(Config.not_enough_inventory_space());
+				}		
 			} else {
 				executor.sendMessage(Config.not_enough_money());
 			}
@@ -409,22 +432,24 @@ public class InteractShop implements Listener{
 				freeAmount += value;
 			}
 			
-			EconomyResponse r = econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice());
-			EconomyResponse r2 = econ.depositPlayer(executor, shop.getSellPrice());
-			
-			if (r.transactionSuccess()) {
-				if (r2.transactionSuccess()) {
-					if (freeAmount >= leftAmount) {
-						for (int slot : slotFree.keySet()) {
-							if (leftAmount >= 0) {
-								int amountInSlot = -(slotFree.get(slot) - product.getMaxStackSize());
-								if (amountInSlot == -0) amountInSlot = 0;
-								for (int i = amountInSlot; i < product.getMaxStackSize() + 1; i++) {
+			if (freeAmount >= leftAmount) {
+
+				EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
+				EconomyResponse r2 = null;
+				if (shop.getShopType() != ShopType.ADMIN) r2 = econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice());
+				
+				if (r.transactionSuccess()) {
+					if (r2 != null) {
+						if (r2.transactionSuccess())  {
+							for (int slot : slotFree.keySet()) {
+								int amountInSlot = product.getMaxStackSize() - slotFree.get(slot);
+								
+								for (int i = amountInSlot; i < product.getMaxStackSize(); i++) {
 									if (leftAmount > 0) {
-										ItemStack boughtProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
-										boughtProduct.setItemMeta(product.clone().getItemMeta());
-										if (!shop.isInfinite()) inventory.addItem(boughtProduct);
-										executor.getInventory().removeItem(boughtProduct);
+										ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
+										soldProduct.setItemMeta(product.clone().getItemMeta());
+										if (shop.getShopType() == ShopType.NORMAL) inventory.addItem(soldProduct);
+										executor.getInventory().removeItem(soldProduct);
 										executor.updateInventory();
 										leftAmount--;
 									} else if (leftAmount == 0) {
@@ -432,17 +457,34 @@ public class InteractShop implements Listener{
 										if (shop.getVendor().isOnline()) shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
 										return;
 									}
-								}
+								}									
 							}
+						} else {
+							executor.sendMessage(Config.error_occurred(r2.errorMessage));
 						}
 					} else {
-						executor.sendMessage(Config.chest_not_enough_inventory_space());
+						for (int slot : slotFree.keySet()) {
+							int amountInSlot = product.getMaxStackSize() - slotFree.get(slot);
+							
+							for (int i = amountInSlot; i < product.getMaxStackSize(); i++) {
+								if (leftAmount > 0) {
+									ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
+									soldProduct.setItemMeta(product.clone().getItemMeta());
+									executor.getInventory().removeItem(soldProduct);
+									executor.updateInventory();
+									leftAmount--;
+								} else if (leftAmount == 0) {
+									executor.sendMessage(Config.sell_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice()));
+									return;
+								}
+							}									
+						}
 					}
 				} else {
-					executor.sendMessage(Config.error_occurred(r2.errorMessage));
+					executor.sendMessage(Config.error_occurred(r.errorMessage));
 				}
 			} else {
-				executor.sendMessage(Config.error_occurred(r.errorMessage));
+				executor.sendMessage(Config.chest_not_enough_inventory_space());
 			}				
 		} else {
 			executor.sendMessage(Config.vendor_not_enough_money());

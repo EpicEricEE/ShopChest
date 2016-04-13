@@ -5,6 +5,8 @@ import java.util.HashMap;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
+import de.epiceric.shopchest.shop.Shop.ShopType;
+
 public class ClickType {
 
 	private static HashMap<OfflinePlayer, ClickType> playerClickType = new HashMap<>();
@@ -32,18 +34,18 @@ public class ClickType {
 	private ItemStack product;
 	private double buyPrice;
 	private double sellPrice;
-	private boolean infinite;	
+	private ShopType shopType;	
 	
 	public ClickType(EnumClickType enumClickType) {
 		this.enumClickType = enumClickType;
 	}
 	
-	public ClickType(EnumClickType enumClickType, ItemStack product, double buyPrice, double sellPrice, boolean infinite) {
+	public ClickType(EnumClickType enumClickType, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
 		this.enumClickType = enumClickType;
 		this.product = product;
 		this.sellPrice = sellPrice;
 		this.buyPrice = buyPrice;
-		this.infinite = infinite;
+		this.shopType = shopType;
 	}
 	
 	public EnumClickType getClickType() {
@@ -62,8 +64,8 @@ public class ClickType {
 		return sellPrice;
 	}
 	
-	public boolean isInfinite() {
-		return infinite;
+	public ShopType getShopType() {
+		return shopType;
 	}
 	
 }
