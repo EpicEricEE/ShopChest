@@ -53,6 +53,7 @@ public class Config {
 	public static String shopInfo_isAdmin() { return plugin.getConfig().getString("messages.shop-info.is-admin").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");};
 	public static String noPermission_create() { return plugin.getConfig().getString("messages.no-permission.create").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String noPermission_createInfinite() { return plugin.getConfig().getString("messages.no-permission.create-infinite").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
+	public static String noPermission_createAdmin() { return plugin.getConfig().getString("messages.no-permission.create-admin").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String noPermission_openOthers() { return plugin.getConfig().getString("messages.no-permission.open-others").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String noPermission_removeOthers() { return plugin.getConfig().getString("messages.no-permission.remove-others").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String noPermission_buy() { return plugin.getConfig().getString("messages.no-permission.buy").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}

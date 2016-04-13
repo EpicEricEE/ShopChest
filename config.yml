@@ -288,6 +288,9 @@ messages:
     # Set the message when a not permitted player tries to create an infinite shop.
     create-infinite: "&cYou don't have permission to create an infinite shop."
 
+    # Set the message when a not permitted player tries to create an admin shop.
+    create-admin: "&cYou don't have permission to create an admin shop."
+
     # Set the message when a not permitted player tries to open another players' shop.
     open-others: "&cYou don't have permission to open this chest."
 

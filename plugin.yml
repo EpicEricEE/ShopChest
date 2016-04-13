@@ -30,6 +30,11 @@ permissions:
     children:
       shopchest.create: true
     default: op
+  shopchest.create.admin:
+    description: Allows you to create an admin shop.
+    children:
+      shopchest.create: true
+    default: op
   shopchest.create.protected:
     description: Allows you to create a shop on a protected chest.
     children:

@@ -89,9 +89,14 @@ public class Commands extends BukkitCommand {
 								
 							} else if (args[4].equalsIgnoreCase("admin")) {
 								
-								create(args, ShopType.ADMIN, p);
-								return true;
-								
+								if (perm.has(p, "shopchest.create.admin")) {
+									create(args, ShopType.ADMIN, p);
+									return true;							
+								} else {
+									p.sendMessage(Config.noPermission_createAdmin());
+									return true;
+								}
+
 								
 							} else {
 								
