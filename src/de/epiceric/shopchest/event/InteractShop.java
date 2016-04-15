@@ -400,9 +400,7 @@ public class InteractShop implements Listener{
 	}
 	
 	private void sell(Player executor, Shop shop) {
-		
-		if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice()) {
-			
+					
 			Block block = shop.getLocation().getBlock();
 			Chest chest = (Chest) block.getState();
 			
@@ -432,64 +430,83 @@ public class InteractShop implements Listener{
 				freeAmount += value;
 			}
 			
-			if (freeAmount >= leftAmount) {
-
-				EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
-				EconomyResponse r2 = null;
-				if (shop.getShopType() != ShopType.ADMIN) r2 = econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice());
+			if (shop.getShopType() == ShopType.NORMAL) {
 				
-				if (r.transactionSuccess()) {
-					if (r2 != null) {
-						if (r2.transactionSuccess())  {
-							for (int slot : slotFree.keySet()) {
-								int amountInSlot = product.getMaxStackSize() - slotFree.get(slot);
-								
-								for (int i = amountInSlot; i < product.getMaxStackSize(); i++) {
-									if (leftAmount > 0) {
-										ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
-										soldProduct.setItemMeta(product.clone().getItemMeta());
-										if (shop.getShopType() == ShopType.NORMAL) inventory.addItem(soldProduct);
-										executor.getInventory().removeItem(soldProduct);
-										executor.updateInventory();
-										leftAmount--;
-									} else if (leftAmount == 0) {
-										executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
-										if (shop.getVendor().isOnline()) shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
-										return;
-									}
-								}									
+				if (freeAmount >= leftAmount) {
+					if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice()) {
+						EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
+						EconomyResponse r2 = econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice());
+						
+						if (r.transactionSuccess()) {
+							if (r2.transactionSuccess())  {
+								for (int i = leftAmount; i > 0; i--) {
+									ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
+									soldProduct.setItemMeta(product.clone().getItemMeta());
+									inventory.addItem(soldProduct);
+									executor.getInventory().removeItem(soldProduct);
+									executor.updateInventory();
+								}				
+								executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
+								if (shop.getVendor().isOnline()) shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), executor.getName()));
+							} else {
+								executor.sendMessage(Config.error_occurred(r2.errorMessage));
 							}
+						} else {
+							executor.sendMessage(Config.error_occurred(r.errorMessage));
+						}
+							
+					} else {
+						executor.sendMessage(Config.vendor_not_enough_money());
+					}
+					
+				} else {
+					executor.sendMessage(Config.chest_not_enough_inventory_space());
+				}
+					
+			} else if (shop.getShopType() == ShopType.INFINITE) {
+				
+				if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice()) {
+					EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
+					EconomyResponse r2 = econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice());
+					
+					if (r.transactionSuccess()) {
+						if (r2.transactionSuccess()) {
+							for (int i = leftAmount; i > 0; i--) {
+								ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
+								soldProduct.setItemMeta(product.clone().getItemMeta());
+								executor.getInventory().removeItem(soldProduct);
+								executor.updateInventory();
+							}
+							executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
+							if (shop.getVendor().isOnline()) shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
 						} else {
 							executor.sendMessage(Config.error_occurred(r2.errorMessage));
 						}
 					} else {
-						for (int slot : slotFree.keySet()) {
-							int amountInSlot = product.getMaxStackSize() - slotFree.get(slot);
-							
-							for (int i = amountInSlot; i < product.getMaxStackSize(); i++) {
-								if (leftAmount > 0) {
-									ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
-									soldProduct.setItemMeta(product.clone().getItemMeta());
-									executor.getInventory().removeItem(soldProduct);
-									executor.updateInventory();
-									leftAmount--;
-								} else if (leftAmount == 0) {
-									executor.sendMessage(Config.sell_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice()));
-									return;
-								}
-							}									
-						}
+						executor.sendMessage(Config.error_occurred(r.errorMessage));
+					}		
+				} else {
+					executor.sendMessage(Config.vendor_not_enough_money());
+				}
+				
+				
+			} else if (shop.getShopType() == ShopType.ADMIN) {
+
+				EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
+
+				if (r.transactionSuccess()) {
+					for (int i = leftAmount; i > 0; i--) {
+						ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
+						soldProduct.setItemMeta(product.clone().getItemMeta());
+						executor.getInventory().removeItem(soldProduct);
+						executor.updateInventory();
 					}
+					executor.sendMessage(Config.sell_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice()));
 				} else {
 					executor.sendMessage(Config.error_occurred(r.errorMessage));
 				}
-			} else {
-				executor.sendMessage(Config.chest_not_enough_inventory_space());
-			}				
-		} else {
-			executor.sendMessage(Config.vendor_not_enough_money());
-		}
-		
+				
+			}
 	}
 	
 }

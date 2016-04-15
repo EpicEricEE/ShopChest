@@ -2,7 +2,7 @@
 
 name: ShopChest
 main: de.epiceric.shopchest.ShopChest
-version: 1.7.1
+version: 1.7.1.1
 author: EpicEric
 website: https://www.spigotmc.org/resources/shopchest.11431/
 depend: [Vault]
