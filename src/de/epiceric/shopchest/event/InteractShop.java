@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
 import com.griefcraft.model.Protection;
@@ -27,6 +28,7 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.SQLite;
+import de.epiceric.shopchest.utils.ArrowEffectNames;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.EnchantmentNames;
 import de.epiceric.shopchest.utils.ItemNames;
@@ -263,6 +265,7 @@ public class InteractShop implements Listener{
 		String vendor = Config.shopInfo_vendor(shop.getVendor().getName());
 		String product = Config.shopInfo_product(shop.getProduct().getAmount(), ItemNames.lookup(shop.getProduct()));
 		String enchantmentString = "";
+		String arrowEffectString = "";
 		String price = Config.shopInfo_price(shop.getBuyPrice(), shop.getSellPrice());
 		String shopType;
 		String stock = Config.shopInfo_stock(amount);
@@ -272,6 +275,13 @@ public class InteractShop implements Listener{
 		else shopType = Config.shopInfo_isAdmin();
 		
 		Map<Enchantment, Integer> enchantmentMap;
+		
+		if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
+			if (shop.getProduct().getType() == Material.TIPPED_ARROW) {
+				arrowEffectString = ArrowEffectNames.getTippedArrowName(shop.getProduct());
+				if (arrowEffectString == null) arrowEffectString = Config.none();
+			}
+		}
 		
 		if (shop.getProduct().getItemMeta() instanceof EnchantmentStorageMeta) {
 			EnchantmentStorageMeta esm = (EnchantmentStorageMeta) shop.getProduct().getItemMeta();
@@ -299,6 +309,7 @@ public class InteractShop implements Listener{
 		executor.sendMessage(product);
 		executor.sendMessage(stock);
 		if (enchantmentString.length() > 0) executor.sendMessage(Config.shopInfo_enchantment(enchantmentString));
+		if (arrowEffectString.length() > 0) executor.sendMessage(Config.shopInfo_arrowEffect(arrowEffectString));
 		executor.sendMessage(price);
 		executor.sendMessage(shopType);
 		executor.sendMessage(" ");

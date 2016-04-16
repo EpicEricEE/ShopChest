@@ -41,10 +41,10 @@ main-command-name: "shop"
 # Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
 maximal-distance: 1.75
 
-# Set whether the shops' chest should be protected by hoppers
+# Set whether the shop's chest should be protected by hoppers
 hopper-protection: true
 
-# Set whether the shops' chest should be protected by explosions
+# Set whether the shop's chest should be protected by explosions
 explosion-protection: true
 
 # Set the currency symbol after price values
@@ -110,36 +110,43 @@ messages:
 
     # Set the vendor message the player gets after entering '/shop info'.
     # Usable regex: %VENDOR%
-    vendor: "&6Vendor: %VENDOR%"
+    vendor: "&6Vendor: &e%VENDOR%"
 
     # Set the product message the player gets after entering '/shop info'.
     # Usable regex: %AMOUNT%, %ITEMNAME%
-    product: "&6Product: %AMOUNT% x %ITEMNAME%"
+    product: "&6Product: &e%AMOUNT% x %ITEMNAME%"
 
     # Set the in-stock message the player after entering '/shop info'.
     # Usable regex: %AMOUNT%
-    stock: "&6In Stock: %AMOUNT%"
+    stock: "&6In Stock: &e%AMOUNT%"
 
-    # Set the enchantments message the player gets after entering '/shop info' if the item is enchanted
+    # Set the enchantments message the player gets after entering '/shop info' if the product is enchanted
     # Usable regex: %ENCHANTMENT%
-    enchantments: "&6Enchantments: %ENCHANTMENT%"
+    enchantments: "&6Enchantments: &e%ENCHANTMENT%"
+
+    # Set the arrow effect message the player gets after entering '/shop info' if the product is a tipped arrow (1.9 and later)
+    # Usable regex: %ARROW-EFFECT%
+    arrow-effect: "&6Arrow Effect: &e%ARROW-EFFECT%"
+
+    # If the product is a tipped arrow but it doesn't have an effect, this gets displayed instead of the arrow effect
+    none: "&7None"
 
     # Set the price message the player gets after entering '/shop info'.
     # Usable regex: %BUY-PRICE%, %SELL-PRICE%, %CURRENCY-SYMBOL%
-    price: "&6Price: Buy: %BUY-PRICE%%CURRENCY-SYMBOL%, Sell: %SELL-PRICE%%CURRENCY-SYMBOL%"
+    price: "&6Price: Buy: &e%BUY-PRICE%%CURRENCY-SYMBOL%, &6Sell: &e%SELL-PRICE%%CURRENCY-SYMBOL%"
 
     # If the sell price or buy price is disabled, this message will be displayed instead of the price and the currency symbol in the message above.
-    disabled: "&7Disabled&6"
+    disabled: "&7Disabled&e"
     
     # Set the infinite message the player gets after entering '/shop info' ...
     # ... when the shop is infinite.
-    is-infinite: "&6Type: Infinite"
+    is-infinite: "&6Type: &eInfinite"
     
     # ... when the shop is normal.
-    is-normal: "&6Type: Normal"
+    is-normal: "&6Type: &eNormal"
     
     # ... when the shop is an admin shop.
-    is-admin: "&6Type: Admin"
+    is-admin: "&6Type: &eAdmin"
 
   # Set the message when the clicked block is not a chest.
   block-no-chest: "&cBlock is not a chest"
@@ -163,18 +170,18 @@ messages:
   # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%
   sell-success-admin: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a."
 
-  # Set the message when a player bought something from the players' shop.
+  # Set the message when a player bought something from the player's shop.
   # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%, %PLAYER%
   someone-bought: "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a from your shop."
   
-  # Set the message when a player sold something to the players' shop.
+  # Set the message when a player sold something to the player's shop.
   # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%, %PLAYER%
   someone-sold: "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a from your shop."
 
   # Set the message when the inventory is full when the player is buying something.
   not-enough-inventory-space: "&cNot enough space in inventory."
   
-  # Set the message when the shops' inventory is full when the player is selling something.
+  # Set the message when the shop's inventory is full when the player is selling something.
   chest-not-enough-inventory-space: "&cShop is full."
 
   # Set the message when the player doesn't have enough money to buy something.
@@ -236,7 +243,7 @@ messages:
   # Usable regex: %AMOUNT% (Amount of shops)
   reloaded-shops: "&aSuccessfully reloaded %AMOUNT% shop/s."
   
-  # Set the message when the players' shop limit is reached.
+  # Set the message when the player's shop limit is reached.
   # Usable regex: %LIMIT%
   shop-limit-reached: "&cYou reached your limit of &6%LIMIT% &cshop/s."
   
@@ -264,19 +271,19 @@ messages:
   
   hologram:
   
-    # Set the text in the first row of the shops' hologram
+    # Set the text in the first row of the shop's hologram
     # Usable regex: %ITEMNAME%, %AMOUNT%
     format: "%AMOUNT% * %ITEMNAME%"
   
-    # Set the text in the second row of the shops' hologram when the player can buy and sell an item.
+    # Set the text in the second row of the shop's hologram when the player can buy and sell an item.
     # Usable regex: %BUY-PRICE%, %SELL-PRICE%, %CURRENCY-SYMBOL%
     buy-and-sell: "Buy %BUY-PRICE%%CURRENCY-SYMBOL% | %SELL-PRICE%%CURRENCY-SYMBOL% Sell"
     
-    # Set the text in the second row of the shops' hologram when the player can only buy an item.
+    # Set the text in the second row of the shop's hologram when the player can only buy an item.
     # Usable regex: %BUY-PRICE%, %CURRENCY-SYMBOL%
     only-buy: "Buy %BUY-PRICE%%CURRENCY-SYMBOL%"
     
-    # Set the text in the second row of the shops' hologram when the player can only sell an item.
+    # Set the text in the second row of the shop's hologram when the player can only sell an item.
     # Usable regex: %SELL-PRICE%, %CURRENCY-SYMBOL%
     only-sell: "Sell %SELL-PRICE%%CURRENCY-SYMBOL%"
     
@@ -291,7 +298,7 @@ messages:
     # Set the message when a not permitted player tries to create an admin shop.
     create-admin: "&cYou don't have permission to create an admin shop."
 
-    # Set the message when a not permitted player tries to open another players' shop.
+    # Set the message when a not permitted player tries to open another player's shop.
     open-others: "&cYou don't have permission to open this chest."
 
     # Set the message when a not permitted player tries to buy something.
@@ -300,7 +307,7 @@ messages:
     # Set the message when a not permitted player tries to sell something.
     sell: "&cYou don't have permission to sell something."
 
-    # Set the message when a not permitted player tries to remove another players' shop.
+    # Set the message when a not permitted player tries to remove another player's shop.
     remove-others: "&cYou don't have permission to remove this shop."
     
     # Set the message when a not permitted player tries to reload the shops.

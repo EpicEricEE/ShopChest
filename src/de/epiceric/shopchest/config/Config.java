@@ -71,6 +71,8 @@ public class Config {
  	public static String no_new_update() {return plugin.getConfig().getString("messages.update.no-update").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String click_to_download() {return plugin.getConfig().getString("messages.update.click-to-download").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String cannot_sell_item() {return plugin.getConfig().getString("messages.cannot-sell-item").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
+	public static String none() {return plugin.getConfig().getString("messages.shop-info.none").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
+
  	
  	public static String limit_reached(int limit) {
  		return plugin.getConfig().getString("messages.shop-limit-reached").replace(Regex.limit, String.valueOf(limit)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
@@ -126,6 +128,10 @@ public class Config {
 	
 	public static String shopInfo_enchantment(String enchantment) {
 		return plugin.getConfig().getString("messages.shop-info.enchantments").replace(Regex.enchantment, enchantment).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+	}
+	
+	public static String shopInfo_arrowEffect(String arrowEffect) {
+		return plugin.getConfig().getString("messages.shop-info.arrow-effect").replace(Regex.arrowEffect, arrowEffect).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
 	}
 	
 	public static String shopInfo_price(double buyPrice, double sellPrice) {
