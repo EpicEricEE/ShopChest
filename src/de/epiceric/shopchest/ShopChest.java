@@ -57,6 +57,7 @@ public class ShopChest extends JavaPlugin{
 	public static boolean isUpdateNeeded = false;
 	public static String latestVersion = "";
 	public static String downloadLink = "";
+	public static String broadcast = null;
 	
 	public static Utils utils;
 	
@@ -189,14 +190,15 @@ public class ShopChest extends JavaPlugin{
 		
 		instance = this;
 
-		
 		if (uc == null) uc = new UpdateChecker(this, getDescription().getWebsite());
 		logger.info("Checking for Updates");
-		if(uc.updateNeeded()) {
+		if(uc.updateNeeded(Bukkit.getConsoleSender())) {
 			latestVersion = uc.getVersion();
 			downloadLink = uc.getLink();
+			broadcast = uc.getBroadcast();
 			isUpdateNeeded = true;
 			Bukkit.getConsoleSender().sendMessage("[ShopChest] " + ChatColor.GOLD + "New version available: " + ChatColor.RED + latestVersion);
+			if (broadcast != null && Config.enable_broadcast()) Bukkit.getConsoleSender().sendMessage("[ShopChest] " + broadcast);
 		} else {
 			logger.info("No new version available");
 			isUpdateNeeded = false;
@@ -212,12 +214,12 @@ public class ShopChest extends JavaPlugin{
 						case "v1_8_R3": jb = new JsonBuilder_1_8_R3(Config.update_available(latestVersion)); break;
 						case "v1_9_R1": jb = new JsonBuilder_1_9_R1(Config.update_available(latestVersion)); break;
 						default: return;
-					}		
+					}
 					jb.sendJson(p);
-				
+					if (broadcast != null && Config.enable_broadcast()) p.sendMessage(broadcast);
 				}
 			}
-		}			
+		}
 		
 		File itemNamesFile = new File(getDataFolder(), "item_names.txt");
 		

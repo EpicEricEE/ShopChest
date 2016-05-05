@@ -182,9 +182,10 @@ public class Commands extends BukkitCommand {
 		player.sendMessage(Config.checking_update());
 		
 		UpdateChecker uc = new UpdateChecker(ShopChest.getInstance(), ShopChest.getInstance().getDescription().getWebsite());
-		if (uc.updateNeeded()) {
+		if (uc.updateNeeded(player)) {
 			ShopChest.latestVersion = uc.getVersion();
 			ShopChest.downloadLink = uc.getLink();
+			ShopChest.broadcast = uc.getBroadcast();
 			ShopChest.isUpdateNeeded = true;
 			
 			JsonBuilder jb;
@@ -204,6 +205,8 @@ public class Commands extends BukkitCommand {
 			player.sendMessage(Config.no_new_update());
 		}
 		
+		if (ShopChest.broadcast != null && Config.enable_broadcast()) player.sendMessage(ShopChest.broadcast);
+
 	}
 	
 	private void reload(Player player) {

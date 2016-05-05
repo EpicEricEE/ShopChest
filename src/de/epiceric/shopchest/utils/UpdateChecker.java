@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.utils;
 
-import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,13 +15,14 @@ public class UpdateChecker {
 	private String url;
 	private String version;
 	private String link;
+	private String broadcast;
 	
 	public UpdateChecker(ShopChest plugin, String url) {
 		this.plugin = plugin;
 		this.url = url;
 	}
 	
-	public boolean updateNeeded() {
+	public boolean updateNeeded(CommandSender sender) {
 		try {
 			Connection con = Jsoup.connect("http://textuploader.com/all1l/raw");
 			con.userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0");
@@ -30,11 +32,14 @@ public class UpdateChecker {
 			version = doc.text().split("\\|")[0];
 			link = url + "download?version=" + doc.text().split("\\|")[1];
 			
+			if (doc.text().split("\\|").length == 3) {
+				broadcast = doc.text().split("\\|")[2];
+			}
+			
 			return !plugin.getDescription().getVersion().equals(version);
-
 			
 		} catch (Exception | Error e) {
-			Bukkit.getConsoleSender().sendMessage("[ShopChest] " + ChatColor.RED + "Error while checking for updates");
+			sender.sendMessage((sender instanceof ConsoleCommandSender ? "[ShopChest] " : "") + ChatColor.RED + "Error while checking for updates");
 			return false;
 		}
 	}
@@ -45,6 +50,10 @@ public class UpdateChecker {
 	
 	public String getLink() {
 		return link;
+	}
+	
+	public String getBroadcast() {
+		return broadcast;
 	}
 	
 }

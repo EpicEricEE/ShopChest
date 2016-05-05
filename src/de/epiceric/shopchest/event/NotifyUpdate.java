@@ -35,6 +35,7 @@ public class NotifyUpdate implements Listener {
 					default: return;
 				}		
 				jb.sendJson(p);
+				if (ShopChest.broadcast != null && Config.enable_broadcast()) p.sendMessage(ShopChest.broadcast);
 			}
 		}
 		

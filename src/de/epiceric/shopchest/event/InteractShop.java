@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
 import com.griefcraft.model.Protection;
