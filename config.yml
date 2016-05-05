@@ -263,16 +263,16 @@ messages:
 
     # Set the message when an update is available.
     # Usable regex: %VERSION%
-    update-available: "&l&6Version &c%VERSION% &6of &cShopChest &6is available &chere."
+    update-available: "&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere."
     
     # Set the message you get when hovering over the available message.
     click-to-download: "Click to download"
     
     # Set the message when no update is available.
-    no-update: "&l&6No new update available."
+    no-update: "&6&lNo new update available."
     
     # Set the message when the update checker is started.
-    checking: "&l&6Checking for Updates..."
+    checking: "&6&lChecking for Updates..."
   
   hologram:
   
