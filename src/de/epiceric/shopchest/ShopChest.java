@@ -56,7 +56,7 @@ public class ShopChest extends JavaPlugin{
 	public static boolean isUpdateNeeded = false;
 	public static String latestVersion = "";
 	public static String downloadLink = "";
-	public static String broadcast = "";
+	public static String[] broadcast = null;
 	
 	public static Utils utils;
 	
@@ -190,7 +190,7 @@ public class ShopChest extends JavaPlugin{
 		UpdateCheckerResult result = uc.updateNeeded();
 		
 		if (Config.enable_broadcast()) broadcast = uc.getBroadcast();
-		
+				
 		Bukkit.getConsoleSender().sendMessage("[ShopChest] " + Config.checking_update());
 		if(result == UpdateCheckerResult.TRUE) {
 			latestVersion = uc.getVersion();
@@ -226,11 +226,19 @@ public class ShopChest extends JavaPlugin{
 		
 		for (Player p : getServer().getOnlinePlayers()) {
 			if (perm.has(p, "shopchest.broadcast")) {
-				if (!broadcast.equals("")) p.sendMessage(broadcast);					
+				if (broadcast != null) {
+					for (String message : broadcast) {
+						p.sendMessage(message);
+					}
+				}
 			}
 		}
 		
-		if (!broadcast.equals("")) Bukkit.getConsoleSender().sendMessage("[ShopChest] " + broadcast);
+		if (broadcast != null) {
+			for (String message : broadcast) {
+				Bukkit.getConsoleSender().sendMessage("[ShopChest] " + message);
+			}
+		}
 
 		File itemNamesFile = new File(getDataFolder(), "item_names.txt");
 		

@@ -20,7 +20,7 @@ public class Config {
  	public static boolean buy_greater_or_equal_sell() {return plugin.getConfig().getBoolean("buy-greater-or-equal-sell");}
  	public static boolean hopper_protection() {return plugin.getConfig().getBoolean("hopper-protection");}
  	public static boolean explosion_protection() {return plugin.getConfig().getBoolean("explosion-protection)");}
- 	public static boolean enable_broadcast() {return plugin.getConfig().getBoolean("enable-broadcast)");}
+ 	public static boolean enable_broadcast() {return plugin.getConfig().getBoolean("enable-broadcast");}
  	
 	public static double maximal_distance() {return plugin.getConfig().getDouble("maximal-distance");}
 	public static int default_limit() {return plugin.getConfig().getInt("shop-limits.default");}	

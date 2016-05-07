@@ -44,7 +44,7 @@ public class UpdateChecker {
 		}
 	}
 	
-	public String getBroadcast() {
+	public String[] getBroadcast() {
 		try {
 			Connection con = Jsoup.connect("http://textuploader.com/5b51f/raw");
 			con.userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0");
@@ -52,13 +52,15 @@ public class UpdateChecker {
 			Document doc = con.get();
 			
 			String broadcast = doc.text();
-			
+												
+			String[] messages = broadcast.split("#n");
+						
 			if (!broadcast.equals("/"))
-				return broadcast;
+				return messages;
 			
 		} catch (Exception | Error e) {}
 		
-		return "";
+		return null;
 	}
 	
 	public String getVersion() {
