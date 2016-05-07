@@ -48,8 +48,6 @@ hopper-protection: true
 explosion-protection: true
 
 # Set whether broadcast messages should be enabled
-# The messages are sent to every player who have permission to get update notifications.
-# They are sent each time the update checker checks for an update below the message whether an update is available.
 enable-broadcast: true
 
 # Set the currency symbol after price values

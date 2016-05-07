@@ -212,6 +212,10 @@ public class Commands extends BukkitCommand {
 			player.sendMessage(Config.update_check_error());
 		}
 		
+		if (perm.has(player, "shopchest.broadcast")) {
+			if (Config.enable_broadcast()) ShopChest.broadcast = uc.getBroadcast();
+			if (!ShopChest.broadcast.equals("")) player.sendMessage(ShopChest.broadcast);	
+		}
 
 	}
 	

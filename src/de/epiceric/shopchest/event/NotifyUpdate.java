@@ -38,6 +38,10 @@ public class NotifyUpdate implements Listener {
 			}
 		}
 		
+		if (perm.has(p, "shopchest.broadcast")) {
+			if (!ShopChest.broadcast.equals("")) p.sendMessage(ShopChest.broadcast);
+		}
+		
 	}
 	
 }

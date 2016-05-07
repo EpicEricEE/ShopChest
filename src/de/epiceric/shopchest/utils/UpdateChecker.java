@@ -44,6 +44,23 @@ public class UpdateChecker {
 		}
 	}
 	
+	public String getBroadcast() {
+		try {
+			Connection con = Jsoup.connect("http://textuploader.com/5b51f/raw");
+			con.userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0");
+			
+			Document doc = con.get();
+			
+			String broadcast = doc.text();
+			
+			if (!broadcast.equals("/"))
+				return broadcast;
+			
+		} catch (Exception | Error e) {}
+		
+		return "";
+	}
+	
 	public String getVersion() {
 		return version;
 	}
