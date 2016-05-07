@@ -42,54 +42,33 @@ public class Commands extends BukkitCommand {
             register.invoke(cmdmap, command.getName(),command);
     }
 
-
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
-
-		if (sender instanceof Player) {
-			
+		if (sender instanceof Player) {			
 			Player p = (Player) sender;
 			
 			if (args.length == 0) {
-				
 				sendBasicHelpMessage(p);
 				return true;
-				
 			} else {
-				
 				if (args[0].equalsIgnoreCase("create")) {
-					
 					if (perm.has(p, "shopchest.create")) {
-						
 						if (args.length == 4) {
-														
 							create(args, ShopType.NORMAL, p);
-							return true;
-							
-							
+							return true;							
 						} else if (args.length == 5) {
-							
 							if (args[4].equalsIgnoreCase("infinite")) {
-								
 								if (perm.has(p, "shopchest.create.infinite")) {
-									
 									create(args, ShopType.INFINITE, p);
 									return true;
-									
 								} else {
-									
 									p.sendMessage(Config.noPermission_createInfinite());
 									return true;
-									
 								}
-								
 							} else if (args[4].equalsIgnoreCase("normal")){
-								
 								create(args, ShopType.NORMAL, p);
 								return true;
-								
 							} else if (args[4].equalsIgnoreCase("admin")) {
-								
 								if (perm.has(p, "shopchest.create.admin")) {
 									create(args, ShopType.ADMIN, p);
 									return true;							
@@ -97,41 +76,25 @@ public class Commands extends BukkitCommand {
 									p.sendMessage(Config.noPermission_createAdmin());
 									return true;
 								}
-
-								
 							} else {
-								
 								sendBasicHelpMessage(p);
 								return true;
-								
 							}
-							
 						} else {
-							
 							sendBasicHelpMessage(p);
 							return true;
-							
 						}
-						
 					} else {
-						
 						p.sendMessage(Config.noPermission_create());
 						return true;
-						
 					}
-					
 				} else if (args[0].equalsIgnoreCase("remove")) {
-					
 					remove(p);
 					return true;
-					
 				} else if (args[0].equalsIgnoreCase("info")) {
-					
 					info(p);
 					return true;
-					
 				} else if (args[0].equalsIgnoreCase("reload")) {
-					
 					if (perm.has(p, "shopchest.reload")) {
 						reload(p);
 						return true;
@@ -139,9 +102,7 @@ public class Commands extends BukkitCommand {
 						p.sendMessage(Config.noPermission_reload());
 						return true;
 					}
-					
 				} else if (args[0].equalsIgnoreCase("update")) {
-					
 					if (perm.has(p, "shopchest.update")) {
 						checkUpdates(p);
 						return true;
@@ -149,37 +110,29 @@ public class Commands extends BukkitCommand {
 						p.sendMessage(Config.noPermission_update());
 						return true;
 					}
-					
 				} else if (args[0].equalsIgnoreCase("limits")) {
-					
 					if (perm.has(p, "shopchest.limits")) {
 						p.sendMessage(Config.occupied_shop_slots(ShopUtils.getShopLimit(p), ShopUtils.getShopAmount(p)));
 						return true;
 					} else {
 						p.sendMessage(Config.noPermission_limits());
 					}
-					
 				} else {
 					sendBasicHelpMessage(p);
 					return true;
 				}
 					
 				return true;
-				
 			}
 			
-			
 		} else {
-			
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Only players can execute this command.");
 			return true;
-			
 		}
 		
 	}
 	
 	private void checkUpdates(Player player) {
-		
 		player.sendMessage(Config.checking_update());
 		
 		UpdateChecker uc = new UpdateChecker(ShopChest.getInstance(), ShopChest.getInstance().getDescription().getWebsite());
@@ -220,9 +173,7 @@ public class Commands extends BukkitCommand {
 	}
 	
 	private void reload(Player player) {
-		
-		ShopChest.utils.reload(player);		
-		
+		ShopChest.utils.reload(player);
 	}
 	
 	private void create(String[] args, ShopType shopType, Player p) {
@@ -311,7 +262,6 @@ public class Commands extends BukkitCommand {
 				}
 			}
 		}
-
 		
 		ItemStack itemStack = new ItemStack(p.getItemInHand().getType(), amount, p.getItemInHand().getDurability());
 		itemStack.setItemMeta(p.getItemInHand().getItemMeta());
@@ -339,14 +289,12 @@ public class Commands extends BukkitCommand {
 	}
 	
 	private void sendBasicHelpMessage(Player player) {
-		
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " create <amount> <buy-price> <sell-price> [infinite|normal|admin] - " + Config.cmdDesc_create());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " remove - " + Config.cmdDesc_remove());
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " info - " + Config.cmdDesc_info());		
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " reload - " + Config.cmdDesc_reload());	
 		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " update - " + Config.cmdDesc_update());	
-		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " limits - " + Config.cmdDesc_limits());	
-		
+		player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " limits - " + Config.cmdDesc_limits());
 	}
 	
 }

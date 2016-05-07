@@ -66,7 +66,6 @@ public class ShopChest extends JavaPlugin{
 	
 	
 	private boolean setupEconomy() {
-
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
@@ -84,8 +83,7 @@ public class ShopChest extends JavaPlugin{
 	
 	
 	@Override
-	public void onEnable() {	
-		
+	public void onEnable() {
 		logger = getLogger();
 		
 		if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -144,7 +142,6 @@ public class ShopChest extends JavaPlugin{
 					}
 					
 					return value;
-					
 				}        	
 	        	
 	        });
@@ -259,19 +256,15 @@ public class ShopChest extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
 		
 		if (getServer().getPluginManager().getPlugin("ClearLag") != null) getServer().getPluginManager().registerEvents(new RegenerateShopItemAfterRemove(), this);
-		
 	}
 
 	
 	@Override
 	public void onDisable() {
-		
 		utils.removeShops();
-		
 	}
 	
 	private void initializeShops() {
-				
 		int count = 0;
 		
 		for (int id = 1; id < sqlite.getHighestID() + 1; id++) {
@@ -290,7 +283,6 @@ public class ShopChest extends JavaPlugin{
 		}
 		
 		logger.info("Initialized " + String.valueOf(count) + " Shops");
-		
 	}
 	
 	public static void copy(InputStream in, File file) {
@@ -298,9 +290,11 @@ public class ShopChest extends JavaPlugin{
 	        OutputStream out = new FileOutputStream(file);
 	        byte[] buf = new byte[1024];
 	        int len;
+	        
 	        while((len=in.read(buf))>0){
 	            out.write(buf,0,len);
 	        }
+	        
 	        out.close();
 	        in.close();
 	    } catch (Exception e) {
