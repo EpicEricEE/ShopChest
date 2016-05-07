@@ -272,7 +272,10 @@ messages:
     no-update: "&6&lNo new update available."
     
     # Set the message when the update checker is started.
-    checking: "&6&lChecking for Updates..."
+    checking: "&6&lChecking for updates..."
+    
+    # Set the message when an error occurs while checking for updates.
+    error: "&c&lError while checking for updates."
   
   hologram:
   

@@ -21,6 +21,7 @@ import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
+import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import net.milkbowl.vault.permission.Permission;
 
 public class Commands extends BukkitCommand {
@@ -182,10 +183,11 @@ public class Commands extends BukkitCommand {
 		player.sendMessage(Config.checking_update());
 		
 		UpdateChecker uc = new UpdateChecker(ShopChest.getInstance(), ShopChest.getInstance().getDescription().getWebsite());
-		if (uc.updateNeeded(player)) {
+		UpdateCheckerResult result = uc.updateNeeded();
+		
+		if (result == UpdateCheckerResult.TRUE) {
 			ShopChest.latestVersion = uc.getVersion();
 			ShopChest.downloadLink = uc.getLink();
-			ShopChest.broadcast = uc.getBroadcast();
 			ShopChest.isUpdateNeeded = true;
 			
 			JsonBuilder jb;
@@ -198,14 +200,18 @@ public class Commands extends BukkitCommand {
 			}		
 			jb.sendJson(player);
 			
-		} else {
+		} else if (result == UpdateCheckerResult.FALSE) {
 			ShopChest.latestVersion = "";
 			ShopChest.downloadLink = "";
 			ShopChest.isUpdateNeeded = false;
 			player.sendMessage(Config.no_new_update());
+		} else {
+			ShopChest.latestVersion = "";
+			ShopChest.downloadLink = "";
+			ShopChest.isUpdateNeeded = false;
+			player.sendMessage(Config.update_check_error());
 		}
 		
-		if (ShopChest.broadcast != null && Config.enable_broadcast()) player.sendMessage(ShopChest.broadcast);
 
 	}
 	

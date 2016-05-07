@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -38,13 +37,13 @@ import de.epiceric.shopchest.utils.Metrics.Graph;
 import de.epiceric.shopchest.utils.Metrics.Plotter;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
+import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 public class ShopChest extends JavaPlugin{
 
 	private static ShopChest instance;
-	private static UpdateChecker uc;
 	
 	public static Statement statement;
 	public static Logger logger;
@@ -57,7 +56,6 @@ public class ShopChest extends JavaPlugin{
 	public static boolean isUpdateNeeded = false;
 	public static String latestVersion = "";
 	public static String downloadLink = "";
-	public static String broadcast = null;
 	
 	public static Utils utils;
 	
@@ -190,21 +188,16 @@ public class ShopChest extends JavaPlugin{
 		
 		instance = this;
 
-		if (uc == null) uc = new UpdateChecker(this, getDescription().getWebsite());
-		logger.info("Checking for Updates");
-		if(uc.updateNeeded(Bukkit.getConsoleSender())) {
+		UpdateChecker uc = new UpdateChecker(this, getDescription().getWebsite());
+		UpdateCheckerResult result = uc.updateNeeded();
+		
+		Bukkit.getConsoleSender().sendMessage("[ShopChest] " + Config.checking_update());
+		if(result == UpdateCheckerResult.TRUE) {
 			latestVersion = uc.getVersion();
 			downloadLink = uc.getLink();
-			broadcast = uc.getBroadcast();
 			isUpdateNeeded = true;
-			Bukkit.getConsoleSender().sendMessage("[ShopChest] " + ChatColor.GOLD + "New version available: " + ChatColor.RED + latestVersion);
-			if (broadcast != null && Config.enable_broadcast()) Bukkit.getConsoleSender().sendMessage("[ShopChest] " + broadcast);
-		} else {
-			logger.info("No new version available");
-			isUpdateNeeded = false;
-		}
-		
-		if (isUpdateNeeded) {
+			Bukkit.getConsoleSender().sendMessage("[ShopChest] " + Config.update_available(latestVersion));
+			
 			for (Player p : getServer().getOnlinePlayers()) {
 				if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
 					JsonBuilder jb;
@@ -216,11 +209,21 @@ public class ShopChest extends JavaPlugin{
 						default: return;
 					}
 					jb.sendJson(p);
-					if (broadcast != null && Config.enable_broadcast()) p.sendMessage(broadcast);
 				}
 			}
+			
+		} else if (result == UpdateCheckerResult.FALSE) {
+			latestVersion = "";
+			downloadLink = "";
+			isUpdateNeeded = false;
+			Bukkit.getConsoleSender().sendMessage("[ShopChest] " + Config.no_new_update());
+		} else {
+			latestVersion = "";
+			downloadLink = "";
+			isUpdateNeeded = false;
+			Bukkit.getConsoleSender().sendMessage("[ShopChest] " + Config.update_check_error());
 		}
-		
+
 		File itemNamesFile = new File(getDataFolder(), "item_names.txt");
 		
 		if (!itemNamesFile.exists())

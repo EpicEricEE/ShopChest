@@ -71,9 +71,9 @@ public class Config {
  	public static String checking_update() {return plugin.getConfig().getString("messages.update.checking").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String no_new_update() {return plugin.getConfig().getString("messages.update.no-update").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String click_to_download() {return plugin.getConfig().getString("messages.update.click-to-download").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
+	public static String update_check_error() {return plugin.getConfig().getString("messages.update.error").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
  	public static String cannot_sell_item() {return plugin.getConfig().getString("messages.cannot-sell-item").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
 	public static String none() {return plugin.getConfig().getString("messages.shop-info.none").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");}
-
  	
  	public static String limit_reached(int limit) {
  		return plugin.getConfig().getString("messages.shop-limit-reached").replace(Regex.limit, String.valueOf(limit)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
