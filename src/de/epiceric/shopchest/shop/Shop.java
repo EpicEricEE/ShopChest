@@ -156,6 +156,7 @@ public class Shop {
 			case "v1_8_R2": hologram = new Hologram_1_8_R2(holoText, holoLocation); break;
 			case "v1_8_R3": hologram = new Hologram_1_8_R3(holoText, holoLocation); break;
 			case "v1_9_R1": hologram = new Hologram_1_9_R1(holoText, holoLocation); break;
+			case "v1_9_R2": hologram = new Hologram_1_9_R2(holoText, holoLocation); break;
 			default: return;
 		}
 							

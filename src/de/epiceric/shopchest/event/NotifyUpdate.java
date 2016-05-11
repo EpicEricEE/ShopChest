@@ -32,6 +32,7 @@ public class NotifyUpdate implements Listener {
 					case "v1_8_R2": jb = new JsonBuilder_1_8_R2(Config.update_available(ShopChest.latestVersion)); break;
 					case "v1_8_R3": jb = new JsonBuilder_1_8_R3(Config.update_available(ShopChest.latestVersion)); break;
 					case "v1_9_R1": jb = new JsonBuilder_1_9_R1(Config.update_available(ShopChest.latestVersion)); break;
+					case "v1_9_R2": jb = new JsonBuilder_1_9_R2(Config.update_available(ShopChest.latestVersion)); break;
 					default: return;
 				}		
 				jb.sendJson(p);

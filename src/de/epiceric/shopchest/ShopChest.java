@@ -163,6 +163,7 @@ public class ShopChest extends JavaPlugin{
 		case "v1_8_R2": utils = new Utils_1_8_R2(); break;
 		case "v1_8_R3": utils = new Utils_1_8_R3(); break;
 		case "v1_9_R1": utils = new Utils_1_9_R1(); break;
+		case "v1_9_R2": utils = new Utils_1_9_R2(); break;
 		default:
 			logger.severe("Incompatible Server Version: " + Utils.getVersion(getServer()) + "!");
 			getServer().getPluginManager().disablePlugin(this);
@@ -206,6 +207,7 @@ public class ShopChest extends JavaPlugin{
 						case "v1_8_R2": jb = new JsonBuilder_1_8_R2(Config.update_available(latestVersion)); break;
 						case "v1_8_R3": jb = new JsonBuilder_1_8_R3(Config.update_available(latestVersion)); break;
 						case "v1_9_R1": jb = new JsonBuilder_1_9_R1(Config.update_available(latestVersion)); break;
+						case "v1_9_R2": jb = new JsonBuilder_1_9_R2(Config.update_available(latestVersion)); break;
 						default: return;
 					}
 					jb.sendJson(p);
