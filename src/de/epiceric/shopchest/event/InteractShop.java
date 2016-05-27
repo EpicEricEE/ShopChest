@@ -205,12 +205,20 @@ public class InteractShop implements Listener{
 								if (perm.has(p, "shopchest.sell")) {
 									if (shop.getShopType() == ShopType.INFINITE) {
 										if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-											sell(p, shop);
+											if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+												sell(p, shop);
+											} else {
+												p.sendMessage(Config.not_enough_items());
+											}
 										} else {
 											e.setCancelled(false);
 										}
 									} else if (shop.getShopType() == ShopType.ADMIN) {
-										sell(p, shop);
+										if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+											sell(p, shop);
+										} else {
+											p.sendMessage(Config.not_enough_items());
+										}
 									} else {
 										if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
 										 	if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
