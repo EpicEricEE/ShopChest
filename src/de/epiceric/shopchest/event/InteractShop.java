@@ -366,6 +366,19 @@ public class InteractShop implements Listener{
 					
 				}
 				
+				if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
+					ItemStack item = inventory.getItem(40);
+					if (item == null) {
+						slotFree.put(40, product.getMaxStackSize());			
+					} else {
+						if ((item.getType().equals(product.getType())) && (item.getDurability() == product.getDurability()) && (item.getItemMeta().equals(product.getItemMeta())) && (item.getData().equals(product.getData()))) {
+							int amountInSlot = item.getAmount();
+							int amountToFullStack = product.getMaxStackSize() - amountInSlot;
+							slotFree.put(40, amountToFullStack);	
+						}
+					}
+				}
+				
 				int leftAmount = product.getAmount();
 				
 				int freeAmount = 0;
@@ -390,7 +403,15 @@ public class InteractShop implements Listener{
 											ItemStack boughtProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
 											boughtProduct.setItemMeta(product.clone().getItemMeta());
 											if (shop.getShopType() == ShopType.NORMAL) c.getInventory().removeItem(boughtProduct);
-											inventory.addItem(boughtProduct);
+											if (slot != 40) {	
+												inventory.addItem(boughtProduct);
+											} else {
+												ItemStack is = new ItemStack(boughtProduct);
+												int amount = 0;
+												if (inventory.getItem(40) != null) amount = inventory.getItem(40).getAmount();
+												is.setAmount(amount + 1);											
+												inventory.setItem(40, is);
+											}
 											executor.updateInventory();
 											leftAmount--;
 										} else if (leftAmount == 0) {
@@ -411,7 +432,15 @@ public class InteractShop implements Listener{
 									if (leftAmount > 0) {
 										ItemStack boughtProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
 										boughtProduct.setItemMeta(product.clone().getItemMeta());
-										inventory.addItem(boughtProduct);
+										if (slot != 40) {	
+											inventory.addItem(boughtProduct);
+										} else {
+											ItemStack is = new ItemStack(boughtProduct);
+											int amount = 0;
+											if (inventory.getItem(40) != null) amount = inventory.getItem(40).getAmount();
+											is.setAmount(amount + 1);												
+											inventory.setItem(40, is);
+										}
 										executor.updateInventory();
 										leftAmount--;
 									} else if (leftAmount == 0) {
@@ -477,7 +506,27 @@ public class InteractShop implements Listener{
 									ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
 									soldProduct.setItemMeta(product.clone().getItemMeta());
 									inventory.addItem(soldProduct);
-									executor.getInventory().removeItem(soldProduct);
+									if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
+										if (executor.getInventory().getItem(40) != null) {
+											ItemStack is = executor.getInventory().getItem(40);
+											if (is.getType().equals(shop.getProduct().getType()) && is.getDurability() == shop.getProduct().getDurability() && is.getData().equals(shop.getProduct().getData()) && is.getItemMeta().equals(shop.getProduct().getItemMeta())) {
+												ItemStack isNew = new ItemStack(is);
+												int amount = is.getAmount();
+												isNew.setAmount(amount - 1);
+
+												if (amount <= 1) {
+													executor.getInventory().setItem(40, null);
+												} else {
+													executor.getInventory().setItem(40, isNew);
+												}
+												
+											}
+										} else {
+											executor.getInventory().removeItem(soldProduct);
+										}
+									} else {
+										executor.getInventory().removeItem(soldProduct);
+									}									
 									executor.updateInventory();
 								}				
 								executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
@@ -508,7 +557,27 @@ public class InteractShop implements Listener{
 							for (int i = leftAmount; i > 0; i--) {
 								ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
 								soldProduct.setItemMeta(product.clone().getItemMeta());
-								executor.getInventory().removeItem(soldProduct);
+								if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
+									if (executor.getInventory().getItem(40) != null) {
+										ItemStack is = executor.getInventory().getItem(40);
+										if (is.getType().equals(shop.getProduct().getType()) && is.getDurability() == shop.getProduct().getDurability() && is.getData().equals(shop.getProduct().getData()) && is.getItemMeta().equals(shop.getProduct().getItemMeta())) {
+											ItemStack isNew = new ItemStack(is);
+											int amount = is.getAmount();
+											isNew.setAmount(amount - 1);
+
+											if (amount <= 1) {
+												executor.getInventory().setItem(40, null);
+											} else {
+												executor.getInventory().setItem(40, isNew);
+											}
+											
+										}
+									} else {
+										executor.getInventory().removeItem(soldProduct);
+									}
+								} else {
+									executor.getInventory().removeItem(soldProduct);
+								}
 								executor.updateInventory();
 							}
 							executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
@@ -532,7 +601,27 @@ public class InteractShop implements Listener{
 					for (int i = leftAmount; i > 0; i--) {
 						ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
 						soldProduct.setItemMeta(product.clone().getItemMeta());
-						executor.getInventory().removeItem(soldProduct);
+						if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
+							if (executor.getInventory().getItem(40) != null) {
+								ItemStack is = executor.getInventory().getItem(40);
+								if (is.getType().equals(shop.getProduct().getType()) && is.getDurability() == shop.getProduct().getDurability() && is.getData().equals(shop.getProduct().getData()) && is.getItemMeta().equals(shop.getProduct().getItemMeta())) {
+									ItemStack isNew = new ItemStack(is);
+									int amount = is.getAmount();
+									isNew.setAmount(amount - 1);
+
+									if (amount <= 1) {
+										executor.getInventory().setItem(40, null);
+									} else {
+										executor.getInventory().setItem(40, isNew);
+									}
+									
+								}
+							} else {
+								executor.getInventory().removeItem(soldProduct);
+							}
+						} else {
+							executor.getInventory().removeItem(soldProduct);
+						}
 						executor.updateInventory();
 					}
 					executor.sendMessage(Config.sell_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice()));
