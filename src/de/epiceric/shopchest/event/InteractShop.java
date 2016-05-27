@@ -143,39 +143,43 @@ public class InteractShop implements Listener{
 						
 					} else {
 						
-						if (ShopUtils.isShop(b.getLocation())) {
+						if (ShopUtils.isShop(b.getLocation())) {							
 							e.setCancelled(true);
 							Shop shop = ShopUtils.getShop(b.getLocation());
-							
-							if (p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
-								e.setCancelled(false);
-								return;
-							} else {
 								
 								if (p.isSneaking()) {
-									if (perm.has(p, "shopchest.openOther")) {
-										p.sendMessage(Config.opened_shop(shop.getVendor().getName()));
-										e.setCancelled(false);
-										
+									if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+										if (perm.has(p, "shopchest.openOther")) {
+											p.sendMessage(Config.opened_shop(shop.getVendor().getName()));
+											e.setCancelled(false);
+										} else {
+											p.sendMessage(Config.noPermission_openOthers());
+										}
 									} else {
-										p.sendMessage(Config.noPermission_openOthers());
-										e.setCancelled(true);
+										e.setCancelled(false);
 									}
 								} else {
-									
 									if (shop.getBuyPrice() > 0) {
-										e.setCancelled(true);
-
 										if (perm.has(p, "shopchest.buy")) {
-											if (shop.getShopType() == ShopType.INFINITE || shop.getShopType() == ShopType.ADMIN) {
-												buy(p, shop);
-											} else {
-												Chest c = (Chest) b.getState();
-												if (Utils.getAmount(c.getInventory(), shop.getProduct().clone().getType(), shop.getProduct().clone().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+											if (shop.getShopType() == ShopType.INFINITE) {
+												if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
 													buy(p, shop);
 												} else {
-													p.sendMessage(Config.out_of_stock());
+													e.setCancelled(false);
 												}
+											} else if (shop.getShopType() == ShopType.ADMIN) {
+												buy(p, shop);
+											} else {
+												if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+													Chest c = (Chest) b.getState();												
+													if (Utils.getAmount(c.getInventory(), shop.getProduct().clone().getType(), shop.getProduct().clone().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+														buy(p, shop);
+													} else {
+														p.sendMessage(Config.out_of_stock());
+													}
+												} else {
+													e.setCancelled(false);
+												}												
 											}
 										} else {
 											p.sendMessage(Config.noPermission_buy());
@@ -184,8 +188,6 @@ public class InteractShop implements Listener{
 										p.sendMessage(Config.buying_disabled());
 									}							
 								}
-								
-							}
 							
 						}
 						
@@ -196,23 +198,37 @@ public class InteractShop implements Listener{
 				} else if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 					
 					if (ShopUtils.isShop(b.getLocation())) {
+						e.setCancelled(true);
 						Shop shop = ShopUtils.getShop(b.getLocation());
 						
-						if (!p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
 							if (shop.getSellPrice() > 0) {
 								if (perm.has(p, "shopchest.sell")) {
-									if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
-										sell(p, shop);			
+									if (shop.getShopType() == ShopType.INFINITE) {
+										if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+											sell(p, shop);
+										} else {
+											e.setCancelled(false);
+										}
+									} else if (shop.getShopType() == ShopType.ADMIN) {
+										sell(p, shop);
 									} else {
-										p.sendMessage(Config.not_enough_items());
+										if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+										 	if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+										 		sell(p, shop);			
+										 	} else {
+										 		p.sendMessage(Config.not_enough_items());
+										 	}
+										} else {
+											e.setCancelled(false);
+										}									
 									}
+									
 								} else {
 									p.sendMessage(Config.noPermission_sell());
 								}
 							} else {
 								p.sendMessage(Config.selling_disabled());
 							}
-						}
 
 					}				
 					
