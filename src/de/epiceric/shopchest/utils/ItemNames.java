@@ -1,7 +1,6 @@
 package de.epiceric.shopchest.utils;
 
-import java.util.Map;
-
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -10,11 +9,11 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 public class ItemNames {
 
-	private static final Map<String,String> map = ImmutableMap.<String,String>builder()
+    private static final Map<String, String> map = ImmutableMap.<String, String>builder()
             .put("1", "Stone")
             .put("1:1", "Granite")
             .put("1:2", "Polished Granite")
@@ -523,34 +522,34 @@ public class ItemNames {
             .put("380", "Cauldron")
             .put("381", "Eye of Ender")
             .put("382", "Glistering Melon")
-    	    .put("383", "Spawn Egg")
-    	    .put("383:50", "Spawn Creeper")
-    	    .put("383:51", "Spawn Skeleton")
-    	    .put("383:52", "Spawn Spider")
-    	    .put("383:54", "Spawn Zombie")
-    	    .put("383:55", "Spawn Slime")
-    	    .put("383:56", "Spawn Ghast")
-    	    .put("383:57", "Spawn Pigman")
-    	    .put("383:58", "Spawn Enderman")
-    	    .put("383:59", "Spawn Cave Spider")
-    	    .put("383:60", "Spawn Silverfish")
-    	    .put("383:61", "Spawn Blaze")
-    	    .put("383:62", "Spawn Magma Cube")
-    	    .put("383:65", "Spawn Bat")
-    	    .put("383:66", "Spawn Witch")
-    	    .put("383:67", "Spawn Endermite")
-    	    .put("383:68", "Spawn Guardian")
-    	    .put("383:90", "Spawn Pig")
-    	    .put("383:91", "Spawn Sheep")
-    	    .put("383:92", "Spawn Cow")
-    	    .put("383:93", "Spawn Chicken")
-    	    .put("383:94", "Spawn Squid")
-    	    .put("383:95", "Spawn Wolf")
-    	    .put("383:96", "Spawn Mooshroom")
-    	    .put("383:98", "Spawn Ocelot")
-    	    .put("383:100", "Spawn Horse")
-    	    .put("383:101", "Spawn Rabbit")
-    	    .put("383:120", "Spawn Villager")
+            .put("383", "Spawn Egg")
+            .put("383:50", "Spawn Creeper")
+            .put("383:51", "Spawn Skeleton")
+            .put("383:52", "Spawn Spider")
+            .put("383:54", "Spawn Zombie")
+            .put("383:55", "Spawn Slime")
+            .put("383:56", "Spawn Ghast")
+            .put("383:57", "Spawn Pigman")
+            .put("383:58", "Spawn Enderman")
+            .put("383:59", "Spawn Cave Spider")
+            .put("383:60", "Spawn Silverfish")
+            .put("383:61", "Spawn Blaze")
+            .put("383:62", "Spawn Magma Cube")
+            .put("383:65", "Spawn Bat")
+            .put("383:66", "Spawn Witch")
+            .put("383:67", "Spawn Endermite")
+            .put("383:68", "Spawn Guardian")
+            .put("383:90", "Spawn Pig")
+            .put("383:91", "Spawn Sheep")
+            .put("383:92", "Spawn Cow")
+            .put("383:93", "Spawn Chicken")
+            .put("383:94", "Spawn Squid")
+            .put("383:95", "Spawn Wolf")
+            .put("383:96", "Spawn Mooshroom")
+            .put("383:98", "Spawn Ocelot")
+            .put("383:100", "Spawn Horse")
+            .put("383:101", "Spawn Rabbit")
+            .put("383:120", "Spawn Villager")
             .put("384", "Bottle o' Enchanting")
             .put("385", "Fire Charge")
             .put("386", "Book and Quill")
@@ -633,14 +632,14 @@ public class ItemNames {
             .put("2266", "Music Disk (11)")
             .put("2267", "Music Disk (wait)")
             .build();
-	
-	public static String lookup(ItemStack stack) {
+
+    public static String lookup(ItemStack stack) {
         if (stack.hasItemMeta()) {
             ItemMeta meta = stack.getItemMeta();
             if (meta.getDisplayName() != null) {
                 return meta.getDisplayName();
             } else if (meta instanceof BookMeta) {
-                return ((BookMeta)meta).getTitle();
+                return ((BookMeta) meta).getTitle();
             }
         }
 
@@ -651,7 +650,7 @@ public class ItemNames {
             // special case: white wool/carpet is just called "Wool" or "Carpet"
             result = map.get(key);
         } else if (mat == Material.WOOL || mat == Material.CARPET || mat == Material.STAINED_CLAY || mat == Material.STAINED_GLASS || mat == Material.STAINED_GLASS_PANE) {
-            DyeColor dc = DyeColor.getByWoolData((byte)stack.getDurability());
+            DyeColor dc = DyeColor.getByWoolData((byte) stack.getDurability());
             result = dc == null ? map.get(key) : WordUtils.capitalizeFully(dc.toString().replace("_", " ")) + " " + map.get(key);
         } else if (mat == Material.LEATHER_HELMET || mat == Material.LEATHER_CHESTPLATE || mat == Material.LEATHER_LEGGINGS || mat == Material.LEATHER_BOOTS) {
             LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) stack.getItemMeta();
@@ -668,5 +667,5 @@ public class ItemNames {
 
         return result;
     }
-	
+
 }

@@ -1,4 +1,7 @@
 /bin/
+/out/
+/.idea/
 /.settings/
 .classpath
 .project
+ShopChest.iml
