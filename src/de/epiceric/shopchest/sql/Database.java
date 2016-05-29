@@ -11,60 +11,81 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.util.UUID;
-import java.util.logging.Level;
 
-public abstract class Database {
+public class Database {
 
-    public String SQLiteCreateTokensTable = "CREATE TABLE IF NOT EXISTS shop_list (" +
-            "`id` int(11) NOT NULL," +
-            "`vendor` varchar(32) NOT NULL," +
-            "`product` varchar(32) NOT NULL," +
-            "`world` varchar(32) NOT NULL," +
-            "`x` int(11) NOT NULL," +
-            "`y` int(11) NOT NULL," +
-            "`z` int(11) NOT NULL," +
-            "`buyprice` float(32) NOT NULL," +
-            "`sellprice` float(32) NOT NULL," +
-            "`shoptype` varchar(32) NOT NULL," +
-            "PRIMARY KEY (`id`)" +
-            ");";
-    // The name of the table we created back in SQLite class.
-    public String table = "shop_list";
-    public String world = "";
-    public String vendor = "";
-    public ItemStack product = null;
-    public Location location = null;
-    public double buyPrice = 0;
-    public double sellPrice = 0;
-    public ShopType shopType = ShopType.NORMAL;
-    ShopChest plugin;
-    Connection connection;
+    private ShopChest plugin;
+    private Connection connection;
 
     public Database(ShopChest instance) {
         plugin = instance;
+        initialize();
     }
 
-    public abstract Connection getSQLConnection();
+    private Connection getSQLConnection() {
+        File dbFile = new File(plugin.getDataFolder(), "shops.db");
 
-    public abstract void load();
+        if (!dbFile.exists()) {
+            try {
+                dbFile.createNewFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 
-    public void initialize() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                return connection;
+            }
+
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
+
+            return connection;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private void initialize() {
         connection = getSQLConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + table + " WHERE id = ?");
+            String queryCreateTable = "CREATE TABLE IF NOT EXISTS shop_list (" +
+                    "`id` int(11) NOT NULL," +
+                    "`vendor` varchar(32) NOT NULL," +
+                    "`product` varchar(32) NOT NULL," +
+                    "`world` varchar(32) NOT NULL," +
+                    "`x` int(11) NOT NULL," +
+                    "`y` int(11) NOT NULL," +
+                    "`z` int(11) NOT NULL," +
+                    "`buyprice` float(32) NOT NULL," +
+                    "`sellprice` float(32) NOT NULL," +
+                    "`shoptype` varchar(32) NOT NULL," +
+                    "PRIMARY KEY (`id`)" +
+                    ");";
+
+            Statement s = connection.createStatement();
+            s.executeUpdate(queryCreateTable);
+            s.close();
+
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM shop_list WHERE id = ?");
             ResultSet rs = ps.executeQuery();
             close(ps, rs);
 
         } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+            ex.printStackTrace();
         }
     }
 
     public int getNextFreeID() {
         for (int i = 1; i < getHighestID() + 1; i++) {
-            if (getProduct(i) == null) {
+            if (get(i, ShopInfo.X) == null) {
                 return i;
             } else {
                 if (i == getHighestID()) {
@@ -77,383 +98,142 @@ public abstract class Database {
     }
 
     public int getHighestID() {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         int highestID = 1;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + ";");
 
+        try {
+            ps = connection.prepareStatement("SELECT * FROM shop_list;");
             rs = ps.executeQuery();
+
             while (rs.next()) {
                 if (rs.getInt("id") > highestID) {
                     highestID = rs.getInt("id");
                 }
             }
+
             return highestID;
 
         } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+            ex.printStackTrace();
         } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
+            close(ps, rs);
         }
+
         return 0;
     }
 
     public int getShopID(Shop shop) {
-
-
         for (int i = 1; i < getHighestID() + 1; i++) {
-
             try {
-                Shop s = getShop(i);
+                Shop s = (Shop) get(i, null);
                 if (s.getLocation().equals(shop.getLocation())) {
                     return i;
                 }
-            } catch (NullPointerException ex) {
-                continue;
-            }
-
+            } catch (NullPointerException ex) { /* Empty catch block... */ }
         }
 
         return 0;
     }
 
     public void removeShop(Shop shop) {
-
         int id = getShopID(shop);
         if (id == 0) return;
 
         if (shop.hasItem()) shop.getItem().remove();
 
-        Connection conn = null;
         PreparedStatement ps = null;
+
         try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("DELETE FROM " + table + " where id = " + id + ";");
+            ps = connection.prepareStatement("DELETE FROM shop_list WHERE id = " + id + ";");
             ps.executeUpdate();
         } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+            ex.printStackTrace();
         } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
+            close(ps, null);
         }
 
     }
 
-    public void removeShop(int id) {
-
-        if (id == 0) return;
-        removeShop(getShop(id));
-
-    }
-
-    private World getWorld(int id) {
-        Connection conn = null;
+    public Object get(int id, ShopInfo shopInfo) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
 
+        try {
+            ps = connection.prepareStatement("SELECT * FROM shop_list WHERE id = " + id + ";");
             rs = ps.executeQuery();
+
             while (rs.next()) {
                 if (rs.getInt("id") == id) {
-                    return Bukkit.getWorld(rs.getString("world"));
-                }
-            }
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-        return null;
-    }
 
-    public OfflinePlayer getVendor(int id) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
+                    switch (shopInfo) {
+                        case SHOP:
+                            Shop shop = ShopUtils.getShop((Location) get(id, ShopInfo.LOCATION));
+                            if (shop != null)
+                                return shop;
+                            else {
+                                return new Shop(plugin,
+                                        (OfflinePlayer) get(id, ShopInfo.VENDOR),
+                                        (ItemStack) get(id, ShopInfo.PRODUCT),
+                                        (Location) get(id, ShopInfo.LOCATION),
+                                        (double) get(id, ShopInfo.BUYPRICE),
+                                        (double) get(id, ShopInfo.SELLPRICE),
+                                        (ShopType) get(id, ShopInfo.SHOPTYPE));
+                            }
+                        case VENDOR:
+                            return Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
+                        case PRODUCT:
+                            return Utils.decode(rs.getString("product"));
+                        case WORLD:
+                            return Bukkit.getWorld(rs.getString("world"));
+                        case X:
+                            return rs.getInt("x");
+                        case Y:
+                            return rs.getInt("y");
+                        case Z:
+                            return rs.getInt("z");
+                        case LOCATION:
+                            return new Location((World) get(id, ShopInfo.WORLD), (int) get(id, ShopInfo.X), (int) get(id, ShopInfo.Y), (int) get(id, ShopInfo.Z));
+                        case BUYPRICE:
+                            return rs.getDouble("buyprice");
+                        case SELLPRICE:
+                            return rs.getDouble("sellprice");
+                        case SHOPTYPE:
+                            String shoptype = rs.getString("shoptype");
 
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("id") == id) {
-                    return Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
-                }
-            }
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-        return null;
-    }
+                            if (shoptype.equals("INFINITE")) {
 
-    public ItemStack getProduct(int id) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
+                                Shop newShop = new Shop(plugin,
+                                        (OfflinePlayer) get(id, ShopInfo.VENDOR),
+                                        (ItemStack) get(id, ShopInfo.PRODUCT),
+                                        (Location) get(id, ShopInfo.LOCATION),
+                                        (double) get(id, ShopInfo.BUYPRICE),
+                                        (double) get(id, ShopInfo.SELLPRICE),
+                                        ShopType.ADMIN);
 
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("id") == id) {
-                    return Utils.decode(rs.getString("product"));
-                }
-            }
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-        return null;
-    }
-
-    private int getX(int id) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
-
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("id") == id) {
-                    return rs.getInt("x");
-                }
-            }
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-        return 0;
-    }
-
-    private int getY(int id) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
-
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("id") == id) {
-                    return rs.getInt("y");
-                }
-            }
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-        return 0;
-    }
-
-    private int getZ(int id) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
-
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("id") == id) {
-                    return rs.getInt("z");
-                }
-            }
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-        return 0;
-    }
-
-    public Location getLocation(int id) {
-        return new Location(getWorld(id), getX(id), getY(id), getZ(id));
-    }
-
-    public double getBuyPrice(int id) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
-
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("id") == id) {
-                    return rs.getDouble("buyprice");
-                }
-            }
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-        return 0;
-    }
-
-    public double getSellPrice(int id) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
-
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("id") == id) {
-                    return rs.getDouble("sellprice");
-                }
-            }
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-        return 0;
-    }
-
-    public ShopType getShopType(int id) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = " + id + ";");
-
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("id") == id) {
-                    String shoptype = rs.getString("shoptype");
-                    if (shoptype.equals("INFINITE")) {
-                        Shop shop = new Shop(plugin, getVendor(id), getProduct(id), getLocation(id), getBuyPrice(id), getSellPrice(id), ShopType.ADMIN);
-                        setShop(id, shop);
-                        return ShopType.ADMIN;
+                                setShop(id, newShop);
+                                return ShopType.ADMIN;
+                            }
+                            return ShopType.valueOf(shoptype);
                     }
-                    return ShopType.valueOf(shoptype);
                 }
             }
+
         } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+            ex.printStackTrace();
         } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
+            close(ps, rs);
         }
 
-        return ShopType.NORMAL;
+        return null;
     }
-
-    public Shop getShop(int id) {
-        OfflinePlayer vendor = getVendor(id);
-        Location location = getLocation(id);
-        ItemStack product = getProduct(id);
-        double buyPrice = getBuyPrice(id);
-        double sellPrice = getSellPrice(id);
-        ShopType shopType = getShopType(id);
-
-        if (ShopUtils.isShop(location)) return ShopUtils.getShop(location);
-        else return new Shop(plugin, vendor, product, location, buyPrice, sellPrice, shopType);
-    }
-
 
     public void setShop(int id, Shop shop) {
-        Connection conn = null;
         PreparedStatement ps = null;
+
         try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("REPLACE INTO " + table + " (id,vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?)");
+            ps = connection.prepareStatement("REPLACE INTO shop_list (id,vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?)");
 
             ps.setInt(1, id);
             ps.setString(2, shop.getVendor().getUniqueId().toString());
@@ -467,20 +247,11 @@ public abstract class Database {
             ps.setString(10, shop.getShopType().toString());
 
             ps.executeUpdate();
-            return;
         } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+            ex.printStackTrace();
         } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
+            close(ps, null);
         }
-        return;
     }
 
     public void addShop(Shop shop) {
@@ -488,15 +259,28 @@ public abstract class Database {
         setShop(id, shop);
     }
 
-
-    public void close(PreparedStatement ps, ResultSet rs) {
+    private void close(PreparedStatement ps, ResultSet rs) {
         try {
             if (ps != null)
                 ps.close();
             if (rs != null)
                 rs.close();
         } catch (SQLException ex) {
-            Error.close(plugin, ex);
+            ex.printStackTrace();
         }
+    }
+
+    public enum ShopInfo {
+        SHOP,
+        VENDOR,
+        PRODUCT,
+        WORLD,
+        X,
+        Y,
+        Z,
+        LOCATION,
+        BUYPRICE,
+        SELLPRICE,
+        SHOPTYPE;
     }
 }

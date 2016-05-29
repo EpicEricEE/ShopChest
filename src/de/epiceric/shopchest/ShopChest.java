@@ -10,7 +10,7 @@ import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import de.epiceric.shopchest.interfaces.utils.*;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
-import de.epiceric.shopchest.sql.SQLite;
+import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.Metrics;
 import de.epiceric.shopchest.utils.Metrics.Graph;
 import de.epiceric.shopchest.utils.Metrics.Plotter;
@@ -25,7 +25,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -36,7 +36,7 @@ public class ShopChest extends JavaPlugin {
     public static Permission perm = null;
     public static LWC lwc = null;
     public static boolean lockette = false;
-    public static SQLite sqlite;
+    public static Database database;
     public static boolean isUpdateNeeded = false;
     public static String latestVersion = "";
     public static String downloadLink = "";
@@ -121,8 +121,7 @@ public class ShopChest extends JavaPlugin {
         reloadConfig();
         saveDefaultConfig();
 
-        sqlite = new SQLite(this);
-        sqlite.load();
+        database = new Database(this);
 
         switch (Utils.getVersion(getServer())) {
 
@@ -257,10 +256,10 @@ public class ShopChest extends JavaPlugin {
     private void initializeShops() {
         int count = 0;
 
-        for (int id = 1; id < sqlite.getHighestID() + 1; id++) {
+        for (int id = 1; id < database.getHighestID() + 1; id++) {
 
             try {
-                Shop shop = sqlite.getShop(id);
+                Shop shop = (Shop) database.get(id, Database.ShopInfo.SHOP);
                 shop.createHologram();
                 shop.createItem();
                 ShopUtils.addShop(shop);

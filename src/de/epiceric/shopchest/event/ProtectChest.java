@@ -77,11 +77,11 @@ public class ProtectChest implements Listener {
                     if (b.getLocation().equals(r.getLocation())) {
                         shop = ShopUtils.getShop(l.getLocation());
                         ShopUtils.removeShop(shop);
-                        ShopChest.sqlite.removeShop(shop);
+                        ShopChest.database.removeShop(shop);
                     } else if (b.getLocation().equals(l.getLocation())) {
                         shop = ShopUtils.getShop(r.getLocation());
                         ShopUtils.removeShop(shop);
-                        ShopChest.sqlite.removeShop(shop);
+                        ShopChest.database.removeShop(shop);
                     } else {
                         return;
                     }
@@ -92,7 +92,7 @@ public class ProtectChest implements Listener {
                     newShop.createHologram();
                     newShop.createItem();
                     ShopUtils.addShop(newShop);
-                    ShopChest.sqlite.addShop(newShop);
+                    ShopChest.database.addShop(newShop);
 
                 }
 

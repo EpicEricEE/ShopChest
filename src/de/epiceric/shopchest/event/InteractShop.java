@@ -6,7 +6,7 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
-import de.epiceric.shopchest.sql.SQLite;
+import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.*;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -36,7 +36,7 @@ public class InteractShop implements Listener {
     private ShopChest plugin;
     private Permission perm = ShopChest.perm;
     private Economy econ = ShopChest.econ;
-    private SQLite sqlite = ShopChest.sqlite;
+    private Database database = ShopChest.database;
 
     public InteractShop(ShopChest plugin) {
         this.plugin = plugin;
@@ -190,7 +190,7 @@ public class InteractShop implements Listener {
 
                         if (shop.getSellPrice() > 0) {
                             if (perm.has(p, "shopchest.sell")) {
-                                 if (shop.getShopType() == ShopType.ADMIN) {
+                                if (shop.getShopType() == ShopType.ADMIN) {
                                     if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
                                         sell(p, shop);
                                     } else {
@@ -233,7 +233,7 @@ public class InteractShop implements Listener {
         shop.createHologram();
         shop.createItem();
 
-        sqlite.addShop(shop);
+        database.addShop(shop);
 
         ShopUtils.addShop(shop);
         executor.sendMessage(Config.shop_created());
@@ -248,7 +248,7 @@ public class InteractShop implements Listener {
 
         ShopUtils.removeShop(shop);
 
-        sqlite.removeShop(shop);
+        database.removeShop(shop);
 
         shop.removeHologram();
 

@@ -34,6 +34,7 @@ public class Shop {
     private double buyPrice;
     private double sellPrice;
     private ShopType shopType;
+
     public Shop(ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
         this.plugin = plugin;
         this.vendor = vendor;

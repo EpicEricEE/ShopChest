@@ -5,6 +5,7 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Hologram;
 import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.ShopUtils;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
 import org.bukkit.Bukkit;
@@ -36,10 +37,10 @@ public class Utils_1_8_R3 extends Utils {
 
         int count = 0;
 
-        for (int id = 1; id < ShopChest.sqlite.getHighestID() + 1; id++) {
+        for (int id = 1; id < ShopChest.database.getHighestID() + 1; id++) {
 
             try {
-                Shop shop = ShopChest.sqlite.getShop(id);
+                Shop shop = (Shop) ShopChest.database.get(id, Database.ShopInfo.SHOP);
                 shop.createHologram();
                 shop.createItem();
                 ShopUtils.addShop(shop);

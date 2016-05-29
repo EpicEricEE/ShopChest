@@ -14,9 +14,11 @@ public class ClickType {
     private double buyPrice;
     private double sellPrice;
     private ShopType shopType;
+
     public ClickType(EnumClickType enumClickType) {
         this.enumClickType = enumClickType;
     }
+
     public ClickType(EnumClickType enumClickType, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
         this.enumClickType = enumClickType;
         this.product = product;

@@ -11,6 +11,7 @@ public class UpdateChecker {
     private String url;
     private String version;
     private String link;
+
     public UpdateChecker(ShopChest plugin, String url) {
         this.plugin = plugin;
         this.url = url;
