@@ -62,38 +62,6 @@ public abstract class Database {
         }
     }
 
-    public void renameColumnInfiniteToShopType() {
-        Connection conn = null;
-        Statement s = null;
-        try {
-            conn = getSQLConnection();
-            s = conn.createStatement();
-            s.execute("ALTER TABLE " + table + " RENAME TO " + table + "_old");
-            s.close();
-            s.execute(SQLiteCreateTokensTable);
-            s.close();
-            s.execute("INSERT INTO " + table + "(id, vendor, product, world, x, y, z, buyprice, sellprice, shoptype) SELECT id, vendor, product, world, x, y, z, buyprice, sellprice, infinite FROM " + table + "_old");
-            s.close();
-            conn.close();
-
-            conn = getSQLConnection();
-            s = conn.createStatement();
-            s.execute("DROP TABLE " + table + "_old");
-            s.close();
-        } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-        } finally {
-            try {
-                if (s != null)
-                    s.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-            }
-        }
-    }
-
     public int getNextFreeID() {
         for (int i = 1; i < getHighestID() + 1; i++) {
             if (getProduct(i) == null) {
@@ -442,22 +410,10 @@ public abstract class Database {
             rs = ps.executeQuery();
             while (rs.next()) {
                 if (rs.getInt("id") == id) {
-                    if (rs.getString("shoptype").equals("0") || rs.getString("shoptype").equals("1")) {
-                        ps = conn.prepareStatement("UPDATE " + table + " SET shoptype = REPLACE(shoptype, '0', 'NORMAL')");
-                        ps.executeUpdate();
-                        ps.close();
-                        ps = conn.prepareStatement("UPDATE " + table + " SET shoptype = REPLACE(shoptype, '1', 'INFINITE')");
-                        ps.executeUpdate();
-                        return getShopType(id);
-                    }
                     return ShopType.valueOf(rs.getString("shoptype"));
                 }
             }
         } catch (SQLException ex) {
-            if (ex.getMessage().equals("no such column: 'shoptype'")) {
-                renameColumnInfiniteToShopType();
-                return getShopType(id);
-            }
             plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
         } finally {
             try {

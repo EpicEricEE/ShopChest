@@ -155,13 +155,7 @@ public class InteractShop implements Listener {
                             } else {
                                 if (shop.getBuyPrice() > 0) {
                                     if (perm.has(p, "shopchest.buy")) {
-                                        if (shop.getShopType() == ShopType.INFINITE) {
-                                            if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-                                                buy(p, shop);
-                                            } else {
-                                                e.setCancelled(false);
-                                            }
-                                        } else if (shop.getShopType() == ShopType.ADMIN) {
+                                        if (shop.getShopType() == ShopType.ADMIN) {
                                             buy(p, shop);
                                         } else {
                                             if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
@@ -196,17 +190,7 @@ public class InteractShop implements Listener {
 
                         if (shop.getSellPrice() > 0) {
                             if (perm.has(p, "shopchest.sell")) {
-                                if (shop.getShopType() == ShopType.INFINITE) {
-                                    if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-                                        if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
-                                            sell(p, shop);
-                                        } else {
-                                            p.sendMessage(Config.not_enough_items());
-                                        }
-                                    } else {
-                                        e.setCancelled(false);
-                                    }
-                                } else if (shop.getShopType() == ShopType.ADMIN) {
+                                 if (shop.getShopType() == ShopType.ADMIN) {
                                     if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
                                         sell(p, shop);
                                     } else {
@@ -287,7 +271,6 @@ public class InteractShop implements Listener {
         String stock = Config.shopInfo_stock(amount);
 
         if (shop.getShopType() == ShopType.NORMAL) shopType = Config.shopInfo_isNormal();
-        else if (shop.getShopType() == ShopType.INFINITE) shopType = Config.shopInfo_isInfinite();
         else shopType = Config.shopInfo_isAdmin();
 
         Map<Enchantment, Integer> enchantmentMap;
@@ -542,54 +525,6 @@ public class InteractShop implements Listener {
             } else {
                 executor.sendMessage(Config.chest_not_enough_inventory_space());
             }
-
-        } else if (shop.getShopType() == ShopType.INFINITE) {
-
-            if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice()) {
-                EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
-                EconomyResponse r2 = econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice());
-
-                if (r.transactionSuccess()) {
-                    if (r2.transactionSuccess()) {
-                        for (int i = leftAmount; i > 0; i--) {
-                            ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
-                            soldProduct.setItemMeta(product.clone().getItemMeta());
-                            if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
-                                if (executor.getInventory().getItem(40) != null) {
-                                    ItemStack is = executor.getInventory().getItem(40);
-                                    if (is.getType().equals(shop.getProduct().getType()) && is.getDurability() == shop.getProduct().getDurability() && is.getData().equals(shop.getProduct().getData()) && is.getItemMeta().equals(shop.getProduct().getItemMeta())) {
-                                        ItemStack isNew = new ItemStack(is);
-                                        int amount = is.getAmount();
-                                        isNew.setAmount(amount - 1);
-
-                                        if (amount <= 1) {
-                                            executor.getInventory().setItem(40, null);
-                                        } else {
-                                            executor.getInventory().setItem(40, isNew);
-                                        }
-
-                                    }
-                                } else {
-                                    executor.getInventory().removeItem(soldProduct);
-                                }
-                            } else {
-                                executor.getInventory().removeItem(soldProduct);
-                            }
-                            executor.updateInventory();
-                        }
-                        executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
-                        if (shop.getVendor().isOnline())
-                            shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
-                    } else {
-                        executor.sendMessage(Config.error_occurred(r2.errorMessage));
-                    }
-                } else {
-                    executor.sendMessage(Config.error_occurred(r.errorMessage));
-                }
-            } else {
-                executor.sendMessage(Config.vendor_not_enough_money());
-            }
-
 
         } else if (shop.getShopType() == ShopType.ADMIN) {
 

@@ -207,7 +207,6 @@ public class Shop {
 
     public enum ShopType {
         NORMAL,
-        INFINITE,
         ADMIN;
     }
 

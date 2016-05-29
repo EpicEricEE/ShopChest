@@ -14,7 +14,6 @@ permissions:
     description: Gives access to all ShopChest permissions.
     children:
       shopchest.create: true
-      shopchest.create.infinite: true
       shopchest.removeOther: true
       shopchest.buy: true
       shopchest.openOther: true
@@ -25,11 +24,6 @@ permissions:
   shopchest.create:
     description: Allows you to create a shop.
     default: true
-  shopchest.create.infinite:
-    description: Allows you to create an infinite shop.
-    children:
-      shopchest.create: true
-    default: op
   shopchest.create.admin:
     description: Allows you to create an admin shop.
     children:

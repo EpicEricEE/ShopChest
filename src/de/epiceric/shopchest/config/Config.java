@@ -147,10 +147,6 @@ public class Config {
         return plugin.getConfig().getString("messages.command-description.limits").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
-    public static String shopInfo_isInfinite() {
-        return plugin.getConfig().getString("messages.shop-info.is-infinite").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
-    }
-
     public static String shopInfo_isNormal() {
         return plugin.getConfig().getString("messages.shop-info.is-normal").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
@@ -161,10 +157,6 @@ public class Config {
 
     public static String noPermission_create() {
         return plugin.getConfig().getString("messages.no-permission.create").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
-    }
-
-    public static String noPermission_createInfinite() {
-        return plugin.getConfig().getString("messages.no-permission.create-infinite").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String noPermission_createAdmin() {

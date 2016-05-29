@@ -141,10 +141,7 @@ messages:
     # If the sell price or buy price is disabled, this message will be displayed instead of the price and the currency symbol in the message above.
     disabled: "&7Disabled&e"
     
-    # Set the infinite message the player gets after entering '/shop info' ...
-    # ... when the shop is infinite.
-    is-infinite: "&6Type: &eInfinite"
-    
+    # Set the type message the player gets after entering '/shop info' ...
     # ... when the shop is normal.
     is-normal: "&6Type: &eNormal"
     
@@ -297,9 +294,6 @@ messages:
 
     # Set the message when a not permitted player tries to create a shop.
     create: "&cYou don't have permission to create a shop."
-
-    # Set the message when a not permitted player tries to create an infinite shop.
-    create-infinite: "&cYou don't have permission to create an infinite shop."
 
     # Set the message when a not permitted player tries to create an admin shop.
     create-admin: "&cYou don't have permission to create an admin shop."

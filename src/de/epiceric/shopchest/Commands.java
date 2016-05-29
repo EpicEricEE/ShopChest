@@ -57,15 +57,7 @@ public class Commands extends BukkitCommand {
                             create(args, ShopType.NORMAL, p);
                             return true;
                         } else if (args.length == 5) {
-                            if (args[4].equalsIgnoreCase("infinite")) {
-                                if (perm.has(p, "shopchest.create.infinite")) {
-                                    create(args, ShopType.INFINITE, p);
-                                    return true;
-                                } else {
-                                    p.sendMessage(Config.noPermission_createInfinite());
-                                    return true;
-                                }
-                            } else if (args[4].equalsIgnoreCase("normal")) {
+                            if (args[4].equalsIgnoreCase("normal")) {
                                 create(args, ShopType.NORMAL, p);
                                 return true;
                             } else if (args[4].equalsIgnoreCase("admin")) {
@@ -305,7 +297,7 @@ public class Commands extends BukkitCommand {
     }
 
     private void sendBasicHelpMessage(Player player) {
-        player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " create <amount> <buy-price> <sell-price> [infinite|normal|admin] - " + Config.cmdDesc_create());
+        player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " create <amount> <buy-price> <sell-price> [normal|admin] - " + Config.cmdDesc_create());
         player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " remove - " + Config.cmdDesc_remove());
         player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " info - " + Config.cmdDesc_info());
         player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name() + " reload - " + Config.cmdDesc_reload());
