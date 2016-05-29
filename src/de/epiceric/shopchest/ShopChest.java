@@ -48,23 +48,6 @@ public class ShopChest extends JavaPlugin {
         return instance;
     }
 
-    public static void copy(InputStream in, File file) {
-        try {
-            OutputStream out = new FileOutputStream(file);
-            byte[] buf = new byte[1024];
-            int len;
-
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-
-            out.close();
-            in.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private boolean setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
@@ -149,6 +132,7 @@ public class ShopChest extends JavaPlugin {
             logger.severe("Could not submit stats.");
         }
 
+        saveResource("item_names.txt", true);
         reloadConfig();
         saveDefaultConfig();
 
@@ -260,18 +244,6 @@ public class ShopChest extends JavaPlugin {
                 Bukkit.getConsoleSender().sendMessage("[ShopChest] " + message);
             }
         }
-
-        File itemNamesFile = new File(getDataFolder(), "item_names.txt");
-
-        if (!itemNamesFile.exists())
-            try {
-                itemNamesFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        copy(getResource("item_names.txt"), itemNamesFile);
-
 
         try {
             Commands.registerCommand(new Commands(this, Config.main_command_name(), "Manage Shops.", "", new ArrayList<String>()), this);
