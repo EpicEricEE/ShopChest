@@ -410,7 +410,13 @@ public abstract class Database {
             rs = ps.executeQuery();
             while (rs.next()) {
                 if (rs.getInt("id") == id) {
-                    return ShopType.valueOf(rs.getString("shoptype"));
+                    String shoptype = rs.getString("shoptype");
+                    if (shoptype.equals("INFINITE")) {
+                        Shop shop = new Shop(plugin, getVendor(id), getProduct(id), getLocation(id), getBuyPrice(id), getSellPrice(id), ShopType.ADMIN);
+                        setShop(id, shop);
+                        return ShopType.ADMIN;
+                    }
+                    return ShopType.valueOf(shoptype);
                 }
             }
         } catch (SQLException ex) {
