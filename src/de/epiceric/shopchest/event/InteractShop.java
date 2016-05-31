@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
@@ -160,7 +161,7 @@ public class InteractShop implements Listener {
                                         } else {
                                             if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
                                                 Chest c = (Chest) b.getState();
-                                                if (Utils.getAmount(c.getInventory(), shop.getProduct().clone().getType(), shop.getProduct().clone().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+                                                if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                                     buy(p, shop);
                                                 } else {
                                                     p.sendMessage(Config.out_of_stock());
@@ -190,15 +191,8 @@ public class InteractShop implements Listener {
 
                         if (shop.getSellPrice() > 0) {
                             if (perm.has(p, "shopchest.sell")) {
-                                if (shop.getShopType() == ShopType.ADMIN) {
-                                    if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
-                                        sell(p, shop);
-                                    } else {
-                                        p.sendMessage(Config.not_enough_items());
-                                    }
-                                } else {
-                                    if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-                                        if (Utils.getAmount(p.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta()) >= shop.getProduct().getAmount()) {
+                                    if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
+                                        if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                             sell(p, shop);
                                         } else {
                                             p.sendMessage(Config.not_enough_items());
@@ -206,8 +200,6 @@ public class InteractShop implements Listener {
                                     } else {
                                         e.setCancelled(false);
                                     }
-                                }
-
                             } else {
                                 p.sendMessage(Config.noPermission_sell());
                             }
@@ -260,7 +252,7 @@ public class InteractShop implements Listener {
 
         Chest c = (Chest) shop.getLocation().getBlock().getState();
 
-        int amount = Utils.getAmount(c.getInventory(), shop.getProduct().getType(), shop.getProduct().getDurability(), shop.getProduct().getItemMeta());
+        int amount = Utils.getAmount(c.getInventory(), shop.getProduct());
 
         String vendor = Config.shopInfo_vendor(shop.getVendor().getName());
         String product = Config.shopInfo_product(shop.getProduct().getAmount(), ItemNames.lookup(shop.getProduct()));
@@ -312,34 +304,29 @@ public class InteractShop implements Listener {
         executor.sendMessage(price);
         executor.sendMessage(shopType);
         executor.sendMessage(" ");
-
-
     }
 
     private void buy(Player executor, Shop shop) {
-
         if (econ.getBalance(executor) >= shop.getBuyPrice()) {
 
             Block b = shop.getLocation().getBlock();
             Chest c = (Chest) b.getState();
 
             HashMap<Integer, Integer> slotFree = new HashMap<>();
-            ItemStack product = shop.getProduct().clone();
+            ItemStack product = new ItemStack(shop.getProduct());
             Inventory inventory = executor.getInventory();
 
             for (int i = 0; i < 36; i++) {
-
                 ItemStack item = inventory.getItem(i);
                 if (item == null) {
                     slotFree.put(i, product.getMaxStackSize());
                 } else {
-                    if ((item.getType().equals(product.getType())) && (item.getDurability() == product.getDurability()) && (item.getItemMeta().equals(product.getItemMeta())) && (item.getData().equals(product.getData()))) {
+                    if (item.isSimilar(product)) {
                         int amountInSlot = item.getAmount();
                         int amountToFullStack = product.getMaxStackSize() - amountInSlot;
                         slotFree.put(i, amountToFullStack);
                     }
                 }
-
             }
 
             if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
@@ -347,7 +334,7 @@ public class InteractShop implements Listener {
                 if (item == null) {
                     slotFree.put(40, product.getMaxStackSize());
                 } else {
-                    if ((item.getType().equals(product.getType())) && (item.getDurability() == product.getDurability()) && (item.getItemMeta().equals(product.getItemMeta())) && (item.getData().equals(product.getData()))) {
+                    if (item.isSimilar(product)) {
                         int amountInSlot = item.getAmount();
                         int amountToFullStack = product.getMaxStackSize() - amountInSlot;
                         slotFree.put(40, amountToFullStack);
@@ -355,79 +342,35 @@ public class InteractShop implements Listener {
                 }
             }
 
-            int leftAmount = product.getAmount();
-
             int freeAmount = 0;
             for (int value : slotFree.values()) {
                 freeAmount += value;
             }
 
-            if (freeAmount >= leftAmount) {
+            if (freeAmount >= product.getAmount()) {
 
                 EconomyResponse r = econ.withdrawPlayer(executor, shop.getBuyPrice());
-                EconomyResponse r2 = null;
-                if (shop.getShopType() != ShopType.ADMIN) r2 = econ.depositPlayer(shop.getVendor(), shop.getBuyPrice());
+                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), shop.getBuyPrice()) : null;
 
                 if (r.transactionSuccess()) {
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
-                            for (int slot : slotFree.keySet()) {
-                                int amountInSlot = product.getMaxStackSize() - slotFree.get(slot);
+                            addToInventory(inventory, product);
+                            removeFromInventory(c.getInventory(), product);
+                            executor.updateInventory();
+                            executor.sendMessage(Config.buy_success(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), shop.getVendor().getName()));
 
-                                for (int i = amountInSlot; i < product.getMaxStackSize(); i++) {
-                                    if (leftAmount > 0) {
-                                        ItemStack boughtProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
-                                        boughtProduct.setItemMeta(product.clone().getItemMeta());
-                                        if (shop.getShopType() == ShopType.NORMAL)
-                                            c.getInventory().removeItem(boughtProduct);
-                                        if (slot != 40) {
-                                            inventory.addItem(boughtProduct);
-                                        } else {
-                                            ItemStack is = new ItemStack(boughtProduct);
-                                            int amount = 0;
-                                            if (inventory.getItem(40) != null)
-                                                amount = inventory.getItem(40).getAmount();
-                                            is.setAmount(amount + 1);
-                                            inventory.setItem(40, is);
-                                        }
-                                        executor.updateInventory();
-                                        leftAmount--;
-                                    } else if (leftAmount == 0) {
-                                        executor.sendMessage(Config.buy_success(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), shop.getVendor().getName()));
-                                        if (shop.getVendor().isOnline())
-                                            shop.getVendor().getPlayer().sendMessage(Config.someone_bought(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
-                                        return;
-                                    }
-                                }
+                            if (shop.getVendor().isOnline()) {
+                                shop.getVendor().getPlayer().sendMessage(Config.someone_bought(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
                             }
+
                         } else {
                             executor.sendMessage(Config.error_occurred(r2.errorMessage));
                         }
                     } else {
-                        for (int slot : slotFree.keySet()) {
-                            int amountInSlot = product.getMaxStackSize() - slotFree.get(slot);
-
-                            for (int i = amountInSlot; i < product.getMaxStackSize(); i++) {
-                                if (leftAmount > 0) {
-                                    ItemStack boughtProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
-                                    boughtProduct.setItemMeta(product.clone().getItemMeta());
-                                    if (slot != 40) {
-                                        inventory.addItem(boughtProduct);
-                                    } else {
-                                        ItemStack is = new ItemStack(boughtProduct);
-                                        int amount = 0;
-                                        if (inventory.getItem(40) != null) amount = inventory.getItem(40).getAmount();
-                                        is.setAmount(amount + 1);
-                                        inventory.setItem(40, is);
-                                    }
-                                    executor.updateInventory();
-                                    leftAmount--;
-                                } else if (leftAmount == 0) {
-                                    executor.sendMessage(Config.buy_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice()));
-                                    return;
-                                }
-                            }
-                        }
+                        addToInventory(inventory, product);
+                        executor.updateInventory();
+                        executor.sendMessage(Config.buy_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice()));
                     }
                 } else {
                     executor.sendMessage(Config.error_occurred(r.errorMessage));
@@ -438,131 +381,179 @@ public class InteractShop implements Listener {
         } else {
             executor.sendMessage(Config.not_enough_money());
         }
-
     }
 
     private void sell(Player executor, Shop shop) {
+        if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice()) {
 
-        Block block = shop.getLocation().getBlock();
-        Chest chest = (Chest) block.getState();
+            Block block = shop.getLocation().getBlock();
+            Chest chest = (Chest) block.getState();
 
-        HashMap<Integer, Integer> slotFree = new HashMap<>();
-        ItemStack product = shop.getProduct().clone();
-        Inventory inventory = chest.getInventory();
+            HashMap<Integer, Integer> slotFree = new HashMap<>();
+            ItemStack product = new ItemStack(shop.getProduct());
+            Inventory inventory = chest.getInventory();
 
-        for (int i = 0; i < chest.getInventory().getSize(); i++) {
-
-            ItemStack item = inventory.getItem(i);
-            if (item == null) {
-                slotFree.put(i, product.getMaxStackSize());
-            } else {
-                if ((item.getType().equals(product.getType())) && (item.getDurability() == product.getDurability()) && (item.getItemMeta().equals(product.getItemMeta())) && (item.getData().equals(product.getData()))) {
-                    int amountInSlot = item.getAmount();
-                    int amountToFullStack = product.getMaxStackSize() - amountInSlot;
-                    slotFree.put(i, amountToFullStack);
+            for (int i = 0; i < inventory.getSize(); i++) {
+                ItemStack item = inventory.getItem(i);
+                if (item == null) {
+                    slotFree.put(i, product.getMaxStackSize());
+                } else {
+                    if (item.isSimilar(product)) {
+                        int amountInSlot = item.getAmount();
+                        int amountToFullStack = product.getMaxStackSize() - amountInSlot;
+                        slotFree.put(i, amountToFullStack);
+                    }
                 }
             }
 
-        }
+            int freeAmount = 0;
+            for (int value : slotFree.values()) {
+                freeAmount += value;
+            }
 
-        int leftAmount = product.getAmount();
+            if (freeAmount >= product.getAmount()) {
 
-        int freeAmount = 0;
-        for (int value : slotFree.values()) {
-            freeAmount += value;
-        }
+                EconomyResponse r = econ.withdrawPlayer(executor, shop.getBuyPrice());
+                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), shop.getBuyPrice()) : null;
 
-        if (shop.getShopType() == ShopType.NORMAL) {
-
-            if (freeAmount >= leftAmount) {
-                if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice()) {
-                    EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
-                    EconomyResponse r2 = econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice());
-
-                    if (r.transactionSuccess()) {
+                if (r.transactionSuccess()) {
+                    if (r2 != null) {
                         if (r2.transactionSuccess()) {
-                            for (int i = leftAmount; i > 0; i--) {
-                                ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
-                                soldProduct.setItemMeta(product.clone().getItemMeta());
-                                inventory.addItem(soldProduct);
-                                if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
-                                    if (executor.getInventory().getItem(40) != null) {
-                                        ItemStack is = executor.getInventory().getItem(40);
-                                        if (is.getType().equals(shop.getProduct().getType()) && is.getDurability() == shop.getProduct().getDurability() && is.getData().equals(shop.getProduct().getData()) && is.getItemMeta().equals(shop.getProduct().getItemMeta())) {
-                                            ItemStack isNew = new ItemStack(is);
-                                            int amount = is.getAmount();
-                                            isNew.setAmount(amount - 1);
-
-                                            if (amount <= 1) {
-                                                executor.getInventory().setItem(40, null);
-                                            } else {
-                                                executor.getInventory().setItem(40, isNew);
-                                            }
-
-                                        }
-                                    } else {
-                                        executor.getInventory().removeItem(soldProduct);
-                                    }
-                                } else {
-                                    executor.getInventory().removeItem(soldProduct);
-                                }
-                                executor.updateInventory();
-                            }
+                            addToInventory(inventory, product);
+                            removeFromInventory(executor.getInventory(), product);
+                            executor.updateInventory();
                             executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
-                            if (shop.getVendor().isOnline())
+
+                            if (shop.getVendor().isOnline()) {
                                 shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), executor.getName()));
+                            }
+
                         } else {
                             executor.sendMessage(Config.error_occurred(r2.errorMessage));
                         }
+
                     } else {
-                        executor.sendMessage(Config.error_occurred(r.errorMessage));
+                        removeFromInventory(executor.getInventory(), product);
+                        executor.updateInventory();
+                        executor.sendMessage(Config.sell_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice()));
                     }
 
                 } else {
-                    executor.sendMessage(Config.vendor_not_enough_money());
+                    executor.sendMessage(Config.error_occurred(r.errorMessage));
                 }
 
             } else {
                 executor.sendMessage(Config.chest_not_enough_inventory_space());
             }
 
-        } else if (shop.getShopType() == ShopType.ADMIN) {
+        } else {
+            executor.sendMessage(Config.vendor_not_enough_money());
+        }
+    }
 
-            EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
+    private boolean addToInventory(Inventory inventory, ItemStack itemStack) {
+        HashMap<Integer, ItemStack> inventoryItems = new HashMap<>();
+        int amount = itemStack.getAmount();
+        int added = 0;
 
-            if (r.transactionSuccess()) {
-                for (int i = leftAmount; i > 0; i--) {
-                    ItemStack soldProduct = new ItemStack(product.clone().getType(), 1, product.clone().getDurability());
-                    soldProduct.setItemMeta(product.clone().getItemMeta());
-                    if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
-                        if (executor.getInventory().getItem(40) != null) {
-                            ItemStack is = executor.getInventory().getItem(40);
-                            if (is.getType().equals(shop.getProduct().getType()) && is.getDurability() == shop.getProduct().getDurability() && is.getData().equals(shop.getProduct().getData()) && is.getItemMeta().equals(shop.getProduct().getItemMeta())) {
-                                ItemStack isNew = new ItemStack(is);
-                                int amount = is.getAmount();
-                                isNew.setAmount(amount - 1);
-
-                                if (amount <= 1) {
-                                    executor.getInventory().setItem(40, null);
-                                } else {
-                                    executor.getInventory().setItem(40, isNew);
-                                }
-
-                            }
-                        } else {
-                            executor.getInventory().removeItem(soldProduct);
-                        }
-                    } else {
-                        executor.getInventory().removeItem(soldProduct);
-                    }
-                    executor.updateInventory();
-                }
-                executor.sendMessage(Config.sell_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice()));
-            } else {
-                executor.sendMessage(Config.error_occurred(r.errorMessage));
+        if (inventory instanceof PlayerInventory) {
+            if (Utils.getVersion(plugin.getServer()).contains("1_9")) {
+                inventoryItems.put(40, inventory.getItem(40));
             }
 
+            for (int i = 0; i < 36; i++) {
+                inventoryItems.put(i, inventory.getItem(i));
+            }
+
+        } else {
+            for (int i = 0; i < inventory.getSize(); i++) {
+                inventoryItems.put(i, inventory.getItem(i));
+            }
         }
+
+        slotLoop:
+        for (int slot : inventoryItems.keySet()) {
+            while (added < amount) {
+                ItemStack item = inventory.getItem(slot);
+
+                if (item != null) {
+                    if (item.isSimilar(itemStack)) {
+                        if (item.getAmount() != item.getMaxStackSize()) {
+                            ItemStack newItemStack = new ItemStack(item);
+                            newItemStack.setAmount(item.getAmount() + 1);
+                            inventory.setItem(slot, newItemStack);
+                            added++;
+                        } else {
+                            continue slotLoop;
+                        }
+                    } else {
+                        continue slotLoop;
+                    }
+                } else {
+                    ItemStack newItemStack = new ItemStack(itemStack);
+                    newItemStack.setAmount(1);
+                    inventory.setItem(slot, newItemStack);
+                    added++;
+                }
+            }
+        }
+
+        return (added == amount);
+    }
+
+    private boolean removeFromInventory(Inventory inventory, ItemStack itemStack) {
+        HashMap<Integer, ItemStack> inventoryItems = new HashMap<>();
+        int amount = itemStack.getAmount();
+        int removed = 0;
+
+        if (inventory instanceof PlayerInventory) {
+            if (Utils.getVersion(plugin.getServer()).contains("1_9")) {
+                inventoryItems.put(40, inventory.getItem(40));
+            }
+
+            for (int i = 0; i < 36; i++) {
+                inventoryItems.put(i, inventory.getItem(i));
+            }
+
+        } else {
+            for (int i = 0; i < inventory.getSize(); i++) {
+                inventoryItems.put(i, inventory.getItem(i));
+            }
+        }
+
+        slotLoop:
+        for (int slot : inventoryItems.keySet()) {
+            while (removed < amount) {
+                ItemStack item = inventory.getItem(slot);
+
+                if (item != null) {
+                    if (item.isSimilar(itemStack)) {
+                        if (item.getAmount() > 0) {
+                            int newAmount = item.getAmount() - 1;
+
+                            ItemStack newItemStack = new ItemStack(item);
+                            newItemStack.setAmount(newAmount);
+
+                            if (newAmount == 0)
+                                inventory.setItem(slot, null);
+                            else
+                                inventory.setItem(slot, newItemStack);
+
+                            removed++;
+                        } else {
+                            continue slotLoop;
+                        }
+                    } else {
+                        continue slotLoop;
+                    }
+                } else {
+                    continue slotLoop;
+                }
+
+            }
+        }
+
+        return (removed == amount);
     }
 
 }

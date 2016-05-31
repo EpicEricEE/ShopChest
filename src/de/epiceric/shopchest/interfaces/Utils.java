@@ -1,24 +1,49 @@
 package de.epiceric.shopchest.interfaces;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Utils {
 
-    public static int getAmount(Inventory inventory, Material type, short damage, ItemMeta itemMeta) {
-        ItemStack[] items = inventory.getContents();
+    public static int getAmount(Inventory inventory, ItemStack itemStack) {
         int amount = 0;
-        for (ItemStack item : items) {
-            if ((item != null) && (item.getType().equals(type)) && (item.getDurability() == damage) && (item.getAmount() > 0) && (item.getItemMeta().equals(itemMeta))) {
-                amount += item.getAmount();
+
+        ArrayList<ItemStack> inventoryItems = new ArrayList<>();
+
+        if (inventory instanceof PlayerInventory) {
+            if (getVersion(Bukkit.getServer()).contains("1_9")) {
+                inventoryItems.add(inventory.getItem(40));
+            }
+
+            for (int i = 0; i < 36; i++) {
+                inventoryItems.add(inventory.getItem(i));
+            }
+
+        } else {
+            for (int i = 0; i < inventory.getSize(); i++) {
+                inventoryItems.add(inventory.getItem(i));
             }
         }
+
+        for (ItemStack item : inventoryItems) {
+            if (item != null) {
+                if (item.isSimilar(itemStack)) {
+                    amount += item.getAmount();
+                }
+            }
+        }
+
         return amount;
     }
 
