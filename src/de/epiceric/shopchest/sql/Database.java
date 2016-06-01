@@ -16,57 +16,33 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.UUID;
 
-public class Database {
+public abstract class Database {
 
-    private ShopChest plugin;
-    private Connection connection;
+    public ShopChest plugin;
+    public Connection connection;
 
-    public Database(ShopChest instance) {
-        plugin = instance;
+    public Database(ShopChest plugin) {
+        this.plugin = plugin;
         initialize();
     }
 
-    private Connection getSQLConnection() {
-        File dbFile = new File(plugin.getDataFolder(), "shops.db");
-
-        if (!dbFile.exists()) {
-            try {
-                dbFile.createNewFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        try {
-            if (connection != null && !connection.isClosed()) {
-                return connection;
-            }
-
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
-
-            return connection;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
+    public abstract Connection getConnection();
 
     private void initialize() {
-        connection = getSQLConnection();
+        connection = getConnection();
+
         try {
             String queryCreateTable = "CREATE TABLE IF NOT EXISTS shop_list (" +
                     "`id` int(11) NOT NULL," +
-                    "`vendor` varchar(32) NOT NULL," +
-                    "`product` varchar(32) NOT NULL," +
-                    "`world` varchar(32) NOT NULL," +
+                    "`vendor` tinytext NOT NULL," +
+                    "`product` text NOT NULL," +
+                    "`world` tinytext NOT NULL," +
                     "`x` int(11) NOT NULL," +
                     "`y` int(11) NOT NULL," +
                     "`z` int(11) NOT NULL," +
                     "`buyprice` float(32) NOT NULL," +
                     "`sellprice` float(32) NOT NULL," +
-                    "`shoptype` varchar(32) NOT NULL," +
+                    "`shoptype` tinytext NOT NULL," +
                     "PRIMARY KEY (`id`)" +
                     ");";
 
@@ -74,7 +50,7 @@ public class Database {
             s.executeUpdate(queryCreateTable);
             s.close();
 
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM shop_list WHERE id = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM shop_list");
             ResultSet rs = ps.executeQuery();
             close(ps, rs);
 
@@ -282,5 +258,10 @@ public class Database {
         BUYPRICE,
         SELLPRICE,
         SHOPTYPE;
+    }
+
+    public enum DatabaseType {
+        SQLite,
+        MySQL;
     }
 }

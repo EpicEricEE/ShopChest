@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.config;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.sql.Database;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +11,30 @@ import java.util.Set;
 public class Config {
 
     private static ShopChest plugin = ShopChest.getInstance();
+
+    public static String database_mysql_host() {
+        return plugin.getConfig().getString("database.mysql.hostname");
+    }
+
+    public static int database_mysql_port() {
+        return plugin.getConfig().getInt("database.mysql.port");
+    }
+
+    public static String database_mysql_database() {
+        return plugin.getConfig().getString("database.mysql.database");
+    }
+
+    public static String database_mysql_username() {
+        return plugin.getConfig().getString("database.mysql.username");
+    }
+
+    public static String database_mysql_password() {
+        return plugin.getConfig().getString("database.mysql.password");
+    }
+
+    public static Database.DatabaseType database_type() {
+        return Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
+    }
 
     public static Set<String> minimum_prices() {
         return (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);

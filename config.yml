@@ -72,6 +72,32 @@ blacklist: []
 #  - "STONE:1"
 #  - "DIAMOND_BLOCK"
 
+database:
+
+  # Select the type of database which should be used
+  # Either use 'SQLite' or 'MySQL'. Otherwise you will break the plugin!
+  type: "SQLite"
+
+  # If the specified is 'MySQL', specify the...
+  # (You can leave this empty if you're using SQLite)
+  mysql:
+
+    # ...hostname where the database is accessible
+    hostname: ""
+
+    # ...port where the database is accessible (default: 3306)
+    port: 3306
+
+    # ...database you want to use
+    database: ""
+
+    # ...username you are going to login with
+    username: ""
+
+    # ...password you are going to login with
+    # Be careful, as anyone who can read this file, can read the password!
+    password: ""
+
 # Priority: default < group < player
 shop-limits:
   

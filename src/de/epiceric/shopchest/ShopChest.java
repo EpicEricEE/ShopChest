@@ -11,6 +11,8 @@ import de.epiceric.shopchest.interfaces.utils.*;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
+import de.epiceric.shopchest.sql.MySQL;
+import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.Metrics;
 import de.epiceric.shopchest.utils.Metrics.Graph;
 import de.epiceric.shopchest.utils.Metrics.Plotter;
@@ -66,6 +68,7 @@ public class ShopChest extends JavaPlugin {
     @Override
     public void onEnable() {
         logger = getLogger();
+        instance = this;
 
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             logger.severe("Could not find plugin 'Vault'!");
@@ -121,7 +124,13 @@ public class ShopChest extends JavaPlugin {
         reloadConfig();
         saveDefaultConfig();
 
-        database = new Database(this);
+        if (Config.database_type() == Database.DatabaseType.SQLite){
+            logger.info("Using SQLite");
+            database = new SQLite(this);
+        } else {
+            logger.info("Using MySQL");
+            database = new MySQL(this);
+        }
 
         switch (Utils.getVersion(getServer())) {
 
@@ -160,8 +169,6 @@ public class ShopChest extends JavaPlugin {
         }
 
         setupPermissions();
-
-        instance = this;
 
         UpdateChecker uc = new UpdateChecker(this, getDescription().getWebsite());
         UpdateCheckerResult result = uc.updateNeeded();
