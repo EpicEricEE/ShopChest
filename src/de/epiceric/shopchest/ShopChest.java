@@ -24,6 +24,7 @@ import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -182,7 +183,7 @@ public class ShopChest extends JavaPlugin {
             latestVersion = uc.getVersion();
             downloadLink = uc.getLink();
             isUpdateNeeded = true;
-            Bukkit.getConsoleSender().sendMessage("[ShopChest] " + Config.update_available(latestVersion));
+            Bukkit.getConsoleSender().sendMessage("[ShopChest] " + ChatColor.translateAlternateColorCodes('&', Config.update_available(latestVersion)));
 
             for (Player p : getServer().getOnlinePlayers()) {
                 if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
