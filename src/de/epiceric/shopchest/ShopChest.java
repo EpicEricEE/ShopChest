@@ -3,9 +3,8 @@ package de.epiceric.shopchest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.*;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
-import de.epiceric.shopchest.interfaces.utils.*;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
@@ -41,7 +40,6 @@ public class ShopChest extends JavaPlugin {
     public static String latestVersion = "";
     public static String downloadLink = "";
     public static String[] broadcast = null;
-    public static Utils utils;
     private static ShopChest instance;
 
     public static ShopChest getInstance() {
@@ -158,19 +156,10 @@ public class ShopChest extends JavaPlugin {
         switch (Utils.getVersion(getServer())) {
 
             case "v1_8_R1":
-                utils = new Utils_1_8_R1();
-                break;
             case "v1_8_R2":
-                utils = new Utils_1_8_R2();
-                break;
             case "v1_8_R3":
-                utils = new Utils_1_8_R3();
-                break;
             case "v1_9_R1":
-                utils = new Utils_1_9_R1();
-                break;
             case "v1_9_R2":
-                utils = new Utils_1_9_R2();
                 break;
             default:
                 logger.severe("Incompatible Server Version: " + Utils.getVersion(getServer()) + "!");
@@ -273,25 +262,23 @@ public class ShopChest extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        utils.removeShops();
+        for (Shop shop : ShopUtils.getShops()) {
+            ShopUtils.removeShop(shop, false);
+        }
     }
 
     private void initializeShops() {
         int count = 0;
 
         for (int id = 1; id < database.getHighestID() + 1; id++) {
-
             try {
                 Shop shop = (Shop) database.get(id, Database.ShopInfo.SHOP);
-                shop.createHologram();
-                shop.createItem();
-                ShopUtils.addShop(shop);
+                ShopUtils.addShop(shop, false);
             } catch (NullPointerException e) {
                 continue;
             }
 
             count++;
-
         }
 
         logger.info("Initialized " + String.valueOf(count) + " Shops");

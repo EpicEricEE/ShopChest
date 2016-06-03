@@ -4,7 +4,7 @@ import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
@@ -221,14 +221,9 @@ public class InteractShop implements Listener {
     }
 
     private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
+        Shop shop = new Shop(database.getNextFreeID(), plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
-        Shop shop = new Shop(plugin, executor, product, location, buyPrice, sellPrice, shopType);
-        shop.createHologram();
-        shop.createItem();
-
-        database.addShop(shop);
-
-        ShopUtils.addShop(shop);
+        ShopUtils.addShop(shop, true);
         executor.sendMessage(Config.shop_created());
 
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -238,15 +233,8 @@ public class InteractShop implements Listener {
     }
 
     private void remove(Player executor, Shop shop) {
-
-        ShopUtils.removeShop(shop);
-
-        database.removeShop(shop);
-
-        shop.removeHologram();
-
+        ShopUtils.removeShop(shop, true);
         executor.sendMessage(Config.shop_removed());
-
     }
 
     private void info(Player executor, Shop shop) {

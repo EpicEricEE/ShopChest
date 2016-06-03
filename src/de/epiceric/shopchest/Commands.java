@@ -2,7 +2,7 @@ package de.epiceric.shopchest;
 
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.ClickType;
@@ -182,7 +182,7 @@ public class Commands extends BukkitCommand {
     }
 
     private void reload(Player player) {
-        ShopChest.utils.reload(player);
+        ShopUtils.reloadShops(player);
     }
 
     private void create(String[] args, ShopType shopType, Player p) {

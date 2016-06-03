@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.event;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,7 +20,7 @@ public class RegenerateShopItemAfterRemove implements Listener {
             }
         }
 
-        if (containsShopItem) ShopChest.utils.reload(null);
+        if (containsShopItem) ShopUtils.reloadShops(null);
     }
 
 

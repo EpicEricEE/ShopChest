@@ -2,8 +2,9 @@ package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.interfaces.Utils;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.sql.Database;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -11,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
@@ -23,7 +25,6 @@ public class ShopUtils {
     private static HashMap<Location, Shop> shopLocation = new HashMap<>();
 
     public static Shop getShop(Location location) {
-
         Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 
         if (shopLocation.containsKey(newLocation)) {
@@ -31,19 +32,14 @@ public class ShopUtils {
         } else {
             return null;
         }
-
     }
 
     public static boolean isShop(Location location) {
-
         Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-
         return shopLocation.containsKey(newLocation);
-
     }
 
     public static Shop[] getShops() {
-
         ArrayList<Shop> shops = new ArrayList<>();
 
         for (Shop shop : shopLocation.values()) {
@@ -51,16 +47,16 @@ public class ShopUtils {
         }
 
         return shops.toArray(new Shop[shops.size()]);
-
     }
 
-    public static void addShop(Shop shop) {
-
+    public static void addShop(Shop shop, boolean addToDatabase) {
         Location loc = shop.getLocation();
         Block b = loc.getBlock();
+
         if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
             Chest c = (Chest) b.getState();
             InventoryHolder ih = c.getInventory().getHolder();
+
             if (ih instanceof DoubleChest) {
                 DoubleChest dc = (DoubleChest) ih;
                 Chest r = (Chest) dc.getRightSide();
@@ -69,37 +65,40 @@ public class ShopUtils {
                 shopLocation.put(r.getLocation(), shop);
                 shopLocation.put(l.getLocation(), shop);
                 return;
-
+            } else {
+                shopLocation.put(shop.getLocation(), shop);
             }
+
+            if (addToDatabase)
+                ShopChest.database.addShop(shop);
         }
-
-        shopLocation.put(shop.getLocation(), shop);
-
     }
 
-    public static void removeShop(Shop shop) {
-
+    public static void removeShop(Shop shop, boolean removeFromDatabase) {
         Location loc = shop.getLocation();
         Block b = loc.getBlock();
+
         if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
             Chest c = (Chest) b.getState();
             InventoryHolder ih = c.getInventory().getHolder();
+
             if (ih instanceof DoubleChest) {
                 DoubleChest dc = (DoubleChest) ih;
                 Chest r = (Chest) dc.getRightSide();
                 Chest l = (Chest) dc.getLeftSide();
 
-                if (shop.hasItem()) shop.getItem().remove();
-                shop.removeHologram();
                 shopLocation.remove(r.getLocation());
                 shopLocation.remove(l.getLocation());
-                return;
-
+            } else {
+                shopLocation.remove(shop.getLocation());
             }
+
+            shop.removeItem();
+            shop.removeHologram();
+
+            if (removeFromDatabase)
+                ShopChest.database.removeShop(shop);
         }
-
-        shopLocation.remove(shop.getLocation());
-
     }
 
     public static int getShopLimit(Player p) {
@@ -137,7 +136,6 @@ public class ShopUtils {
 
                 limit = highestLimit;
             }
-
         }
 
         for (String key : Config.shopLimits_player()) {
@@ -166,5 +164,28 @@ public class ShopUtils {
         return shopCount;
     }
 
+    public static void reloadShops(Player player) {
+        for (Shop shop : ShopUtils.getShops()) {
+            ShopUtils.removeShop(shop, false);
+        }
 
+        int count = 0;
+        for (int id = 1; id < ShopChest.database.getHighestID() + 1; id++) {
+
+            try {
+                Shop shop = (Shop) ShopChest.database.get(id, Database.ShopInfo.SHOP);
+                ShopUtils.addShop(shop, false);
+            } catch (NullPointerException e) {
+                continue;
+            }
+
+            count++;
+        }
+
+        if (player != null) player.sendMessage(Config.reloaded_shops(count));
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()));
+        }
+    }
 }

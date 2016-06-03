@@ -18,4 +18,8 @@ public interface Hologram {
 
     public boolean isVisible(OfflinePlayer p);
 
+    public boolean exists();
+
+    public void remove();
+
 }

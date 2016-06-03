@@ -3,7 +3,7 @@ package de.epiceric.shopchest.event;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.entity.Player;

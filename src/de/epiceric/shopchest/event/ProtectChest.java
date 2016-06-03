@@ -76,24 +76,16 @@ public class ProtectChest implements Listener {
 
                     if (b.getLocation().equals(r.getLocation())) {
                         shop = ShopUtils.getShop(l.getLocation());
-                        ShopUtils.removeShop(shop);
-                        ShopChest.database.removeShop(shop);
                     } else if (b.getLocation().equals(l.getLocation())) {
                         shop = ShopUtils.getShop(r.getLocation());
-                        ShopUtils.removeShop(shop);
-                        ShopChest.database.removeShop(shop);
                     } else {
                         return;
                     }
 
-                    if (shop.hasItem()) shop.getItem().remove();
+                    ShopUtils.removeShop(shop, true);
 
-                    Shop newShop = new Shop(ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-                    newShop.createHologram();
-                    newShop.createItem();
-                    ShopUtils.addShop(newShop);
-                    ShopChest.database.addShop(newShop);
-
+                    Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+                    ShopUtils.addShop(newShop, true);
                 }
 
             }

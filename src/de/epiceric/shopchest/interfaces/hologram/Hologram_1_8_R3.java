@@ -15,7 +15,8 @@ import java.util.List;
 
 public class Hologram_1_8_R3 implements Hologram {
 
-    int count;
+    private boolean exists = false;
+    private int count;
     private List<EntityArmorStand> entitylist = new ArrayList<EntityArmorStand>();
     private String[] text;
     private Location location;
@@ -24,12 +25,6 @@ public class Hologram_1_8_R3 implements Hologram {
 
     public Hologram_1_8_R3(String[] text, Location location) {
         this.text = text;
-        this.location = location;
-        create();
-    }
-
-    public Hologram_1_8_R3(String text, Location location) {
-        this.text = new String[]{text};
         this.location = location;
         create();
     }
@@ -80,7 +75,20 @@ public class Hologram_1_8_R3 implements Hologram {
         for (int i = 0; i < count; i++) {
             this.location.add(0, this.DISTANCE, 0);
         }
-        this.count = 0;
+
+        count = 0;
+        exists = true;
+    }
+
+    public boolean exists() {
+        return exists;
+    }
+
+    public void remove() {
+        for (EntityArmorStand e : entitylist) {
+            e.die();
+        }
+        exists = false;
     }
 
 }

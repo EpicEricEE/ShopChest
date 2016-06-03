@@ -3,9 +3,10 @@ package de.epiceric.shopchest.shop;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Hologram;
-import de.epiceric.shopchest.interfaces.Utils;
+import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.interfaces.hologram.*;
 import de.epiceric.shopchest.utils.ItemNames;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -25,6 +26,7 @@ import java.util.UUID;
 
 public class Shop {
 
+    private int id;
     private ShopChest plugin;
     private OfflinePlayer vendor;
     private ItemStack product;
@@ -35,7 +37,8 @@ public class Shop {
     private double sellPrice;
     private ShopType shopType;
 
-    public Shop(ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
+    public Shop(int id, ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
+        this.id = id;
         this.plugin = plugin;
         this.vendor = vendor;
         this.product = product;
@@ -43,16 +46,27 @@ public class Shop {
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.shopType = shopType;
+
+        if (hologram == null || !hologram.exists()) createHologram();
+        if (item == null || item.isDead()) createItem();
     }
 
     public void removeHologram() {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            getHologram().hidePlayer(player);
+        if (hologram != null && hologram.exists()) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                hologram.hidePlayer(p);
+            }
+
+            hologram.remove();
         }
     }
 
-    public void createItem() {
+    public void removeItem() {
+        if (item != null && !item.isDead())
+            item.remove();
+    }
 
+    private void createItem() {
         Item item;
         Location itemLocation;
         ItemStack itemStack;
@@ -75,7 +89,7 @@ public class Shop {
         this.item = item;
     }
 
-    public void createHologram() {
+    private void createHologram() {
 
         boolean doubleChest;
 
@@ -170,6 +184,10 @@ public class Shop {
 
     }
 
+    public int getID() {
+        return id;
+    }
+
     public OfflinePlayer getVendor() {
         return vendor;
     }
@@ -196,14 +214,6 @@ public class Shop {
 
     public Hologram getHologram() {
         return hologram;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public boolean hasItem() {
-        return item != null;
     }
 
     public enum ShopType {

@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.interfaces;
+package de.epiceric.shopchest.utils;
 
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class Utils {
+public class Utils {
 
     public static int getAmount(Inventory inventory, ItemStack itemStack) {
         int amount = 0;
@@ -79,10 +79,6 @@ public abstract class Utils {
         }
         return config.getItemStack("i", null);
     }
-
-    public abstract void reload(Player p);
-
-    public abstract void removeShops();
 
 
 }
