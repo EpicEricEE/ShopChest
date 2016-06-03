@@ -72,6 +72,14 @@ public class Config {
         return plugin.getConfig().getDouble("maximal-distance");
     }
 
+    public static double shop_creation_price_normal() {
+        return plugin.getConfig().getDouble("shop-creation-price.normal");
+    }
+
+    public static double shop_creation_price_admin() {
+        return plugin.getConfig().getDouble("shop-creation-price.admin");
+    }
+
     public static int default_limit() {
         return plugin.getConfig().getInt("shop-limits.default");
     }
@@ -262,6 +270,10 @@ public class Config {
 
     public static String none() {
         return plugin.getConfig().getString("messages.shop-info.none").replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+    }
+
+    public static String shop_create_not_enough_money(double creationPrice) {
+        return plugin.getConfig().getString("messages.shop-create-not-enough-money").replace(Regex.creationPrice, String.valueOf(creationPrice)).replace(Regex.currencySymbol, currency_symbol()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String limit_reached(int limit) {

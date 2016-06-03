@@ -10,6 +10,7 @@ import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -277,6 +278,20 @@ public class Commands extends BukkitCommand {
         if (Enchantment.DURABILITY.canEnchantItem(itemStack)) {
             if (itemStack.getDurability() > 0) {
                 p.sendMessage(Config.cannot_sell_broken_item());
+                return;
+            }
+        }
+
+        double creationPrice = (shopType == ShopType.NORMAL) ? Config.shop_creation_price_normal() : Config.shop_creation_price_admin();
+        if (creationPrice > 0) {
+            if (ShopChest.econ.getBalance(p) >= creationPrice) {
+                EconomyResponse r = ShopChest.econ.withdrawPlayer(p, creationPrice);
+                if (!r.transactionSuccess()) {
+                    p.sendMessage(Config.error_occurred(r.errorMessage));
+                    return;
+                }
+            } else {
+                p.sendMessage(Config.shop_create_not_enough_money(creationPrice));
                 return;
             }
         }

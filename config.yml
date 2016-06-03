@@ -41,6 +41,17 @@ main-command-name: "shop"
 # Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
 maximal-distance: 1.75
 
+# Set the price a player has to pay in order to create...
+# You can set this to 0 to disable costs.
+# Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
+shop-creation-price:
+
+  # ...a normal shop
+  normal: 5
+
+  # ...an admin shop
+  admin: 0
+
 # Set whether the shop's chest should be protected by hoppers
 hopper-protection: true
 
@@ -134,6 +145,10 @@ messages:
 
   # Set the message when the clicked chest is not a shop.
   chest-no-shop: "&cChest is not a shop."
+
+  # Set the message when the player doesn't have enough money to create a shop
+  # Usable Regex: %CREATION-PRICE%, %CURRENCY-SYMBOL%
+  shop-create-not-enough-money: "&cNot enough money. You need &6%CREATION-PRICE%%CURRENCY-SYMBOL% &cto create a shop."
 
   shop-info:
 
