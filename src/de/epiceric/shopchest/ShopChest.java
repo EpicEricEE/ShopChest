@@ -113,6 +113,31 @@ public class ShopChest extends JavaPlugin {
 
             });
 
+            Graph databaseType = metrics.createGraph("Database Type");
+            databaseType.addPlotter(new Plotter("SQLite") {
+
+                @Override
+                public int getValue() {
+                    if (Config.database_type() == Database.DatabaseType.SQLite)
+                        return 1;
+
+                    return 0;
+                }
+
+            });
+
+            databaseType.addPlotter(new Plotter("MySQL") {
+
+                @Override
+                public int getValue() {
+                    if (Config.database_type() == Database.DatabaseType.MySQL)
+                        return 1;
+
+                    return 0;
+                }
+
+            });
+
             metrics.start();
         } catch (IOException e) {
             logger.severe("Could not submit stats.");
