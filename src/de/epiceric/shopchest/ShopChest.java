@@ -1,9 +1,5 @@
 package de.epiceric.shopchest;
 
-import com.griefcraft.lwc.LWC;
-import com.griefcraft.lwc.LWCPlugin;
-import com.griefcraft.scripting.JavaModule;
-import com.griefcraft.scripting.event.LWCMagnetPullEvent;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.*;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
@@ -26,7 +22,6 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,8 +34,8 @@ public class ShopChest extends JavaPlugin {
     public static Logger logger;
     public static Economy econ = null;
     public static Permission perm = null;
-    public static LWC lwc = null;
     public static boolean lockette = false;
+    public static boolean lwc = false;
     public static Database database;
     public static boolean isUpdateNeeded = false;
     public static String latestVersion = "";
@@ -158,18 +153,8 @@ public class ShopChest extends JavaPlugin {
                 return;
         }
 
-        if (getServer().getPluginManager().getPlugin("LWC") != null) {
-            Plugin lwcp = getServer().getPluginManager().getPlugin("LWC");
-            lwc = ((LWCPlugin) lwcp).getLWC();
-        } else {
-            lwc = null;
-        }
-
-        if (getServer().getPluginManager().getPlugin("Lockette") != null) {
-            lockette = true;
-        } else {
-            lockette = false;
-        }
+        lockette = getServer().getPluginManager().getPlugin("Lockette") != null;
+        lwc = getServer().getPluginManager().getPlugin("LWC") != null;
 
         setupPermissions();
 
@@ -257,26 +242,8 @@ public class ShopChest extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("ClearLag") != null)
             getServer().getPluginManager().registerEvents(new RegenerateShopItemAfterRemove(), this);
 
-        if (getServer().getPluginManager().getPlugin("LWC") != null){
-            try {
-                Class.forName("com.griefcraft.scripting.event.LWCMagnetPullEvent");
-
-                LWC.getInstance().getModuleLoader().registerModule(this, new JavaModule() {
-
-                    @Override
-                    public void onMagnetPull(LWCMagnetPullEvent event) {
-                        if (event.getItem().hasMetadata("shopItem")) {
-                            event.setCancelled(true);
-                        }
-                    }
-
-                });
-
-            } catch (ClassNotFoundException ex) {
-                getLogger().warning("Shop items can be sucked up by the magnet flag of a protected chest of LWC.");
-                getLogger().warning("Use 'LWC Unofficial - Entity locking' v1.7.3 or later by 'Me_Goes_RAWR' to prevent this.");
-            };
-        }
+        if (getServer().getPluginManager().getPlugin("LWC") != null)
+            new LWCMagnetListener().initializeListener();
     }
 
     @Override

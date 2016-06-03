@@ -1,5 +1,6 @@
 package de.epiceric.shopchest.event;
 
+import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
@@ -72,9 +73,9 @@ public class InteractShop implements Listener {
                                         }
                                     }
 
-                                    if (ShopChest.lwc != null) {
-                                        if (ShopChest.lwc.getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ()) != null) {
-                                            Protection protection = ShopChest.lwc.getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    if (ShopChest.lwc) {
+                                        if (LWC.getInstance().getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ()) != null) {
+                                            Protection protection = LWC.getInstance().getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ());
                                             if (!protection.isOwner(p) || !protection.isRealOwner(p)) {
                                                 ClickType.removePlayerClickType(p);
                                                 break;
