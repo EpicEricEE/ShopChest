@@ -273,7 +273,7 @@ public class Config {
     }
 
     public static String shop_create_not_enough_money(double creationPrice) {
-        return plugin.getConfig().getString("messages.shop-create-not-enough-money").replace(Regex.creationPrice, String.valueOf(creationPrice)).replace(Regex.currencySymbol, currency_symbol()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.shop-create-not-enough-money").replace(Regex.creationPrice, getPriceString(creationPrice)).replace(Regex.currencySymbol, currency_symbol()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String limit_reached(int limit) {
@@ -289,11 +289,11 @@ public class Config {
     }
 
     public static String buyPrice_too_low(double minPrice) {
-        return plugin.getConfig().getString("messages.buy-price-too-low").replace(Regex.minPrice, String.valueOf(minPrice)).replace(Regex.currencySymbol, currency_symbol()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.buy-price-too-low").replace(Regex.minPrice, getPriceString(minPrice)).replace(Regex.currencySymbol, currency_symbol()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String sellPrice_too_low(double minPrice) {
-        return plugin.getConfig().getString("messages.sell-price-too-low").replace(Regex.minPrice, String.valueOf(minPrice)).replace(Regex.currencySymbol, currency_symbol()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.sell-price-too-low").replace(Regex.minPrice, getPriceString(minPrice)).replace(Regex.currencySymbol, currency_symbol()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String update_available(String version) {
@@ -305,15 +305,15 @@ public class Config {
     }
 
     public static String hologram_buy_sell(double buyPrice, double sellPrice) {
-        return plugin.getConfig().getString("messages.hologram.buy-and-sell").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, String.valueOf(buyPrice)).replace(Regex.sellPrice, String.valueOf(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.hologram.buy-and-sell").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, getPriceString(buyPrice)).replace(Regex.sellPrice, getPriceString(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String hologram_buy(double buyPrice) {
-        return plugin.getConfig().getString("messages.hologram.only-buy").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, String.valueOf(buyPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.hologram.only-buy").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, getPriceString(buyPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String hologram_sell(double sellPrice) {
-        return plugin.getConfig().getString("messages.hologram.only-sell").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.sellPrice, String.valueOf(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.hologram.only-sell").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.sellPrice, getPriceString(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String error_occurred(String error) {
@@ -338,38 +338,38 @@ public class Config {
 
     public static String shopInfo_price(double buyPrice, double sellPrice) {
         if ((buyPrice <= 0) && (sellPrice > 0)) {
-            return plugin.getConfig().getString("messages.shop-info.price").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice + currency_symbol(), disabled()).replace(Regex.sellPrice, String.valueOf(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+            return plugin.getConfig().getString("messages.shop-info.price").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice + currency_symbol(), disabled()).replace(Regex.sellPrice, getPriceString(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
         } else if ((sellPrice <= 0) && (buyPrice > 0)) {
-            return plugin.getConfig().getString("messages.shop-info.price").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, String.valueOf(buyPrice)).replace(Regex.sellPrice + currency_symbol(), disabled()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+            return plugin.getConfig().getString("messages.shop-info.price").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, getPriceString(buyPrice)).replace(Regex.sellPrice + currency_symbol(), disabled()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
         } else if ((sellPrice > 0) && (buyPrice > 0)) {
-            return plugin.getConfig().getString("messages.shop-info.price").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, String.valueOf(buyPrice)).replace(Regex.sellPrice, String.valueOf(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+            return plugin.getConfig().getString("messages.shop-info.price").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice, getPriceString(buyPrice)).replace(Regex.sellPrice, getPriceString(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
         } else {
             return plugin.getConfig().getString("messages.shop-info.price").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.buyPrice + currency_symbol(), disabled()).replace(Regex.sellPrice + currency_symbol(), disabled()).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
         }
     }
 
     public static String buy_success(int amount, String itemName, double buyPrice, String vendor) {
-        return plugin.getConfig().getString("messages.buy-success").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.buyPrice, String.valueOf(buyPrice)).replace(Regex.vendor, vendor).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.buy-success").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.buyPrice, getPriceString(buyPrice)).replace(Regex.vendor, vendor).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String buy_success_admin(int amount, String itemName, double buyPrice) {
-        return plugin.getConfig().getString("messages.buy-success-admin").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.buyPrice, String.valueOf(buyPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.buy-success-admin").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.buyPrice, getPriceString(buyPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String sell_success(int amount, String itemName, double sellPrice, String vendor) {
-        return plugin.getConfig().getString("messages.sell-success").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, String.valueOf(sellPrice)).replace(Regex.vendor, vendor).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.sell-success").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, getPriceString(sellPrice)).replace(Regex.vendor, vendor).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String sell_success_admin(int amount, String itemName, double sellPrice) {
-        return plugin.getConfig().getString("messages.sell-success-admin").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, String.valueOf(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.sell-success-admin").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, getPriceString(sellPrice)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String someone_bought(int amount, String itemName, double buyPrice, String player) {
-        return plugin.getConfig().getString("messages.someone-bought").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.buyPrice, String.valueOf(buyPrice)).replace(Regex.player, player).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.someone-bought").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.buyPrice, getPriceString(buyPrice)).replace(Regex.player, player).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String someone_sold(int amount, String itemName, double sellPrice, String player) {
-        return plugin.getConfig().getString("messages.someone-sold").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice, String.valueOf(sellPrice)).replace(Regex.player, player).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.someone-sold").replace(Regex.currencySymbol, currency_symbol()).replace(Regex.amount, String.valueOf(amount)).replace(Regex.itemName, itemName).replace(Regex.sellPrice,getPriceString(sellPrice)).replace(Regex.player, player).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String occupied_shop_slots(int limit, int amount) {
@@ -378,5 +378,23 @@ public class Config {
 
     public static String shopInfo_stock(int amount) {
         return plugin.getConfig().getString("messages.shop-info.stock").replace(Regex.amount, String.valueOf(amount)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+    }
+
+    private static String getPriceString(double price) {
+        String sPrice = String.valueOf(price);
+
+        if (sPrice.contains(".")) {
+            String cents = sPrice.split("\\.")[1];
+
+            if (cents.length() == 1) {
+                if (cents.equals("0")) {
+                    sPrice = sPrice.split("\\.")[0];
+                } else {
+                    sPrice = sPrice + "0";
+                }
+            }
+        }
+
+        return sPrice;
     }
 }
