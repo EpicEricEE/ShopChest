@@ -373,7 +373,7 @@ public class Config {
     }
 
     public static String occupied_shop_slots(int limit, int amount) {
-        return plugin.getConfig().getString("messages.occupied-shop-slots").replace(Regex.limit, String.valueOf(limit)).replace(Regex.amount, String.valueOf(amount)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
+        return plugin.getConfig().getString("messages.occupied-shop-slots").replace(Regex.limit, (limit == -1) ? "∞" : String.valueOf(limit)).replace(Regex.amount, String.valueOf(amount)).replaceAll("(&([a-f0-9k-or]))", "\u00A7$2");
     }
 
     public static String shopInfo_stock(int amount) {
