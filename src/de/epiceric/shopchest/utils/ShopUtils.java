@@ -64,7 +64,6 @@ public class ShopUtils {
 
                 shopLocation.put(r.getLocation(), shop);
                 shopLocation.put(l.getLocation(), shop);
-                return;
             } else {
                 shopLocation.put(shop.getLocation(), shop);
             }
