@@ -399,8 +399,8 @@ public class InteractShop implements Listener {
 
             if (freeAmount >= product.getAmount()) {
 
-                EconomyResponse r = econ.withdrawPlayer(executor, shop.getBuyPrice());
-                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), shop.getBuyPrice()) : null;
+                EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
+                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice()) : null;
 
                 if (r.transactionSuccess()) {
                     if (r2 != null) {
