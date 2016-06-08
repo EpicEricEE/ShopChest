@@ -282,9 +282,9 @@ public class InteractShop implements Listener {
         }
 
         executor.sendMessage(" ");
-        executor.sendMessage(vendor);
+        if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(vendor);
         executor.sendMessage(product);
-        executor.sendMessage(stock);
+        if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(stock);
         if (enchantmentString.length() > 0) executor.sendMessage(Config.shopInfo_enchantment(enchantmentString));
         if (arrowEffectString.length() > 0) executor.sendMessage(Config.shopInfo_arrowEffect(arrowEffectString));
         executor.sendMessage(price);
