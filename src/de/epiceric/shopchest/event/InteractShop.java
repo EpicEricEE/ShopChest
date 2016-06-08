@@ -4,7 +4,6 @@ import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
@@ -155,30 +154,29 @@ public class InteractShop implements Listener {
                                     e.setCancelled(false);
                                 }
                             } else {
-                                if (shop.getBuyPrice() > 0) {
-                                    if (perm.has(p, "shopchest.buy")) {
-                                        if (shop.getShopType() == ShopType.ADMIN) {
-                                            buy(p, shop);
-                                        } else {
-                                            if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+                                if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+                                    if (shop.getBuyPrice() > 0) {
+                                        if (perm.has(p, "shopchest.buy")) {
+                                            if (shop.getShopType() == ShopType.ADMIN) {
+                                                buy(p, shop);
+                                            } else {
                                                 Chest c = (Chest) b.getState();
                                                 if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                                     buy(p, shop);
                                                 } else {
                                                     p.sendMessage(Config.out_of_stock());
                                                 }
-                                            } else {
-                                                e.setCancelled(false);
                                             }
+                                        } else {
+                                            p.sendMessage(Config.noPermission_buy());
                                         }
                                     } else {
-                                        p.sendMessage(Config.noPermission_buy());
+                                        p.sendMessage(Config.buying_disabled());
                                     }
                                 } else {
-                                    p.sendMessage(Config.buying_disabled());
+                                    e.setCancelled(false);
                                 }
                             }
-
                         }
 
                     }
@@ -190,24 +188,23 @@ public class InteractShop implements Listener {
                         e.setCancelled(true);
                         Shop shop = ShopUtils.getShop(b.getLocation());
 
-                        if (shop.getSellPrice() > 0) {
-                            if (perm.has(p, "shopchest.sell")) {
-                                    if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
-                                        if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
-                                            sell(p, shop);
-                                        } else {
-                                            p.sendMessage(Config.not_enough_items());
-                                        }
+                        if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
+                            if (shop.getSellPrice() > 0) {
+                                if (perm.has(p, "shopchest.sell")) {
+                                    if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
+                                        sell(p, shop);
                                     } else {
-                                        e.setCancelled(false);
+                                        p.sendMessage(Config.not_enough_items());
                                     }
+                                } else {
+                                    p.sendMessage(Config.noPermission_sell());
+                                }
                             } else {
-                                p.sendMessage(Config.noPermission_sell());
+                                p.sendMessage(Config.selling_disabled());
                             }
                         } else {
-                            p.sendMessage(Config.selling_disabled());
+                            e.setCancelled(false);
                         }
-
                     }
 
                 }
