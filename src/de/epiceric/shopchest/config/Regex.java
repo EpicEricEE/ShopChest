@@ -6,7 +6,6 @@ public class Regex {
     public static String amount = "%AMOUNT%";
     public static String itemName = "%ITEMNAME%";
     public static String creationPrice = "%CREATION-PRICE%";
-    public static String currencySymbol = "%CURRENCY-SYMBOL%";
     public static String error = "%ERROR%";
     public static String enchantment = "%ENCHANTMENT%";
     public static String minPrice = "%MIN-PRICE%";

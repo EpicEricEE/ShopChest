@@ -147,8 +147,8 @@ messages:
   chest-no-shop: "&cChest is not a shop."
 
   # Set the message when the player doesn't have enough money to create a shop
-  # Usable Regex: %CREATION-PRICE%, %CURRENCY-SYMBOL%
-  shop-create-not-enough-money: "&cNot enough money. You need &6%CREATION-PRICE%%CURRENCY-SYMBOL% &cto create a shop."
+  # Usable Regex: %CREATION-PRICE%
+  shop-create-not-enough-money: "&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop."
 
   shop-info:
 
@@ -176,8 +176,8 @@ messages:
     none: "&7None"
 
     # Set the price message the player gets after entering '/shop info'.
-    # Usable regex: %BUY-PRICE%, %SELL-PRICE%, %CURRENCY-SYMBOL%
-    price: "&6Price: Buy: &e%BUY-PRICE%%CURRENCY-SYMBOL%, &6Sell: &e%SELL-PRICE%%CURRENCY-SYMBOL%"
+    # Usable regex: %BUY-PRICE%, %SELL-PRICE%
+    price: "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%"
 
     # If the sell price or buy price is disabled, this message will be displayed instead of the price and the currency symbol in the message above.
     disabled: "&7Disabled&e"
@@ -196,28 +196,28 @@ messages:
   buy-and-sell-disabled: "&cYou can't create a shop with buying and selling disabled."
   
   # Set the message when the player successfully bought something.
-  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%, %VENDOR%
-  buy-success: "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a from &6%VENDOR%&a."
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %VENDOR%
+  buy-success: "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a."
   
   # Set the message when the player successfully bought something from an admin shop.
-  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%
-  buy-success-admin: "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a."
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%
+  buy-success-admin: "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a."
   
   # Set the message when the player successfully sold something.
-  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%, %VENDOR%
-  sell-success: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a to &6%VENDOR%&a."
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %VENDOR%
+  sell-success: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a."
   
   # Set the message when the player successfully sold something to an admin shop.
-  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%
-  sell-success-admin: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a."
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%
+  sell-success-admin: "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a."
 
   # Set the message when a player bought something from the player's shop.
-  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %CURRENCY-SYMBOL%, %PLAYER%
-  someone-bought: "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%%CURRENCY-SYMBOL%&a from your shop."
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %PLAYER%
+  someone-bought: "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop."
   
   # Set the message when a player sold something to the player's shop.
-  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %CURRENCY-SYMBOL%, %PLAYER%
-  someone-sold: "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%%CURRENCY-SYMBOL%&a from your shop."
+  # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %PLAYER%
+  someone-sold: "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a from your shop."
 
   # Set the message when the inventory is full when the player is buying something.
   not-enough-inventory-space: "&cNot enough space in inventory."
@@ -267,12 +267,12 @@ messages:
   cannot-sell-broken-item: "&cYou can't sell a broken item."
   
   # Set the message when the entered buy price is below the minimum price.
-  # Usable regex: %MIN-PRICE%, %CURRENCY-SYMBOL%
-  buy-price-too-low: "&cThe buy price must be higher than %MIN-PRICE%%CURRENCY-SYMBOL%."
+  # Usable regex: %MIN-PRICE%
+  buy-price-too-low: "&cThe buy price must be higher than %MIN-PRICE%."
   
   # Set the message when the entered sell price is below the minimum price.
-  # Usable regex: %MIN-PRICE%, %CURRENCY-SYMBOL%
-  sell-price-too-low: "&cThe sell price must be higher than %MIN-PRICE%%CURRENCY-SYMBOL%."
+  # Usable regex: %MIN-PRICE%
+  sell-price-too-low: "&cThe sell price must be higher than %MIN-PRICE%."
 
   # Set the message when buying is disabled at the shop.
   buying-disabled: "&cBuying is disabled at this shop."
@@ -320,16 +320,16 @@ messages:
     format: "%AMOUNT% * %ITEMNAME%"
   
     # Set the text in the second row of the shop's hologram when the player can buy and sell an item.
-    # Usable regex: %BUY-PRICE%, %SELL-PRICE%, %CURRENCY-SYMBOL%
-    buy-and-sell: "Buy %BUY-PRICE%%CURRENCY-SYMBOL% | %SELL-PRICE%%CURRENCY-SYMBOL% Sell"
+    # Usable regex: %BUY-PRICE%, %SELL-PRICE%
+    buy-and-sell: "Buy %BUY-PRICE% | %SELL-PRICE% Sell"
     
     # Set the text in the second row of the shop's hologram when the player can only buy an item.
-    # Usable regex: %BUY-PRICE%, %CURRENCY-SYMBOL%
-    only-buy: "Buy %BUY-PRICE%%CURRENCY-SYMBOL%"
+    # Usable regex: %BUY-PRICE%
+    only-buy: "Buy %BUY-PRICE%"
     
     # Set the text in the second row of the shop's hologram when the player can only sell an item.
-    # Usable regex: %SELL-PRICE%, %CURRENCY-SYMBOL%
-    only-sell: "Sell %SELL-PRICE%%CURRENCY-SYMBOL%"
+    # Usable regex: %SELL-PRICE%
+    only-sell: "Sell %SELL-PRICE%"
     
   no-permission:
 
