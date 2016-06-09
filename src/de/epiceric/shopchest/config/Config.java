@@ -61,7 +61,7 @@ public class Config {
     }
 
     public static boolean explosion_protection() {
-        return plugin.getConfig().getBoolean("explosion-protection)");
+        return plugin.getConfig().getBoolean("explosion-protection");
     }
 
     public static boolean enable_broadcast() {
