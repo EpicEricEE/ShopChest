@@ -370,7 +370,7 @@ public class InteractShop implements Listener {
     }
 
     private void sell(Player executor, Shop shop) {
-        if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice()) {
+        if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice() || shop.getShopType() == ShopType.ADMIN) {
 
             Block block = shop.getLocation().getBlock();
             Chest chest = (Chest) block.getState();
