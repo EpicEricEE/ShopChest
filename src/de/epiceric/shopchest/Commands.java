@@ -2,7 +2,6 @@ package de.epiceric.shopchest;
 
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.ClickType;
@@ -10,6 +9,7 @@ import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
+import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -152,6 +152,9 @@ public class Commands extends BukkitCommand {
                     break;
                 case "v1_9_R2":
                     jb = new JsonBuilder_1_9_R2(Config.update_available(ShopChest.latestVersion));
+                    break;
+                case "v1_10_R1":
+                    jb = new JsonBuilder_1_10_R1(Config.update_available(ShopChest.latestVersion));
                     break;
                 default:
                     return;

@@ -3,7 +3,6 @@ package de.epiceric.shopchest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.*;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
@@ -16,6 +15,7 @@ import de.epiceric.shopchest.utils.Metrics.Plotter;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
+import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -76,6 +76,20 @@ public class ShopChest extends JavaPlugin {
             logger.severe("Could not find any Vault dependency!");
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+
+        switch (Utils.getVersion(getServer())) {
+            case "v1_8_R1":
+            case "v1_8_R2":
+            case "v1_8_R3":
+            case "v1_9_R1":
+            case "v1_9_R2":
+            case "v1_10_R1":
+                break;
+            default:
+                logger.severe("Incompatible Server Version: " + Utils.getVersion(getServer()) + "!");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
         }
 
         try {
@@ -153,20 +167,6 @@ public class ShopChest extends JavaPlugin {
             database = new MySQL(this);
         }
 
-        switch (Utils.getVersion(getServer())) {
-
-            case "v1_8_R1":
-            case "v1_8_R2":
-            case "v1_8_R3":
-            case "v1_9_R1":
-            case "v1_9_R2":
-                break;
-            default:
-                logger.severe("Incompatible Server Version: " + Utils.getVersion(getServer()) + "!");
-                getServer().getPluginManager().disablePlugin(this);
-                return;
-        }
-
         lockette = getServer().getPluginManager().getPlugin("Lockette") != null;
         lwc = getServer().getPluginManager().getPlugin("LWC") != null;
 
@@ -202,6 +202,9 @@ public class ShopChest extends JavaPlugin {
                             break;
                         case "v1_9_R2":
                             jb = new JsonBuilder_1_9_R2(Config.update_available(latestVersion));
+                            break;
+                        case "v1_10_R1":
+                            jb = new JsonBuilder_1_10_R1(Config.update_available(latestVersion));
                             break;
                         default:
                             return;

@@ -3,8 +3,8 @@ package de.epiceric.shopchest.event;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
-import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
+import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,6 +42,9 @@ public class NotifyUpdate implements Listener {
                         break;
                     case "v1_9_R2":
                         jb = new JsonBuilder_1_9_R2(Config.update_available(ShopChest.latestVersion));
+                        break;
+                    case "v1_10_R1":
+                        jb = new JsonBuilder_1_10_R1(Config.update_available(ShopChest.latestVersion));
                         break;
                     default:
                         return;

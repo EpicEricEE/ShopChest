@@ -3,9 +3,9 @@ package de.epiceric.shopchest.shop;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.Hologram;
-import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.interfaces.hologram.*;
 import de.epiceric.shopchest.utils.ItemNames;
+import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -178,8 +178,9 @@ public class Shop {
             case "v1_9_R2":
                 hologram = new Hologram_1_9_R2(holoText, holoLocation);
                 break;
-            default:
-                return;
+            case "v1_10_R1":
+                hologram = new Hologram_1_10_R1(holoText, holoLocation);
+                break;
         }
 
     }
@@ -218,7 +219,7 @@ public class Shop {
 
     public enum ShopType {
         NORMAL,
-        ADMIN;
+        ADMIN
     }
 
 }
