@@ -61,9 +61,6 @@ explosion-protection: true
 # Set whether broadcast messages should be enabled
 enable-broadcast: true
 
-# Set the currency symbol after price values
-currency-symbol: $
-
 # Set whether the buy price must be greater than or equal sell price.
 buy-greater-or-equal-sell: true
 
@@ -179,7 +176,7 @@ messages:
     # Usable regex: %BUY-PRICE%, %SELL-PRICE%
     price: "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%"
 
-    # If the sell price or buy price is disabled, this message will be displayed instead of the price and the currency symbol in the message above.
+    # If the sell price or buy price is disabled, this message will be displayed instead of the price in the message above.
     disabled: "&7Disabled&e"
     
     # Set the type message the player gets after entering '/shop info' ...
