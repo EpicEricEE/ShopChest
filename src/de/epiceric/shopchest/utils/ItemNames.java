@@ -1,7 +1,6 @@
 package de.epiceric.shopchest.utils;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -572,8 +571,9 @@ public class ItemNames {
             .put("397:0", "Skeleton Skull")
             .put("397:1", "Wither Skeleton Skull")
             .put("397:2", "Zombie Head")
-            .put("373:3", "Head")
-            .put("373:4", "Creeper Head")
+            .put("397:3", "Head")
+            .put("397:4", "Creeper Head")
+            .put("397:5", "Dragon Head")
             .put("398", "Carrot on a Stick")
             .put("399", "Nether Star")
             .put("400", "Pumpkin Pie")
@@ -654,13 +654,13 @@ public class ItemNames {
         if ((mat == Material.WOOL || mat == Material.CARPET) && stack.getDurability() == 0) {
             // special case: white wool/carpet is just called "Wool" or "Carpet"
             result = map.get(key);
-        } else if (mat == Material.WOOL || mat == Material.CARPET || mat == Material.STAINED_CLAY || mat == Material.STAINED_GLASS || mat == Material.STAINED_GLASS_PANE) {
+        } else if (mat == Material.WOOL || mat == Material.CARPET || mat == Material.STAINED_CLAY || mat == Material.STAINED_GLASS || mat == Material.STAINED_GLASS_PANE || mat == Material.BANNER) {
             DyeColor dc = DyeColor.getByWoolData((byte) stack.getDurability());
-            result = dc == null ? map.get(key) : WordUtils.capitalizeFully(dc.toString().replace("_", " ")) + " " + map.get(key);
+            result = dc == null ? map.get(key) : ColorNames.getColorString(dc) + " " + map.get(key);
         } else if (mat == Material.LEATHER_HELMET || mat == Material.LEATHER_CHESTPLATE || mat == Material.LEATHER_LEGGINGS || mat == Material.LEATHER_BOOTS) {
             LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) stack.getItemMeta();
             DyeColor dc = DyeColor.getByColor(leatherArmorMeta.getColor());
-            result = dc == null ? map.get(key) : WordUtils.capitalizeFully(dc.toString()).replace("_", " ") + " " + map.get(key);
+            result = dc == null ? map.get(key) : ColorNames.getColorString(dc) + " " + map.get(key);
         } else if (stack.getDurability() != 0) {
             result = map.get(key + ":" + stack.getDurability());
             if (result == null) {
