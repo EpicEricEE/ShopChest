@@ -28,7 +28,7 @@ public class UpdateHolograms implements Listener {
 
                 if (playerLocation.getWorld().equals(shopLocation.getWorld())) {
 
-                    if (playerLocation.distance(shop.getHologram().getLocation()) <= Config.maximal_distance()) {
+                    if (playerLocation.distance(shop.getHologram().getLocation()) <= Config.maximal_distance) {
 
                         if (!shop.getHologram().isVisible(p)) {
                             shop.getHologram().showPlayer(p);

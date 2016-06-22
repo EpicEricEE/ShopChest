@@ -3,11 +3,15 @@ package de.epiceric.shopchest.event;
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
-import de.epiceric.shopchest.utils.*;
+import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -35,17 +39,19 @@ import java.util.Map;
 public class InteractShop implements Listener {
 
     private ShopChest plugin;
-    private Permission perm = ShopChest.perm;
-    private Economy econ = ShopChest.econ;
-    private Database database = ShopChest.database;
+    private Permission perm;
+    private Economy econ;
+    private Database database;
 
     public InteractShop(ShopChest plugin) {
         this.plugin = plugin;
+        this.perm = plugin.getPermission();
+        this.econ = plugin.getEconomy();
+        this.database = plugin.getShopDatabase();
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
 
@@ -62,8 +68,8 @@ public class InteractShop implements Listener {
                             case CREATE:
                                 e.setCancelled(true);
 
-                                if (!p.isOp() || !perm.has(p, "shopchest.create.protected")) {
-                                    if (ShopChest.lockette) {
+                                if (!perm.has(p, "shopchest.create.protected")) {
+                                    if (plugin.hasLockette()) {
                                         if (Lockette.isProtected(b)) {
                                             if (!Lockette.isOwner(b, p) || !Lockette.isUser(b, p, true)) {
                                                 ClickType.removePlayerClickType(p);
@@ -72,7 +78,7 @@ public class InteractShop implements Listener {
                                         }
                                     }
 
-                                    if (ShopChest.lwc) {
+                                    if (plugin.hasLWC()) {
                                         if (LWC.getInstance().getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ()) != null) {
                                             Protection protection = LWC.getInstance().getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ());
                                             if (!protection.isOwner(p) || !protection.isRealOwner(p)) {
@@ -93,7 +99,7 @@ public class InteractShop implements Listener {
 
                                     create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
                                 } else {
-                                    p.sendMessage(Config.chest_already_shop());
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP));
                                 }
 
                                 ClickType.removePlayerClickType(p);
@@ -108,7 +114,7 @@ public class InteractShop implements Listener {
                                     info(p, shop);
 
                                 } else {
-                                    p.sendMessage(Config.chest_no_shop());
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
                                 }
 
                                 ClickType.removePlayerClickType(p);
@@ -124,11 +130,11 @@ public class InteractShop implements Listener {
                                     if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || perm.has(p, "shopchest.removeOther")) {
                                         remove(p, shop);
                                     } else {
-                                        p.sendMessage(Config.noPermission_removeOthers());
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS));
                                     }
 
                                 } else {
-                                    p.sendMessage(Config.chest_no_shop());
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
                                 }
 
                                 ClickType.removePlayerClickType(p);
@@ -145,10 +151,10 @@ public class InteractShop implements Listener {
                             if (p.isSneaking()) {
                                 if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
                                     if (perm.has(p, "shopchest.openOther")) {
-                                        p.sendMessage(Config.opened_shop(shop.getVendor().getName()));
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
                                         e.setCancelled(false);
                                     } else {
-                                        p.sendMessage(Config.noPermission_openOthers());
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
                                     }
                                 } else {
                                     e.setCancelled(false);
@@ -164,14 +170,14 @@ public class InteractShop implements Listener {
                                                 if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                                     buy(p, shop);
                                                 } else {
-                                                    p.sendMessage(Config.out_of_stock());
+                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
                                                 }
                                             }
                                         } else {
-                                            p.sendMessage(Config.noPermission_buy());
+                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY));
                                         }
                                     } else {
-                                        p.sendMessage(Config.buying_disabled());
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUYING_DISABLED));
                                     }
                                 } else {
                                     e.setCancelled(false);
@@ -194,13 +200,13 @@ public class InteractShop implements Listener {
                                     if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                         sell(p, shop);
                                     } else {
-                                        p.sendMessage(Config.not_enough_items());
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
                                     }
                                 } else {
-                                    p.sendMessage(Config.noPermission_sell());
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL));
                                 }
                             } else {
-                                p.sendMessage(Config.selling_disabled());
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELLING_DISABLED));
                             }
                         } else {
                             e.setCancelled(false);
@@ -221,7 +227,7 @@ public class InteractShop implements Listener {
         Shop shop = new Shop(database.getNextFreeID(), plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
         ShopUtils.addShop(shop, true);
-        executor.sendMessage(Config.shop_created());
+        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED));
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()));
@@ -231,34 +237,42 @@ public class InteractShop implements Listener {
 
     private void remove(Player executor, Shop shop) {
         ShopUtils.removeShop(shop, true);
-        executor.sendMessage(Config.shop_removed());
+        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
     }
 
     private void info(Player executor, Shop shop) {
-
         Chest c = (Chest) shop.getLocation().getBlock().getState();
 
         int amount = Utils.getAmount(c.getInventory(), shop.getProduct());
+        Material type = shop.getProduct().getType();
 
-        String vendor = Config.shopInfo_vendor(shop.getVendor().getName());
-        String product = Config.shopInfo_product(shop.getProduct().getAmount(), ItemNames.lookup(shop.getProduct()));
+        String vendor = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName()));
+        String product = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct())));
         String enchantmentString = "";
-        String arrowEffectString = "";
-        String price = Config.shopInfo_price(shop.getBuyPrice(), shop.getSellPrice());
-        String shopType;
-        String stock = Config.shopInfo_stock(amount);
-
-        if (shop.getShopType() == ShopType.NORMAL) shopType = Config.shopInfo_isNormal();
-        else shopType = Config.shopInfo_isAdmin();
+        String potionEffectString = "";
+        String musicDiscName = LanguageUtils.getMusicDiscName(type);
+        String price = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRICE, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(shop.getBuyPrice())),
+                new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(shop.getSellPrice())));
+        String shopType = LanguageUtils.getMessage(shop.getShopType() == ShopType.NORMAL ? LocalizedMessage.Message.SHOP_INFO_NORMAL : LocalizedMessage.Message.SHOP_INFO_ADMIN);
+        String stock = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_STOCK, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(amount)));
 
         Map<Enchantment, Integer> enchantmentMap;
 
-        if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
-            if (shop.getProduct().getType() == Material.TIPPED_ARROW) {
-                arrowEffectString = ArrowEffectNames.getTippedArrowName(shop.getProduct());
-                if (arrowEffectString == null) arrowEffectString = Config.none();
+        if (Utils.getMajorVersion() >= 9) {
+            if (type == Material.TIPPED_ARROW || type == Material.LINGERING_POTION) {
+                potionEffectString = LanguageUtils.getPotionEffectName(shop.getProduct());
+                if (potionEffectString == null)
+                    potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
             }
         }
+
+        if (type == Material.POTION || type == Material.SPLASH_POTION) {
+            potionEffectString = LanguageUtils.getPotionEffectName(shop.getProduct());
+            if (potionEffectString == null)
+                potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
+        }
+
 
         if (shop.getProduct().getItemMeta() instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta esm = (EnchantmentStorageMeta) shop.getProduct().getItemMeta();
@@ -270,23 +284,25 @@ public class InteractShop implements Listener {
         Enchantment[] enchantments = enchantmentMap.keySet().toArray(new Enchantment[enchantmentMap.size()]);
 
         for (int i = 0; i < enchantments.length; i++) {
-
             Enchantment enchantment = enchantments[i];
 
             if (i == enchantments.length - 1) {
-                enchantmentString += EnchantmentNames.lookup(enchantment, enchantmentMap.get(enchantment));
+                enchantmentString += LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment));
             } else {
-                enchantmentString += EnchantmentNames.lookup(enchantment, enchantmentMap.get(enchantment)) + ", ";
+                enchantmentString += LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)) + ", ";
             }
-
         }
 
         executor.sendMessage(" ");
         if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(vendor);
         executor.sendMessage(product);
         if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(stock);
-        if (enchantmentString.length() > 0) executor.sendMessage(Config.shopInfo_enchantment(enchantmentString));
-        if (arrowEffectString.length() > 0) executor.sendMessage(Config.shopInfo_arrowEffect(arrowEffectString));
+        if (enchantmentString.length() > 0)
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS, new LocalizedMessage.ReplacedRegex(Regex.ENCHANTMENT, enchantmentString)));
+        if (potionEffectString.length() > 0)
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT, new LocalizedMessage.ReplacedRegex(Regex.POTION_EFFECT, potionEffectString)));
+        if (musicDiscName.length() > 0)
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE, new LocalizedMessage.ReplacedRegex(Regex.MUSIC_TITLE, musicDiscName)));
         executor.sendMessage(price);
         executor.sendMessage(shopType);
         executor.sendMessage(" ");
@@ -315,7 +331,7 @@ public class InteractShop implements Listener {
                 }
             }
 
-            if (Utils.getVersion(Bukkit.getServer()).contains("1_9")) {
+            if (Utils.getMajorVersion() >= 9) {
                 ItemStack item = inventory.getItem(40);
                 if (item == null) {
                     slotFree.put(40, product.getMaxStackSize());
@@ -344,28 +360,33 @@ public class InteractShop implements Listener {
                             addToInventory(inventory, product);
                             removeFromInventory(c.getInventory(), product);
                             executor.updateInventory();
-                            executor.sendMessage(Config.buy_success(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), shop.getVendor().getName()));
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
+                                    new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(shop.getBuyPrice())),
+                                    new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
 
                             if (shop.getVendor().isOnline()) {
-                                shop.getVendor().getPlayer().sendMessage(Config.someone_bought(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice(), executor.getName()));
+                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
+                                        new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(shop.getBuyPrice())),
+                                        new LocalizedMessage.ReplacedRegex(Regex.PLAYER, executor.getName())));
                             }
 
                         } else {
-                            executor.sendMessage(Config.error_occurred(r2.errorMessage));
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r2.errorMessage)));
                         }
                     } else {
                         addToInventory(inventory, product);
                         executor.updateInventory();
-                        executor.sendMessage(Config.buy_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getBuyPrice()));
+                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
+                                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(shop.getBuyPrice()))));
                     }
                 } else {
-                    executor.sendMessage(Config.error_occurred(r.errorMessage));
+                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
                 }
             } else {
-                executor.sendMessage(Config.not_enough_inventory_space());
+                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE));
             }
         } else {
-            executor.sendMessage(Config.not_enough_money());
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_MONEY));
         }
     }
 
@@ -408,32 +429,37 @@ public class InteractShop implements Listener {
                             addToInventory(inventory, product);
                             removeFromInventory(executor.getInventory(), product);
                             executor.updateInventory();
-                            executor.sendMessage(Config.sell_success(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), shop.getVendor().getName()));
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
+                                    new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(shop.getSellPrice())),
+                                    new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
 
                             if (shop.getVendor().isOnline()) {
-                                shop.getVendor().getPlayer().sendMessage(Config.someone_sold(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice(), executor.getName()));
+                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_SOLD, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
+                                        new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(shop.getSellPrice())),
+                                        new LocalizedMessage.ReplacedRegex(Regex.PLAYER, executor.getName())));
                             }
 
                         } else {
-                            executor.sendMessage(Config.error_occurred(r2.errorMessage));
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r2.errorMessage)));
                         }
 
                     } else {
                         removeFromInventory(executor.getInventory(), product);
                         executor.updateInventory();
-                        executor.sendMessage(Config.sell_success_admin(product.getAmount(), ItemNames.lookup(product), shop.getSellPrice()));
+                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
+                                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(shop.getSellPrice()))));
                     }
 
                 } else {
-                    executor.sendMessage(Config.error_occurred(r.errorMessage));
+                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
                 }
 
             } else {
-                executor.sendMessage(Config.chest_not_enough_inventory_space());
+                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE));
             }
 
         } else {
-            executor.sendMessage(Config.vendor_not_enough_money());
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.VENDOR_NOT_ENOUGH_MONEY));
         }
     }
 
@@ -443,7 +469,7 @@ public class InteractShop implements Listener {
         int added = 0;
 
         if (inventory instanceof PlayerInventory) {
-            if (Utils.getVersion(plugin.getServer()).contains("1_9")) {
+            if (Utils.getMajorVersion() >= 9) {
                 inventoryItems.put(40, inventory.getItem(40));
             }
 
@@ -493,7 +519,7 @@ public class InteractShop implements Listener {
         int removed = 0;
 
         if (inventory instanceof PlayerInventory) {
-            if (Utils.getVersion(plugin.getServer()).contains("1_9")) {
+            if (Utils.getMajorVersion() >= 9) {
                 inventoryItems.put(40, inventory.getItem(40));
             }
 

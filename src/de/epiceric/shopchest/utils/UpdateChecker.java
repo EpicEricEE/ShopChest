@@ -1,9 +1,11 @@
 package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class UpdateChecker {
 
@@ -19,39 +21,54 @@ public class UpdateChecker {
 
     public UpdateCheckerResult updateNeeded() {
         try {
-            Connection con = Jsoup.connect("http://textuploader.com/all1l/raw");
-            con.userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0");
+            URL url = new URL("http://textuploader.com/all1l/raw");
+            URLConnection conn = url.openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
+            conn.connect();
 
-            Document doc = con.get();
+            InputStreamReader isr = new InputStreamReader(conn.getInputStream());
+            BufferedReader br = new BufferedReader(isr);
 
-            version = doc.text().split("\\|")[0];
-            link = url + "download?version=" + doc.text().split("\\|")[1];
+            String line = br.readLine();
+
+            isr.close();
+            br.close();
+
+            version = line.split("\\|")[0];
+            link = url + "download?version=" + line.split("\\|")[1];
 
             if (plugin.getDescription().getVersion().equals(version))
                 return UpdateCheckerResult.FALSE;
             else
                 return UpdateCheckerResult.TRUE;
 
-        } catch (Exception | Error e) {
+        } catch (Exception e) {
             return UpdateCheckerResult.ERROR;
         }
     }
 
     public String[] getBroadcast() {
         try {
-            Connection con = Jsoup.connect("http://textuploader.com/5b51f/raw");
-            con.userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0");
+            URL url = new URL("http://textuploader.com/5b51f/raw");
+            URLConnection conn = url.openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
+            conn.connect();
 
-            Document doc = con.get();
+            InputStreamReader isr = new InputStreamReader(conn.getInputStream());
+            BufferedReader br = new BufferedReader(isr);
 
-            String broadcast = doc.text();
+            String line = br.readLine();
 
-            String[] messages = broadcast.split("#n");
+            isr.close();
+            br.close();
 
-            if (!broadcast.equals("/"))
+            String[] messages = line.split("#n");
+
+            if (!line.equals("/"))
                 return messages;
 
         } catch (Exception | Error e) {
+            e.printStackTrace();
         }
 
         return null;

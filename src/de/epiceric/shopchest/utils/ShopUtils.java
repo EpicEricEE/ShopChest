@@ -4,15 +4,13 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.Database;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
@@ -23,15 +21,12 @@ import java.util.UUID;
 public class ShopUtils {
 
     private static HashMap<Location, Shop> shopLocation = new HashMap<>();
+    private static ShopChest plugin = ShopChest.getInstance();
 
     public static Shop getShop(Location location) {
         Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 
-        if (shopLocation.containsKey(newLocation)) {
-            return shopLocation.get(newLocation);
-        } else {
-            return null;
-        }
+        return shopLocation.get(newLocation);
     }
 
     public static boolean isShop(Location location) {
@@ -69,7 +64,7 @@ public class ShopUtils {
             }
 
             if (addToDatabase)
-                ShopChest.database.addShop(shop);
+                plugin.getShopDatabase().addShop(shop);
         }
     }
 
@@ -96,20 +91,20 @@ public class ShopUtils {
             shop.removeHologram();
 
             if (removeFromDatabase)
-                ShopChest.database.removeShop(shop);
+                plugin.getShopDatabase().removeShop(shop);
         }
     }
 
     public static int getShopLimit(Player p) {
-        int limit = Config.default_limit();
+        int limit = Config.default_limit;
 
-        if (ShopChest.perm.hasGroupSupport()) {
+        if (plugin.getPermission().hasGroupSupport()) {
             List<String> groups = new ArrayList<String>();
 
-            for (String key : Config.shopLimits_group()) {
-                for (int i = 0; i < ShopChest.perm.getGroups().length; i++) {
-                    if (ShopChest.perm.getGroups()[i].equals(key)) {
-                        if (ShopChest.perm.playerInGroup(p, key)) {
+            for (String key : Config.shopLimits_group) {
+                for (int i = 0; i < plugin.getPermission().getGroups().length; i++) {
+                    if (plugin.getPermission().getGroups()[i].equals(key)) {
+                        if (plugin.getPermission().playerInGroup(p, key)) {
                             groups.add(key);
                         }
                     }
@@ -137,7 +132,7 @@ public class ShopUtils {
             }
         }
 
-        for (String key : Config.shopLimits_player()) {
+        for (String key : Config.shopLimits_player) {
             int pLimit = ShopChest.getInstance().getConfig().getInt("shop-limits.player." + key);
             if (Utils.isUUID(key)) {
                 if (p.getUniqueId().equals(UUID.fromString(key))) {
@@ -163,16 +158,27 @@ public class ShopUtils {
         return shopCount;
     }
 
-    public static void reloadShops(Player player) {
+    public static int reloadShops() {
         for (Shop shop : ShopUtils.getShops()) {
             ShopUtils.removeShop(shop, false);
         }
 
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity entity : world.getEntities()) {
+                if (entity instanceof Item) {
+                    Item item = (Item) entity;
+                    if (item.hasMetadata("shopItem")) {
+                        item.remove();
+                    }
+                }
+            }
+        }
+
         int count = 0;
-        for (int id = 1; id < ShopChest.database.getHighestID() + 1; id++) {
+        for (int id = 1; id < plugin.getShopDatabase().getHighestID() + 1; id++) {
 
             try {
-                Shop shop = (Shop) ShopChest.database.get(id, Database.ShopInfo.SHOP);
+                Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP);
                 ShopUtils.addShop(shop, false);
             } catch (NullPointerException e) {
                 continue;
@@ -181,10 +187,6 @@ public class ShopUtils {
             count++;
         }
 
-        if (player != null) player.sendMessage(Config.reloaded_shops(count));
-
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()));
-        }
+        return count;
     }
 }

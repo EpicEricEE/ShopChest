@@ -1,8 +1,9 @@
 package de.epiceric.shopchest.interfaces.jsonbuilder;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.language.LocalizedMessage;
 import net.minecraft.server.v1_8_R1.ChatSerializer;
 import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
 import org.bukkit.ChatColor;
@@ -19,9 +20,10 @@ public class JsonBuilder_1_8_R1 implements JsonBuilder {
         /* JsonBuilder by FisheyLP */
 
     private List<String> extras = new ArrayList<String>();
+    private ShopChest plugin;
 
-
-    public JsonBuilder_1_8_R1(String... text) {
+    public JsonBuilder_1_8_R1(ShopChest plugin, String... text) {
+        this.plugin = plugin;
         for (String extra : text)
             parse(extra);
     }
@@ -31,7 +33,7 @@ public class JsonBuilder_1_8_R1 implements JsonBuilder {
         String regex = "[&�]{1}([a-fA-Fl-oL-O0-9]){1}";
         text = text.replaceAll(regex, "�$1");
         if (!Pattern.compile(regex).matcher(text).find()) {
-            withText(text).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink);
+            withText(text).withHoverEvent(HoverAction.SHOW_TEXT, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD)).withClickEvent(ClickAction.OPEN_URL, plugin.getDownloadLink());
             return this;
         }
         String[] words = text.split(regex);
@@ -40,7 +42,7 @@ public class JsonBuilder_1_8_R1 implements JsonBuilder {
         for (String word : words) {
             try {
                 if (index != words[0].length())
-                    withText(word).withColor("�" + text.charAt(index - 1)).withHoverEvent(HoverAction.SHOW_TEXT, Config.click_to_download()).withClickEvent(ClickAction.OPEN_URL, ShopChest.downloadLink);
+                    withText(word).withColor("�" + text.charAt(index - 1)).withHoverEvent(HoverAction.SHOW_TEXT, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD)).withClickEvent(ClickAction.OPEN_URL, plugin.getDownloadLink());
             } catch (Exception e) {
             }
             index += word.length() + 2;

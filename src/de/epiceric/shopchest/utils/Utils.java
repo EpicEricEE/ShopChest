@@ -2,17 +2,12 @@ package de.epiceric.shopchest.utils;
 
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Utils {
 
@@ -22,7 +17,7 @@ public class Utils {
         ArrayList<ItemStack> inventoryItems = new ArrayList<>();
 
         if (inventory instanceof PlayerInventory) {
-            if (getVersion(Bukkit.getServer()).contains("1_9")) {
+            if (getMajorVersion() >= 9) {
                 inventoryItems.add(inventory.getItem(40));
             }
 
@@ -47,10 +42,14 @@ public class Utils {
         return amount;
     }
 
-    public static String getVersion(Server server) {
-        String packageName = server.getClass().getPackage().getName();
+    public static String getServerVersion() {
+        String packageName = Bukkit.getServer().getClass().getPackage().getName();
 
         return packageName.substring(packageName.lastIndexOf('.') + 1);
+    }
+
+    public static int getMajorVersion() {
+        return Integer.valueOf(getServerVersion().split("_")[1]);
     }
 
     public static boolean isUUID(String string) {

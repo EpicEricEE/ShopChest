@@ -7,6 +7,12 @@ import de.epiceric.shopchest.ShopChest;
 
 public class LWCMagnetListener {
 
+    private ShopChest plugin;
+
+    public LWCMagnetListener(ShopChest plugin) {
+        this.plugin = plugin;
+    }
+
     public void initializeListener() {
         try {
             Class.forName("com.griefcraft.scripting.event.LWCMagnetPullEvent");
@@ -23,9 +29,10 @@ public class LWCMagnetListener {
             });
 
         } catch (ClassNotFoundException ex) {
-            ShopChest.logger.warning("Shop items can be sucked up by the magnet flag of a protected chest of LWC.");
-            ShopChest.logger.warning("Use 'LWC Unofficial - Entity locking' v1.7.3 or later by 'Me_Goes_RAWR' to prevent this.");
-        };
+            plugin.getLogger().warning("Shop items can be sucked up by the magnet flag of a protected chest of LWC.");
+            plugin.getLogger().warning("Use 'LWC Unofficial - Entity locking' v1.7.3 or later by 'Me_Goes_RAWR' to prevent this.");
+        }
+        ;
     }
 
 

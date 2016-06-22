@@ -21,10 +21,10 @@ public class MySQL extends Database {
 
             Class.forName("com.mysql.jdbc.Driver");
 
-            String connectUrl = "jdbc:mysql://" + Config.database_mysql_host() + ":" + Config.database_mysql_port() + "/" + Config.database_mysql_database();
-            plugin.getLogger().info("Connecting to MySQL Server \"" + connectUrl + "\" as user \"" + Config.database_mysql_username() + "\"");
+            String connectUrl = "jdbc:mysql://" + Config.database_mysql_host + ":" + Config.database_mysql_port + "/" + Config.database_mysql_database;
+            plugin.getLogger().info("Connecting to MySQL Server \"" + connectUrl + "\" as user \"" + Config.database_mysql_username + "\"");
 
-            connection = DriverManager.getConnection(connectUrl, Config.database_mysql_username(), Config.database_mysql_password());
+            connection = DriverManager.getConnection(connectUrl, Config.database_mysql_username, Config.database_mysql_password);
 
             return connection;
         } catch (Exception ex) {

@@ -2,6 +2,8 @@ package de.epiceric.shopchest.event;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Material;
@@ -23,20 +25,17 @@ import java.util.ArrayList;
 
 public class ProtectChest implements Listener {
 
-    public ProtectChest() {
-    }
-
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         if (ShopUtils.isShop(e.getBlock().getLocation())) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(Config.cannot_break_shop());
+            e.getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_BREAK_SHOP));
         }
     }
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent e) {
-        if (Config.explosion_protection()) {
+        if (Config.explosion_protection) {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
             for (Block b : bl) {
                 if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -48,7 +47,7 @@ public class ProtectChest implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent e) {
-        if (Config.explosion_protection()) {
+        if (Config.explosion_protection) {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
             for (Block b : bl) {
                 if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -95,7 +94,7 @@ public class ProtectChest implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onItemMove(InventoryMoveItemEvent e) {
-        if (Config.hopper_protection()) {
+        if (Config.hopper_protection) {
             if ((e.getSource().getType().equals(InventoryType.CHEST)) && (!e.getInitiator().getType().equals(InventoryType.PLAYER))) {
 
                 if (e.getSource().getHolder() instanceof DoubleChest) {

@@ -1,19 +1,30 @@
 package de.epiceric.shopchest.config;
 
-public class Regex {
+public enum Regex {
 
-    public static String vendor = "%VENDOR%";
-    public static String amount = "%AMOUNT%";
-    public static String itemName = "%ITEMNAME%";
-    public static String creationPrice = "%CREATION-PRICE%";
-    public static String error = "%ERROR%";
-    public static String enchantment = "%ENCHANTMENT%";
-    public static String minPrice = "%MIN-PRICE%";
-    public static String version = "%VERSION%";
-    public static String buyPrice = "%BUY-PRICE%";
-    public static String sellPrice = "%SELL-PRICE%";
-    public static String limit = "%LIMIT%";
-    public static String player = "%PLAYER%";
-    public static String arrowEffect = "%ARROW-EFFECT%";
+    VENDOR("%VENDOR%"),
+    AMOUNT("%AMOUNT%"),
+    ITEM_NAME("%ITEMNAME%"),
+    CREATION_PRICE("%CREATION-PRICE%"),
+    ERROR("%ERROR%"),
+    ENCHANTMENT("%ENCHANTMENT%"),
+    MIN_PRICE("%MIN-PRICE%"),
+    VERSION("%VERSION%"),
+    BUY_PRICE("%BUY-PRICE%"),
+    SELL_PRICE("%SELL-PRICE%"),
+    LIMIT("%LIMIT%"),
+    PLAYER("%PLAYER%"),
+    POTION_EFFECT("%POTION-EFFECT%"),
+    MUSIC_TITLE("%MUSIC-TITLE%");
+
+    private String name;
+
+    Regex(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
 }

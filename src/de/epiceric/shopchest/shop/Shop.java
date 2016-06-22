@@ -1,10 +1,11 @@
 package de.epiceric.shopchest.shop;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.interfaces.Hologram;
 import de.epiceric.shopchest.interfaces.hologram.*;
-import de.epiceric.shopchest.utils.ItemNames;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -155,14 +156,21 @@ public class Shop {
 
         } else holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
 
-        holoText[0] = Config.hologram_format(product.getAmount(), ItemNames.lookup(product));
+        holoText[0] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_FORMAT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
+                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)));
 
-        if ((buyPrice <= 0) && (sellPrice > 0)) holoText[1] = Config.hologram_sell(sellPrice);
-        else if ((buyPrice > 0) && (sellPrice <= 0)) holoText[1] = Config.hologram_buy(buyPrice);
-        else if ((buyPrice > 0) && (sellPrice > 0)) holoText[1] = Config.hologram_buy_sell(buyPrice, sellPrice);
-        else holoText[1] = Config.hologram_buy_sell(buyPrice, sellPrice);
+        if ((buyPrice <= 0) && (sellPrice > 0))
+            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL, new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+        else if ((buyPrice > 0) && (sellPrice <= 0))
+            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
+        else if ((buyPrice > 0) && (sellPrice > 0))
+            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
+                    new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+        else
+            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
+                    new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
 
-        switch (Utils.getVersion(plugin.getServer())) {
+        switch (Utils.getServerVersion()) {
             case "v1_8_R1":
                 hologram = new Hologram_1_8_R1(holoText, holoLocation);
                 break;
