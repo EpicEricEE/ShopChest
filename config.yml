@@ -9,7 +9,7 @@ main-command-name: "shop"
 
 # Set the language of the item-, enchantment-, potion- and arrow-effect names
 # The value must equal to the name of one of a file in the 'lang' folder (without the '.lang' extension)
-language-file: "de_DE"
+language-file: "en_US"
 
 # Set the maximal distance to the shop where the player can see the hologram.
 # Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
