@@ -79,13 +79,14 @@ public class Shop {
         itemMeta.setLore(lore);
 
         itemLocation = new Location(location.getWorld(), hologram.getLocation().getX(), location.getY() + 1, hologram.getLocation().getZ());
-        itemStack = new ItemStack(product.getType(), 1, product.getDurability());
-        itemStack.setItemMeta(itemMeta);
+        itemStack = new ItemStack(product);
+        itemStack.setAmount(1);
 
         item = location.getWorld().dropItem(itemLocation, itemStack);
         item.setVelocity(new Vector(0, 0, 0));
         item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
         item.setCustomNameVisible(false);
+        item.setPickupDelay(Integer.MAX_VALUE);
 
         this.item = item;
     }
