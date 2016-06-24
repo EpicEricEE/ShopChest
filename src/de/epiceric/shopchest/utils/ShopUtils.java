@@ -152,7 +152,10 @@ public class ShopUtils {
         int shopCount = 0;
 
         for (Shop shop : ShopUtils.getShops()) {
-            if (shop.getVendor().equals(p)) shopCount++;
+            if (shop.getVendor().equals(p)) {
+                if (shop.getShopType() != Shop.ShopType.ADMIN || !Config.exclude_admin_shops)
+                    shopCount++;
+            }
         }
 
         return shopCount;

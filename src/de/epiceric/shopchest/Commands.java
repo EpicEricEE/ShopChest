@@ -202,8 +202,10 @@ public class Commands extends BukkitCommand {
 
         if (limit != -1) {
             if (ShopUtils.getShopAmount(p) >= limit) {
-                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(limit))));
-                return;
+                if (shopType != ShopType.ADMIN || !Config.exclude_admin_shops) {
+                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(limit))));
+                    return;
+                }
             }
         }
 

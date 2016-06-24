@@ -40,6 +40,8 @@ public class Config {
 
     public static boolean enable_broadcast = plugin.getConfig().getBoolean("enable-broadcast");
 
+    public static boolean exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
+
     public static double maximal_distance = plugin.getConfig().getDouble("maximal-distance");
 
     public static double shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
