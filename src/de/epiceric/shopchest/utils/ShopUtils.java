@@ -45,36 +45,26 @@ public class ShopUtils {
     }
 
     public static void addShop(Shop shop, boolean addToDatabase) {
-        Location loc = shop.getLocation();
-        Block b = loc.getBlock();
+        InventoryHolder ih = shop.getChest().getInventory().getHolder();
 
-        if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-            Chest c = (Chest) b.getState();
-            InventoryHolder ih = c.getInventory().getHolder();
+        if (ih instanceof DoubleChest) {
+            DoubleChest dc = (DoubleChest) ih;
+            Chest r = (Chest) dc.getRightSide();
+            Chest l = (Chest) dc.getLeftSide();
 
-            if (ih instanceof DoubleChest) {
-                DoubleChest dc = (DoubleChest) ih;
-                Chest r = (Chest) dc.getRightSide();
-                Chest l = (Chest) dc.getLeftSide();
-
-                shopLocation.put(r.getLocation(), shop);
-                shopLocation.put(l.getLocation(), shop);
-            } else {
-                shopLocation.put(shop.getLocation(), shop);
-            }
-
-            if (addToDatabase)
-                plugin.getShopDatabase().addShop(shop);
+            shopLocation.put(r.getLocation(), shop);
+            shopLocation.put(l.getLocation(), shop);
+        } else {
+            shopLocation.put(shop.getLocation(), shop);
         }
+
+        if (addToDatabase)
+            plugin.getShopDatabase().addShop(shop);
+
     }
 
     public static void removeShop(Shop shop, boolean removeFromDatabase) {
-        Location loc = shop.getLocation();
-        Block b = loc.getBlock();
-
-        if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-            Chest c = (Chest) b.getState();
-            InventoryHolder ih = c.getInventory().getHolder();
+            InventoryHolder ih = shop.getChest().getInventory().getHolder();
 
             if (ih instanceof DoubleChest) {
                 DoubleChest dc = (DoubleChest) ih;
@@ -92,7 +82,6 @@ public class ShopUtils {
 
             if (removeFromDatabase)
                 plugin.getShopDatabase().removeShop(shop);
-        }
     }
 
     public static int getShopLimit(Player p) {
@@ -149,16 +138,20 @@ public class ShopUtils {
     }
 
     public static int getShopAmount(OfflinePlayer p) {
-        int shopCount = 0;
+        float shopCount = 0;
 
         for (Shop shop : ShopUtils.getShops()) {
             if (shop.getVendor().equals(p)) {
-                if (shop.getShopType() != Shop.ShopType.ADMIN || !Config.exclude_admin_shops)
+                if (shop.getShopType() != Shop.ShopType.ADMIN || !Config.exclude_admin_shops) {
                     shopCount++;
+
+                    if (shop.getChest().getInventory().getHolder() instanceof DoubleChest)
+                        shopCount -= 0.5;
+                }
             }
         }
 
-        return shopCount;
+        return Math.round(shopCount);
     }
 
     public static int reloadShops() {

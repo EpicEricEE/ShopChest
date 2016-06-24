@@ -37,6 +37,7 @@ public class Shop {
     private double buyPrice;
     private double sellPrice;
     private ShopType shopType;
+    private Chest chest;
 
     public Shop(int id, ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
         this.id = id;
@@ -47,6 +48,18 @@ public class Shop {
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.shopType = shopType;
+
+        Block b = location.getBlock();
+        if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
+            this.chest = (Chest) b.getState();
+        } else {
+            try {
+                throw new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return;
+            }
+        }
 
         if (hologram == null || !hologram.exists()) createHologram();
         if (item == null || item.isDead()) createItem();
@@ -92,41 +105,26 @@ public class Shop {
     }
 
     private void createHologram() {
-
         boolean doubleChest;
 
         Chest[] chests = new Chest[2];
-
         Block b = location.getBlock();
+        InventoryHolder ih = chest.getInventory().getHolder();
 
-        if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+        if (ih instanceof DoubleChest) {
+            DoubleChest dc = (DoubleChest) ih;
 
-            Chest c = (Chest) b.getState();
-            InventoryHolder ih = c.getInventory().getHolder();
+            Chest r = (Chest) dc.getRightSide();
+            Chest l = (Chest) dc.getLeftSide();
 
-            if (ih instanceof DoubleChest) {
-                DoubleChest dc = (DoubleChest) ih;
+            chests[0] = r;
+            chests[1] = l;
 
-                Chest r = (Chest) dc.getRightSide();
-                Chest l = (Chest) dc.getLeftSide();
-
-                chests[0] = r;
-                chests[1] = l;
-
-                doubleChest = true;
-
-            } else {
-                doubleChest = false;
-                chests[0] = c;
-            }
+            doubleChest = true;
 
         } else {
-            try {
-                throw new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return;
+            doubleChest = false;
+            chests[0] = chest;
         }
 
         Location holoLocation;
@@ -167,8 +165,7 @@ public class Shop {
         else if ((buyPrice > 0) && (sellPrice > 0))
             holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
                     new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
-        else
-            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
+        else holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
                     new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
 
         switch (Utils.getServerVersion()) {
@@ -224,6 +221,10 @@ public class Shop {
 
     public Hologram getHologram() {
         return hologram;
+    }
+
+    public Chest getChest() {
+        return chest;
     }
 
     public enum ShopType {
