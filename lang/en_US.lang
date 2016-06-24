@@ -16,7 +16,7 @@ message.shop-create-not-enough-money=&cNot enough money. You need &6%CREATION-PR
 
 # Set the vendor message the player gets after entering '/shop info'.
 # Usable regex: %VENDOR%
-message.shopInfo.vendor=&6Vendor=&e%VENDOR%
+message.shopInfo.vendor=&6Vendor: &e%VENDOR%
 
 # Set the product message the player gets after entering '/shop info'.
 # Usable regex: %AMOUNT%, %ITEMNAME%

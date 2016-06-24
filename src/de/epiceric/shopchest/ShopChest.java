@@ -68,7 +68,7 @@ public class ShopChest extends JavaPlugin {
     }
 
     private void initLanguageConfig() {
-        langConfig = new LanguageConfiguration();
+        langConfig = new LanguageConfiguration(this);
         File langFolder = new File(getDataFolder(), "lang");
 
         if (!(new File(langFolder, "en_US.lang")).exists())

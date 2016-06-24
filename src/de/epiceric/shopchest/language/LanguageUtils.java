@@ -81,9 +81,9 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.LAPIS_ORE, langConfig.getString("tile.oreLapis.name", "Lapis Lazuli Ore")));
         itemNames.add(new ItemName(Material.LAPIS_BLOCK, langConfig.getString("tile.blockLapis.name", "Lapis Lazuli Block")));
         itemNames.add(new ItemName(Material.DISPENSER, langConfig.getString("tile.dispenser.name", "Dispenser")));
-        itemNames.add(new ItemName(Material.SANDSTONE, langConfig.getString("tile.sandstone.default.name", "Sandstone")));
-        itemNames.add(new ItemName(Material.SANDSTONE, 1, langConfig.getString("tile.sandstone.chiseled.name", "Chiseled Sandstone")));
-        itemNames.add(new ItemName(Material.SANDSTONE, 2, langConfig.getString("tile.sandstone.smooth.name", "Smooth Sandstone")));
+        itemNames.add(new ItemName(Material.SANDSTONE, langConfig.getString("tile.sandStone.default.name", "Sandstone")));
+        itemNames.add(new ItemName(Material.SANDSTONE, 1, langConfig.getString("tile.sandStone.chiseled.name", "Chiseled Sandstone")));
+        itemNames.add(new ItemName(Material.SANDSTONE, 2, langConfig.getString("tile.sandStone.smooth.name", "Smooth Sandstone")));
         itemNames.add(new ItemName(Material.NOTE_BLOCK, langConfig.getString("tile.musicBlock.name", "Note Block")));
         itemNames.add(new ItemName(Material.BED, langConfig.getString("tile.bed.name", "Bed")));
         itemNames.add(new ItemName(Material.POWERED_RAIL, langConfig.getString("tile.goldenRail.name", "Powered Rail")));
@@ -611,7 +611,7 @@ public class LanguageUtils {
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_KNOCKBACK, langConfig.getString("enchantment.arrowKnockback", "Punch")));
         enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_ALL, langConfig.getString("enchantment.damage.all", "Sharpness")));
         enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_ARTHROPODS, langConfig.getString("enchantment.damage.arthropods", "Bane of Arthropods")));
-        enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_UNDEAD, langConfig.getString("enchantment.damange.undead", "Smite")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_UNDEAD, langConfig.getString("enchantment.damage.undead", "Smite")));
         enchantmentNames.add(new EnchantmentName(Enchantment.DIG_SPEED, langConfig.getString("enchantment.digging", "Efficiency")));
         enchantmentNames.add(new EnchantmentName(Enchantment.DURABILITY, langConfig.getString("enchantment.durability", "Unbreaking")));
         enchantmentNames.add(new EnchantmentName(Enchantment.FIRE_ASPECT, langConfig.getString("enchantment.fire", "Fire Aspect")));
@@ -670,7 +670,7 @@ public class LanguageUtils {
         entityNames.add(new EntityName(EntityType.SQUID, langConfig.getString("entity.Squid.name", "Squid")));
         entityNames.add(new EntityName(EntityType.WOLF, langConfig.getString("entity.Wolf.name", "Wolf")));
         entityNames.add(new EntityName(EntityType.MUSHROOM_COW, langConfig.getString("entity.MushroomCow.name", "Mooshroom")));
-        entityNames.add(new EntityName(EntityType.OCELOT, langConfig.getString("entity.Ocelot.name", "Bat")));
+        entityNames.add(new EntityName(EntityType.OCELOT, langConfig.getString("entity.Ozelot.name", "Ocelot")));
         entityNames.add(new EntityName(EntityType.HORSE, langConfig.getString("entity.EntityHorse.name", "Horse")));
         entityNames.add(new EntityName(EntityType.RABBIT, langConfig.getString("entity.Rabbit.name", "Rabbit")));
         entityNames.add(new EntityName(EntityType.VILLAGER, langConfig.getString("entity.Villager.name", "Villager")));
@@ -827,7 +827,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_ADMIN, langConfig.getString("message.shopInfo.is-admin", "&6Type: &eAdmin")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SELL_DISABLED, langConfig.getString("message.buy-and-sell-disabled", "&cYou can't create a shop with buying and selling disabled.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCCESS, langConfig.getString("message.buy-success", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.BUY_PRICE, Regex.VENDOR));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, langConfig.getString("message.buy-sucess-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.BUY_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, langConfig.getString("message.buy-success-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.BUY_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS, langConfig.getString("message.sell-success", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.SELL_PRICE, Regex.VENDOR));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, langConfig.getString("message.sell-success-admin", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.SELL_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, langConfig.getString("message.someone-bought", "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop."), Regex.PLAYER, Regex.AMOUNT, Regex.ITEM_NAME, Regex.BUY_PRICE));

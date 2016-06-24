@@ -1,5 +1,6 @@
 package de.epiceric.shopchest.config;
 
+import de.epiceric.shopchest.ShopChest;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -12,6 +13,12 @@ public class LanguageConfiguration extends FileConfiguration {
 
     private ArrayList<String> lines = new ArrayList<>();
     private HashMap<String, String> values = new HashMap<>();
+
+    private ShopChest plugin;
+
+    public LanguageConfiguration(ShopChest plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public String saveToString() {
@@ -33,6 +40,7 @@ public class LanguageConfiguration extends FileConfiguration {
             }
         }
 
+        plugin.getLogger().warning("Using default value for: " + path + " (" + def + ")");
         return def;
     }
 
@@ -67,7 +75,7 @@ public class LanguageConfiguration extends FileConfiguration {
 
                 if (!line.startsWith("#")) {
                     if (line.contains("=")) {
-                        if (line.split("=").length == 2) {
+                        if (line.split("=").length >= 2) {
                             String key = line.split("=")[0];
                             StringBuilder sbValue = new StringBuilder();
 
