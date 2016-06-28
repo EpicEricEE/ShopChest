@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.event;
+package de.epiceric.shopchest.listeners;
 
 
 import org.bukkit.entity.Item;
@@ -10,10 +10,7 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-public class RegenerateShopItem implements Listener {
-
-    public RegenerateShopItem() {
-    }
+public class ItemProtectListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onItemDespawn(ItemDespawnEvent e) {

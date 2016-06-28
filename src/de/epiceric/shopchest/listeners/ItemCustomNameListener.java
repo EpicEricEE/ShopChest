@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.event;
+package de.epiceric.shopchest.listeners;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

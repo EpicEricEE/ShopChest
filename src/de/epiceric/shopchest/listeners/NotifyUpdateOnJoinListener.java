@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.event;
+package de.epiceric.shopchest.listeners;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Regex;
@@ -13,12 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class NotifyUpdate implements Listener {
+public class NotifyUpdateOnJoinListener implements Listener {
 
     private ShopChest plugin;
     private Permission perm;
 
-    public NotifyUpdate(ShopChest plugin) {
+    public NotifyUpdateOnJoinListener(ShopChest plugin) {
         this.plugin = plugin;
         perm = plugin.getPermission();
     }

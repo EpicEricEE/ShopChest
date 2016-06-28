@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.event;
+package de.epiceric.shopchest.listeners;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Protection;
@@ -36,14 +36,14 @@ import org.yi.acru.bukkit.Lockette.Lockette;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InteractShop implements Listener {
+public class ShopInteractListener implements Listener {
 
     private ShopChest plugin;
     private Permission perm;
     private Economy econ;
     private Database database;
 
-    public InteractShop(ShopChest plugin) {
+    public ShopInteractListener(ShopChest plugin) {
         this.plugin = plugin;
         this.perm = plugin.getPermission();
         this.econ = plugin.getEconomy();

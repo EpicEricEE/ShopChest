@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.event;
+package de.epiceric.shopchest.listeners;
 
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
@@ -9,9 +9,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class UpdateHolograms implements Listener {
+public class HologramUpdateListener implements Listener {
 
-    public UpdateHolograms() {
+    public HologramUpdateListener() {
     }
 
     @EventHandler

@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.event;
+package de.epiceric.shopchest.listeners;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
@@ -23,7 +23,7 @@ import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
 
-public class ProtectChest implements Listener {
+public class ChestProtectListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {

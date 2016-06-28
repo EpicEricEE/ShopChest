@@ -3,7 +3,7 @@ package de.epiceric.shopchest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.LanguageConfiguration;
 import de.epiceric.shopchest.config.Regex;
-import de.epiceric.shopchest.event.*;
+import de.epiceric.shopchest.listeners.*;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import de.epiceric.shopchest.language.LanguageUtils;
@@ -321,15 +321,15 @@ public class ShopChest extends JavaPlugin {
 
         initializeShops();
 
-        getServer().getPluginManager().registerEvents(new UpdateHolograms(), this);
-        getServer().getPluginManager().registerEvents(new RegenerateShopItem(), this);
-        getServer().getPluginManager().registerEvents(new InteractShop(this), this);
-        getServer().getPluginManager().registerEvents(new NotifyUpdate(this), this);
-        getServer().getPluginManager().registerEvents(new ProtectChest(), this);
+        getServer().getPluginManager().registerEvents(new HologramUpdateListener(), this);
+        getServer().getPluginManager().registerEvents(new ItemProtectListener(), this);
+        getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
+        getServer().getPluginManager().registerEvents(new NotifyUpdateOnJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new ChestProtectListener(), this);
         getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
 
         if (getServer().getPluginManager().getPlugin("ClearLag") != null)
-            getServer().getPluginManager().registerEvents(new RegenerateShopItemAfterRemove(), this);
+            getServer().getPluginManager().registerEvents(new ClearLagListener(), this);
 
         if (getServer().getPluginManager().getPlugin("LWC") != null)
             new LWCMagnetListener(this).initializeListener();

@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.event;
+package de.epiceric.shopchest.listeners;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.scripting.JavaModule;

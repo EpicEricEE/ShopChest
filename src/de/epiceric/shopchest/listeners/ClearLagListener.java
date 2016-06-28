@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.event;
+package de.epiceric.shopchest.listeners;
 
 import me.minebuilders.clearlag.events.EntityRemoveEvent;
 import org.bukkit.entity.Entity;
@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 
-public class RegenerateShopItemAfterRemove implements Listener {
+public class ClearLagListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityRemove(EntityRemoveEvent e) {
