@@ -8,18 +8,16 @@ import java.util.List;
 
 public interface Hologram {
 
-    public Location getLocation();
+    Location getLocation();
 
-    public List<?> getEntities();
+    void showPlayer(OfflinePlayer p);
 
-    public void showPlayer(OfflinePlayer p);
+    void hidePlayer(OfflinePlayer p);
 
-    public void hidePlayer(OfflinePlayer p);
+    boolean isVisible(OfflinePlayer p);
 
-    public boolean isVisible(OfflinePlayer p);
+    boolean exists();
 
-    public boolean exists();
-
-    public void remove();
+    void remove();
 
 }

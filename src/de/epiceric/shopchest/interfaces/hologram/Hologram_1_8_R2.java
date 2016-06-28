@@ -17,11 +17,10 @@ public class Hologram_1_8_R2 implements Hologram {
 
     private boolean exists = false;
     private int count;
-    private List<EntityArmorStand> entitylist = new ArrayList<EntityArmorStand>();
+    private List<EntityArmorStand> entityList = new ArrayList<>();
     private String[] text;
     private Location location;
-    private double DISTANCE = 0.25D;
-    private HashMap<OfflinePlayer, Boolean> visible = new HashMap<OfflinePlayer, Boolean>();
+    private List<OfflinePlayer> visible = new ArrayList<>();
 
     public Hologram_1_8_R2(String[] text, Location location) {
         this.text = text;
@@ -33,31 +32,26 @@ public class Hologram_1_8_R2 implements Hologram {
         return location;
     }
 
-    public List<EntityArmorStand> getEntities() {
-        return entitylist;
-    }
-
     public void showPlayer(OfflinePlayer p) {
-        for (Object o : entitylist) {
+        for (Object o : entityList) {
             EntityArmorStand armor = (EntityArmorStand) o;
             PacketPlayOutSpawnEntityLiving packet = new PacketPlayOutSpawnEntityLiving(armor);
             ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
         }
-        visible.put(p, true);
+        visible.add(p);
     }
 
     public void hidePlayer(OfflinePlayer p) {
-        for (Object o : entitylist) {
+        for (Object o : entityList) {
             EntityArmorStand armor = (EntityArmorStand) o;
             PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(armor.getId());
             ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
         }
-        visible.put(p, false);
+        visible.remove(p);
     }
 
     public boolean isVisible(OfflinePlayer p) {
-        if (visible.containsKey(p)) return visible.get(p);
-        else return false;
+        return visible.contains(p);
     }
 
     private void create() {
@@ -67,13 +61,13 @@ public class Hologram_1_8_R2 implements Hologram {
             entity.setCustomNameVisible(true);
             entity.setInvisible(true);
             entity.setGravity(false);
-            entitylist.add(entity);
-            this.location.subtract(0, this.DISTANCE, 0);
+            entityList.add(entity);
+            this.location.subtract(0, 0.25, 0);
             count++;
         }
 
         for (int i = 0; i < count; i++) {
-            this.location.add(0, this.DISTANCE, 0);
+            this.location.add(0, 0.25, 0);
         }
 
         count = 0;
@@ -85,7 +79,7 @@ public class Hologram_1_8_R2 implements Hologram {
     }
 
     public void remove() {
-        for (EntityArmorStand e : entitylist) {
+        for (EntityArmorStand e : entityList) {
             e.die();
         }
         exists = false;
