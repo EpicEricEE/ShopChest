@@ -84,16 +84,13 @@ public class Shop {
         Item item;
         Location itemLocation;
         ItemStack itemStack;
-        ItemMeta itemMeta = product.getItemMeta().clone();
+        ItemMeta itemMeta = product.getItemMeta();
         itemMeta.setDisplayName(UUID.randomUUID().toString());
-
-        ArrayList<String> lore = new ArrayList<>();
-        lore.add("Shop Item");
-        itemMeta.setLore(lore);
 
         itemLocation = new Location(location.getWorld(), hologram.getLocation().getX(), location.getY() + 1, hologram.getLocation().getZ());
         itemStack = new ItemStack(product);
         itemStack.setAmount(1);
+        itemStack.setItemMeta(itemMeta);
 
         item = location.getWorld().dropItem(itemLocation, itemStack);
         item.setVelocity(new Vector(0, 0, 0));

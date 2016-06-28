@@ -23,7 +23,9 @@ import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -339,6 +341,14 @@ public class ShopChest extends JavaPlugin {
     public void onDisable() {
         for (Shop shop : ShopUtils.getShops()) {
             ShopUtils.removeShop(shop, false);
+        }
+
+        for (World world : Bukkit.getWorlds()) {
+            for (Item item : world.getEntitiesByClass(Item.class)) {
+                if (item.hasMetadata("shopItem")) {
+                    item.remove();
+                }
+            }
         }
     }
 
