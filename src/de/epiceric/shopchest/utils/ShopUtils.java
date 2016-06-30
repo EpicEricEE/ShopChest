@@ -4,8 +4,10 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.Database;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
@@ -23,17 +25,32 @@ public class ShopUtils {
     private static HashMap<Location, Shop> shopLocation = new HashMap<>();
     private static ShopChest plugin = ShopChest.getInstance();
 
+    /**
+     * Get the shop at a given location
+     *
+     * @param location Location of the shop
+     * @return Shop at the given location or <b>null</b> if no shop is found there
+     */
     public static Shop getShop(Location location) {
         Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 
         return shopLocation.get(newLocation);
     }
 
+    /**
+     * Checks whether there is a shop at a given location
+     * @param location Location to check
+     * @return Whether there is a shop at the given location
+     */
     public static boolean isShop(Location location) {
         Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
         return shopLocation.containsKey(newLocation);
     }
 
+    /**
+     * Get all Shops
+     * @return Array of all Shops
+     */
     public static Shop[] getShops() {
         ArrayList<Shop> shops = new ArrayList<>();
 
@@ -44,6 +61,11 @@ public class ShopUtils {
         return shops.toArray(new Shop[shops.size()]);
     }
 
+    /**
+     * Add a shop
+     * @param shop Shop to add
+     * @param addToDatabase Whether the shop should also be added to the database
+     */
     public static void addShop(Shop shop, boolean addToDatabase) {
         InventoryHolder ih = shop.getChest().getInventory().getHolder();
 
@@ -63,6 +85,11 @@ public class ShopUtils {
 
     }
 
+    /**
+     * Remove a shop
+     * @param shop Shop to remove
+     * @param removeFromDatabase Whether the shop should also be removed from the database
+     */
     public static void removeShop(Shop shop, boolean removeFromDatabase) {
             InventoryHolder ih = shop.getChest().getInventory().getHolder();
 
@@ -84,6 +111,11 @@ public class ShopUtils {
                 plugin.getShopDatabase().removeShop(shop);
     }
 
+    /**
+     * Get the shop limits of a player
+     * @param p Player, whose shop limits should be returned
+     * @return The shop limits of the given player
+     */
     public static int getShopLimit(Player p) {
         int limit = Config.default_limit;
 
@@ -137,6 +169,11 @@ public class ShopUtils {
         return limit;
     }
 
+    /**
+     * Get the amount of shops of a player
+     * @param p Player, whose shops should be counted
+     * @return The amount of a shops a player has (if {@link Config#exclude_admin_shops} is true, admin shops won't be counted)
+     */
     public static int getShopAmount(OfflinePlayer p) {
         float shopCount = 0;
 
@@ -154,6 +191,10 @@ public class ShopUtils {
         return Math.round(shopCount);
     }
 
+    /**
+     * Reload the shops
+     * @return Amount of shops, which were reloaded
+     */
     public static int reloadShops() {
         for (Shop shop : ShopUtils.getShops()) {
             ShopUtils.removeShop(shop, false);

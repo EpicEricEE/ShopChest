@@ -15,14 +15,23 @@ public class PotionName {
         this.potionType = potionType;
     }
 
+    /**
+     * @return {@link PotionItemType} linked to the Potion name
+     */
     public PotionItemType getPotionItemType() {
         return potionItemType;
     }
 
+    /**
+     * @return Potion Type linked to the Potion name
+     */
     public PotionType getPotionType() {
         return potionType;
     }
 
+    /**
+     * @return Localized Name of the Potion
+     */
     public String getLocalizedName() {
         return localizedName;
     }
@@ -31,6 +40,6 @@ public class PotionName {
         POTION,
         LINGERING_POTION,
         SPLASH_POTION,
-        TIPPED_ARROW;
+        TIPPED_ARROW
     }
 }

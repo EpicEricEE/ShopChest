@@ -12,11 +12,16 @@ public class EnchantmentName {
         this.localizedName = localizedName;
     }
 
-
+    /**
+     * @return Enchantment linked to the name
+     */
     public Enchantment getEnchantment() {
         return enchantment;
     }
 
+    /**
+     * @return Name linked to the enchantment
+     */
     public String getLocalizedName() {
         return localizedName;
     }
@@ -30,10 +35,16 @@ public class EnchantmentName {
             this.localizedName = localizedName;
         }
 
+        /**
+         * @return Level linked to the name
+         */
         public int getLevel() {
             return level;
         }
 
+        /**
+         * @return Name linked to the level
+         */
         public String getLocalizedName() {
             return localizedName;
         }

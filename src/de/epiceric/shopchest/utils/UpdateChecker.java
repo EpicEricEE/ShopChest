@@ -10,15 +10,18 @@ import java.net.URLConnection;
 public class UpdateChecker {
 
     private ShopChest plugin;
-    private String url;
     private String version;
     private String link;
 
-    public UpdateChecker(ShopChest plugin, String url) {
+    public UpdateChecker(ShopChest plugin) {
         this.plugin = plugin;
-        this.url = url;
     }
 
+    /**
+     * Check if an update is needed
+     *
+     * @return {@link UpdateCheckerResult#TRUE} if an update is available, {@link UpdateCheckerResult#FALSE} of no update is needed and {@link UpdateCheckerResult#ERROR} if an error occurred
+     */
     public UpdateCheckerResult updateNeeded() {
         try {
             URL url = new URL("http://textuploader.com/all1l/raw");
@@ -47,6 +50,10 @@ public class UpdateChecker {
         }
     }
 
+    /**
+     * Get the broadcast message
+     * @return A String Array of the lines of the broadcast message or <b>null</b> when no message is available
+     */
     public String[] getBroadcast() {
         try {
             URL url = new URL("http://textuploader.com/5b51f/raw");
@@ -74,10 +81,16 @@ public class UpdateChecker {
         return null;
     }
 
+    /**
+     * @return Latest Version or <b>null</b> if no update is available
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * @return Download Link of the latest version of <b>null</b> if no update is available
+     */
     public String getLink() {
         return link;
     }
@@ -85,7 +98,7 @@ public class UpdateChecker {
     public enum UpdateCheckerResult {
         TRUE,
         FALSE,
-        ERROR;
+        ERROR
     }
 
 

@@ -12,10 +12,16 @@ public class EntityName {
         this.localizedName = localizedName;
     }
 
+    /**
+     * @return EntityType linked to the name
+     */
     public EntityType getEntityType() {
         return entityType;
     }
 
+    /**
+     * @return Name linked to the EntityType
+     */
     public String getLocalizedName() {
         return localizedName;
     }

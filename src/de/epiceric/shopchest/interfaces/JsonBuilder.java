@@ -5,27 +5,27 @@ import org.bukkit.entity.Player;
 
 public interface JsonBuilder {
 
-    public JsonBuilder parse(String text);
+    JsonBuilder parse(String text);
 
-    public JsonBuilder withText(String text);
+    JsonBuilder withText(String text);
 
-    public JsonBuilder withColor(ChatColor color);
+    JsonBuilder withColor(ChatColor color);
 
-    public JsonBuilder withColor(String color);
+    JsonBuilder withColor(String color);
 
-    public JsonBuilder withClickEvent(ClickAction action, String value);
+    JsonBuilder withClickEvent(ClickAction action, String value);
 
-    public JsonBuilder withHoverEvent(HoverAction action, String value);
+    JsonBuilder withHoverEvent(HoverAction action, String value);
 
-    public String toString();
+    String toString();
 
-    public void sendJson(Player p);
+    void sendJson(Player p);
 
-    public enum ClickAction {
+    enum ClickAction {
         RUN_COMMAND, SUGGEST_COMMAND, OPEN_URL
     }
 
-    public enum HoverAction {
+    enum HoverAction {
         SHOW_TEXT
     }
 

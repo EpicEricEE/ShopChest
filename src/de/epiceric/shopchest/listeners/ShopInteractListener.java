@@ -223,6 +223,16 @@ public class ShopInteractListener implements Listener {
 
     }
 
+    /**
+     * Create a new shop
+     *
+     * @param executor  Player, who executed the command, will receive the message and become the vendor of the shop
+     * @param location  Where the shop will be located
+     * @param product   Product of the Shop
+     * @param buyPrice  Buy price
+     * @param sellPrice Sell price
+     * @param shopType  Type of the shop
+     */
     private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
         Shop shop = new Shop(database.getNextFreeID(), plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
@@ -235,11 +245,21 @@ public class ShopInteractListener implements Listener {
 
     }
 
+    /**
+     * Remove a shop
+     * @param executor Player, who executed the command and will receive the message
+     * @param shop Shop to be removed
+     */
     private void remove(Player executor, Shop shop) {
         ShopUtils.removeShop(shop, true);
         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
     }
 
+    /**
+     *
+     * @param executor Player, who executed the command and will retrieve the information
+     * @param shop Shop from which the information will be retrieved
+     */
     private void info(Player executor, Shop shop) {
         Chest c = (Chest) shop.getLocation().getBlock().getState();
 
@@ -308,6 +328,11 @@ public class ShopInteractListener implements Listener {
         executor.sendMessage(" ");
     }
 
+    /**
+     * A player buys from a shop
+     * @param executor Player, who executed the command and will buy the product
+     * @param shop Shop, from which the player buys
+     */
     private void buy(Player executor, Shop shop) {
         if (econ.getBalance(executor) >= shop.getBuyPrice()) {
 
@@ -390,6 +415,11 @@ public class ShopInteractListener implements Listener {
         }
     }
 
+    /**
+     * A player sells to a shop
+     * @param executor Player, who executed the command and will sell the product
+     * @param shop Shop, to which the player sells
+     */
     private void sell(Player executor, Shop shop) {
         if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice() || shop.getShopType() == ShopType.ADMIN) {
 
@@ -463,6 +493,12 @@ public class ShopInteractListener implements Listener {
         }
     }
 
+    /**
+     * Adds items to an inventory
+     * @param inventory The inventory, to which the items will be added
+     * @param itemStack Items to add
+     * @return Whether all items were added to the inventory
+     */
     private boolean addToInventory(Inventory inventory, ItemStack itemStack) {
         HashMap<Integer, ItemStack> inventoryItems = new HashMap<>();
         int amount = itemStack.getAmount();
@@ -513,6 +549,12 @@ public class ShopInteractListener implements Listener {
         return (added == amount);
     }
 
+    /**
+     * Removes items to from an inventory
+     * @param inventory The inventory, from which the items will be removed
+     * @param itemStack Items to remove
+     * @return Whether all items were removed from the inventory
+     */
     private boolean removeFromInventory(Inventory inventory, ItemStack itemStack) {
         HashMap<Integer, ItemStack> inventoryItems = new HashMap<>();
         int amount = itemStack.getAmount();

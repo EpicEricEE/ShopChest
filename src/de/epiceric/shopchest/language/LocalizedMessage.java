@@ -20,14 +20,23 @@ public class LocalizedMessage {
         this.localizedString = ChatColor.translateAlternateColorCodes('&', localizedString);
     }
 
+    /**
+     * @return {@link Message} linked to this object
+     */
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * @return Array of {@link Regex}, which are required by the message
+     */
     public Regex[] getRegexes() {
         return regexes;
     }
 
+    /**
+     * @return Localized Message
+     */
     public String getLocalizedString() {
         return localizedString;
     }
@@ -102,7 +111,7 @@ public class LocalizedMessage {
         COMMAND_DESC_INFO,
         COMMAND_DESC_RELOAD,
         COMMAND_DESC_UPDATE,
-        COMMAND_DESC_LIMITS;
+        COMMAND_DESC_LIMITS
     }
 
     public static class ReplacedRegex {
@@ -115,10 +124,16 @@ public class LocalizedMessage {
             this.replace = replace;
         }
 
+        /**
+         * @return String which will replace the regex
+         */
         public String getReplace() {
             return replace;
         }
 
+        /**
+         * @return Regex that will be replaced
+         */
         public Regex getRegex() {
             return regex;
         }

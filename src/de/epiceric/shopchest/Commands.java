@@ -39,6 +39,13 @@ public class Commands extends BukkitCommand {
         this.perm = plugin.getPermission();
     }
 
+    /**
+     * Register a command to ShopChest
+     *
+     * @param command Command to register
+     * @param plugin  Instance of ShopChest
+     * @throws ReflectiveOperationException
+     */
     public static void registerCommand(Command command, ShopChest plugin) throws ReflectiveOperationException {
         Method commandMap = plugin.getServer().getClass().getMethod("getCommandMap");
         Object cmdmap = commandMap.invoke(plugin.getServer());
@@ -131,10 +138,14 @@ public class Commands extends BukkitCommand {
 
     }
 
+    /**
+     * A given player checks for updates
+     * @param player The command executor
+     */
     private void checkUpdates(Player player) {
         player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
 
-        UpdateChecker uc = new UpdateChecker(ShopChest.getInstance(), ShopChest.getInstance().getDescription().getWebsite());
+        UpdateChecker uc = new UpdateChecker(ShopChest.getInstance());
         UpdateCheckerResult result = uc.updateNeeded();
 
         if (result == UpdateCheckerResult.TRUE) {
@@ -190,10 +201,20 @@ public class Commands extends BukkitCommand {
 
     }
 
+    /**
+     * A given player reloads the shops
+     * @param player The command executor
+     */
     private void reload(Player player) {
         player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(ShopUtils.reloadShops()))));
     }
 
+    /**
+     * A given player creates a shop
+     * @param args Arguments of the entered command
+     * @param shopType The {@link ShopType}, the shop will have
+     * @param p The command executor
+     */
     private void create(String[] args, ShopType shopType, Player p) {
         int amount;
         double buyPrice, sellPrice;
@@ -307,21 +328,33 @@ public class Commands extends BukkitCommand {
             }
         }
 
-        ClickType.addPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));
+        ClickType.setPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
 
     }
 
+    /**
+     * A given player removes a shop
+     * @param p The command executor
+     */
     private void remove(Player p) {
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE));
-        ClickType.addPlayerClickType(p, new ClickType(EnumClickType.REMOVE));
+        ClickType.setPlayerClickType(p, new ClickType(EnumClickType.REMOVE));
     }
 
+    /**
+     * A given player retrieves information about a shop
+     * @param p The command executor
+     */
     private void info(Player p) {
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_INFO));
-        ClickType.addPlayerClickType(p, new ClickType(EnumClickType.INFO));
+        ClickType.setPlayerClickType(p, new ClickType(EnumClickType.INFO));
     }
 
+    /**
+     * Sends the basic help message to a given player
+     * @param player Player who will receive the message
+     */
     private void sendBasicHelpMessage(Player player) {
         player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
         player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name + " remove - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE));

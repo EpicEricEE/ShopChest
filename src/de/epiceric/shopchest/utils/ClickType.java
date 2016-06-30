@@ -27,6 +27,12 @@ public class ClickType {
         this.shopType = shopType;
     }
 
+    /**
+     * Gets the click type of a player
+     *
+     * @param player Player whose click type should be gotten
+     * @return The Player's click type or <b>null</b> if he doesn't have one
+     */
     public static ClickType getPlayerClickType(OfflinePlayer player) {
         if (playerClickType.containsKey(player))
             return playerClickType.get(player);
@@ -34,36 +40,61 @@ public class ClickType {
             return null;
     }
 
+    /**
+     * Removes the click type from a player
+     * @param player Player to remove the click type from
+     */
     public static void removePlayerClickType(OfflinePlayer player) {
         playerClickType.remove(player);
     }
 
-    public static void addPlayerClickType(OfflinePlayer player, ClickType clickType) {
+    /**
+     * Sets the click type of a player
+     *
+     * @param player    Player whose click type should be set
+     * @param clickType Click type to set
+     */
+    public static void setPlayerClickType(OfflinePlayer player, ClickType clickType) {
         playerClickType.put(player, clickType);
     }
 
+    /**
+     * @return Type of the click type
+     */
     public EnumClickType getClickType() {
         return enumClickType;
     }
 
+    /**
+     * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the item, the player has hold in his hands, else <b>null</b>.
+     */
     public ItemStack getProduct() {
         return product;
     }
 
+    /**
+     * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the buy price, the player has entered, else <b>null</b>.
+     */
     public double getBuyPrice() {
         return buyPrice;
     }
 
+    /**
+     * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the sell price, the player has entered, else <b>null</b>.
+     */
     public double getSellPrice() {
         return sellPrice;
     }
 
+    /**
+     * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the shop type, the player has entered, else <b>null</b>.
+     */
     public ShopType getShopType() {
         return shopType;
     }
 
     public enum EnumClickType {
-        CREATE, REMOVE, INFO;
+        CREATE, REMOVE, INFO
     }
 
 }

@@ -3,11 +3,11 @@ package de.epiceric.shopchest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.LanguageConfiguration;
 import de.epiceric.shopchest.config.Regex;
-import de.epiceric.shopchest.listeners.*;
 import de.epiceric.shopchest.interfaces.JsonBuilder;
 import de.epiceric.shopchest.interfaces.jsonbuilder.*;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
+import de.epiceric.shopchest.listeners.*;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
@@ -50,10 +50,19 @@ public class ShopChest extends JavaPlugin {
     private String[] broadcast = null;
     private LanguageConfiguration langConfig;
 
+    /**
+     * Get an instance of ShopChest
+     *
+     * @return
+     */
     public static ShopChest getInstance() {
         return instance;
     }
 
+    /**
+     * Sets up the economy of Vault
+     * @return
+     */
     private boolean setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
@@ -63,12 +72,19 @@ public class ShopChest extends JavaPlugin {
         return econ != null;
     }
 
+    /**
+     * Sets up the permissions of Vault
+     * @return
+     */
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         perm = rsp.getProvider();
         return perm != null;
     }
 
+    /**
+     * Initializes the language configuration
+     */
     private void initLanguageConfig() {
         langConfig = new LanguageConfiguration(this);
         File langFolder = new File(getDataFolder(), "lang");
@@ -246,7 +262,7 @@ public class ShopChest extends JavaPlugin {
         lockette = getServer().getPluginManager().getPlugin("Lockette") != null;
         lwc = getServer().getPluginManager().getPlugin("LWC") != null;
 
-        UpdateChecker uc = new UpdateChecker(this, getDescription().getWebsite());
+        UpdateChecker uc = new UpdateChecker(this);
         UpdateCheckerResult result = uc.updateNeeded();
 
         if (Config.enable_broadcast) broadcast = uc.getBroadcast();
@@ -352,63 +368,112 @@ public class ShopChest extends JavaPlugin {
         }
     }
 
+    /**
+     * Initializes the shops
+     */
     private void initializeShops() {
         int count = ShopUtils.reloadShops();
         getLogger().info("Initialized " + String.valueOf(count) + " Shops");
     }
 
+    /**
+     * @return ShopChest's {@link LanguageConfiguration}
+     */
     public LanguageConfiguration getLanguageConfig() {
         return langConfig;
     }
 
+    /**
+     * @return Registered Economy of Vault
+     */
     public Economy getEconomy() {
         return econ;
     }
 
+    /**
+     * @return Registered Permission of Vault
+     */
     public Permission getPermission() {
         return perm;
     }
 
+    /**
+     * @return ShopChest's shop database
+     */
     public Database getShopDatabase() {
         return database;
     }
 
+    /**
+     * @return Whether LWC is available
+     */
     public boolean hasLWC() {
         return lwc;
     }
 
+    /**
+     * @return Whether Lockette is available
+     */
     public boolean hasLockette() {
         return lockette;
     }
 
+    /**
+     * @return Whether an update is needed (will return false if not checked)
+     */
     public boolean isUpdateNeeded() {
         return isUpdateNeeded;
     }
 
+    /**
+     * Set whether an update is needed
+     * @param isUpdateNeeded Whether an update should be needed
+     */
     public void setUpdateNeeded(boolean isUpdateNeeded) {
         this.isUpdateNeeded = isUpdateNeeded;
     }
 
+    /**
+     * @return The latest version of ShopChest (will return null if not checked or if no update is available)
+     */
     public String getLatestVersion() {
         return latestVersion;
     }
 
+    /**
+     * Set the latest version
+     * @param latestVersion Version to set as latest version
+     */
     public void setLatestVersion(String latestVersion) {
         this.latestVersion = latestVersion;
     }
 
+    /**
+     * @return The download link of the latest version (will return null if not checked or if no update is available)
+     */
     public String getDownloadLink() {
         return downloadLink;
     }
 
+    /**
+     * Set the download Link of the latest version (will return null if not checked or if no update is available)
+     * @param downloadLink Link to set as Download Link
+     */
     public void setDownloadLink(String downloadLink) {
         this.downloadLink = downloadLink;
     }
 
+    /**
+     * @return The broadcast message as a string array of lines (will return null if not checked or if no message is available)
+     */
     public String[] getBroadcast() {
         return broadcast;
     }
 
+    /**
+     * Set the broadcast message
+     * @param broadcast Broadcast message as a string array of lines to set
+     */
     public void setBroadcast(String[] broadcast) {
         this.broadcast = broadcast;
     }

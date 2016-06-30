@@ -22,7 +22,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class Shop {
@@ -65,6 +64,9 @@ public class Shop {
         if (item == null || item.isDead()) createItem();
     }
 
+    /**
+     * Creates the hologram of the shop if it doesn't exist
+     */
     public void removeHologram() {
         if (hologram != null && hologram.exists()) {
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -75,11 +77,18 @@ public class Shop {
         }
     }
 
+    /**
+     * Removes the floating item of the shop
+     */
     public void removeItem() {
         if (item != null && !item.isDead())
             item.remove();
     }
 
+    /**
+     * <p>Creates the floating item of the shop</p>
+     * <b>Call this after {@link #createHologram()}, because it depends on the hologram's location</b>
+     */
     private void createItem() {
         Item item;
         Location itemLocation;
@@ -101,6 +110,9 @@ public class Shop {
         this.item = item;
     }
 
+    /**
+     * Creates the hologram of the shop
+     */
     private void createHologram() {
         boolean doubleChest;
 
@@ -188,38 +200,65 @@ public class Shop {
 
     }
 
+    /**
+     * @return The ID of the shop
+     */
     public int getID() {
         return id;
     }
 
+    /**
+     * @return Vendor of the shop; probably the creator of it
+     */
     public OfflinePlayer getVendor() {
         return vendor;
     }
 
+    /**
+     * @return Product the shop sells (or buys)
+     */
     public ItemStack getProduct() {
         return product;
     }
 
+    /**
+     * @return Location of (one of) the shop's chest
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * @return Buy price of the shop
+     */
     public double getBuyPrice() {
         return buyPrice;
     }
 
+    /**
+     * @return Sell price of the shop
+     */
     public double getSellPrice() {
         return sellPrice;
     }
 
+    /**
+     * @return Type of the shop
+     */
     public ShopType getShopType() {
         return shopType;
     }
 
+    /**
+     * @return Hologram of the shop
+     */
     public Hologram getHologram() {
         return hologram;
     }
 
+    /**
+     * @return Chest of the shop. If double chest, only one chest is returned
+     */
     public Chest getChest() {
         return chest;
     }

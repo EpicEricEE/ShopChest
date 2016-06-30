@@ -24,8 +24,15 @@ public abstract class Database {
         initialize();
     }
 
+    /**
+     * @return Connection to the database
+     */
     public abstract Connection getConnection();
 
+    /**
+     * Initializes the database. <br>
+     * Creates the table (if doesn't exist) and tests the connection
+     */
     private void initialize() {
         connection = getConnection();
 
@@ -57,6 +64,9 @@ public abstract class Database {
         }
     }
 
+    /**
+     * @return Lowest possible ID which is not used (> 0)
+     */
     public int getNextFreeID() {
         for (int i = 1; i < getHighestID() + 1; i++) {
             if (get(i, ShopInfo.X) == null) {
@@ -71,6 +81,9 @@ public abstract class Database {
         return 1;
     }
 
+    /**
+     * @return Highest ID which is used
+     */
     public int getHighestID() {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -98,6 +111,11 @@ public abstract class Database {
         return 0;
     }
 
+    /**
+     * Remove a shop from the database
+     *
+     * @param shop Shop to remove
+     */
     public void removeShop(Shop shop) {
         PreparedStatement ps = null;
 
@@ -112,6 +130,11 @@ public abstract class Database {
 
     }
 
+    /**
+     * @param id ID of the shop
+     * @param shopInfo What to get
+     * @return Value you wanted to get. This needs to be casted to the right type!
+     */
     public Object get(int id, ShopInfo shopInfo) {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -186,6 +209,10 @@ public abstract class Database {
         return null;
     }
 
+    /**
+     * Adds a shop to the database
+     * @param shop Shop to add
+     */
     public void addShop(Shop shop) {
         PreparedStatement ps = null;
 
@@ -211,6 +238,11 @@ public abstract class Database {
         }
     }
 
+    /**
+     * Closes a {@link PreparedStatement} and a {@link ResultSet}
+     * @param ps {@link PreparedStatement} to close
+     * @param rs {@link ResultSet} to close
+     */
     private void close(PreparedStatement ps, ResultSet rs) {
         try {
             if (ps != null)
@@ -233,11 +265,11 @@ public abstract class Database {
         LOCATION,
         BUYPRICE,
         SELLPRICE,
-        SHOPTYPE;
+        SHOPTYPE
     }
 
     public enum DatabaseType {
         SQLite,
-        MySQL;
+        MySQL
     }
 }

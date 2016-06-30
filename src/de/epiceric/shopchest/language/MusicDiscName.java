@@ -12,10 +12,16 @@ public class MusicDiscName {
         this.localizedName = localizedName;
     }
 
+    /**
+     * @return Localized Title of the Music Disc
+     */
     public String getLocalizedName() {
         return localizedName;
     }
 
+    /**
+     * @return Material of the Music Disc
+     */
     public Material getMusicDiscMaterial() {
         return musicDiscMaterial;
     }

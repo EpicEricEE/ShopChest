@@ -12,11 +12,16 @@ public class PotionEffectName {
         this.localizedName = localizedName;
     }
 
-
+    /**
+     * @return Potion Effect linked to the name
+     */
     public PotionType getEffect() {
         return effect;
     }
 
+    /**
+     * @return Localized Name of the potion effect
+     */
     public String getLocalizedName() {
         return localizedName;
     }

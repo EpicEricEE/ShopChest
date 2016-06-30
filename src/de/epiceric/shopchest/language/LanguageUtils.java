@@ -34,6 +34,7 @@ public class LanguageUtils {
 
 
     public static void load() {
+        // Add Block Names
         itemNames.add(new ItemName(Material.STONE, langConfig.getString("tile.stone.stone.name", "Stone")));
         itemNames.add(new ItemName(Material.STONE, 1, langConfig.getString("tile.stone.granite.name", "Granite")));
         itemNames.add(new ItemName(Material.STONE, 2, langConfig.getString("tile.stone.graniteSmooth.name", "Polished Granite")));
@@ -338,6 +339,7 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.ACACIA_FENCE, langConfig.getString("tile.acaciaFence.name", "Acacia Fence")));
 
         if (Utils.getMajorVersion() >= 9) {
+            // Add Block Names of 1.9
             itemNames.add(new ItemName(Material.END_ROD, langConfig.getString("tile.endRod.name", "End Rod")));
             itemNames.add(new ItemName(Material.CHORUS_PLANT, langConfig.getString("tile.chorusPlant.name", "Chorus Plant")));
             itemNames.add(new ItemName(Material.CHORUS_FLOWER, langConfig.getString("tile.chorusFlower.name", "Chorus Flower")));
@@ -353,6 +355,7 @@ public class LanguageUtils {
         }
 
         if (Utils.getMajorVersion() >= 10) {
+            // Add Block Names of 1.10
             itemNames.add(new ItemName(Material.MAGMA, langConfig.getString("tile.magma.name", "Magma Block")));
             itemNames.add(new ItemName(Material.NETHER_WART_BLOCK, langConfig.getString("tile.netherWartBlock.name", "Nether Wart Block")));
             itemNames.add(new ItemName(Material.RED_NETHER_BRICK, langConfig.getString("tile.redNetherBrick.name", "Red Nether Brick")));
@@ -360,6 +363,7 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.STRUCTURE_VOID, langConfig.getString("tile.structureVoid.name", "Structure Void")));
         }
 
+        // Add Item Names
         itemNames.add(new ItemName(Material.IRON_SPADE, langConfig.getString("item.shovelIron.name", "Iron Shovel")));
         itemNames.add(new ItemName(Material.IRON_PICKAXE, langConfig.getString("item.pickaxeIron.name", "Iron Pickaxe")));
         itemNames.add(new ItemName(Material.IRON_AXE, langConfig.getString("item.hatchetIron.name", "Iron Axe")));
@@ -605,6 +609,7 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.RECORD_11, langConfig.getString("item.record.name", "Music Disc")));
         itemNames.add(new ItemName(Material.RECORD_12, langConfig.getString("item.record.name", "Music Disc")));
 
+        // Add Enchantment Names
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_DAMAGE, langConfig.getString("enchantment.arrowDamage", "Power")));
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_FIRE, langConfig.getString("enchantment.arrowFire", "Flame")));
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_INFINITE, langConfig.getString("enchantment.arrowInfinite", "Infinity")));
@@ -632,10 +637,12 @@ public class LanguageUtils {
         enchantmentNames.add(new EnchantmentName(Enchantment.WATER_WORKER, langConfig.getString("enchantment.waterWorker", "Aqua Affinity")));
 
         if (Utils.getMajorVersion() >= 9) {
+            // Add Enchantment Names of 1.9
             enchantmentNames.add(new EnchantmentName(Enchantment.FROST_WALKER, langConfig.getString("enchantment.frostWalker", "Frost Walker")));
             enchantmentNames.add(new EnchantmentName(Enchantment.MENDING, langConfig.getString("enchantment.mending", "Mending")));
         }
 
+        // Add Enchantment Level Names
         enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(1, langConfig.getString("enchantment.level.1", "I")));
         enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(2, langConfig.getString("enchantment.level.2", "II")));
         enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(3, langConfig.getString("enchantment.level.3", "II")));
@@ -647,6 +654,7 @@ public class LanguageUtils {
         enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(9, langConfig.getString("enchantment.level.9", "IX")));
         enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(10, langConfig.getString("enchantment.level.10", "X")));
 
+        // Add Entity Names
         entityNames.add(new EntityName(EntityType.CREEPER, langConfig.getString("entity.Creeper.name", "Creeper")));
         entityNames.add(new EntityName(EntityType.SKELETON, langConfig.getString("entity.Skeleton.name", "Skeleton")));
         entityNames.add(new EntityName(EntityType.SPIDER, langConfig.getString("entity.Spider.name", "Spider")));
@@ -676,13 +684,16 @@ public class LanguageUtils {
         entityNames.add(new EntityName(EntityType.VILLAGER, langConfig.getString("entity.Villager.name", "Villager")));
 
         if (Utils.getMajorVersion() >= 9) {
+            // Add Entity Names of 1.9
             entityNames.add(new EntityName(EntityType.SHULKER, langConfig.getString("entity.Shulker.name", "Shulker")));
         }
 
         if (Utils.getMajorVersion() >= 10) {
+            // Add Entity Names of 1.10
             entityNames.add(new EntityName(EntityType.POLAR_BEAR, langConfig.getString("entity.PolarBear.name", "Polar Bear")));
         }
 
+        // Add Potion Effect Names
         potionEffectNames.add(new PotionEffectName(PotionType.FIRE_RESISTANCE, langConfig.getString("effect.fireResistance", "Fire Resistance")));
         potionEffectNames.add(new PotionEffectName(PotionType.INSTANT_DAMAGE, langConfig.getString("effect.harm", "Instant Damage")));
         potionEffectNames.add(new PotionEffectName(PotionType.INSTANT_HEAL, langConfig.getString("effect.heal", "Instant Health")));
@@ -700,12 +711,14 @@ public class LanguageUtils {
         potionEffectNames.add(new PotionEffectName(PotionType.AWKWARD, langConfig.getString("effect.none", "No Effects")));
 
         if (Utils.getMajorVersion() >= 9) {
+            // Add Potion Effect Names of 1.9
             potionEffectNames.add(new PotionEffectName(PotionType.LUCK, langConfig.getString("effect.luck", "Luck")));
             potionEffectNames.add(new PotionEffectName(PotionType.MUNDANE, langConfig.getString("effect.none", "No Effects")));
             potionEffectNames.add(new PotionEffectName(PotionType.THICK, langConfig.getString("effect.none", "No Effects")));
             potionEffectNames.add(new PotionEffectName(PotionType.UNCRAFTABLE, langConfig.getString("effect.none", "No Effects")));
         }
 
+        // Add Potion Names
         potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.AWKWARD, langConfig.getString("potion.effect.awkward", "Awkward Potion")));
         potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.FIRE_RESISTANCE, langConfig.getString("potion.effect.fire_resistance", "Potion of Fire Resistance")));
         potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.INSTANT_DAMAGE, langConfig.getString("potion.effect.harming", "Potion of Harming")));
@@ -723,6 +736,7 @@ public class LanguageUtils {
         potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.WATER, langConfig.getString("potion.effect.water", "Water Bottle")));
 
         if (Utils.getMajorVersion() >= 9) {
+            // Add Potion Names of 1.9
             potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.LUCK, langConfig.getString("potion.effect.luck", "Potion of Luck")));
             potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.MUNDANE, langConfig.getString("potion.effect.mundane", "Mundane Potion")));
             potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.THICK, langConfig.getString("potion.effect.thick", "Thick Potion")));
@@ -730,6 +744,7 @@ public class LanguageUtils {
         }
 
         if (Utils.getMajorVersion() >= 9) {
+            // Add Tipped Arrow Names (implemented in Minecraft since 1.9)
             potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.AWKWARD, langConfig.getString("tipped_arrow.effect.awkward", "Tipped Arrow")));
             potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.FIRE_RESISTANCE, langConfig.getString("tipped_arrow.effect.fire_resistance", "Arrow of Fire Resistance")));
             potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.INSTANT_DAMAGE, langConfig.getString("tipped_arrow.effect.harming", "Arrow of Harming")));
@@ -751,6 +766,7 @@ public class LanguageUtils {
             potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.UNCRAFTABLE, langConfig.getString("tipped_arrow.effect.empty", "Tipped Arrow")));
         }
 
+        // Add Splash Potion Names
         potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.AWKWARD, langConfig.getString("splash_potion.effect.awkward", "Awkward Splash Potion")));
         potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.FIRE_RESISTANCE, langConfig.getString("splash_potion.effect.fire_resistance", "Splash Potion of Fire Resistance")));
         potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.INSTANT_DAMAGE, langConfig.getString("splash_potion.effect.harming", "Splash Potion of Harming")));
@@ -768,6 +784,7 @@ public class LanguageUtils {
         potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.WATER, langConfig.getString("splash_potion.effect.water", "Splash Water Bottle")));
 
         if (Utils.getMajorVersion() >= 9) {
+            // Add Splash Potion Names of 1.9
             potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.LUCK, langConfig.getString("splash_potion.effect.luck", "Splash Potion of Luck")));
             potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.MUNDANE, langConfig.getString("splash_potion.effect.mundane", "Mundane Splash Potion")));
             potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.THICK, langConfig.getString("splash_potion.effect.thick", "Thick Splash Potion")));
@@ -775,6 +792,7 @@ public class LanguageUtils {
         }
 
         if (Utils.getMajorVersion() >= 9) {
+            // Add Lingering Potion Names (implemented in Minecraft since 1.9)
             potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.AWKWARD, langConfig.getString("lingering_potion.effect.awkward", "Awkward Lingering Potion")));
             potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.FIRE_RESISTANCE, langConfig.getString("lingering_potion.effect.fire_resistance", "Lingering Potion of Fire Resistance")));
             potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.INSTANT_DAMAGE, langConfig.getString("lingering_potion.effect.harming", "Lingering Potion of Harming")));
@@ -796,6 +814,7 @@ public class LanguageUtils {
             potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.UNCRAFTABLE, langConfig.getString("lingering_potion.effect.empty", "Lingering Uncraftable Potion")));
         }
 
+        // Add Music Disc Titles
         musicDiscNames.add(new MusicDiscName(Material.GOLD_RECORD, langConfig.getString("item.record.13.desc", "C418 - 13")));
         musicDiscNames.add(new MusicDiscName(Material.GREEN_RECORD, langConfig.getString("item.record.cat.desc", "C418 - cat")));
         musicDiscNames.add(new MusicDiscName(Material.RECORD_3, langConfig.getString("item.record.blocks.desc", "C418 - blocks")));
@@ -809,6 +828,7 @@ public class LanguageUtils {
         musicDiscNames.add(new MusicDiscName(Material.RECORD_11, langConfig.getString("item.record.11.desc", "C418 - 11")));
         musicDiscNames.add(new MusicDiscName(Material.RECORD_12, langConfig.getString("item.record.wait.desc", "C418 - wait")));
 
+        // Add ShopChest Messages
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATED, langConfig.getString("message.shop-created", "&6Shop created.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP, langConfig.getString("message.chest-already-shop", "&cChest already shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_REMOVED, langConfig.getString("message.shop-removed", "&6Shop removed.")));
@@ -881,6 +901,10 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "View shop limits.")));
     }
 
+    /**
+     * @param stack Item whose name to lookup
+     * @return Localized Name of the Item, the custom name, or if <i>stack</i> is a book, the title of the book
+     */
     public static String getItemName(ItemStack stack) {
         if (stack.hasItemMeta()) {
             ItemMeta meta = stack.getItemMeta();
@@ -959,7 +983,7 @@ public class LanguageUtils {
                     }
                 }
 
-                return itemName.getLocalizedName() + " " + capitalizeDefaultString(spawnedType.toString());
+                return itemName.getLocalizedName() + " " + formatDefaultString(spawnedType.toString());
 
             }
 
@@ -969,11 +993,16 @@ public class LanguageUtils {
 
         }
 
-        return capitalizeDefaultString(material.toString());
+        return formatDefaultString(material.toString());
     }
 
+    /**
+     * @param enchantment Enchantment whose name should be looked up
+     * @param level       Level of the enchantment
+     * @return Localized Name of the enchantment with the given level afterwards
+     */
     public static String getEnchantmentName(Enchantment enchantment, int level) {
-        String enchantmentString = capitalizeDefaultString(enchantment.getName());
+        String enchantmentString = formatDefaultString(enchantment.getName());
         String levelString = langConfig.getString("enchantment.level." + level, String.valueOf(level));
 
         for (EnchantmentName enchantmentName : enchantmentNames) {
@@ -991,10 +1020,14 @@ public class LanguageUtils {
         return enchantmentString + " " + levelString;
     }
 
+    /**
+     * @param itemStack Potion Item whose base effect name should be looked up
+     * @return Localized Name of the Base Potion Effect
+     */
     public static String getPotionEffectName(ItemStack itemStack) {
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
 
-        String potionEffectString = capitalizeDefaultString(potionMeta.getBasePotionData().getType().toString());
+        String potionEffectString = formatDefaultString(potionMeta.getBasePotionData().getType().toString());
         String upgradeString = potionMeta.getBasePotionData().isUpgraded() ? "II" : "";
 
         for (PotionEffectName potionEffectName : potionEffectNames) {
@@ -1006,6 +1039,10 @@ public class LanguageUtils {
         return potionEffectString + (upgradeString.length() > 0 ? " " + upgradeString : "");
     }
 
+    /**
+     * @param musicDiscMaterial Material of the Music Disc whose name should be looked up
+     * @return Localized title of the Music Disc
+     */
     public static String getMusicDiscName(Material musicDiscMaterial) {
         for (MusicDiscName musicDiscName : musicDiscNames) {
             if (musicDiscMaterial == musicDiscName.getMusicDiscMaterial()) {
@@ -1016,6 +1053,11 @@ public class LanguageUtils {
         return "";
     }
 
+    /**
+     * @param message Message which should be translated
+     * @param replacedRegexes Regexes which might be required to be replaced in the message
+     * @return Localized Message
+     */
     public static String getMessage(LocalizedMessage.Message message, LocalizedMessage.ReplacedRegex... replacedRegexes) {
         String _message = ChatColor.RED + "An error occurred: Message not found: " + message.toString();
 
@@ -1055,7 +1097,13 @@ public class LanguageUtils {
         return _message;
     }
 
-    private static String capitalizeDefaultString(String string) {
+    /**
+     * Underscores will be replaced by spaces and the first letter of each word will be capitalized
+     *
+     * @param string String to format
+     * @return Formatted String with underscores replaced by spaces and the first letter of each word capitalized
+     */
+    private static String formatDefaultString(String string) {
         string = string.replace("_", " ");
         String newString = "";
 

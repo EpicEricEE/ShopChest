@@ -11,9 +11,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class HologramUpdateListener implements Listener {
 
-    public HologramUpdateListener() {
-    }
-
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
 
