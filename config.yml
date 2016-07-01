@@ -60,6 +60,10 @@ database:
   # Either use 'SQLite' or 'MySQL'. Otherwise you will break the plugin!
   type: "SQLite"
 
+  # Set the amount of attempts, ShopChest tries to reconnect to the database,
+  # when the connection is lost, until giving up.
+  reconnect-attemps: 5
+
   # If the specified type is 'MySQL', here you configure the...
   # (You can leave this empty if you're using SQLite)
   mysql:

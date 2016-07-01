@@ -81,7 +81,7 @@ public class ShopUtils {
         }
 
         if (addToDatabase)
-            plugin.getShopDatabase().addShop(shop);
+            plugin.getShopDatabase().addShop(shop, Config.database_reconnect_attempts);
 
     }
 
@@ -108,7 +108,7 @@ public class ShopUtils {
             shop.removeHologram();
 
             if (removeFromDatabase)
-                plugin.getShopDatabase().removeShop(shop);
+                plugin.getShopDatabase().removeShop(shop, Config.database_reconnect_attempts);
     }
 
     /**
@@ -212,10 +212,10 @@ public class ShopUtils {
         }
 
         int count = 0;
-        for (int id = 1; id < plugin.getShopDatabase().getHighestID() + 1; id++) {
+        for (int id = 1; id < plugin.getShopDatabase().getHighestID(Config.database_reconnect_attempts) + 1; id++) {
 
             try {
-                Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP);
+                Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP, Config.database_reconnect_attempts);
                 ShopUtils.addShop(shop, false);
             } catch (NullPointerException e) {
                 continue;

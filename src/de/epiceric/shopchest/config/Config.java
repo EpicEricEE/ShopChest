@@ -33,6 +33,11 @@ public class Config {
     public static Database.DatabaseType database_type = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
 
     /**
+     * The amount of attempts, ShopChest tries to reconnect to the database, when the connection is lost, until giving up
+     **/
+    public static int database_reconnect_attempts = plugin.getConfig().getInt("database.reconnect-attempts");
+
+    /**
      * <p>The minimum prices for certain items</p>
      * This returns a key set, which contains e.g "STONE", "STONE:1", of the <i>minimum-prices</i> section in ShopChest's config.
      * To actually retrieve the price for an item, you have to get the Double <i>minimum-prices.<b>key</b></i>.

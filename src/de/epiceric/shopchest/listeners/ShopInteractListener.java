@@ -3,6 +3,7 @@ package de.epiceric.shopchest.listeners;
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
@@ -234,7 +235,14 @@ public class ShopInteractListener implements Listener {
      * @param shopType  Type of the shop
      */
     private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
-        Shop shop = new Shop(database.getNextFreeID(), plugin, executor, product, location, buyPrice, sellPrice, shopType);
+        int id = database.getNextFreeID(Config.database_reconnect_attempts);
+
+        if (id == 0) {
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, "Could not connect to database")));
+            return;
+        }
+
+        Shop shop = new Shop(id, plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
         ShopUtils.addShop(shop, true);
         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED));
