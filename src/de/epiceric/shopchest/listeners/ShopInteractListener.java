@@ -242,6 +242,13 @@ public class ShopInteractListener implements Listener {
             return;
         }
 
+        double creationPrice = (shopType == ShopType.NORMAL) ? Config.shop_creation_price_normal : Config.shop_creation_price_admin;
+        EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, creationPrice);
+        if (!r.transactionSuccess()) {
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
+            return;
+        }
+
         Shop shop = new Shop(id, plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
         ShopUtils.addShop(shop, true);

@@ -13,7 +13,6 @@ import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import de.epiceric.shopchest.utils.Utils;
-import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -316,13 +315,7 @@ public class Commands extends BukkitCommand {
 
         double creationPrice = (shopType == ShopType.NORMAL) ? Config.shop_creation_price_normal : Config.shop_creation_price_admin;
         if (creationPrice > 0) {
-            if (plugin.getEconomy().getBalance(p) >= creationPrice) {
-                EconomyResponse r = plugin.getEconomy().withdrawPlayer(p, creationPrice);
-                if (!r.transactionSuccess()) {
-                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
-                    return;
-                }
-            } else {
+            if (plugin.getEconomy().getBalance(p) < creationPrice) {
                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, new LocalizedMessage.ReplacedRegex(Regex.CREATION_PRICE, String.valueOf(creationPrice))));
                 return;
             }
