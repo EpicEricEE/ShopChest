@@ -575,27 +575,11 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.BANNER, 13, langConfig.getString("item.banner.magenta.name", "Magenta Banner")));
         itemNames.add(new ItemName(Material.BANNER, 14, langConfig.getString("item.banner.orange.name", "Orange Banner")));
         itemNames.add(new ItemName(Material.BANNER, 15, langConfig.getString("item.banner.white.name", "White Banner")));
-        itemNames.add(new ItemName(Material.END_CRYSTAL, langConfig.getString("item.end_crystal.name", "End Crystal")));
         itemNames.add(new ItemName(Material.SPRUCE_DOOR_ITEM, langConfig.getString("item.doorSpruce.name", "Spruce Door")));
         itemNames.add(new ItemName(Material.BIRCH_DOOR_ITEM, langConfig.getString("item.doorBirch.name", "Birch Door")));
         itemNames.add(new ItemName(Material.JUNGLE_DOOR_ITEM, langConfig.getString("item.doorJungle.name", "Jungle Door")));
         itemNames.add(new ItemName(Material.ACACIA_DOOR_ITEM, langConfig.getString("item.doorAcacia.name", "Acacia Door")));
         itemNames.add(new ItemName(Material.DARK_OAK_DOOR_ITEM, langConfig.getString("item.doorDarkOak.name", "Dark Oak Door")));
-        itemNames.add(new ItemName(Material.CHORUS_FRUIT, langConfig.getString("item.chorusFruit.name", "Chorus Fruit")));
-        itemNames.add(new ItemName(Material.CHORUS_FRUIT_POPPED, langConfig.getString("item.chorusFruitPopped.name", "Popped Chorus Fruit")));
-        itemNames.add(new ItemName(Material.BEETROOT, langConfig.getString("item.beetroot.name", "Beetroot")));
-        itemNames.add(new ItemName(Material.BEETROOT_SEEDS, langConfig.getString("item.beetroot_seeds.name", "Beetroot Seeds")));
-        itemNames.add(new ItemName(Material.BEETROOT_SOUP, langConfig.getString("item.beetroot_soup.name", "Beetroot Soup")));
-        itemNames.add(new ItemName(Material.DRAGONS_BREATH, langConfig.getString("item.dragon_breath.name", "Dragon's Breath")));
-        itemNames.add(new ItemName(Material.SPECTRAL_ARROW, langConfig.getString("item.spectral_arrow.name", "Spectral Arrow")));
-        itemNames.add(new ItemName(Material.TIPPED_ARROW, langConfig.getString("item.tipped_arrow.name", "Tipped Arrow")));
-        itemNames.add(new ItemName(Material.SHIELD, langConfig.getString("item.shield.name", "Shield"))); //TODO ADD SHIELD DESCRIPTIONS
-        itemNames.add(new ItemName(Material.ELYTRA, langConfig.getString("item.elytra.name", "Elytra")));
-        itemNames.add(new ItemName(Material.BOAT_SPRUCE, langConfig.getString("item.boat.spruce.name", "Spruce Boat")));
-        itemNames.add(new ItemName(Material.BOAT_BIRCH, langConfig.getString("item.boat.birch.name", "Birch Boat")));
-        itemNames.add(new ItemName(Material.BOAT_JUNGLE, langConfig.getString("item.boat.jungle.name", "Jungle Boat")));
-        itemNames.add(new ItemName(Material.BOAT_ACACIA, langConfig.getString("item.boat.acacia.name", "Acacia Boat")));
-        itemNames.add(new ItemName(Material.BOAT_DARK_OAK, langConfig.getString("item.boat.dark_oak.name", "Dark Oak Boat")));
         itemNames.add(new ItemName(Material.GOLD_RECORD, langConfig.getString("item.record.name", "Music Disc")));
         itemNames.add(new ItemName(Material.GREEN_RECORD, langConfig.getString("item.record.name", "Music Disc")));
         itemNames.add(new ItemName(Material.RECORD_3, langConfig.getString("item.record.name", "Music Disc")));
@@ -608,6 +592,26 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.RECORD_10, langConfig.getString("item.record.name", "Music Disc")));
         itemNames.add(new ItemName(Material.RECORD_11, langConfig.getString("item.record.name", "Music Disc")));
         itemNames.add(new ItemName(Material.RECORD_12, langConfig.getString("item.record.name", "Music Disc")));
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Item names of 1.9
+            itemNames.add(new ItemName(Material.END_CRYSTAL, langConfig.getString("item.end_crystal.name", "End Crystal")));
+            itemNames.add(new ItemName(Material.CHORUS_FRUIT, langConfig.getString("item.chorusFruit.name", "Chorus Fruit")));
+            itemNames.add(new ItemName(Material.CHORUS_FRUIT_POPPED, langConfig.getString("item.chorusFruitPopped.name", "Popped Chorus Fruit")));
+            itemNames.add(new ItemName(Material.BEETROOT, langConfig.getString("item.beetroot.name", "Beetroot")));
+            itemNames.add(new ItemName(Material.BEETROOT_SEEDS, langConfig.getString("item.beetroot_seeds.name", "Beetroot Seeds")));
+            itemNames.add(new ItemName(Material.BEETROOT_SOUP, langConfig.getString("item.beetroot_soup.name", "Beetroot Soup")));
+            itemNames.add(new ItemName(Material.DRAGONS_BREATH, langConfig.getString("item.dragon_breath.name", "Dragon's Breath")));
+            itemNames.add(new ItemName(Material.SPECTRAL_ARROW, langConfig.getString("item.spectral_arrow.name", "Spectral Arrow")));
+            itemNames.add(new ItemName(Material.TIPPED_ARROW, langConfig.getString("item.tipped_arrow.name", "Tipped Arrow")));
+            itemNames.add(new ItemName(Material.SHIELD, langConfig.getString("item.shield.name", "Shield"))); //TODO ADD SHIELD DESCRIPTIONS
+            itemNames.add(new ItemName(Material.ELYTRA, langConfig.getString("item.elytra.name", "Elytra")));
+            itemNames.add(new ItemName(Material.BOAT_SPRUCE, langConfig.getString("item.boat.spruce.name", "Spruce Boat")));
+            itemNames.add(new ItemName(Material.BOAT_BIRCH, langConfig.getString("item.boat.birch.name", "Birch Boat")));
+            itemNames.add(new ItemName(Material.BOAT_JUNGLE, langConfig.getString("item.boat.jungle.name", "Jungle Boat")));
+            itemNames.add(new ItemName(Material.BOAT_ACACIA, langConfig.getString("item.boat.acacia.name", "Acacia Boat")));
+            itemNames.add(new ItemName(Material.BOAT_DARK_OAK, langConfig.getString("item.boat.dark_oak.name", "Dark Oak Boat")));
+        }
 
         // Add Enchantment Names
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_DAMAGE, langConfig.getString("enchantment.arrowDamage", "Power")));
@@ -708,10 +712,10 @@ public class LanguageUtils {
         potionEffectNames.add(new PotionEffectName(PotionType.WATER_BREATHING, langConfig.getString("effect.waterBreathing", "Water Breathing")));
         potionEffectNames.add(new PotionEffectName(PotionType.WEAKNESS, langConfig.getString("effect.weakness", "Weakness")));
         potionEffectNames.add(new PotionEffectName(PotionType.WATER, langConfig.getString("effect.none", "No Effects")));
-        potionEffectNames.add(new PotionEffectName(PotionType.AWKWARD, langConfig.getString("effect.none", "No Effects")));
 
         if (Utils.getMajorVersion() >= 9) {
             // Add Potion Effect Names of 1.9
+            potionEffectNames.add(new PotionEffectName(PotionType.AWKWARD, langConfig.getString("effect.none", "No Effects")));
             potionEffectNames.add(new PotionEffectName(PotionType.LUCK, langConfig.getString("effect.luck", "Luck")));
             potionEffectNames.add(new PotionEffectName(PotionType.MUNDANE, langConfig.getString("effect.none", "No Effects")));
             potionEffectNames.add(new PotionEffectName(PotionType.THICK, langConfig.getString("effect.none", "No Effects")));
@@ -719,7 +723,6 @@ public class LanguageUtils {
         }
 
         // Add Potion Names
-        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.AWKWARD, langConfig.getString("potion.effect.awkward", "Awkward Potion")));
         potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.FIRE_RESISTANCE, langConfig.getString("potion.effect.fire_resistance", "Potion of Fire Resistance")));
         potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.INSTANT_DAMAGE, langConfig.getString("potion.effect.harming", "Potion of Harming")));
         potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.INSTANT_HEAL, langConfig.getString("potion.effect.healing", "Potion of Healing")));
@@ -737,6 +740,7 @@ public class LanguageUtils {
 
         if (Utils.getMajorVersion() >= 9) {
             // Add Potion Names of 1.9
+            potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.AWKWARD, langConfig.getString("potion.effect.awkward", "Awkward Potion")));
             potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.LUCK, langConfig.getString("potion.effect.luck", "Potion of Luck")));
             potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.MUNDANE, langConfig.getString("potion.effect.mundane", "Mundane Potion")));
             potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.THICK, langConfig.getString("potion.effect.thick", "Thick Potion")));
@@ -767,7 +771,6 @@ public class LanguageUtils {
         }
 
         // Add Splash Potion Names
-        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.AWKWARD, langConfig.getString("splash_potion.effect.awkward", "Awkward Splash Potion")));
         potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.FIRE_RESISTANCE, langConfig.getString("splash_potion.effect.fire_resistance", "Splash Potion of Fire Resistance")));
         potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.INSTANT_DAMAGE, langConfig.getString("splash_potion.effect.harming", "Splash Potion of Harming")));
         potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.INSTANT_HEAL, langConfig.getString("splash_potion.effect.healing", "Splash Potion of Healing")));
@@ -785,6 +788,7 @@ public class LanguageUtils {
 
         if (Utils.getMajorVersion() >= 9) {
             // Add Splash Potion Names of 1.9
+            potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.AWKWARD, langConfig.getString("splash_potion.effect.awkward", "Awkward Splash Potion")));
             potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.LUCK, langConfig.getString("splash_potion.effect.luck", "Splash Potion of Luck")));
             potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.MUNDANE, langConfig.getString("splash_potion.effect.mundane", "Mundane Splash Potion")));
             potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.THICK, langConfig.getString("splash_potion.effect.thick", "Thick Splash Potion")));
@@ -831,6 +835,8 @@ public class LanguageUtils {
         // Add ShopChest Messages
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATED, langConfig.getString("message.shop-created", "&6Shop created.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP, langConfig.getString("message.chest-already-shop", "&cChest already shop.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_BLOCKED, langConfig.getString("message.chest-blocked", "&cThere must not be a block above the chest.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.DOUBLE_CHEST_BLOCKED, langConfig.getString("message.double-chest-blocked", "&cThere must not be a block above the chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_REMOVED, langConfig.getString("message.shop-removed", "&6Shop removed.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_NO_SHOP, langConfig.getString("message.chest-no-shop", "&cChest is not a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, langConfig.getString("message.shop-create-not-enough-money", "&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop."), Regex.CREATION_PRICE));
