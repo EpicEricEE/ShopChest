@@ -8,6 +8,7 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.event.EventHandler;
@@ -71,20 +72,25 @@ public class ChestProtectListener implements Listener {
                 Chest l = (Chest) dc.getLeftSide();
 
                 if (ShopUtils.isShop(r.getLocation()) || ShopUtils.isShop(l.getLocation())) {
-                    Shop shop;
+                    if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                        Shop shop;
 
-                    if (b.getLocation().equals(r.getLocation())) {
-                        shop = ShopUtils.getShop(l.getLocation());
-                    } else if (b.getLocation().equals(l.getLocation())) {
-                        shop = ShopUtils.getShop(r.getLocation());
+                        if (b.getLocation().equals(r.getLocation())) {
+                            shop = ShopUtils.getShop(l.getLocation());
+                        } else if (b.getLocation().equals(l.getLocation())) {
+                            shop = ShopUtils.getShop(r.getLocation());
+                        } else {
+                            return;
+                        }
+
+                        ShopUtils.removeShop(shop, true);
+
+                        Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+                        ShopUtils.addShop(newShop, true);
                     } else {
-                        return;
+                        e.setCancelled(true);
+                        e.getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
                     }
-
-                    ShopUtils.removeShop(shop, true);
-
-                    Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-                    ShopUtils.addShop(newShop, true);
                 }
 
             }

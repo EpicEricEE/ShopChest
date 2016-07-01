@@ -4,6 +4,13 @@ message.shop-created=&6Shop created.
 # Set the message when the clicked chest already is a shop.
 message.chest-already-shop=&cChest already is shop.
 
+# Set the message when there is a block above the clicked chest.
+message.chest-blocked=&cThere must not be a block above the chest.
+
+# Set the message when a player tries to place a chest next to a shop's chest
+# to create a double chest shop, but there is a block above the placed chest.
+message.double-chest-blocked=&cThere must not be a block above the chest.
+
 # Set the message when the clicked shop is removed.
 message.shop-removed=&6Shop removed.
 

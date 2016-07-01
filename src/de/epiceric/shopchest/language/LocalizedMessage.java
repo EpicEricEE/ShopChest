@@ -44,6 +44,8 @@ public class LocalizedMessage {
     public enum Message {
         SHOP_CREATED,
         CHEST_ALREADY_SHOP,
+        CHEST_BLOCKED,
+        DOUBLE_CHEST_BLOCKED,
         SHOP_REMOVED,
         CHEST_NO_SHOP,
         SHOP_CREATE_NOT_ENOUGH_MONEY,

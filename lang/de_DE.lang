@@ -1,5 +1,7 @@
 message.shop-created=&6Shop erstellt.
 message.chest-already-shop=&cTruhe ist bereits ein Shop.
+message.chest-blocked=&cÜber der Truhe ist kein Platz.
+message.double-chest-blocked=&cÜber der Truhe ist kein Platz.
 message.shop-removed=&6Shop entfernt.
 message.chest-no-shop=&cTruhe ist kein Shop.
 message.shop-create-not-enough-money=&cNicht genug Geld. Du brauchst &6%CREATION-PRICE% &cum einen Shop zu erstellen.
