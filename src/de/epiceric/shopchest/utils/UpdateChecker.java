@@ -20,7 +20,7 @@ public class UpdateChecker {
     /**
      * Check if an update is needed
      *
-     * @return {@link UpdateCheckerResult#TRUE} if an update is available, {@link UpdateCheckerResult#FALSE} of no update is needed and {@link UpdateCheckerResult#ERROR} if an error occurred
+     * @return {@link UpdateCheckerResult#TRUE} if an update is available, {@link UpdateCheckerResult#FALSE} if no update is needed or {@link UpdateCheckerResult#ERROR} if an error occurred
      */
     public UpdateCheckerResult updateNeeded() {
         try {
