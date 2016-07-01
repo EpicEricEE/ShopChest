@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
@@ -918,6 +919,10 @@ public class LanguageUtils {
                 return meta.getDisplayName();
             } else if (meta instanceof BookMeta) {
                 return ((BookMeta) meta).getTitle();
+            } else if (meta instanceof SkullMeta) {
+                if (((SkullMeta) meta).hasOwner()) {
+                    return String.format(langConfig.getString("item.skull.player.name", "%s's Head"), ((SkullMeta) meta).getOwner());
+                }
             }
         }
 
