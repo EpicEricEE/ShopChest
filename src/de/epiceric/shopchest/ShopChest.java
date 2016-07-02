@@ -51,9 +51,7 @@ public class ShopChest extends JavaPlugin {
     private LanguageConfiguration langConfig;
 
     /**
-     * Get an instance of ShopChest
-     *
-     * @return
+     * @return An instance of ShopChest
      */
     public static ShopChest getInstance() {
         return instance;
@@ -61,7 +59,7 @@ public class ShopChest extends JavaPlugin {
 
     /**
      * Sets up the economy of Vault
-     * @return
+     * @return Whether an economy plugin has been registered
      */
     private boolean setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
@@ -74,7 +72,7 @@ public class ShopChest extends JavaPlugin {
 
     /**
      * Sets up the permissions of Vault
-     * @return
+     * @return Whether a permissions plugin has been registered
      */
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
