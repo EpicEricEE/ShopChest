@@ -1,7 +1,7 @@
 # Do not change anything in here unless you know what you're doing!
 
 name: ShopChest
-main: de.epiceric.ShopChest
+main: de.epiceric.shopchest.ShopChest
 version: 1.8.0
 author: EpicEric
 website: https://www.spigotmc.org/resources/shopchest.11431/
