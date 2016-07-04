@@ -15,10 +15,10 @@
 -docencoding
 'UTF-8'
 -doctitle
-'ShopChest-Root 1.8.0 API'
+'ShopChest 1.8.0 API'
 -linkoffline
 'http://docs.oracle.com/javase/8/docs/api' 'C:/Users/ericb/Documents/GitHub/ShopChest/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'ShopChest-Root 1.8.0 API'
+'ShopChest 1.8.0 API'
