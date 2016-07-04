@@ -1,0 +1,24 @@
+-classpath
+'C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-Abstract/target/classes;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_8_R1/target/classes;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_8_R2/target/classes;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_8_R3/target/classes;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_9_R1/target/classes;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_9_R2/target/classes;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_10_R1/target/classes;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest/target/classes;C:/Users/ericb/.m2/repository/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar;C:/Users/ericb/.m2/repository/me/minebuilders/clearlag/2.9.1/clearlag-2.9.1.jar;C:/Users/ericb/.m2/repository/org/bukkit/bukkit/1.10.2-R0.1-SNAPSHOT/bukkit-1.10.2-R0.1-SNAPSHOT.jar;C:/Users/ericb/.m2/repository/org/bukkit/craftbukkit/1.10-R0.1-SNAPSHOT/craftbukkit-1.10-R0.1-SNAPSHOT.jar;C:/Users/ericb/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar;C:/Users/ericb/.m2/repository/net/milkbowl/vault/VaultAPI/1.6/VaultAPI-1.6.jar;C:/Users/ericb/.m2/repository/org/yaml/snakeyaml/1.15/snakeyaml-1.15.jar;C:/Users/ericb/.m2/repository/net/md-5/bungeecord-chat/1.10-SNAPSHOT/bungeecord-chat-1.10-SNAPSHOT.jar;C:/Users/ericb/.m2/repository/com/google/code/gson/gson/2.2.4/gson-2.2.4.jar;C:/Users/ericb/.m2/repository/org/yi/acru/bukkit/lockette/1.8.36/lockette-1.8.36.jar;C:/Users/ericb/.m2/repository/org/avaje/ebean/2.8.1/ebean-2.8.1.jar;C:/Users/ericb/.m2/repository/com/griefcraft/lwc/lwc-entity-locking/1.7.3/lwc-entity-locking-1.7.3.jar;C:/Users/ericb/.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar;C:/Users/ericb/.m2/repository/junit/junit/4.10/junit-4.10.jar;C:/Users/ericb/.m2/repository/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar;C:/Users/ericb/.m2/repository/org/spigotmc/spigot-api/1.10.2-R0.1-SNAPSHOT/spigot-api-1.10.2-R0.1-SNAPSHOT.jar;C:/Users/ericb/.m2/repository/com/google/guava/guava/17.0/guava-17.0.jar'
+-encoding
+'Cp1252'
+-protected
+-sourcepath
+'C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-Abstract/src/main/java;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_8_R1/src/main/java;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_8_R2/src/main/java;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_8_R3/src/main/java;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_9_R1/src/main/java;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_9_R2/src/main/java;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest NMS-v1_10_R1/src/main/java;C:/Users/ericb/Documents/GitHub/ShopChest/ShopChest/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2016. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/ericb/Documents/GitHub/ShopChest/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'ShopChest-Root 1.8.0 API'
+-linkoffline
+'http://docs.oracle.com/javase/8/docs/api' 'C:/Users/ericb/Documents/GitHub/ShopChest/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'ShopChest-Root 1.8.0 API'
