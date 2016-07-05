@@ -5,6 +5,10 @@ import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.event.ShopBuySellEvent;
+import de.epiceric.shopchest.event.ShopCreateEvent;
+import de.epiceric.shopchest.event.ShopInfoEvent;
+import de.epiceric.shopchest.event.ShopRemoveEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.shop.Shop;
@@ -248,6 +252,12 @@ public class ShopInteractListener implements Listener {
         }
 
         double creationPrice = (shopType == ShopType.NORMAL) ? Config.shop_creation_price_normal : Config.shop_creation_price_admin;
+
+        ShopCreateEvent event = new ShopCreateEvent(executor, Shop.createImaginaryShop(executor, product, buyPrice, sellPrice,shopType), creationPrice);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) return;
+
         EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, creationPrice);
         if (!r.transactionSuccess()) {
             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
@@ -271,6 +281,10 @@ public class ShopInteractListener implements Listener {
      * @param shop Shop to be removed
      */
     private void remove(Player executor, Shop shop) {
+        ShopRemoveEvent event = new ShopRemoveEvent(executor, shop);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         ShopUtils.removeShop(shop, true);
         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
     }
@@ -281,6 +295,10 @@ public class ShopInteractListener implements Listener {
      * @param shop Shop from which the information will be retrieved
      */
     private void info(Player executor, Shop shop) {
+        ShopInfoEvent event = new ShopInfoEvent(executor, shop);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         Chest c = (Chest) shop.getLocation().getBlock().getState();
 
         int amount = Utils.getAmount(c.getInventory(), shop.getProduct());
@@ -402,6 +420,15 @@ public class ShopInteractListener implements Listener {
                 if (r.transactionSuccess()) {
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
+                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY);
+                            Bukkit.getPluginManager().callEvent(event);
+
+                            if (event.isCancelled()) {
+                                econ.depositPlayer(executor, shop.getBuyPrice());
+                                econ.withdrawPlayer(shop.getVendor(), shop.getBuyPrice());
+                                return;
+                            }
+
                             addToInventory(inventory, product);
                             removeFromInventory(c.getInventory(), product);
                             executor.updateInventory();
@@ -419,6 +446,14 @@ public class ShopInteractListener implements Listener {
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r2.errorMessage)));
                         }
                     } else {
+                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY);
+                        Bukkit.getPluginManager().callEvent(event);
+
+                        if (event.isCancelled()) {
+                            econ.depositPlayer(executor, shop.getBuyPrice());
+                            return;
+                        }
+
                         addToInventory(inventory, product);
                         executor.updateInventory();
                         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
@@ -476,6 +511,15 @@ public class ShopInteractListener implements Listener {
                 if (r.transactionSuccess()) {
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
+                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL);
+                            Bukkit.getPluginManager().callEvent(event);
+
+                            if (event.isCancelled()) {
+                                econ.withdrawPlayer(executor, shop.getBuyPrice());
+                                econ.depositPlayer(shop.getVendor(), shop.getBuyPrice());
+                                return;
+                            }
+
                             addToInventory(inventory, product);
                             removeFromInventory(executor.getInventory(), product);
                             executor.updateInventory();
@@ -494,6 +538,14 @@ public class ShopInteractListener implements Listener {
                         }
 
                     } else {
+                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL);
+                        Bukkit.getPluginManager().callEvent(event);
+
+                        if (event.isCancelled()) {
+                            econ.withdrawPlayer(executor, shop.getBuyPrice());
+                            return;
+                        }
+
                         removeFromInventory(executor.getInventory(), product);
                         executor.updateInventory();
                         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),

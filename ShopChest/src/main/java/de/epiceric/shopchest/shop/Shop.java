@@ -63,6 +63,16 @@ public class Shop {
         if (item == null || item.isDead()) createItem();
     }
 
+    private Shop(OfflinePlayer vendor, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
+        this.id = 0;
+        this.vendor = vendor;
+        this.product = product;
+        this.location = null;
+        this.buyPrice = buyPrice;
+        this.sellPrice = sellPrice;
+        this.shopType = shopType;
+    }
+
     /**
      * Creates the hologram of the shop if it doesn't exist
      */
@@ -260,6 +270,13 @@ public class Shop {
      */
     public Chest getChest() {
         return chest;
+    }
+
+    /**
+     * @return A shop, which is not really a shop. It's just for "storing" the data (used in some events).
+     */
+    public static Shop createImaginaryShop(OfflinePlayer vendor, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
+        return new Shop(vendor, product, buyPrice, sellPrice, shopType);
     }
 
     public enum ShopType {

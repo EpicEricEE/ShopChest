@@ -2,9 +2,14 @@ package de.epiceric.shopchest;
 
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.event.ShopPreCreateEvent;
+import de.epiceric.shopchest.event.ShopPreInfoEvent;
+import de.epiceric.shopchest.event.ShopPreRemoveEvent;
+import de.epiceric.shopchest.event.ShopReloadEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.IJsonBuilder;
+import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
@@ -204,6 +209,10 @@ public class Commands extends BukkitCommand {
      * @param player The command executor
      */
     private void reload(Player player) {
+        ShopReloadEvent event = new ShopReloadEvent(player);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(ShopUtils.reloadShops()))));
     }
 
@@ -320,9 +329,13 @@ public class Commands extends BukkitCommand {
             }
         }
 
-        ClickType.setPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));
-        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
+        ShopPreCreateEvent event = new ShopPreCreateEvent(p, Shop.createImaginaryShop(p, itemStack, buyPrice, sellPrice, shopType));
+        Bukkit.getPluginManager().callEvent(event);
 
+        if (!event.isCancelled()) {
+            ClickType.setPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));
+            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
+        }
     }
 
     /**
@@ -330,6 +343,10 @@ public class Commands extends BukkitCommand {
      * @param p The command executor
      */
     private void remove(Player p) {
+        ShopPreRemoveEvent event = new ShopPreRemoveEvent(p);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE));
         ClickType.setPlayerClickType(p, new ClickType(EnumClickType.REMOVE));
     }
@@ -339,6 +356,10 @@ public class Commands extends BukkitCommand {
      * @param p The command executor
      */
     private void info(Player p) {
+        ShopPreInfoEvent event = new ShopPreInfoEvent(p);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_INFO));
         ClickType.setPlayerClickType(p, new ClickType(EnumClickType.INFO));
     }
