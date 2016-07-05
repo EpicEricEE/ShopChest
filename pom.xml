@@ -12,6 +12,8 @@
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+
+        <github.global.server>github</github.global.server>
     </properties>
 
     <modules>
@@ -80,6 +82,13 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>internal-maven-repo</id>
+            <url>file://${project.build.directory}/gh-pages/maven</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <resources>
             <resource>
@@ -116,6 +125,35 @@
                             <goal>aggregate</goal>
                         </goals>
                         <phase>site</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <altDeploymentRepository>internal-maven-repo::default::file://${project.build.directory}/gh-pages/maven</altDeploymentRepository>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
+                <configuration>
+                    <message>Maven artifacts for ${project.artifactId} v${project.version}</message>
+                    <outputDirectory>${project.build.directory}/gh-pages</outputDirectory>
+                    <branch>refs/heads/gh-pages</branch>
+                    <merge>true</merge>
+                    <repositoryName>ShopChest</repositoryName>
+                    <repositoryOwner>EpicEricEE</repositoryOwner>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
