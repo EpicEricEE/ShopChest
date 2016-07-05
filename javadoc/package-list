@@ -1,5 +1,6 @@
 de.epiceric.shopchest
 de.epiceric.shopchest.config
+de.epiceric.shopchest.event
 de.epiceric.shopchest.language
 de.epiceric.shopchest.listeners
 de.epiceric.shopchest.nms
