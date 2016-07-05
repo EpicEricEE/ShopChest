@@ -85,13 +85,13 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>VaultAPI</artifactId>
-      <version>1.5</version>
+      <version>1.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.yi.acru.bukkit.lockette</groupId>
+      <groupId>org.yi.acru.bukkit</groupId>
       <artifactId>lockette</artifactId>
-      <version>1.8.33</version>
+      <version>1.8.36</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
