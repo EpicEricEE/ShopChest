@@ -144,7 +144,6 @@
                     <message>Maven artifacts for ${project.artifactId} v${project.version}</message>
                     <outputDirectory>${project.build.directory}/gh-pages</outputDirectory>
                     <branch>refs/heads/gh-pages</branch>
-                    <noJekyll>true</noJekyll>
                     <merge>true</merge>
                     <repositoryName>ShopChest</repositoryName>
                     <repositoryOwner>EpicEricEE</repositoryOwner>
