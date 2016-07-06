@@ -9,12 +9,6 @@
   <artifactId>ShopChest</artifactId>
   <dependencies>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>1.10-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
       <version>1.10.2-R0.1-SNAPSHOT</version>

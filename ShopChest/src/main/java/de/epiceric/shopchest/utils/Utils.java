@@ -1,12 +1,13 @@
 package de.epiceric.shopchest.utils;
 
-import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Utils {
@@ -82,7 +83,7 @@ public class Utils {
     public static String encode(ItemStack itemStack) {
         YamlConfiguration config = new YamlConfiguration();
         config.set("i", itemStack);
-        return new String(Base64.encodeBase64(config.saveToString().getBytes()));
+        return DatatypeConverter.printBase64Binary(config.saveToString().getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -93,7 +94,7 @@ public class Utils {
     public static ItemStack decode(String string) {
         YamlConfiguration config = new YamlConfiguration();
         try {
-            config.loadFromString(new String(Base64.decodeBase64(string.getBytes())));
+            config.loadFromString(new String(DatatypeConverter.parseBase64Binary(string), StandardCharsets.UTF_8));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
