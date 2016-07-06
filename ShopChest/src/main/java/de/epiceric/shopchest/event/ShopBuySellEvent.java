@@ -13,6 +13,7 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     public ShopBuySellEvent(Player player, Shop shop, Type type) {
         this.player = player;
         this.shop = shop;
+        this.type = type;
     }
 
     @Override
