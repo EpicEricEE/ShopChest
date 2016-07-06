@@ -7,7 +7,9 @@
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest-Root</artifactId>
     <packaging>pom</packaging>
-    <version>1.8.0</version>
+    <version>1.9.0</version>
+    <name>ShopChest</name>
+    <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
 
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -94,6 +96,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <targetPath>.</targetPath>
+                <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>

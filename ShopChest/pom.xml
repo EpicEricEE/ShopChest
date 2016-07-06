@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ShopChest-Root</artifactId>
         <groupId>de.epiceric</groupId>
-        <version>1.8.0</version>
+        <version>1.9.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,37 +15,37 @@
         <dependency>
             <groupId>de.epiceric</groupId>
             <artifactId>ShopChest_NMS-Abstract</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>de.epiceric</groupId>
             <artifactId>ShopChest_NMS-v1_8_R1</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>de.epiceric</groupId>
             <artifactId>ShopChest_NMS-v1_8_R2</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>de.epiceric</groupId>
             <artifactId>ShopChest_NMS-v1_8_R3</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>de.epiceric</groupId>
             <artifactId>ShopChest_NMS-v1_9_R1</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>de.epiceric</groupId>
             <artifactId>ShopChest_NMS-v1_9_R2</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>de.epiceric</groupId>
             <artifactId>ShopChest_NMS-v1_10_R1</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
         </dependency>
     </dependencies>
 
