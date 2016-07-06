@@ -5,6 +5,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a player wants to remove a shop (enters the command)
+ */
 public class ShopPreRemoveEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
@@ -15,6 +18,9 @@ public class ShopPreRemoveEvent extends Event implements Cancellable {
         this.player = player;
     }
 
+    /**
+     * @return Player who is involved in this event
+     */
     public Player getPlayer() {
         return player;
     }
@@ -25,8 +31,8 @@ public class ShopPreRemoveEvent extends Event implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
     }
 
     @Override

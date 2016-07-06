@@ -4,6 +4,9 @@ import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
+/**
+ * Called when a player creates a shop (clicks on a chest)
+ */
 public class ShopCreateEvent extends ShopEvent implements Cancellable {
     private Player player;
     private Shop shop;
@@ -26,6 +29,9 @@ public class ShopCreateEvent extends ShopEvent implements Cancellable {
         return player;
     }
 
+    /**
+     * @return The price the player has to pay in order to create the shop (only if the event is not cancelled)
+     */
     public double getCreationPrice() {
         return creationPrice;
     }
@@ -36,8 +42,8 @@ public class ShopCreateEvent extends ShopEvent implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
     }
 
 }

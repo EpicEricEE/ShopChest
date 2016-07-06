@@ -4,6 +4,9 @@ import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
+/**
+ * Called when a player removes a shop (clicks on a chest)
+ */
 public class ShopRemoveEvent extends ShopEvent implements Cancellable {
     private Player player;
     private Shop shop;
@@ -30,7 +33,7 @@ public class ShopRemoveEvent extends ShopEvent implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
     }
 }

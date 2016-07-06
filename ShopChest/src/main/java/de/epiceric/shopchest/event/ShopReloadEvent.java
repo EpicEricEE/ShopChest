@@ -5,6 +5,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a player reloads the shops
+ */
 public class ShopReloadEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
@@ -15,6 +18,9 @@ public class ShopReloadEvent extends Event implements Cancellable {
         this.player = player;
     }
 
+    /**
+     * @return Player who is involved in this event
+     */
     public Player getPlayer() {
         return player;
     }
@@ -30,7 +36,7 @@ public class ShopReloadEvent extends Event implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
     }
 }

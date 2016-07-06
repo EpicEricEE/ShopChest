@@ -5,6 +5,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a player wants to retrieve information about a shop (enters the command)
+ */
 public class ShopPreInfoEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
@@ -14,7 +17,10 @@ public class ShopPreInfoEvent extends Event implements Cancellable {
     public ShopPreInfoEvent(Player player) {
         this.player = player;
     }
-    
+
+    /**
+     * @return Player who is involved in this event
+     */
     public Player getPlayer() {
         return player;
     }
@@ -25,8 +31,8 @@ public class ShopPreInfoEvent extends Event implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean b) {
-        this.cancelled = b;
+    public void setCancelled(boolean cancel) {
+        this.cancelled = cancel;
     }
 
     @Override

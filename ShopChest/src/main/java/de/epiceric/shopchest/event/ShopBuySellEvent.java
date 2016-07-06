@@ -4,6 +4,9 @@ import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
+/**
+ * Called when a player buys or sells something from or to a shop
+ */
 public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     private Player player;
     private Shop shop;
@@ -21,6 +24,9 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
         return shop;
     }
 
+    /**
+     * @return Whether the player buys or sells something
+     */
     public Type getType() {
         return type;
     }
@@ -36,8 +42,8 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
     }
 
     public enum Type {
