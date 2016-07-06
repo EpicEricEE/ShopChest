@@ -149,7 +149,13 @@
                 <artifactId>site-maven-plugin</artifactId>
                 <version>0.12</version>
                 <configuration>
-                    <message>Maven artifacts for ${project.artifactId} v${project.version}</message>
+                    <message>
+Updated Maven Artifact
+
+Artifact: ${project.artifactId}
+Version: ${project.version}
+Timestamp: ${maven.build.timestamp}
+                    </message>
                     <outputDirectory>${project.build.directory}/gh-pages</outputDirectory>
                     <branch>refs/heads/gh-pages</branch>
                     <merge>true</merge>
