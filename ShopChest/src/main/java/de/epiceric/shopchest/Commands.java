@@ -149,7 +149,7 @@ public class Commands extends BukkitCommand {
         player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
 
         UpdateChecker uc = new UpdateChecker(ShopChest.getInstance());
-        UpdateCheckerResult result = uc.updateNeeded();
+        UpdateCheckerResult result = uc.check();
 
         if (result == UpdateCheckerResult.TRUE) {
             plugin.setLatestVersion(uc.getVersion());
@@ -192,16 +192,6 @@ public class Commands extends BukkitCommand {
             plugin.setUpdateNeeded(false);
             player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
         }
-
-        if (perm.has(player, "shopchest.broadcast")) {
-            if (Config.enable_broadcast) plugin.setBroadcast(uc.getBroadcast());
-            if (plugin.getBroadcast() != null) {
-                for (String message : plugin.getBroadcast()) {
-                    player.sendMessage(message);
-                }
-            }
-        }
-
     }
 
     /**

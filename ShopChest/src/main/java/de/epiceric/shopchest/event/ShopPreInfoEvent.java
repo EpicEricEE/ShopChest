@@ -14,6 +14,10 @@ public class ShopPreInfoEvent extends Event implements Cancellable {
     public ShopPreInfoEvent(Player player) {
         this.player = player;
     }
+    
+    public Player getPlayer() {
+        return player;
+    }
 
     @Override
     public boolean isCancelled() {

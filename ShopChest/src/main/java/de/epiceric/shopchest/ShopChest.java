@@ -46,7 +46,6 @@ public class ShopChest extends JavaPlugin {
     private boolean isUpdateNeeded = false;
     private String latestVersion = "";
     private String downloadLink = "";
-    private String[] broadcast = null;
     private LanguageConfiguration langConfig;
 
     /**
@@ -260,9 +259,7 @@ public class ShopChest extends JavaPlugin {
         lwc = getServer().getPluginManager().getPlugin("LWC") != null;
 
         UpdateChecker uc = new UpdateChecker(this);
-        UpdateCheckerResult result = uc.updateNeeded();
-
-        if (Config.enable_broadcast) broadcast = uc.getBroadcast();
+        UpdateCheckerResult result = uc.check();
 
         Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
         if (result == UpdateCheckerResult.TRUE) {
@@ -310,22 +307,6 @@ public class ShopChest extends JavaPlugin {
             downloadLink = "";
             isUpdateNeeded = false;
             Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
-        }
-
-        for (Player p : getServer().getOnlinePlayers()) {
-            if (perm.has(p, "shopchest.broadcast")) {
-                if (broadcast != null) {
-                    for (String message : broadcast) {
-                        p.sendMessage(message);
-                    }
-                }
-            }
-        }
-
-        if (broadcast != null) {
-            for (String message : broadcast) {
-                Bukkit.getConsoleSender().sendMessage("[ShopChest] " + message);
-            }
         }
 
         try {
@@ -460,18 +441,4 @@ public class ShopChest extends JavaPlugin {
         this.downloadLink = downloadLink;
     }
 
-    /**
-     * @return The broadcast message as a string array of lines (will return null if not checked or if no message is available)
-     */
-    public String[] getBroadcast() {
-        return broadcast;
-    }
-
-    /**
-     * Set the broadcast message
-     * @param broadcast Broadcast message as a string array of lines to set
-     */
-    public void setBroadcast(String[] broadcast) {
-        this.broadcast = broadcast;
-    }
 }

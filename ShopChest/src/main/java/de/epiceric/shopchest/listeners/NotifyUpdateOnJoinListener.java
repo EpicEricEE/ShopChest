@@ -57,14 +57,6 @@ public class NotifyUpdateOnJoinListener implements Listener {
             }
         }
 
-        if (perm.has(p, "shopchest.broadcast")) {
-            if (plugin.getBroadcast() != null) {
-                for (String message : plugin.getBroadcast()) {
-                    p.sendMessage(message);
-                }
-            }
-        }
-
     }
 
 }

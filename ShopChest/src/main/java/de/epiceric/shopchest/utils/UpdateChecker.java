@@ -22,7 +22,7 @@ public class UpdateChecker {
      *
      * @return {@link UpdateCheckerResult#TRUE} if an update is available, {@link UpdateCheckerResult#FALSE} if no update is needed or {@link UpdateCheckerResult#ERROR} if an error occurred
      */
-    public UpdateCheckerResult updateNeeded() {
+    public UpdateCheckerResult check() {
         try {
             URL url = new URL("http://textuploader.com/all1l/raw");
             URLConnection conn = url.openConnection();
@@ -48,37 +48,6 @@ public class UpdateChecker {
         } catch (Exception e) {
             return UpdateCheckerResult.ERROR;
         }
-    }
-
-    /**
-     * Get the broadcast message
-     * @return A String Array of the lines of the broadcast message or <b>null</b> when no message is available
-     */
-    public String[] getBroadcast() {
-        try {
-            URL url = new URL("http://textuploader.com/5b51f/raw");
-            URLConnection conn = url.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
-            conn.connect();
-
-            InputStreamReader isr = new InputStreamReader(conn.getInputStream());
-            BufferedReader br = new BufferedReader(isr);
-
-            String line = br.readLine();
-
-            isr.close();
-            br.close();
-
-            String[] messages = line.split("#n");
-
-            if (!line.equals("/"))
-                return messages;
-
-        } catch (Exception | Error e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     /**

@@ -73,9 +73,6 @@ public class Config {
     /** Whether shops should be protected by explosions **/
     public static boolean explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
 
-    /** Whether broadcast messages should be enabled **/
-    public static boolean enable_broadcast = plugin.getConfig().getBoolean("enable-broadcast");
-
     /** Whether admin shops should be excluded of the shop limits **/
     public static boolean exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
 

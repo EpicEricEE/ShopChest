@@ -4,7 +4,7 @@ import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
-public class ShopCreateEvent extends ShopEvent implements Cancellable{
+public class ShopCreateEvent extends ShopEvent implements Cancellable {
     private Player player;
     private Shop shop;
     private double creationPrice;

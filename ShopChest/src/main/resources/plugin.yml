@@ -58,6 +58,3 @@ permissions:
   shopchest.limits:
     description: Allows you to view shop limits.
     default: true
-  shopchest.broadcast:
-    description: Allows you to get broadcast messages.
-    default: op
