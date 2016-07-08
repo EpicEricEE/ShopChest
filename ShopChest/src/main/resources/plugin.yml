@@ -58,3 +58,6 @@ permissions:
   shopchest.limits:
     description: Allows you to view shop limits.
     default: true
+  shopchest.config:
+    description: Allows you to change configuration values per command.
+    default: op

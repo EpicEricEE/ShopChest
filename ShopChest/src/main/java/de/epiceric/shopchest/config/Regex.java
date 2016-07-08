@@ -15,7 +15,9 @@ public enum Regex {
     LIMIT("%LIMIT%"),
     PLAYER("%PLAYER%"),
     POTION_EFFECT("%POTION-EFFECT%"),
-    MUSIC_TITLE("%MUSIC-TITLE%");
+    MUSIC_TITLE("%MUSIC-TITLE%"),
+    PROPERTY("%PROPERTY%"),
+    VALUE("%VALUE%");
 
     private String name;
 

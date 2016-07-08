@@ -3,7 +3,6 @@ package de.epiceric.shopchest.listeners;
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopBuySellEvent;
 import de.epiceric.shopchest.event.ShopCreateEvent;
@@ -244,14 +243,14 @@ public class ShopInteractListener implements Listener {
      * @param shopType  Type of the shop
      */
     private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
-        int id = database.getNextFreeID(Config.database_reconnect_attempts);
+        int id = database.getNextFreeID(plugin.getShopChestConfig().database_reconnect_attempts);
 
         if (id == 0) {
             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, "Could not connect to database")));
             return;
         }
 
-        double creationPrice = (shopType == ShopType.NORMAL) ? Config.shop_creation_price_normal : Config.shop_creation_price_admin;
+        double creationPrice = (shopType == ShopType.NORMAL) ? plugin.getShopChestConfig().shop_creation_price_normal : plugin.getShopChestConfig().shop_creation_price_admin;
 
         ShopCreateEvent event = new ShopCreateEvent(executor, Shop.createImaginaryShop(executor, product, buyPrice, sellPrice,shopType), creationPrice);
         Bukkit.getPluginManager().callEvent(event);

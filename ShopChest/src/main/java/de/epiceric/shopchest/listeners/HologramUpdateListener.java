@@ -1,6 +1,6 @@
 package de.epiceric.shopchest.listeners;
 
-import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Location;
@@ -10,6 +10,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class HologramUpdateListener implements Listener {
+
+    private ShopChest plugin;
+
+    public HologramUpdateListener(ShopChest plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
@@ -25,7 +31,7 @@ public class HologramUpdateListener implements Listener {
 
                 if (playerLocation.getWorld().equals(shopLocation.getWorld())) {
 
-                    if (playerLocation.distance(shop.getHologram().getLocation()) <= Config.maximal_distance) {
+                    if (playerLocation.distance(shop.getHologram().getLocation()) <= plugin.getShopChestConfig().maximal_distance) {
 
                         if (!shop.getHologram().isVisible(p)) {
                             shop.getHologram().showPlayer(p);

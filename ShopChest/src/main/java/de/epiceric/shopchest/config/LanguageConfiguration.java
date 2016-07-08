@@ -5,6 +5,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -47,7 +48,7 @@ public class LanguageConfiguration extends FileConfiguration {
     @Override
     public void load(File file) throws IOException, InvalidConfigurationException {
         FileInputStream fis = new FileInputStream(file);
-        InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+        InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
         BufferedReader br = new BufferedReader(isr);
 
         StringBuilder sb = new StringBuilder();

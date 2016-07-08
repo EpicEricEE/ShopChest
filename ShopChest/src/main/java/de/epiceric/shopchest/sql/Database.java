@@ -1,7 +1,6 @@
 package de.epiceric.shopchest.sql;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.ShopUtils;
@@ -20,10 +19,12 @@ public abstract class Database {
     public ShopChest plugin;
     public Connection connection;
 
-    private int attempts = Config.database_reconnect_attempts;
+    private int attempts;
 
     public Database(ShopChest plugin) {
         this.plugin = plugin;
+        this.attempts = plugin.getShopChestConfig().database_reconnect_attempts;
+
         initialize();
     }
 

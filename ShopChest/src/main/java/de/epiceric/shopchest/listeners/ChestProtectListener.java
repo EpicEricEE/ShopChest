@@ -1,7 +1,6 @@
 package de.epiceric.shopchest.listeners;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.shop.Shop;
@@ -26,6 +25,12 @@ import java.util.ArrayList;
 
 public class ChestProtectListener implements Listener {
 
+    private ShopChest plugin;
+
+    public ChestProtectListener(ShopChest plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         if (ShopUtils.isShop(e.getBlock().getLocation())) {
@@ -36,7 +41,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent e) {
-        if (Config.explosion_protection) {
+        if (plugin.getShopChestConfig().explosion_protection) {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
             for (Block b : bl) {
                 if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -48,7 +53,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent e) {
-        if (Config.explosion_protection) {
+        if (plugin.getShopChestConfig().explosion_protection) {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
             for (Block b : bl) {
                 if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -100,7 +105,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onItemMove(InventoryMoveItemEvent e) {
-        if (Config.hopper_protection) {
+        if (plugin.getShopChestConfig().hopper_protection) {
             if ((e.getSource().getType().equals(InventoryType.CHEST)) && (!e.getInitiator().getType().equals(InventoryType.PLAYER))) {
 
                 if (e.getSource().getHolder() instanceof DoubleChest) {

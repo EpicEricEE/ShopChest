@@ -1,7 +1,6 @@
 package de.epiceric.shopchest;
 
 import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.config.LanguageConfiguration;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
@@ -23,14 +22,11 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -38,6 +34,8 @@ import java.util.ArrayList;
 public class ShopChest extends JavaPlugin {
 
     private static ShopChest instance;
+
+    private Config config = null;
     private Economy econ = null;
     private Permission perm = null;
     private boolean lockette = false;
@@ -46,7 +44,6 @@ public class ShopChest extends JavaPlugin {
     private boolean isUpdateNeeded = false;
     private String latestVersion = "";
     private String downloadLink = "";
-    private LanguageConfiguration langConfig;
 
     /**
      * @return An instance of ShopChest
@@ -78,69 +75,6 @@ public class ShopChest extends JavaPlugin {
         return perm != null;
     }
 
-    /**
-     * Initializes the language configuration
-     */
-    private void initLanguageConfig() {
-        langConfig = new LanguageConfiguration(this);
-        File langFolder = new File(getDataFolder(), "lang");
-
-        if (!(new File(langFolder, "en_US.lang")).exists())
-            saveResource("lang/en_US.lang", false);
-
-        if (!(new File(langFolder, "de_DE.lang")).exists())
-            saveResource("lang/de_DE.lang", false);
-
-        File langConfigFile = new File(langFolder, Config.language_file + ".lang");
-        File langDefaultFile = new File(langFolder, "en_US.lang");
-
-        if (!langConfigFile.exists()) {
-            if (!langDefaultFile.exists()) {
-                try {
-                    Reader r = getTextResource("lang/" + langConfigFile.getName());
-
-                    if (r == null) {
-                        r = getTextResource("lang/en_US.lang");
-                        getLogger().info("Using locale \"en_US\" (Streamed from jar file)");
-                    } else {
-                        getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\" (Streamed from jar file)");
-                    }
-
-                    BufferedReader br = new BufferedReader(r);
-
-                    StringBuilder sb = new StringBuilder();
-                    String line = br.readLine();
-
-                    while (line != null) {
-                        sb.append(line);
-                        sb.append("\n");
-                        line = br.readLine();
-                    }
-
-                    langConfig.loadFromString(sb.toString());
-                } catch (IOException | InvalidConfigurationException ex) {
-                    ex.printStackTrace();
-                    getLogger().warning("Using default language values");
-                }
-            } else {
-                try {
-                    langConfig.load(langDefaultFile);
-                    getLogger().info("Using locale \"en_US\"");
-                } catch (IOException | InvalidConfigurationException e) {
-                    e.printStackTrace();
-                    getLogger().warning("Using default language values");
-                }
-            }
-        } else {
-            try {
-                getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\"");
-                langConfig.load(langConfigFile);
-            } catch (IOException | InvalidConfigurationException ex) {
-                ex.printStackTrace();
-                getLogger().warning("Using default language values");
-            }
-        }
-    }
 
     @Override
     public void onEnable() {
@@ -178,11 +112,9 @@ public class ShopChest extends JavaPlugin {
                 return;
         }
 
-        initLanguageConfig();
+        config = new Config(this);
         LanguageUtils.load();
         saveResource("item_names.txt", true);
-        reloadConfig();
-        saveDefaultConfig();
 
         try {
             Metrics metrics = new Metrics(this);
@@ -222,7 +154,7 @@ public class ShopChest extends JavaPlugin {
 
                 @Override
                 public int getValue() {
-                    if (Config.database_type == Database.DatabaseType.SQLite)
+                    if (config.database_type == Database.DatabaseType.SQLite)
                         return 1;
 
                     return 0;
@@ -234,7 +166,7 @@ public class ShopChest extends JavaPlugin {
 
                 @Override
                 public int getValue() {
-                    if (Config.database_type == Database.DatabaseType.MySQL)
+                    if (config.database_type == Database.DatabaseType.MySQL)
                         return 1;
 
                     return 0;
@@ -247,7 +179,7 @@ public class ShopChest extends JavaPlugin {
             getLogger().severe("Could not submit stats.");
         }
 
-        if (Config.database_type == Database.DatabaseType.SQLite) {
+        if (config.database_type == Database.DatabaseType.SQLite) {
             getLogger().info("Using SQLite");
             database = new SQLite(this);
         } else {
@@ -258,70 +190,75 @@ public class ShopChest extends JavaPlugin {
         lockette = getServer().getPluginManager().getPlugin("Lockette") != null;
         lwc = getServer().getPluginManager().getPlugin("LWC") != null;
 
-        UpdateChecker uc = new UpdateChecker(this);
-        UpdateCheckerResult result = uc.check();
+        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                UpdateChecker uc = new UpdateChecker(ShopChest.this);
+                UpdateCheckerResult result = uc.check();
 
-        Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
-        if (result == UpdateCheckerResult.TRUE) {
-            latestVersion = uc.getVersion();
-            downloadLink = uc.getLink();
-            isUpdateNeeded = true;
-            Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)));
+                Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
+                if (result == UpdateCheckerResult.TRUE) {
+                    latestVersion = uc.getVersion();
+                    downloadLink = uc.getLink();
+                    isUpdateNeeded = true;
+                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)));
 
-            for (Player p : getServer().getOnlinePlayers()) {
-                if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
-                    IJsonBuilder jb;
-                    switch (Utils.getServerVersion()) {
-                        case "v1_8_R1":
-                            jb = new de.epiceric.shopchest.nms.v1_8_R1.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
-                            break;
-                        case "v1_8_R2":
-                            jb = new de.epiceric.shopchest.nms.v1_8_R2.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
-                            break;
-                        case "v1_8_R3":
-                            jb = new de.epiceric.shopchest.nms.v1_8_R3.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
-                            break;
-                        case "v1_9_R1":
-                            jb = new de.epiceric.shopchest.nms.v1_9_R1.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
-                            break;
-                        case "v1_9_R2":
-                            jb = new de.epiceric.shopchest.nms.v1_9_R2.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
-                            break;
-                        case "v1_10_R1":
-                            jb = new de.epiceric.shopchest.nms.v1_10_R1.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
-                            break;
-                        default:
-                            return;
+                    for (Player p : getServer().getOnlinePlayers()) {
+                        if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
+                            IJsonBuilder jb;
+                            switch (Utils.getServerVersion()) {
+                                case "v1_8_R1":
+                                    jb = new de.epiceric.shopchest.nms.v1_8_R1.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
+                                    break;
+                                case "v1_8_R2":
+                                    jb = new de.epiceric.shopchest.nms.v1_8_R2.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
+                                    break;
+                                case "v1_8_R3":
+                                    jb = new de.epiceric.shopchest.nms.v1_8_R3.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
+                                    break;
+                                case "v1_9_R1":
+                                    jb = new de.epiceric.shopchest.nms.v1_9_R1.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
+                                    break;
+                                case "v1_9_R2":
+                                    jb = new de.epiceric.shopchest.nms.v1_9_R2.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
+                                    break;
+                                case "v1_10_R1":
+                                    jb = new de.epiceric.shopchest.nms.v1_10_R1.JsonBuilder(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
+                                    break;
+                                default:
+                                    return;
+                            }
+                            jb.sendJson(p);
+                        }
                     }
-                    jb.sendJson(p);
+
+                } else if (result == UpdateCheckerResult.FALSE) {
+                    latestVersion = "";
+                    downloadLink = "";
+                    isUpdateNeeded = false;
+                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE));
+                } else {
+                    latestVersion = "";
+                    downloadLink = "";
+                    isUpdateNeeded = false;
+                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
                 }
             }
-
-        } else if (result == UpdateCheckerResult.FALSE) {
-            latestVersion = "";
-            downloadLink = "";
-            isUpdateNeeded = false;
-            Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE));
-        } else {
-            latestVersion = "";
-            downloadLink = "";
-            isUpdateNeeded = false;
-            Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
-        }
+        });
 
         try {
-            Commands.registerCommand(new Commands(this, Config.main_command_name, "Manage Shops.", "", new ArrayList<String>()), this);
+            Commands.registerCommand(new Commands(this, config.main_command_name, "Manage Shops.", "", new ArrayList<String>()), this);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         initializeShops();
 
-        getServer().getPluginManager().registerEvents(new HologramUpdateListener(), this);
+        getServer().getPluginManager().registerEvents(new HologramUpdateListener(this), this);
         getServer().getPluginManager().registerEvents(new ItemProtectListener(), this);
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyUpdateOnJoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new ChestProtectListener(), this);
+        getServer().getPluginManager().registerEvents(new ChestProtectListener(this), this);
         getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
 
         if (getServer().getPluginManager().getPlugin("ClearLag") != null)
@@ -352,13 +289,6 @@ public class ShopChest extends JavaPlugin {
     private void initializeShops() {
         int count = ShopUtils.reloadShops();
         getLogger().info("Initialized " + String.valueOf(count) + " Shops");
-    }
-
-    /**
-     * @return ShopChest's {@link LanguageConfiguration}
-     */
-    public LanguageConfiguration getLanguageConfig() {
-        return langConfig;
     }
 
     /**
@@ -441,4 +371,21 @@ public class ShopChest extends JavaPlugin {
         this.downloadLink = downloadLink;
     }
 
+    /**
+     * @return The {@link Config} of ShopChset
+     */
+    public Config getShopChestConfig() {
+        return config;
+    }
+
+    /**
+     * Provides a reader for a text file located inside the jar.
+     * The returned reader will read text with the UTF-8 charset.
+     * @param file - the filename of the resource to load
+     * @return null if getResource(String) returns null
+     * @throws IllegalArgumentException - if file is null
+     */
+    public Reader getTextResourceP(String file) throws IllegalArgumentException {
+       return getTextResource(file);
+    }
 }

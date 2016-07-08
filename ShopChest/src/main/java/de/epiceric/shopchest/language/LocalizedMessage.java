@@ -108,12 +108,17 @@ public class LocalizedMessage {
         NO_PERMISSION_RELOAD,
         NO_PERMISSION_UPDATE,
         NO_PERMISSION_LIMITS,
+        NO_PERMISSION_CONFIG,
         COMMAND_DESC_CREATE,
         COMMAND_DESC_REMOVE,
         COMMAND_DESC_INFO,
         COMMAND_DESC_RELOAD,
         COMMAND_DESC_UPDATE,
-        COMMAND_DESC_LIMITS
+        COMMAND_DESC_LIMITS,
+        COMMAND_DESC_CONFIG,
+        CHANGED_CONFIG_SET,
+        CHANGED_CONFIG_REMOVED,
+        CHANGED_CONFIG_ADDED
     }
 
     public static class ReplacedRegex {

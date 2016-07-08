@@ -224,6 +224,9 @@ message.noPermission.update=&cYou don't have permission to check for updates.
 # Set the message when a not permitted player tries to view the shop limits.
 message.noPermission.limits=&cYou don't have permission to view the shop limits.
 
+# Set the message when a not permitted player tries to change configuration values.
+message.noPermission.config=&cYou don't have permission to change configuration values.
+
 # Set the command description message for '/shop create' when you type '/shop'.
 message.commandDescription.create=Create a shop.
 
@@ -241,6 +244,21 @@ message.commandDescription.update=Check for Updates.
 
 # Set the command description message for '/shop limits' when you type '/shop'.
 message.commandDescription.limits=View shop limits.
+
+# Set the command description message for '/shop config' when you type '/shop'.
+message.commandDescription.config=Change configuration values.
+
+# Set the message a player gets after setting a configuration value per command
+# Usable regex: %PROPERTY%, %VALUE%
+message.config.set=&6Changed &a%PROPERTY% &6to &a%VALUE%&6.
+
+# Set the message a player gets after adding a value to a list in the configuration per command
+# Usable regex: %PROPERTY%, %VALUE%
+message.config.added=&6Added &a%VALUE% &6to &a%PROPERTY%&6.
+
+# Set the message a player gets after removing a value from a list in the configuration per command
+# Usable regex: %PROPERTY%, %VALUE%
+message.config.removed=&6Removed &a%VALUE% &6from &a%PROPERTY%&6.
 
 # Effect names that will be displayed in the place of %POTION-EFFECT%
 effect.none=No Effects

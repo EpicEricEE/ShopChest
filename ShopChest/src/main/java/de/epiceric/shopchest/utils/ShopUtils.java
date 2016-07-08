@@ -81,7 +81,7 @@ public class ShopUtils {
         }
 
         if (addToDatabase)
-            plugin.getShopDatabase().addShop(shop, Config.database_reconnect_attempts);
+            plugin.getShopDatabase().addShop(shop, plugin.getShopChestConfig().database_reconnect_attempts);
 
     }
 
@@ -108,7 +108,7 @@ public class ShopUtils {
             shop.removeHologram();
 
             if (removeFromDatabase)
-                plugin.getShopDatabase().removeShop(shop, Config.database_reconnect_attempts);
+                plugin.getShopDatabase().removeShop(shop, plugin.getShopChestConfig().database_reconnect_attempts);
     }
 
     /**
@@ -117,12 +117,12 @@ public class ShopUtils {
      * @return The shop limits of the given player
      */
     public static int getShopLimit(Player p) {
-        int limit = Config.default_limit;
+        int limit = plugin.getShopChestConfig().default_limit;
 
         if (plugin.getPermission().hasGroupSupport()) {
             List<String> groups = new ArrayList<String>();
 
-            for (String key : Config.shopLimits_group) {
+            for (String key : plugin.getShopChestConfig().shopLimits_group) {
                 for (int i = 0; i < plugin.getPermission().getGroups().length; i++) {
                     if (plugin.getPermission().getGroups()[i].equals(key)) {
                         if (plugin.getPermission().playerInGroup(p, key)) {
@@ -153,7 +153,7 @@ public class ShopUtils {
             }
         }
 
-        for (String key : Config.shopLimits_player) {
+        for (String key : plugin.getShopChestConfig().shopLimits_player) {
             int pLimit = ShopChest.getInstance().getConfig().getInt("shop-limits.player." + key);
             if (Utils.isUUID(key)) {
                 if (p.getUniqueId().equals(UUID.fromString(key))) {
@@ -179,7 +179,7 @@ public class ShopUtils {
 
         for (Shop shop : ShopUtils.getShops()) {
             if (shop.getVendor().equals(p)) {
-                if (shop.getShopType() != Shop.ShopType.ADMIN || !Config.exclude_admin_shops) {
+                if (shop.getShopType() != Shop.ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
                     shopCount++;
 
                     if (shop.getChest().getInventory().getHolder() instanceof DoubleChest)
@@ -196,6 +196,8 @@ public class ShopUtils {
      * @return Amount of shops, which were reloaded
      */
     public static int reloadShops() {
+        plugin.getShopChestConfig().reload(false, true);
+
         for (Shop shop : ShopUtils.getShops()) {
             ShopUtils.removeShop(shop, false);
         }
@@ -212,10 +214,10 @@ public class ShopUtils {
         }
 
         int count = 0;
-        for (int id = 1; id < plugin.getShopDatabase().getHighestID(Config.database_reconnect_attempts) + 1; id++) {
+        for (int id = 1; id < plugin.getShopDatabase().getHighestID(plugin.getShopChestConfig().database_reconnect_attempts) + 1; id++) {
 
             try {
-                Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP, Config.database_reconnect_attempts);
+                Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP, plugin.getShopChestConfig().database_reconnect_attempts);
                 ShopUtils.addShop(shop, false);
             } catch (NullPointerException e) {
                 continue;

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class LanguageUtils {
 
     private static ShopChest plugin = ShopChest.getInstance();
-    private static LanguageConfiguration langConfig = plugin.getLanguageConfig();
+    private static LanguageConfiguration langConfig;
 
     private static ArrayList<ItemName> itemNames = new ArrayList<>();
     private static ArrayList<EnchantmentName> enchantmentNames = new ArrayList<>();
@@ -34,6 +34,17 @@ public class LanguageUtils {
 
 
     public static void load() {
+        langConfig = plugin.getShopChestConfig().getLanguageConfig();
+
+        itemNames.clear();
+        enchantmentNames.clear();
+        enchantmentLevelNames.clear();
+        potionEffectNames.clear();
+        entityNames.clear();
+        potionNames.clear();
+        musicDiscNames.clear();
+        messages.clear();
+
         // Add Block Names
         itemNames.add(new ItemName(Material.STONE, langConfig.getString("tile.stone.stone.name", "Stone")));
         itemNames.add(new ItemName(Material.STONE, 1, langConfig.getString("tile.stone.granite.name", "Granite")));
@@ -899,12 +910,17 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_RELOAD, langConfig.getString("message.noPermission.reload", "&cYou don't have permission to reload the shops.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_UPDATE, langConfig.getString("message.noPermission.update", "&cYou don't have permission to check for updates.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_LIMITS, langConfig.getString("message.noPermission.limits", "&cYou don't have permission to view the shop limits.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG, langConfig.getString("message.noPermission.config", "&cYou don't have permission to change configuration values.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "Create a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "Remove a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "Retrieve shop information.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD, langConfig.getString("message.commandDescription.reload", "Reload shops.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE, langConfig.getString("message.commandDescription.update", "Check for Updates.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "View shop limits.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "Change configuration values.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6."), Regex.PROPERTY, Regex.VALUE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6."), Regex.PROPERTY, Regex.VALUE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, langConfig.getString("message.config.added", "&6Added &a%VALUE% &6to &a%PROPERTY%&6."), Regex.PROPERTY, Regex.VALUE));
     }
 
     /**

@@ -1,6 +1,5 @@
 package de.epiceric.shopchest;
 
-import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopPreCreateEvent;
 import de.epiceric.shopchest.event.ShopPreInfoEvent;
@@ -126,6 +125,36 @@ public class Commands extends BukkitCommand {
                     } else {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_LIMITS));
                     }
+                } else if (args[0].equalsIgnoreCase("config")) {
+                    if (perm.has(p, "shopchest.config")) {
+                        if (args.length >= 4) {
+                            String property = args[2];
+                            String value = args[3];
+
+                            if (args[1].equalsIgnoreCase("set")) {
+                                plugin.getShopChestConfig().set(property, value);
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
+                                return true;
+                            } else if (args[1].equalsIgnoreCase("add")) {
+                                plugin.getShopChestConfig().add(property, value);
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
+                                return true;
+                            } else if (args[1].equalsIgnoreCase("remove")) {
+                                plugin.getShopChestConfig().remove(property, value);
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
+                                return true;
+                            } else {
+                                sendBasicHelpMessage(p);
+                                return true;
+                            }
+                        } else {
+                            sendBasicHelpMessage(p);
+                            return true;
+                        }
+                    } else {
+                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG));
+                        return true;
+                    }
                 } else {
                     sendBasicHelpMessage(p);
                     return true;
@@ -220,7 +249,7 @@ public class Commands extends BukkitCommand {
 
         if (limit != -1) {
             if (ShopUtils.getShopAmount(p) >= limit) {
-                if (shopType != ShopType.ADMIN || !Config.exclude_admin_shops) {
+                if (shopType != ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(limit))));
                     return;
                 }
@@ -248,7 +277,7 @@ public class Commands extends BukkitCommand {
             return;
         }
 
-        for (String item : Config.blacklist) {
+        for (String item : plugin.getShopChestConfig().blacklist) {
 
             ItemStack itemStack;
 
@@ -264,7 +293,7 @@ public class Commands extends BukkitCommand {
             }
         }
 
-        for (String key : Config.minimum_prices) {
+        for (String key : plugin.getShopChestConfig().minimum_prices) {
 
             ItemStack itemStack;
             double price = plugin.getConfig().getDouble("minimum-prices." + key);
@@ -293,7 +322,7 @@ public class Commands extends BukkitCommand {
         }
 
         if (sellEnabled && buyEnabled) {
-            if (Config.buy_greater_or_equal_sell) {
+            if (plugin.getShopChestConfig().buy_greater_or_equal_sell) {
                 if (buyPrice < sellPrice) {
                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(sellPrice))));
                     return;
@@ -311,7 +340,7 @@ public class Commands extends BukkitCommand {
             }
         }
 
-        double creationPrice = (shopType == ShopType.NORMAL) ? Config.shop_creation_price_normal : Config.shop_creation_price_admin;
+        double creationPrice = (shopType == ShopType.NORMAL) ? plugin.getShopChestConfig().shop_creation_price_normal : plugin.getShopChestConfig().shop_creation_price_admin;
         if (creationPrice > 0) {
             if (plugin.getEconomy().getBalance(p) < creationPrice) {
                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, new LocalizedMessage.ReplacedRegex(Regex.CREATION_PRICE, String.valueOf(creationPrice))));
@@ -359,12 +388,13 @@ public class Commands extends BukkitCommand {
      * @param player Player who will receive the message
      */
     private void sendBasicHelpMessage(Player player) {
-        player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
-        player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name + " remove - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE));
-        player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name + " info - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO));
-        player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name + " reload - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD));
-        player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name + " update - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE));
-        player.sendMessage(ChatColor.GREEN + "/" + Config.main_command_name + " limits - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS));
+        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
+        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " remove - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE));
+        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " info - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO));
+        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " reload - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD));
+        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " update - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE));
+        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " limits - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS));
+        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " config <set|add|remove> <property> <value> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG));
     }
 
 }
