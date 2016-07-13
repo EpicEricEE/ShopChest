@@ -5,13 +5,13 @@ import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.IHologram;
-import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Item;
@@ -36,7 +36,6 @@ public class Shop {
     private double buyPrice;
     private double sellPrice;
     private ShopType shopType;
-    private Chest chest;
 
     public Shop(int id, ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
         this.id = id;
@@ -49,14 +48,18 @@ public class Shop {
         this.shopType = shopType;
 
         Block b = location.getBlock();
-        if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
-            this.chest = (Chest) b.getState();
-        } else {
+        if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
             try {
-                if (plugin.getShopChestConfig().remove_shop_on_error)
-                    plugin.getShopUtils().removeShop(this, true);
-
+                plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
                 throw new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return;
+            }
+        } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
+            try {
+                plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
+                throw new Exception("No space above chest at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return;
@@ -133,7 +136,9 @@ public class Shop {
 
         Chest[] chests = new Chest[2];
         Block b = location.getBlock();
-        InventoryHolder ih = chest.getInventory().getHolder();
+        InventoryHolder ih = getInventoryHolder();
+
+        if (ih == null) return;
 
         if (ih instanceof DoubleChest) {
             DoubleChest dc = (DoubleChest) ih;
@@ -148,7 +153,7 @@ public class Shop {
 
         } else {
             doubleChest = false;
-            chests[0] = chest;
+            chests[0] = (Chest) ih;
         }
 
         Location holoLocation;
@@ -272,10 +277,17 @@ public class Shop {
     }
 
     /**
-     * @return Chest of the shop. If double chest, only one chest is returned
+     * @return {@link InventoryHolder} of the shop or <b>null</b> if the shop has no chest.
      */
-    public Chest getChest() {
-        return chest;
+    public InventoryHolder getInventoryHolder() {
+        Block b = getLocation().getBlock();
+
+        if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
+            Chest chest = (Chest) b.getState();
+            return chest.getInventory().getHolder();
+        }
+
+        return null;
     }
 
     /**

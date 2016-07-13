@@ -4,10 +4,7 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.Database;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
@@ -71,7 +68,7 @@ public class ShopUtils {
      * @param addToDatabase Whether the shop should also be added to the database
      */
     public void addShop(Shop shop, boolean addToDatabase) {
-        InventoryHolder ih = shop.getChest().getInventory().getHolder();
+        InventoryHolder ih = shop.getInventoryHolder();
 
         if (ih instanceof DoubleChest) {
             DoubleChest dc = (DoubleChest) ih;
@@ -95,24 +92,24 @@ public class ShopUtils {
      * @param removeFromDatabase Whether the shop should also be removed from the database
      */
     public void removeShop(Shop shop, boolean removeFromDatabase) {
-            InventoryHolder ih = shop.getChest().getInventory().getHolder();
+        InventoryHolder ih = shop.getInventoryHolder();
 
-            if (ih instanceof DoubleChest) {
-                DoubleChest dc = (DoubleChest) ih;
-                Chest r = (Chest) dc.getRightSide();
-                Chest l = (Chest) dc.getLeftSide();
+        if (ih instanceof DoubleChest) {
+            DoubleChest dc = (DoubleChest) ih;
+            Chest r = (Chest) dc.getRightSide();
+            Chest l = (Chest) dc.getLeftSide();
 
-                shopLocation.remove(r.getLocation());
-                shopLocation.remove(l.getLocation());
-            } else {
-                shopLocation.remove(shop.getLocation());
-            }
+            shopLocation.remove(r.getLocation());
+            shopLocation.remove(l.getLocation());
+        } else {
+            shopLocation.remove(shop.getLocation());
+        }
 
-            shop.removeItem();
-            shop.removeHologram();
+        shop.removeItem();
+        shop.removeHologram();
 
-            if (removeFromDatabase)
-                plugin.getShopDatabase().removeShop(shop, plugin.getShopChestConfig().database_reconnect_attempts);
+        if (removeFromDatabase)
+            plugin.getShopDatabase().removeShop(shop, plugin.getShopChestConfig().database_reconnect_attempts);
     }
 
     /**
@@ -186,7 +183,9 @@ public class ShopUtils {
                 if (shop.getShopType() != Shop.ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
                     shopCount++;
 
-                    if (shop.getChest().getInventory().getHolder() instanceof DoubleChest)
+                    InventoryHolder ih = shop.getInventoryHolder();
+
+                    if (ih instanceof DoubleChest)
                         shopCount -= 0.5;
                 }
             }
@@ -224,7 +223,7 @@ public class ShopUtils {
             try {
                 Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP, plugin.getShopChestConfig().database_reconnect_attempts);
                 addShop(shop, false);
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
                 continue;
             }
 

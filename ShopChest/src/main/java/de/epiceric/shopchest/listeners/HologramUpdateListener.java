@@ -2,8 +2,9 @@ package de.epiceric.shopchest.listeners;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,32 +20,30 @@ public class HologramUpdateListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-
         Player p = e.getPlayer();
         Location playerLocation = p.getLocation();
 
         for (Shop shop : plugin.getShopUtils().getShops()) {
+            Block b = shop.getLocation().getBlock();
 
-            if (shop.getHologram() != null) {
+            if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
+                plugin.getShopUtils().removeShop(shop, plugin.getShopChestConfig().remove_shop_on_error);
+                return;
+            }
 
-                Location shopLocation = shop.getLocation();
+            if (shop.getHologram() == null) return;
 
-                if (playerLocation.getWorld().equals(shopLocation.getWorld())) {
+            Location shopLocation = shop.getLocation();
 
-                    if (playerLocation.distance(shop.getHologram().getLocation()) <= plugin.getShopChestConfig().maximal_distance) {
-
-                        if (!shop.getHologram().isVisible(p)) {
-                            shop.getHologram().showPlayer(p);
-                        }
-
-                    } else {
-
-                        if (shop.getHologram().isVisible(p)) {
-                            shop.getHologram().hidePlayer(p);
-                        }
-
+            if (playerLocation.getWorld().equals(shopLocation.getWorld())) {
+                if (playerLocation.distance(shop.getHologram().getLocation()) <= plugin.getShopChestConfig().maximal_distance) {
+                    if (!shop.getHologram().isVisible(p)) {
+                        shop.getHologram().showPlayer(p);
                     }
-
+                } else {
+                    if (shop.getHologram().isVisible(p)) {
+                        shop.getHologram().hidePlayer(p);
+                    }
                 }
             }
 
