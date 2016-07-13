@@ -46,6 +46,7 @@ public class ShopChest extends JavaPlugin {
     private boolean isUpdateNeeded = false;
     private String latestVersion = "";
     private String downloadLink = "";
+    private ShopUtils shopUtils;
 
     /**
      * @return An instance of ShopChest
@@ -118,6 +119,8 @@ public class ShopChest extends JavaPlugin {
         LanguageUtils.load();
         saveResource("item_names.txt", true);
 
+        shopUtils = new ShopUtils(this);
+
         try {
             Metrics metrics = new Metrics(this);
             Graph shopType = metrics.createGraph("Shop Type");
@@ -127,7 +130,7 @@ public class ShopChest extends JavaPlugin {
                 public int getValue() {
                     int value = 0;
 
-                    for (Shop shop : ShopUtils.getShops()) {
+                    for (Shop shop : shopUtils.getShops()) {
                         if (shop.getShopType() == ShopType.NORMAL) value++;
                     }
 
@@ -142,7 +145,7 @@ public class ShopChest extends JavaPlugin {
                 public int getValue() {
                     int value = 0;
 
-                    for (Shop shop : ShopUtils.getShops()) {
+                    for (Shop shop : shopUtils.getShops()) {
                         if (shop.getShopType() == ShopType.ADMIN) value++;
                     }
 
@@ -196,7 +199,7 @@ public class ShopChest extends JavaPlugin {
                     ShopReloadEvent event = new ShopReloadEvent(Bukkit.getConsoleSender());
                     Bukkit.getServer().getPluginManager().callEvent(event);
 
-                    if (!event.isCancelled()) getLogger().info(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(ShopUtils.reloadShops(true)))));
+                    if (!event.isCancelled()) getLogger().info(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.reloadShops(true)))));
                 }
             }, config.auto_reload_time * 20, config.auto_reload_time * 20);
         }
@@ -269,7 +272,7 @@ public class ShopChest extends JavaPlugin {
         initializeShops();
 
         getServer().getPluginManager().registerEvents(new HologramUpdateListener(this), this);
-        getServer().getPluginManager().registerEvents(new ItemProtectListener(), this);
+        getServer().getPluginManager().registerEvents(new ItemProtectListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyUpdateOnJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new ChestProtectListener(this), this);
@@ -284,8 +287,8 @@ public class ShopChest extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (Shop shop : ShopUtils.getShops()) {
-            ShopUtils.removeShop(shop, false);
+        for (Shop shop : shopUtils.getShops()) {
+            shopUtils.removeShop(shop, false);
         }
 
         for (World world : Bukkit.getWorlds()) {
@@ -301,8 +304,15 @@ public class ShopChest extends JavaPlugin {
      * Initializes the shops
      */
     private void initializeShops() {
-        int count = ShopUtils.reloadShops(false);
+        int count = shopUtils.reloadShops(false);
         getLogger().info("Initialized " + String.valueOf(count) + " Shops");
+    }
+
+    /**
+     * @return ShopChest's {@link ShopUtils} containing some important methods
+     */
+    public ShopUtils getShopUtils() {
+        return shopUtils;
     }
 
     /**

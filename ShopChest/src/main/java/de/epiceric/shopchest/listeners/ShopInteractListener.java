@@ -47,12 +47,14 @@ public class ShopInteractListener implements Listener {
     private Permission perm;
     private Economy econ;
     private Database database;
+    private ShopUtils shopUtils;
 
     public ShopInteractListener(ShopChest plugin) {
         this.plugin = plugin;
         this.perm = plugin.getPermission();
         this.econ = plugin.getEconomy();
         this.database = plugin.getShopDatabase();
+        this.shopUtils = plugin.getShopUtils();
     }
 
     @EventHandler
@@ -95,7 +97,7 @@ public class ShopInteractListener implements Listener {
                                 }
 
 
-                                if (!ShopUtils.isShop(b.getLocation())) {
+                                if (!shopUtils.isShop(b.getLocation())) {
                                     if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
                                         ClickType clickType = ClickType.getPlayerClickType(p);
                                         ItemStack product = clickType.getProduct();
@@ -117,9 +119,9 @@ public class ShopInteractListener implements Listener {
                             case INFO:
                                 e.setCancelled(true);
 
-                                if (ShopUtils.isShop(b.getLocation())) {
+                                if (shopUtils.isShop(b.getLocation())) {
 
-                                    Shop shop = ShopUtils.getShop(b.getLocation());
+                                    Shop shop = shopUtils.getShop(b.getLocation());
                                     info(p, shop);
 
                                 } else {
@@ -132,9 +134,9 @@ public class ShopInteractListener implements Listener {
                             case REMOVE:
                                 e.setCancelled(true);
 
-                                if (ShopUtils.isShop(b.getLocation())) {
+                                if (shopUtils.isShop(b.getLocation())) {
 
-                                    Shop shop = ShopUtils.getShop(b.getLocation());
+                                    Shop shop = shopUtils.getShop(b.getLocation());
 
                                     if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || perm.has(p, "shopchest.removeOther")) {
                                         remove(p, shop);
@@ -153,9 +155,9 @@ public class ShopInteractListener implements Listener {
 
                     } else {
 
-                        if (ShopUtils.isShop(b.getLocation())) {
+                        if (shopUtils.isShop(b.getLocation())) {
                             e.setCancelled(true);
-                            Shop shop = ShopUtils.getShop(b.getLocation());
+                            Shop shop = shopUtils.getShop(b.getLocation());
 
                             if (p.isSneaking()) {
                                 if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
@@ -199,9 +201,9 @@ public class ShopInteractListener implements Listener {
 
                 } else if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 
-                    if (ShopUtils.isShop(b.getLocation())) {
+                    if (shopUtils.isShop(b.getLocation())) {
                         e.setCancelled(true);
-                        Shop shop = ShopUtils.getShop(b.getLocation());
+                        Shop shop = shopUtils.getShop(b.getLocation());
 
                         if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
                             if (shop.getSellPrice() > 0) {
@@ -265,7 +267,7 @@ public class ShopInteractListener implements Listener {
 
         Shop shop = new Shop(id, plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
-        ShopUtils.addShop(shop, true);
+        shopUtils.addShop(shop, true);
         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED));
 
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -284,7 +286,7 @@ public class ShopInteractListener implements Listener {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
 
-        ShopUtils.removeShop(shop, true);
+        shopUtils.removeShop(shop, true);
         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
     }
 

@@ -22,8 +22,12 @@ import java.util.UUID;
 
 public class ShopUtils {
 
-    private static HashMap<Location, Shop> shopLocation = new HashMap<>();
-    private static ShopChest plugin = ShopChest.getInstance();
+    private HashMap<Location, Shop> shopLocation = new HashMap<>();
+    private ShopChest plugin;
+
+    public ShopUtils(ShopChest plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Get the shop at a given location
@@ -31,7 +35,7 @@ public class ShopUtils {
      * @param location Location of the shop
      * @return Shop at the given location or <b>null</b> if no shop is found there
      */
-    public static Shop getShop(Location location) {
+    public Shop getShop(Location location) {
         Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 
         return shopLocation.get(newLocation);
@@ -42,7 +46,7 @@ public class ShopUtils {
      * @param location Location to check
      * @return Whether there is a shop at the given location
      */
-    public static boolean isShop(Location location) {
+    public boolean isShop(Location location) {
         Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
         return shopLocation.containsKey(newLocation);
     }
@@ -51,7 +55,7 @@ public class ShopUtils {
      * Get all Shops
      * @return Array of all Shops
      */
-    public static Shop[] getShops() {
+    public Shop[] getShops() {
         ArrayList<Shop> shops = new ArrayList<>();
 
         for (Shop shop : shopLocation.values()) {
@@ -66,7 +70,7 @@ public class ShopUtils {
      * @param shop Shop to add
      * @param addToDatabase Whether the shop should also be added to the database
      */
-    public static void addShop(Shop shop, boolean addToDatabase) {
+    public void addShop(Shop shop, boolean addToDatabase) {
         InventoryHolder ih = shop.getChest().getInventory().getHolder();
 
         if (ih instanceof DoubleChest) {
@@ -90,7 +94,7 @@ public class ShopUtils {
      * @param shop Shop to remove
      * @param removeFromDatabase Whether the shop should also be removed from the database
      */
-    public static void removeShop(Shop shop, boolean removeFromDatabase) {
+    public void removeShop(Shop shop, boolean removeFromDatabase) {
             InventoryHolder ih = shop.getChest().getInventory().getHolder();
 
             if (ih instanceof DoubleChest) {
@@ -116,7 +120,7 @@ public class ShopUtils {
      * @param p Player, whose shop limits should be returned
      * @return The shop limits of the given player
      */
-    public static int getShopLimit(Player p) {
+    public int getShopLimit(Player p) {
         int limit = plugin.getShopChestConfig().default_limit;
 
         if (plugin.getPermission().hasGroupSupport()) {
@@ -174,10 +178,10 @@ public class ShopUtils {
      * @param p Player, whose shops should be counted
      * @return The amount of a shops a player has (if {@link Config#exclude_admin_shops} is true, admin shops won't be counted)
      */
-    public static int getShopAmount(OfflinePlayer p) {
+    public int getShopAmount(OfflinePlayer p) {
         float shopCount = 0;
 
-        for (Shop shop : ShopUtils.getShops()) {
+        for (Shop shop : getShops()) {
             if (shop.getVendor().equals(p)) {
                 if (shop.getShopType() != Shop.ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
                     shopCount++;
@@ -193,13 +197,14 @@ public class ShopUtils {
 
     /**
      * Reload the shops
+     * @param reloadConfig Whether the configuration should also be reloaded
      * @return Amount of shops, which were reloaded
      */
-    public static int reloadShops(boolean reloadConfig) {
+    public int reloadShops(boolean reloadConfig) {
         if (reloadConfig) plugin.getShopChestConfig().reload(false, true);
 
-        for (Shop shop : ShopUtils.getShops()) {
-            ShopUtils.removeShop(shop, false);
+        for (Shop shop : getShops()) {
+            removeShop(shop, false);
         }
 
         for (World world : Bukkit.getWorlds()) {
@@ -218,7 +223,7 @@ public class ShopUtils {
 
             try {
                 Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP, plugin.getShopChestConfig().database_reconnect_attempts);
-                ShopUtils.addShop(shop, false);
+                addShop(shop, false);
             } catch (NullPointerException e) {
                 continue;
             }

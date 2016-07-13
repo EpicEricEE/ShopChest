@@ -54,7 +54,7 @@ public class Shop {
         } else {
             try {
                 if (plugin.getShopChestConfig().remove_shop_on_error)
-                    ShopUtils.removeShop(this, true);
+                    plugin.getShopUtils().removeShop(this, true);
 
                 throw new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
             } catch (Exception ex) {

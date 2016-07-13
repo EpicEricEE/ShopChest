@@ -34,11 +34,13 @@ public class Commands extends BukkitCommand {
 
     private ShopChest plugin;
     private Permission perm;
+    private ShopUtils shopUtils;
 
     public Commands(ShopChest plugin, String name, String description, String usageMessage, List<String> aliases) {
         super(name, description, usageMessage, aliases);
         this.plugin = plugin;
         this.perm = plugin.getPermission();
+        this.shopUtils = plugin.getShopUtils();
     }
 
     /**
@@ -118,8 +120,8 @@ public class Commands extends BukkitCommand {
                 } else if (args[0].equalsIgnoreCase("limits")) {
                     if (perm.has(p, "shopchest.limits")) {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS,
-                                new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(ShopUtils.getShopLimit(p))),
-                                new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(ShopUtils.getShopAmount(p)))));
+                                new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(shopUtils.getShopLimit(p))),
+                                new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
 
                         return true;
                     } else {
@@ -232,7 +234,7 @@ public class Commands extends BukkitCommand {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
 
-        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(ShopUtils.reloadShops(true)))));
+        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.reloadShops(true)))));
     }
 
     /**
@@ -245,10 +247,10 @@ public class Commands extends BukkitCommand {
         int amount;
         double buyPrice, sellPrice;
 
-        int limit = ShopUtils.getShopLimit(p);
+        int limit = shopUtils.getShopLimit(p);
 
         if (limit != -1) {
-            if (ShopUtils.getShopAmount(p) >= limit) {
+            if (shopUtils.getShopAmount(p) >= limit) {
                 if (shopType != ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(limit))));
                     return;

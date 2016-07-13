@@ -186,7 +186,7 @@ public abstract class Database {
 
                     switch (shopInfo) {
                         case SHOP:
-                            Shop shop = ShopUtils.getShop((Location) get(id, ShopInfo.LOCATION, attempts));
+                            Shop shop = plugin.getShopUtils().getShop((Location) get(id, ShopInfo.LOCATION, attempts));
                             if (shop != null)
                                 return shop;
                             else {

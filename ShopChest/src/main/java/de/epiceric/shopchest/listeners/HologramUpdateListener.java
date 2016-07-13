@@ -23,7 +23,7 @@ public class HologramUpdateListener implements Listener {
         Player p = e.getPlayer();
         Location playerLocation = p.getLocation();
 
-        for (Shop shop : ShopUtils.getShops()) {
+        for (Shop shop : plugin.getShopUtils().getShops()) {
 
             if (shop.getHologram() != null) {
 

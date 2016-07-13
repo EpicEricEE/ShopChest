@@ -26,14 +26,16 @@ import java.util.ArrayList;
 public class ChestProtectListener implements Listener {
 
     private ShopChest plugin;
+    private ShopUtils shopUtils;
 
     public ChestProtectListener(ShopChest plugin) {
         this.plugin = plugin;
+        this.shopUtils = plugin.getShopUtils();
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-        if (ShopUtils.isShop(e.getBlock().getLocation())) {
+        if (shopUtils.isShop(e.getBlock().getLocation())) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_BREAK_SHOP));
         }
@@ -45,7 +47,7 @@ public class ChestProtectListener implements Listener {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
             for (Block b : bl) {
                 if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-                    if (ShopUtils.isShop(b.getLocation())) e.blockList().remove(b);
+                    if (shopUtils.isShop(b.getLocation())) e.blockList().remove(b);
                 }
             }
         }
@@ -57,7 +59,7 @@ public class ChestProtectListener implements Listener {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
             for (Block b : bl) {
                 if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-                    if (ShopUtils.isShop(b.getLocation())) e.blockList().remove(b);
+                    if (shopUtils.isShop(b.getLocation())) e.blockList().remove(b);
                 }
             }
         }
@@ -76,22 +78,22 @@ public class ChestProtectListener implements Listener {
                 Chest r = (Chest) dc.getRightSide();
                 Chest l = (Chest) dc.getLeftSide();
 
-                if (ShopUtils.isShop(r.getLocation()) || ShopUtils.isShop(l.getLocation())) {
+                if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) {
                     if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
                         Shop shop;
 
                         if (b.getLocation().equals(r.getLocation())) {
-                            shop = ShopUtils.getShop(l.getLocation());
+                            shop = shopUtils.getShop(l.getLocation());
                         } else if (b.getLocation().equals(l.getLocation())) {
-                            shop = ShopUtils.getShop(r.getLocation());
+                            shop = shopUtils.getShop(r.getLocation());
                         } else {
                             return;
                         }
 
-                        ShopUtils.removeShop(shop, true);
+                        shopUtils.removeShop(shop, true);
 
                         Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-                        ShopUtils.addShop(newShop, true);
+                        shopUtils.addShop(newShop, true);
                     } else {
                         e.setCancelled(true);
                         e.getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
@@ -113,12 +115,12 @@ public class ChestProtectListener implements Listener {
                     Chest r = (Chest) dc.getRightSide();
                     Chest l = (Chest) dc.getLeftSide();
 
-                    if (ShopUtils.isShop(r.getLocation()) || ShopUtils.isShop(l.getLocation())) e.setCancelled(true);
+                    if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) e.setCancelled(true);
 
                 } else if (e.getSource().getHolder() instanceof Chest) {
                     Chest c = (Chest) e.getSource().getHolder();
 
-                    if (ShopUtils.isShop(c.getLocation())) e.setCancelled(true);
+                    if (shopUtils.isShop(c.getLocation())) e.setCancelled(true);
                 }
 
             }
