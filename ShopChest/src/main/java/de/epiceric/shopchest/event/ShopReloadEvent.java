@@ -19,7 +19,7 @@ public class ShopReloadEvent extends Event implements Cancellable {
     }
 
     /**
-     * @return Player who is involved in this event
+     * @return Sender, who caused the reload ({@link org.bukkit.entity.Player} or {@link org.bukkit.command.ConsoleCommandSender})
      */
     public CommandSender getSender() {
         return sender;
