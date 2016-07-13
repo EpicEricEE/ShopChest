@@ -199,7 +199,7 @@ public class ShopChest extends JavaPlugin {
                     ShopReloadEvent event = new ShopReloadEvent(Bukkit.getConsoleSender());
                     Bukkit.getServer().getPluginManager().callEvent(event);
 
-                    if (!event.isCancelled()) getLogger().info(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.reloadShops(true)))));
+                    if (!event.isCancelled()) getLogger().info("Successfully reloaded " + String.valueOf(shopUtils.reloadShops(true)) + " shops.");
                 }
             }, config.auto_reload_time * 20, config.auto_reload_time * 20);
         }
