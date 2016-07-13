@@ -195,8 +195,8 @@ public class ShopUtils {
      * Reload the shops
      * @return Amount of shops, which were reloaded
      */
-    public static int reloadShops() {
-        plugin.getShopChestConfig().reload(false, true);
+    public static int reloadShops(boolean reloadConfig) {
+        if (reloadConfig) plugin.getShopChestConfig().reload(false, true);
 
         for (Shop shop : ShopUtils.getShops()) {
             ShopUtils.removeShop(shop, false);

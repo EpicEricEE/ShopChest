@@ -232,7 +232,7 @@ public class Commands extends BukkitCommand {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
 
-        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(ShopUtils.reloadShops()))));
+        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(ShopUtils.reloadShops(true)))));
     }
 
     /**

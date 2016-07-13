@@ -2,6 +2,7 @@ package de.epiceric.shopchest;
 
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.event.ShopReloadEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.listeners.*;
@@ -26,6 +27,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -187,6 +189,18 @@ public class ShopChest extends JavaPlugin {
             database = new MySQL(this);
         }
 
+        if (config.auto_reload_time > 0) {
+           Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+                @Override
+                public void run() {
+                    ShopReloadEvent event = new ShopReloadEvent(Bukkit.getConsoleSender());
+                    Bukkit.getServer().getPluginManager().callEvent(event);
+
+                    if (!event.isCancelled()) getLogger().info(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(ShopUtils.reloadShops(true)))));
+                }
+            }, config.auto_reload_time * 20, config.auto_reload_time * 20);
+        }
+
         lockette = getServer().getPluginManager().getPlugin("Lockette") != null;
         lwc = getServer().getPluginManager().getPlugin("LWC") != null;
 
@@ -287,7 +301,7 @@ public class ShopChest extends JavaPlugin {
      * Initializes the shops
      */
     private void initializeShops() {
-        int count = ShopUtils.reloadShops();
+        int count = ShopUtils.reloadShops(false);
         getLogger().info("Initialized " + String.valueOf(count) + " Shops");
     }
 
@@ -381,7 +395,7 @@ public class ShopChest extends JavaPlugin {
     /**
      * Provides a reader for a text file located inside the jar.
      * The returned reader will read text with the UTF-8 charset.
-     * @param file - the filename of the resource to load
+     * @param file the filename of the resource to load
      * @return null if getResource(String) returns null
      * @throws IllegalArgumentException - if file is null
      */

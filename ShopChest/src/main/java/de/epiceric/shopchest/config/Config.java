@@ -105,6 +105,9 @@ public class Config {
     /** The default shop limit for players and groups that are not listed in {@link #shopLimits_player} or in {@link #shopLimits_group} **/
     public int default_limit;
 
+    /** The time between automatic shop reloads (if set to 0, the timer will be disabled) **/
+    public int auto_reload_time;
+
     /** The main command of ShopChest <i>(default: shop)</i> **/
     public String main_command_name;
 
@@ -272,6 +275,7 @@ public class Config {
         shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
         shop_creation_price_admin = plugin.getConfig().getDouble("shop-creation-price.admin");
         default_limit = plugin.getConfig().getInt("shop-limits.default");
+        auto_reload_time = plugin.getConfig().getInt("auto-reload-time");
         main_command_name = plugin.getConfig().getString("main-command-name");
         language_file = plugin.getConfig().getString("language-file");
 
