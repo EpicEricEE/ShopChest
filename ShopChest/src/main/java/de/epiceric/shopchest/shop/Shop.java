@@ -5,6 +5,7 @@ import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.IHologram;
+import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -52,6 +53,9 @@ public class Shop {
             this.chest = (Chest) b.getState();
         } else {
             try {
+                if (plugin.getShopChestConfig().remove_shop_on_error)
+                    ShopUtils.removeShop(this, true);
+
                 throw new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -99,24 +103,26 @@ public class Shop {
      * <b>Call this after {@link #createHologram()}, because it depends on the hologram's location</b>
      */
     private void createItem() {
-        Item item;
-        Location itemLocation;
-        ItemStack itemStack;
-        ItemMeta itemMeta = product.getItemMeta();
-        itemMeta.setDisplayName(UUID.randomUUID().toString());
+        if (plugin.getShopChestConfig().show_shop_items) {
+            Item item;
+            Location itemLocation;
+            ItemStack itemStack;
+            ItemMeta itemMeta = product.getItemMeta();
+            itemMeta.setDisplayName(UUID.randomUUID().toString());
 
-        itemLocation = new Location(location.getWorld(), hologram.getLocation().getX(), location.getY() + 1, hologram.getLocation().getZ());
-        itemStack = new ItemStack(product);
-        itemStack.setAmount(1);
-        itemStack.setItemMeta(itemMeta);
+            itemLocation = new Location(location.getWorld(), hologram.getLocation().getX(), location.getY() + 1, hologram.getLocation().getZ());
+            itemStack = new ItemStack(product);
+            itemStack.setAmount(1);
+            itemStack.setItemMeta(itemMeta);
 
-        item = location.getWorld().dropItem(itemLocation, itemStack);
-        item.setVelocity(new Vector(0, 0, 0));
-        item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
-        item.setCustomNameVisible(false);
-        item.setPickupDelay(Integer.MAX_VALUE);
+            item = location.getWorld().dropItem(itemLocation, itemStack);
+            item.setVelocity(new Vector(0, 0, 0));
+            item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
+            item.setCustomNameVisible(false);
+            item.setPickupDelay(Integer.MAX_VALUE);
 
-        this.item = item;
+            this.item = item;
+        }
     }
 
     /**
@@ -259,7 +265,7 @@ public class Shop {
     }
 
     /**
-     * @return IHologram of the shop
+     * @return Hologram of the shop
      */
     public IHologram getHologram() {
         return hologram;

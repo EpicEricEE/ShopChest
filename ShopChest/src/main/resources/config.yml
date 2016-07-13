@@ -11,6 +11,14 @@ main-command-name: "shop"
 # The value must equal to the name of one of a file in the 'lang' folder (without the '.lang' extension)
 language-file: "en_US"
 
+# Set whether the floating shop items on top of the chest should be shown
+show-shop-items: true
+
+# Set whether shops should automatically be removed from the database if an error occurred while loading
+# e.g. when no chest is found at a shop's location
+# This might be useful if you're removing shop chests with WorldEdit, resetting plots, or similar
+remove-shop-on-error: false
+
 # Set the maximal distance to the shop where the player can see the hologram.
 # Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
 maximal-distance: 1.75

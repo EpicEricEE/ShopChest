@@ -84,6 +84,15 @@ public class Config {
     /** Whether admin shops should be excluded of the shop limits **/
     public boolean exclude_admin_shops;
 
+    /** Whether the shop items should be shown **/
+    public boolean show_shop_items;
+
+    /**
+     * <p>Whether shops should automatically be removed from the database if an error occurred while loading</p>
+     * (e.g. when no chest is found at a shop's location)
+     */
+    public boolean remove_shop_on_error;
+
     /** The maximum distance between a player and a shop to see the hologram **/
     public double maximal_distance;
 
@@ -257,6 +266,8 @@ public class Config {
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
+        show_shop_items = plugin.getConfig().getBoolean("show-shop-items");
+        remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
         maximal_distance = plugin.getConfig().getDouble("maximal-distance");
         shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
         shop_creation_price_admin = plugin.getConfig().getDouble("shop-creation-price.admin");
