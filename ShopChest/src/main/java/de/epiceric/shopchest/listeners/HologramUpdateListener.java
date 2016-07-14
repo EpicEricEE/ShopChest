@@ -28,10 +28,10 @@ public class HologramUpdateListener implements Listener {
 
             if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
                 plugin.getShopUtils().removeShop(shop, plugin.getShopChestConfig().remove_shop_on_error);
-                return;
+                continue;
             }
 
-            if (shop.getHologram() == null) return;
+            if (shop.getHologram() == null) continue;
 
             Location shopLocation = shop.getLocation();
 
