@@ -7,7 +7,7 @@
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest-Root</artifactId>
     <packaging>pom</packaging>
-    <version>1.9.0</version>
+    <version>1.9.0.1</version>
     <name>ShopChest</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
 
