@@ -2,8 +2,6 @@
 ShopChest - Spigot/Bukkit Plugin
 
 ## API
-_An official API will be available soon_
-
 To use the API, you need to add the following repository and dependency in your maven project:
 
 ```xml
