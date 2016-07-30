@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
@@ -946,16 +947,30 @@ public class LanguageUtils {
 
         if (stack.getItemMeta() instanceof PotionMeta) {
             PotionMeta meta = (PotionMeta) stack.getItemMeta();
-            PotionType potionType = meta.getBasePotionData().getType();
+            PotionType potionType;
+
+            if (Utils.getMajorVersion() < 9) {
+                potionType = Potion.fromItemStack(stack).getType();
+            } else {
+                potionType = meta.getBasePotionData().getType();
+            }
 
             for (PotionName potionName : potionNames) {
                 if (material == Material.POTION) {
-                    if (potionName.getPotionItemType() == PotionName.PotionItemType.POTION && potionName.getPotionType() == potionType) {
-                        return potionName.getLocalizedName();
-                    }
-                } else if (material == Material.SPLASH_POTION) {
-                    if (potionName.getPotionItemType() == PotionName.PotionItemType.SPLASH_POTION && potionName.getPotionType() == potionType) {
-                        return potionName.getLocalizedName();
+                    if (Utils.getMajorVersion() < 9) {
+                        if (Potion.fromItemStack(stack).isSplash()) {
+                            if (potionName.getPotionItemType() == PotionName.PotionItemType.SPLASH_POTION && potionName.getPotionType() == potionType) {
+                                return potionName.getLocalizedName();
+                            }
+                        } else {
+                            if (potionName.getPotionItemType() == PotionName.PotionItemType.POTION && potionName.getPotionType() == potionType) {
+                                return potionName.getLocalizedName();
+                            }
+                        }
+                    } else {
+                        if (potionName.getPotionItemType() == PotionName.PotionItemType.POTION && potionName.getPotionType() == potionType) {
+                            return potionName.getLocalizedName();
+                        }
                     }
                 } else {
                     if (Utils.getMajorVersion() >= 9) {
@@ -965,6 +980,10 @@ public class LanguageUtils {
                             }
                         } else if (material == Material.TIPPED_ARROW) {
                             if (potionName.getPotionItemType() == PotionName.PotionItemType.TIPPED_ARROW && potionName.getPotionType() == potionType) {
+                                return potionName.getLocalizedName();
+                            }
+                        } else if (material == Material.SPLASH_POTION) {
+                            if (potionName.getPotionItemType() == PotionName.PotionItemType.SPLASH_POTION && potionName.getPotionType() == potionType) {
                                 return potionName.getLocalizedName();
                             }
                         }
@@ -1052,12 +1071,22 @@ public class LanguageUtils {
      */
     public static String getPotionEffectName(ItemStack itemStack) {
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
+        PotionType potionType;
+        boolean upgraded;
 
-        String potionEffectString = formatDefaultString(potionMeta.getBasePotionData().getType().toString());
-        String upgradeString = potionMeta.getBasePotionData().isUpgraded() ? "II" : "";
+        if (Utils.getMajorVersion() < 9) {
+            potionType = Potion.fromItemStack(itemStack).getType();
+            upgraded = (Potion.fromItemStack(itemStack).getTier() == Potion.Tier.TWO);
+        } else {
+            potionType = potionMeta.getBasePotionData().getType();
+            upgraded = potionMeta.getBasePotionData().isUpgraded();
+        }
+
+        String potionEffectString = formatDefaultString(potionType.toString());
+        String upgradeString = upgraded ? "II" : "";
 
         for (PotionEffectName potionEffectName : potionEffectNames) {
-            if (potionEffectName.getEffect() == potionMeta.getBasePotionData().getType()) {
+            if (potionEffectName.getEffect() == potionType) {
                 potionEffectString = potionEffectName.getLocalizedName();
             }
         }

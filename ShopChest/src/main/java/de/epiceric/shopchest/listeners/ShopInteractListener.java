@@ -319,14 +319,14 @@ public class ShopInteractListener implements Listener {
         Map<Enchantment, Integer> enchantmentMap;
 
         if (Utils.getMajorVersion() >= 9) {
-            if (type == Material.TIPPED_ARROW || type == Material.LINGERING_POTION) {
+            if (type == Material.TIPPED_ARROW || type == Material.LINGERING_POTION || type == Material.SPLASH_POTION) {
                 potionEffectString = LanguageUtils.getPotionEffectName(shop.getProduct());
                 if (potionEffectString == null)
                     potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
             }
         }
 
-        if (type == Material.POTION || type == Material.SPLASH_POTION) {
+        if (type == Material.POTION) {
             potionEffectString = LanguageUtils.getPotionEffectName(shop.getProduct());
             if (potionEffectString == null)
                 potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
