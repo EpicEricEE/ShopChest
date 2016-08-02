@@ -14,6 +14,9 @@ language-file: "en_US"
 # Set whether the floating shop items on top of the chest should be shown
 show-shop-items: true
 
+# Set whether players should be allowed to sell/buy broken items
+allow-broken-items: false
+
 # Set whether shops should automatically be removed from the database if an error occurred while loading
 # e.g. when no chest is found at a shop's location
 # This might be useful if you're removing shop chests with WorldEdit, resetting plots, or similar
@@ -68,10 +71,6 @@ database:
   # Select the type of database which should be used
   # Either use 'SQLite' or 'MySQL'. Otherwise you will break the plugin!
   type: "SQLite"
-
-  # Set the amount of attempts, ShopChest tries to reconnect to the database,
-  # when the connection is lost, until giving up.
-  reconnect-attemps: 5
 
   # If the specified type is 'MySQL', here you configure the...
   # (You can leave this empty if you're using SQLite)

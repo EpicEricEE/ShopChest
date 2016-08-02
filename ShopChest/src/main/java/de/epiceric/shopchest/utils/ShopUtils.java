@@ -82,7 +82,7 @@ public class ShopUtils {
         }
 
         if (addToDatabase)
-            plugin.getShopDatabase().addShop(shop, plugin.getShopChestConfig().database_reconnect_attempts);
+            plugin.getShopDatabase().addShop(shop);
 
     }
 
@@ -109,7 +109,7 @@ public class ShopUtils {
         shop.removeHologram();
 
         if (removeFromDatabase)
-            plugin.getShopDatabase().removeShop(shop, plugin.getShopChestConfig().database_reconnect_attempts);
+            plugin.getShopDatabase().removeShop(shop);
     }
 
     /**
@@ -218,10 +218,10 @@ public class ShopUtils {
         }
 
         int count = 0;
-        for (int id = 1; id < plugin.getShopDatabase().getHighestID(plugin.getShopChestConfig().database_reconnect_attempts) + 1; id++) {
+        for (int id = 1; id < plugin.getShopDatabase().getHighestID() + 1; id++) {
 
             try {
-                Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP, plugin.getShopChestConfig().database_reconnect_attempts);
+                Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP);
                 addShop(shop, false);
             } catch (Exception e) {
                 continue;

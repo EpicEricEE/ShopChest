@@ -336,7 +336,7 @@ public class Commands extends BukkitCommand {
         itemStack.setItemMeta(p.getItemInHand().getItemMeta());
 
         if (Enchantment.DURABILITY.canEnchantItem(itemStack)) {
-            if (itemStack.getDurability() > 0) {
+            if (itemStack.getDurability() > 0 && !plugin.getShopChestConfig().allow_broken_items) {
                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM));
                 return;
             }

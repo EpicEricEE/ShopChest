@@ -19,12 +19,8 @@ public abstract class Database {
     public ShopChest plugin;
     public Connection connection;
 
-    private int attempts;
-
     public Database(ShopChest plugin) {
         this.plugin = plugin;
-        this.attempts = plugin.getShopChestConfig().database_reconnect_attempts;
-
         initialize();
     }
 
@@ -69,23 +65,14 @@ public abstract class Database {
     }
 
     /**
-     * @param reconnectAttempts Attempts to reconnect to the database if not connected
      * @return Lowest possible ID which is not used (> 0)
      */
-    public int getNextFreeID(int reconnectAttempts) {
-        if (!isConnected()) {
-            if (reconnectAttempts > 0) {
-                connection = getConnection();
-                plugin.getLogger().info("Reconnecting to database (" + reconnectAttempts + ") ...");
-                return getNextFreeID(reconnectAttempts - 1);
-            } else return 0;
-        }
-
-        for (int i = 1; i < getHighestID(attempts) + 1; i++) {
-            if (get(i, ShopInfo.X, attempts) == null) {
+    public int getNextFreeID() {
+        for (int i = 1; i < getHighestID() + 1; i++) {
+            if (get(i, ShopInfo.X) == null) {
                 return i;
             } else {
-                if (i == getHighestID(attempts)) {
+                if (i == getHighestID()) {
                     return i + 1;
                 }
             }
@@ -97,15 +84,7 @@ public abstract class Database {
     /**
      * @return Highest ID which is used
      */
-    public int getHighestID(int reconnectAttempts) {
-        if (!isConnected()) {
-            if (reconnectAttempts > 0) {
-                connection = getConnection();
-                plugin.getLogger().info("Reconnecting to database (" + reconnectAttempts + ") ...");
-                return getHighestID(reconnectAttempts - 1);
-            } else return 0;
-        }
-
+    public int getHighestID() {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -137,16 +116,7 @@ public abstract class Database {
      *
      * @param shop Shop to remove
      */
-    public void removeShop(Shop shop, int reconnectAttempts) {
-        if (!isConnected()) {
-            if (reconnectAttempts > 0) {
-                connection = getConnection();
-                plugin.getLogger().info("Reconnecting to database (" + reconnectAttempts + ") ...");
-                removeShop(shop, reconnectAttempts - 1);
-                return;
-            } else return;
-        }
-
+    public void removeShop(Shop shop) {
         PreparedStatement ps = null;
 
         try {
@@ -165,15 +135,7 @@ public abstract class Database {
      * @param shopInfo What to get
      * @return Value you wanted to get. This needs to be casted to the right type!
      */
-    public Object get(int id, ShopInfo shopInfo, int reconnectAttempts) {
-        if (!isConnected()) {
-            if (reconnectAttempts > 0) {
-                connection = getConnection();
-                plugin.getLogger().info("Reconnecting to database (" + reconnectAttempts + ") ...");
-                return get(id, shopInfo, reconnectAttempts - 1);
-            } else return null;
-        }
-
+    public Object get(int id, ShopInfo shopInfo) {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -186,17 +148,17 @@ public abstract class Database {
 
                     switch (shopInfo) {
                         case SHOP:
-                            Shop shop = plugin.getShopUtils().getShop((Location) get(id, ShopInfo.LOCATION, attempts));
+                            Shop shop = plugin.getShopUtils().getShop((Location) get(id, ShopInfo.LOCATION));
                             if (shop != null)
                                 return shop;
                             else {
                                 return new Shop(id, plugin,
-                                        (OfflinePlayer) get(id, ShopInfo.VENDOR, attempts),
-                                        (ItemStack) get(id, ShopInfo.PRODUCT, attempts),
-                                        (Location) get(id, ShopInfo.LOCATION, attempts),
-                                        (double) get(id, ShopInfo.BUYPRICE, attempts),
-                                        (double) get(id, ShopInfo.SELLPRICE, attempts),
-                                        (ShopType) get(id, ShopInfo.SHOPTYPE, attempts));
+                                        (OfflinePlayer) get(id, ShopInfo.VENDOR),
+                                        (ItemStack) get(id, ShopInfo.PRODUCT),
+                                        (Location) get(id, ShopInfo.LOCATION),
+                                        (double) get(id, ShopInfo.BUYPRICE),
+                                        (double) get(id, ShopInfo.SELLPRICE),
+                                        (ShopType) get(id, ShopInfo.SHOPTYPE));
                             }
                         case VENDOR:
                             return Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
@@ -211,7 +173,7 @@ public abstract class Database {
                         case Z:
                             return rs.getInt("z");
                         case LOCATION:
-                            return new Location((World) get(id, ShopInfo.WORLD, attempts), (int) get(id, ShopInfo.X, attempts), (int) get(id, ShopInfo.Y, attempts), (int) get(id, ShopInfo.Z, attempts));
+                            return new Location((World) get(id, ShopInfo.WORLD), (int) get(id, ShopInfo.X), (int) get(id, ShopInfo.Y), (int) get(id, ShopInfo.Z));
                         case BUYPRICE:
                             return rs.getDouble("buyprice");
                         case SELLPRICE:
@@ -222,14 +184,14 @@ public abstract class Database {
                             if (shoptype.equals("INFINITE")) {
 
                                 Shop newShop = new Shop(id, plugin,
-                                        (OfflinePlayer) get(id, ShopInfo.VENDOR, attempts),
-                                        (ItemStack) get(id, ShopInfo.PRODUCT, attempts),
-                                        (Location) get(id, ShopInfo.LOCATION, attempts),
-                                        (double) get(id, ShopInfo.BUYPRICE, attempts),
-                                        (double) get(id, ShopInfo.SELLPRICE, attempts),
+                                        (OfflinePlayer) get(id, ShopInfo.VENDOR),
+                                        (ItemStack) get(id, ShopInfo.PRODUCT),
+                                        (Location) get(id, ShopInfo.LOCATION),
+                                        (double) get(id, ShopInfo.BUYPRICE),
+                                        (double) get(id, ShopInfo.SELLPRICE),
                                         ShopType.ADMIN);
 
-                                addShop(newShop, attempts);
+                                addShop(newShop);
 
                                 return ShopType.ADMIN;
                             }
@@ -251,16 +213,7 @@ public abstract class Database {
      * Adds a shop to the database
      * @param shop Shop to add
      */
-    public void addShop(Shop shop, int reconnectAttempts) {
-        if (!isConnected()) {
-            if (reconnectAttempts > 0) {
-                connection = getConnection();
-                plugin.getLogger().info("Reconnecting to database (" + reconnectAttempts + ") ...");
-                addShop(shop, reconnectAttempts - 1);
-                return;
-            } else return;
-        }
-
+    public void addShop(Shop shop) {
         PreparedStatement ps = null;
 
         try {

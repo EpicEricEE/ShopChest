@@ -41,11 +41,6 @@ public class Config {
     public Database.DatabaseType database_type;
 
     /**
-     * The amount of attempts, ShopChest tries to reconnect to the database, when the connection is lost, until giving up
-     **/
-    public int database_reconnect_attempts;
-
-    /**
      * <p>The minimum prices for certain items</p>
      * This returns a key set, which contains e.g "STONE", "STONE:1", of the <i>minimum-prices</i> section in ShopChest's config.
      * To actually retrieve the price for an item, you have to get the Double <i>minimum-prices.<b>key</b></i>.
@@ -86,6 +81,9 @@ public class Config {
 
     /** Whether the shop items should be shown **/
     public boolean show_shop_items;
+
+    /** Whether players are allowed to sell/buy broken items **/
+    public boolean allow_broken_items;
 
     /**
      * <p>Whether shops should automatically be removed from the database if an error occurred while loading</p>
@@ -260,8 +258,8 @@ public class Config {
         database_mysql_username = plugin.getConfig().getString("database.mysql.username");
         database_mysql_password = plugin.getConfig().getString("database.mysql.password");
         database_type = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
-        database_reconnect_attempts = plugin.getConfig().getInt("database.reconnect-attempts");
         minimum_prices = (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);
+        allow_broken_items = (plugin.getConfig().getBoolean("allow-broken-items"));
         shopLimits_group = (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);
         shopLimits_player = (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");

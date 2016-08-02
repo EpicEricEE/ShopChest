@@ -245,7 +245,7 @@ public class ShopInteractListener implements Listener {
      * @param shopType  Type of the shop
      */
     private void create(Player executor, Location location, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
-        int id = database.getNextFreeID(plugin.getShopChestConfig().database_reconnect_attempts);
+        int id = database.getNextFreeID();
 
         if (id == 0) {
             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, "Could not connect to database")));
