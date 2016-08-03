@@ -122,8 +122,9 @@ class ShopCommand extends BukkitCommand {
                 } else if (args[0].equalsIgnoreCase("limits")) {
                     if (perm.has(p, "shopchest.limits")) {
                         plugin.debug(p.getName() + " is viewing his shop limits: " + shopUtils.getShopAmount(p) + "/" + shopUtils.getShopLimit(p));
+                        int limit = shopUtils.getShopLimit(p);
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS,
-                                new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(shopUtils.getShopLimit(p))),
+                                new LocalizedMessage.ReplacedRegex(Regex.LIMIT, (limit < 0 ? "∞" : String.valueOf(limit))),
                                 new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
 
                         return true;
