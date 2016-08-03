@@ -40,7 +40,7 @@ public class UpdateChecker {
             br.close();
 
             version = line.split("\\|")[0];
-            link = url + "download?version=" + line.split("\\|")[1];
+            link = "https://www.spigotmc.org/resources/shopchest.11431/download?version=" + line.split("\\|")[1];
 
             if (plugin.getDescription().getVersion().equals(version)) {
                 plugin.debug("No update found");
