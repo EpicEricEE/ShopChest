@@ -57,6 +57,14 @@ public abstract class Database {
 
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM shop_list");
             ResultSet rs = ps.executeQuery();
+
+            int count = 0;
+            while (rs.next()) {
+                if (rs.getString("vendor") != null) count++;
+            }
+            plugin.debug("Initialized database with " + count + " entries");
+
+
             close(ps, rs);
 
         } catch (SQLException ex) {
@@ -68,13 +76,11 @@ public abstract class Database {
      * @return Lowest possible ID which is not used (> 0)
      */
     public int getNextFreeID() {
-        for (int i = 1; i < getHighestID() + 1; i++) {
+        int highestId = getHighestID();
+        for (int i = 1; i <= highestId + 1; i++) {
             if (get(i, ShopInfo.X) == null) {
+                plugin.debug("Next free id: " + i);
                 return i;
-            } else {
-                if (i == getHighestID()) {
-                    return i + 1;
-                }
             }
         }
 
@@ -88,7 +94,7 @@ public abstract class Database {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        int highestID = 1;
+        int highestID = 0;
 
         try {
             ps = connection.prepareStatement("SELECT * FROM shop_list;");
@@ -100,6 +106,7 @@ public abstract class Database {
                 }
             }
 
+            plugin.debug("Highest used ID: " + highestID);
             return highestID;
 
         } catch (SQLException ex) {
@@ -121,6 +128,7 @@ public abstract class Database {
 
         try {
             ps = connection.prepareStatement("DELETE FROM shop_list WHERE id = " + shop.getID() + ";");
+            plugin.debug("Removing shop from database (#" + shop.getID() + ")");
             ps.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -148,10 +156,14 @@ public abstract class Database {
 
                     switch (shopInfo) {
                         case SHOP:
+                            plugin.debug("Getting Shop... (#" + id + ")");
+
                             Shop shop = plugin.getShopUtils().getShop((Location) get(id, ShopInfo.LOCATION));
-                            if (shop != null)
+                            if (shop != null) {
+                                plugin.debug("Shop already exists, returning existing one (#" + id + ").");
                                 return shop;
-                            else {
+                            } else {
+                                plugin.debug("Creating new shop... (#" + id + ")");
                                 return new Shop(id, plugin,
                                         (OfflinePlayer) get(id, ShopInfo.VENDOR),
                                         (ItemStack) get(id, ShopInfo.PRODUCT),
@@ -161,24 +173,43 @@ public abstract class Database {
                                         (ShopType) get(id, ShopInfo.SHOPTYPE));
                             }
                         case VENDOR:
-                            return Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
+                            String vendor = rs.getString("vendor");
+                            plugin.debug("Getting vendor: " + vendor + " (#" + id + ")");
+                            return Bukkit.getOfflinePlayer(UUID.fromString(vendor));
                         case PRODUCT:
-                            return Utils.decode(rs.getString("product"));
+                            String product = rs.getString("product");
+                            plugin.debug("Getting product: " + product + " (#" + id + ")");
+                            return Utils.decode(product);
                         case WORLD:
-                            return Bukkit.getWorld(rs.getString("world"));
+                            String world = rs.getString("world");
+                            plugin.debug("Getting world: " + world + " (#" + id + ")");
+                            return Bukkit.getWorld(world);
                         case X:
-                            return rs.getInt("x");
+                            int x = rs.getInt("x");
+                            plugin.debug("Getting x: " + x + " (#" + id + ")");
+                            return x;
                         case Y:
-                            return rs.getInt("y");
+                            int y = rs.getInt("y");
+                            plugin.debug("Getting y: " + y + " (#" + id + ")");
+                            return y;
                         case Z:
-                            return rs.getInt("z");
+                            int z = rs.getInt("z");
+                            plugin.debug("Getting z: " + z + " (#" + id + ")");
+                            return z;
                         case LOCATION:
+                            plugin.debug("Getting location... (#" + id + ")");
                             return new Location((World) get(id, ShopInfo.WORLD), (int) get(id, ShopInfo.X), (int) get(id, ShopInfo.Y), (int) get(id, ShopInfo.Z));
                         case BUYPRICE:
-                            return rs.getDouble("buyprice");
+                            double buyprice = rs.getDouble("buyprice");
+                            plugin.debug("Getting buyprice: " + buyprice + " (#" + id + ")");
+                            return buyprice;
                         case SELLPRICE:
-                            return rs.getDouble("sellprice");
+                            double sellprice = rs.getDouble("sellprice");
+                            plugin.debug("Getting sellprice: " + sellprice + " (#" + id + ")");
+                            return sellprice;
                         case SHOPTYPE:
+                            ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
+                            plugin.debug("Getting shoptype: " + rs.getString("shoptype") + " (#" + id + ")");
                             String shoptype = rs.getString("shoptype");
 
                             if (shoptype.equals("INFINITE")) {
@@ -199,6 +230,8 @@ public abstract class Database {
                     }
                 }
             }
+
+            plugin.debug("Shop with ID not found, returning null. (#" + id + ")");
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -230,34 +263,14 @@ public abstract class Database {
             ps.setDouble(9, shop.getSellPrice());
             ps.setString(10, shop.getShopType().toString());
 
+            plugin.debug("Adding shop to database (#" + shop.getID() + ")");
+
             ps.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
             close(ps, null);
         }
-    }
-
-    /**
-     * @return Whether ShopChest is connected to the database
-     */
-    private boolean isConnected() {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        boolean connected = false;
-
-        try {
-            ps = connection.prepareStatement("SELECT * FROM shop_list");
-            rs = ps.executeQuery();
-            connected = true;
-        } catch (SQLException e) {
-            connected = false;
-        } finally {
-            close(ps, rs);
-        }
-
-        return connected;
     }
 
     /**

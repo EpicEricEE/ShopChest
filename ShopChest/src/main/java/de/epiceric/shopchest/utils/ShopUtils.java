@@ -12,10 +12,8 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.logging.Level;
 
 public class ShopUtils {
 
@@ -69,15 +67,20 @@ public class ShopUtils {
      */
     public void addShop(Shop shop, boolean addToDatabase) {
         InventoryHolder ih = shop.getInventoryHolder();
+        plugin.debug("Adding shop... (#" + shop.getID() + ")");
 
         if (ih instanceof DoubleChest) {
             DoubleChest dc = (DoubleChest) ih;
             Chest r = (Chest) dc.getRightSide();
             Chest l = (Chest) dc.getLeftSide();
 
+            plugin.debug("Added shop as double chest. (#" + shop.getID() + ")");
+
             shopLocation.put(r.getLocation(), shop);
             shopLocation.put(l.getLocation(), shop);
         } else {
+            plugin.debug("Added shop as single chest. (#" + shop.getID() + ")");
+
             shopLocation.put(shop.getLocation(), shop);
         }
 
@@ -92,6 +95,8 @@ public class ShopUtils {
      * @param removeFromDatabase Whether the shop should also be removed from the database
      */
     public void removeShop(Shop shop, boolean removeFromDatabase) {
+        plugin.debug("Removing shop (#" + shop.getID() + ")");
+
         InventoryHolder ih = shop.getInventoryHolder();
 
         if (ih instanceof DoubleChest) {
@@ -200,10 +205,19 @@ public class ShopUtils {
      * @return Amount of shops, which were reloaded
      */
     public int reloadShops(boolean reloadConfig) {
+        plugin.debug("Reloading shops...");
+
         if (reloadConfig) plugin.getShopChestConfig().reload(false, true);
 
-        for (Shop shop : getShops()) {
-            removeShop(shop, false);
+        int highestId = plugin.getShopDatabase().getHighestID();
+
+        for (int i = 1; i <= highestId; i++) {
+            for (Shop shop : getShops()) {
+                if (shop.getID() == i) {
+                    removeShop(shop, false);
+                    plugin.debug("Removed shop (#" + shop.getID() + ")");
+                }
+            }
         }
 
         for (World world : Bukkit.getWorlds()) {
@@ -211,19 +225,41 @@ public class ShopUtils {
                 if (entity instanceof Item) {
                     Item item = (Item) entity;
                     if (item.hasMetadata("shopItem")) {
-                        item.remove();
+                        if (item.isValid()) {
+                            plugin.debug("Removing not removed shop item (#" +
+                                    (item.hasMetadata("shopId") ? item.getMetadata("shopId").get(0).asString() : "?") + ")");
+
+                            item.remove();
+                        }
+                    }
+                }
+            }
+        }
+
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity entity : world.getEntities()) {
+                if (entity instanceof Item) {
+                    Item item = (Item) entity;
+                    if (item.hasMetadata("shopItem")) {
+                        if (item.isValid()) {
+                            plugin.debug("Shop item still valid (#" +
+                                    (item.hasMetadata("shopId") ? item.getMetadata("shopId").get(0).asString() : "?") + ")");
+                        }
                     }
                 }
             }
         }
 
         int count = 0;
-        for (int id = 1; id < plugin.getShopDatabase().getHighestID() + 1; id++) {
+        for (int id = 1; id <= highestId; id++) {
 
             try {
+                plugin.debug("Trying to add shop. (#" + id + ")");
                 Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP);
                 addShop(shop, false);
             } catch (Exception e) {
+                plugin.debug("Error while adding shop (#" + id + "):");
+                plugin.debug(e);
                 continue;
             }
 

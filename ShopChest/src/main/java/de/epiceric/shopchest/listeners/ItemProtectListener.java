@@ -38,9 +38,7 @@ public class ItemProtectListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onItemPickup(InventoryPickupItemEvent e) {
-        if (e.getInventory().getType().equals(InventoryType.HOPPER)) {
-            if (e.getItem().hasMetadata("shopItem")) e.setCancelled(true);
-        }
+        if (e.getItem().hasMetadata("shopItem")) e.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH)

@@ -67,6 +67,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
+
         Block b = e.getBlockPlaced();
         if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
 
@@ -79,6 +80,8 @@ public class ChestProtectListener implements Listener {
                 Chest l = (Chest) dc.getLeftSide();
 
                 if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) {
+                    plugin.debug(e.getPlayer().getName() + " tried to extend a shop to a double chest");
+
                     if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
                         Shop shop;
 

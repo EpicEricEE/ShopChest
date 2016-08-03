@@ -76,6 +76,9 @@ public class Config {
     /** Whether shops should be protected by explosions **/
     public boolean explosion_protection;
 
+    /** Whether the debug log file should be created **/
+    public boolean enable_debug_log;
+
     /** Whether admin shops should be excluded of the shop limits **/
     public boolean exclude_admin_shops;
 
@@ -265,6 +268,7 @@ public class Config {
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
+        enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
         show_shop_items = plugin.getConfig().getBoolean("show-shop-items");
@@ -304,10 +308,10 @@ public class Config {
         if (!langConfigFile.exists()) {
             if (!langDefaultFile.exists()) {
                 try {
-                    Reader r = plugin.getTextResourceP("lang/" + langConfigFile.getName());
+                    Reader r = plugin._getTextResource("lang/" + langConfigFile.getName());
 
                     if (r == null) {
-                        r = plugin.getTextResourceP("lang/en_US.lang");
+                        r = plugin._getTextResource("lang/en_US.lang");
                         plugin.getLogger().info("Using locale \"en_US\" (Streamed from jar file)");
                     } else {
                         plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\" (Streamed from jar file)");

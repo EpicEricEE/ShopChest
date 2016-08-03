@@ -30,13 +30,13 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class Commands extends BukkitCommand {
+class ShopCommand extends BukkitCommand {
 
     private ShopChest plugin;
     private Permission perm;
     private ShopUtils shopUtils;
 
-    public Commands(ShopChest plugin, String name, String description, String usageMessage, List<String> aliases) {
+    ShopCommand(ShopChest plugin, String name, String description, String usageMessage, List<String> aliases) {
         super(name, description, usageMessage, aliases);
         this.plugin = plugin;
         this.perm = plugin.getPermission();
@@ -50,7 +50,9 @@ public class Commands extends BukkitCommand {
      * @param plugin  Instance of ShopChest
      * @throws ReflectiveOperationException
      */
-    public static void registerCommand(Command command, ShopChest plugin) throws ReflectiveOperationException {
+    static void registerCommand(Command command, ShopChest plugin) throws ReflectiveOperationException {
+        plugin.debug("Registering command " + command.getName());
+
         Method commandMap = plugin.getServer().getClass().getMethod("getCommandMap");
         Object cmdmap = commandMap.invoke(plugin.getServer());
         Method register = cmdmap.getClass().getMethod("register", String.class, Command.class);
@@ -119,6 +121,7 @@ public class Commands extends BukkitCommand {
                     }
                 } else if (args[0].equalsIgnoreCase("limits")) {
                     if (perm.has(p, "shopchest.limits")) {
+                        plugin.debug(p.getName() + " is viewing his shop limits: " + shopUtils.getShopAmount(p) + "/" + shopUtils.getShopLimit(p));
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS,
                                 new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(shopUtils.getShopLimit(p))),
                                 new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
@@ -130,6 +133,8 @@ public class Commands extends BukkitCommand {
                 } else if (args[0].equalsIgnoreCase("config")) {
                     if (perm.has(p, "shopchest.config")) {
                         if (args.length >= 4) {
+                            plugin.debug(p.getName() + " is changing the configuration");
+
                             String property = args[2];
                             String value = args[3];
 
@@ -177,6 +182,8 @@ public class Commands extends BukkitCommand {
      * @param player The command executor
      */
     private void checkUpdates(Player player) {
+        plugin.debug(player.getName() + " is checking for updates");
+
         player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
 
         UpdateChecker uc = new UpdateChecker(ShopChest.getInstance());
@@ -230,11 +237,18 @@ public class Commands extends BukkitCommand {
      * @param player The command executor
      */
     private void reload(Player player) {
+        plugin.debug(player.getName() + " is reloading the shops");
+
         ShopReloadEvent event = new ShopReloadEvent(player);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
+        if (event.isCancelled()){
+            plugin.debug("Reload event cancelled");
+            return;
+        }
 
-        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.reloadShops(true)))));
+        int count = shopUtils.reloadShops(true);
+        plugin.debug(player.getName() + " is reloaded " + count + " shops");
+        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(count))));
     }
 
     /**
@@ -244,6 +258,8 @@ public class Commands extends BukkitCommand {
      * @param p The command executor
      */
     private void create(String[] args, ShopType shopType, Player p) {
+        plugin.debug(p.getName() + " wants to create a shop");
+
         int amount;
         double buyPrice, sellPrice;
 
@@ -258,6 +274,8 @@ public class Commands extends BukkitCommand {
             }
         }
 
+        plugin.debug(p.getName() + " has not reached the limit");
+
         try {
             amount = Integer.parseInt(args[1]);
             buyPrice = Double.parseDouble(args[2]);
@@ -267,6 +285,8 @@ public class Commands extends BukkitCommand {
             return;
         }
 
+        plugin.debug(p.getName() + " has entered the numbers correctly");
+
         boolean buyEnabled = !(buyPrice <= 0), sellEnabled = !(sellPrice <= 0);
 
         if (!buyEnabled && !sellEnabled) {
@@ -274,10 +294,14 @@ public class Commands extends BukkitCommand {
             return;
         }
 
+        plugin.debug(p.getName() + " has enabled buying, selling or both");
+
         if (p.getItemInHand().getType().equals(Material.AIR)) {
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND));
             return;
         }
+
+        plugin.debug(p.getName() + " has an item in his hand");
 
         for (String item : plugin.getShopChestConfig().blacklist) {
 
@@ -294,6 +318,8 @@ public class Commands extends BukkitCommand {
                 return;
             }
         }
+
+        plugin.debug(p.getName() + "'s item is not on the blacklist");
 
         for (String key : plugin.getShopChestConfig().minimum_prices) {
 
@@ -323,6 +349,8 @@ public class Commands extends BukkitCommand {
             }
         }
 
+        plugin.debug(p.getName() + "'s prices are higher than the minimum");
+
         if (sellEnabled && buyEnabled) {
             if (plugin.getShopChestConfig().buy_greater_or_equal_sell) {
                 if (buyPrice < sellPrice) {
@@ -331,6 +359,8 @@ public class Commands extends BukkitCommand {
                 }
             }
         }
+
+        plugin.debug(p.getName() + "'s buy price is high enough");
 
         ItemStack itemStack = new ItemStack(p.getItemInHand().getType(), amount, p.getItemInHand().getDurability());
         itemStack.setItemMeta(p.getItemInHand().getItemMeta());
@@ -342,6 +372,8 @@ public class Commands extends BukkitCommand {
             }
         }
 
+        plugin.debug(p.getName() + "'s item is not broken (or broken items are allowed through config)");
+
         double creationPrice = (shopType == ShopType.NORMAL) ? plugin.getShopChestConfig().shop_creation_price_normal : plugin.getShopChestConfig().shop_creation_price_admin;
         if (creationPrice > 0) {
             if (plugin.getEconomy().getBalance(p) < creationPrice) {
@@ -350,12 +382,17 @@ public class Commands extends BukkitCommand {
             }
         }
 
-        ShopPreCreateEvent event = new ShopPreCreateEvent(p, Shop.createImaginaryShop(p, itemStack, buyPrice, sellPrice, shopType));
+        plugin.debug(p.getName() + " can pay the creation price");
+
+        ShopPreCreateEvent event = new ShopPreCreateEvent(p, Shop.createImaginaryShop(p, itemStack, null, buyPrice, sellPrice, shopType));
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
             ClickType.setPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));
+            plugin.debug(p.getName() + " can now click a chest");
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
+        } else {
+            plugin.debug("Shop pre create event cancelled");
         }
     }
 
@@ -364,10 +401,16 @@ public class Commands extends BukkitCommand {
      * @param p The command executor
      */
     private void remove(Player p) {
+        plugin.debug(p.getName() + " wants to remove a shop");
+
         ShopPreRemoveEvent event = new ShopPreRemoveEvent(p);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            plugin.debug("Shop pre remove event cancelled");
+            return;
+        }
 
+        plugin.debug(p.getName() + " can now click a chest");
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE));
         ClickType.setPlayerClickType(p, new ClickType(EnumClickType.REMOVE));
     }
@@ -377,10 +420,16 @@ public class Commands extends BukkitCommand {
      * @param p The command executor
      */
     private void info(Player p) {
+        plugin.debug(p.getName() + " wants to retrieve information");
+
         ShopPreInfoEvent event = new ShopPreInfoEvent(p);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            plugin.debug("Shop pre info event cancelled");
+            return;
+        }
 
+        plugin.debug(p.getName() + " can now click a chest");
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_INFO));
         ClickType.setPlayerClickType(p, new ClickType(EnumClickType.INFO));
     }
@@ -390,6 +439,8 @@ public class Commands extends BukkitCommand {
      * @param player Player who will receive the message
      */
     private void sendBasicHelpMessage(Player player) {
+        plugin.debug("Sending basic help message to " + player.getName());
+
         player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
         player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " remove - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE));
         player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " info - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO));

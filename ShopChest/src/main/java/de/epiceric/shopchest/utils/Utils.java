@@ -51,7 +51,7 @@ public class Utils {
     }
 
     /**
-     * @return The current server version with revision number (e.g. 1_9_R2, 1_10_R1)
+     * @return The current server version with revision number (e.g. v1_9_R2, v1_10_R1)
      */
     public static String getServerVersion() {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();

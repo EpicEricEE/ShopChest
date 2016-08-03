@@ -24,6 +24,8 @@ public class UpdateChecker {
      */
     public UpdateCheckerResult check() {
         try {
+            plugin.debug("Checking for updates...");
+
             URL url = new URL("http://textuploader.com/all1l/raw");
             URLConnection conn = url.openConnection();
             conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
@@ -40,12 +42,17 @@ public class UpdateChecker {
             version = line.split("\\|")[0];
             link = url + "download?version=" + line.split("\\|")[1];
 
-            if (plugin.getDescription().getVersion().equals(version))
+            if (plugin.getDescription().getVersion().equals(version)) {
+                plugin.debug("No update found");
                 return UpdateCheckerResult.FALSE;
-            else
+            } else {
+                plugin.debug("Update found: " + version);
                 return UpdateCheckerResult.TRUE;
+            }
 
         } catch (Exception e) {
+            plugin.debug("Failed to check for updates");
+            plugin.debug(e);
             return UpdateCheckerResult.ERROR;
         }
     }

@@ -14,6 +14,10 @@ language-file: "en_US"
 # Set whether the floating shop items on top of the chest should be shown
 show-shop-items: true
 
+# Set whether a debug log file should be created.
+# The file may get large! Please enable this setting when reporting bugs.
+enable-debug-log: false
+
 # Set whether players should be allowed to sell/buy broken items
 allow-broken-items: false
 

@@ -23,15 +23,16 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ShopChest extends JavaPlugin {
 
@@ -47,6 +48,8 @@ public class ShopChest extends JavaPlugin {
     private String latestVersion = "";
     private String downloadLink = "";
     private ShopUtils shopUtils;
+    private File debugLogFile;
+    private FileWriter fw;
 
     /**
      * @return An instance of ShopChest
@@ -83,19 +86,42 @@ public class ShopChest extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            getLogger().severe("Could not find plugin 'Vault'!");
+        config = new Config(this);
+
+        if (config.enable_debug_log) {
+            debugLogFile = new File(getDataFolder(), "debug.txt");
+
+            try {
+                if (!debugLogFile.exists()) {
+                    debugLogFile.createNewFile();
+                }
+
+                new PrintWriter(debugLogFile).close();
+
+                fw = new FileWriter(debugLogFile, true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        debug("Enabling ShopChest version " + getDescription().getVersion());
+
+        if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
+            debug("Could not find plugin \"Vault\"");
+            getLogger().severe("Could not find plugin \"Vault\"");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         if (!setupEconomy()) {
+            debug("Could not find any Vault economy dependency!");
             getLogger().severe("Could not find any Vault economy dependency!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         if (!setupPermissions()) {
+            debug("Could not find any Vault permission dependency!");
             getLogger().severe("Could not find any Vault permission dependency!");
             getServer().getPluginManager().disablePlugin(this);
             return;
@@ -110,18 +136,22 @@ public class ShopChest extends JavaPlugin {
             case "v1_10_R1":
                 break;
             default:
+                debug("Incompatible Server Version: " + Utils.getServerVersion());
                 getLogger().severe("Incompatible Server Version: " + Utils.getServerVersion() + "!");
                 getServer().getPluginManager().disablePlugin(this);
                 return;
         }
 
-        config = new Config(this);
+        debug("Loading utils and extras...");
+
         LanguageUtils.load();
         saveResource("item_names.txt", true);
 
         shopUtils = new ShopUtils(this);
 
         try {
+            debug("Initializing Metrics...");
+
             Metrics metrics = new Metrics(this);
             Graph shopType = metrics.createGraph("Shop Type");
             shopType.addPlotter(new Plotter("Normal") {
@@ -181,13 +211,16 @@ public class ShopChest extends JavaPlugin {
 
             metrics.start();
         } catch (IOException e) {
+            debug("Metrics: Failed to submit stats");
             getLogger().severe("Could not submit stats.");
         }
 
         if (config.database_type == Database.DatabaseType.SQLite) {
+            debug("Using database type: SQLite");
             getLogger().info("Using SQLite");
             database = new SQLite(this);
         } else {
+            debug("Using database type: MySQL");
             getLogger().info("Using MySQL");
             database = new MySQL(this);
         }
@@ -196,6 +229,8 @@ public class ShopChest extends JavaPlugin {
            Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
                 @Override
                 public void run() {
+                    debug("Auto reloading shops...");
+
                     ShopReloadEvent event = new ShopReloadEvent(Bukkit.getConsoleSender());
                     Bukkit.getServer().getPluginManager().callEvent(event);
 
@@ -204,8 +239,8 @@ public class ShopChest extends JavaPlugin {
             }, config.auto_reload_time * 20, config.auto_reload_time * 20);
         }
 
-        lockette = getServer().getPluginManager().getPlugin("Lockette") != null;
-        lwc = getServer().getPluginManager().getPlugin("LWC") != null;
+        lockette = getServer().getPluginManager().isPluginEnabled("Lockette");
+        lwc = getServer().getPluginManager().isPluginEnabled("LWC");
 
         Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
             @Override
@@ -264,13 +299,17 @@ public class ShopChest extends JavaPlugin {
         });
 
         try {
-            Commands.registerCommand(new Commands(this, config.main_command_name, "Manage Shops.", "", new ArrayList<String>()), this);
+            debug("Trying to register command \"/" + config.main_command_name + "\"");
+            ShopCommand.registerCommand(new ShopCommand(this, config.main_command_name, "Manage Shops.", "", new ArrayList<String>()), this);
         } catch (Exception e) {
+            debug("Failed to register command");
+            debug(e);
             e.printStackTrace();
         }
 
         initializeShops();
 
+        debug("Registering listeners...");
         getServer().getPluginManager().registerEvents(new HologramUpdateListener(this), this);
         getServer().getPluginManager().registerEvents(new ItemProtectListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
@@ -278,34 +317,107 @@ public class ShopChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChestProtectListener(this), this);
         getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
 
-        if (getServer().getPluginManager().getPlugin("ClearLag") != null)
+        if (getServer().getPluginManager().isPluginEnabled("ClearLag"))
             getServer().getPluginManager().registerEvents(new ClearLagListener(), this);
 
-        if (getServer().getPluginManager().getPlugin("LWC") != null)
-            new LWCMagnetListener(this).initializeListener();
+        if (lwc) new LWCMagnetListener(this).initializeListener();
     }
 
     @Override
     public void onDisable() {
-        for (Shop shop : shopUtils.getShops()) {
-            shopUtils.removeShop(shop, false);
+        debug("Disabling ShopChest...");
+
+        int highestId = database.getHighestID();
+
+        for (int i = 1; i <= highestId; i++) {
+            for (Shop shop : shopUtils.getShops()) {
+                if (shop.getID() == i) {
+                    shopUtils.removeShop(shop, false);
+                    debug("Removed shop (#" + shop.getID() + ")");
+                }
+            }
         }
 
         for (World world : Bukkit.getWorlds()) {
-            for (Item item : world.getEntitiesByClass(Item.class)) {
-                if (item.hasMetadata("shopItem")) {
-                    item.remove();
+            for (Entity entity : world.getEntities()) {
+                if (entity instanceof Item) {
+                    Item item = (Item) entity;
+                    if (item.hasMetadata("shopItem")) {
+                        if (item.isValid()) {
+                            debug("Removing not removed shop item (#" +
+                                    (item.hasMetadata("shopId") ? item.getMetadata("shopId").get(0).asString() : "?") + ")");
+
+                            item.remove();
+                        }
+                    }
                 }
+            }
+        }
+
+        if (config.enable_debug_log) {
+            for (World world : Bukkit.getWorlds()) {
+                for (Entity entity : world.getEntities()) {
+                    if (entity instanceof Item) {
+                        Item item = (Item) entity;
+                        if (item.hasMetadata("shopItem")) {
+                            if (item.isValid()) {
+                                debug("Shop item still valid (#" +
+                                        (item.hasMetadata("shopId") ? item.getMetadata("shopId").get(0).asString() : "?") + ")");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (fw != null && config.enable_debug_log) {
+            try {
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
     /**
+     * Print a message to the <i>/plugins/ShopChest/debug.txt</i> file
+     * @param message Message to print
+     */
+    public void debug(String message) {
+        if (config.enable_debug_log) {
+            try {
+                Calendar c = Calendar.getInstance();
+                String timestamp = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(c.getTime());
+                fw.write(String.format("[%s] %s\r\n", timestamp, message));
+                fw.flush();
+            } catch (IOException e) {
+                getLogger().severe("Failed to print debug message.");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Print a {@link Throwable}'s stacktrace to the <i>/plugins/ShopChest/debug.txt</i> file
+     * @param throwable {@link Throwable} whose stacktrace will be printed
+     */
+    public void debug(Throwable throwable) {
+        if (config.enable_debug_log) {
+            PrintWriter pw = new PrintWriter(fw);
+            throwable.printStackTrace(pw);
+            pw.flush();
+        }
+    }
+
+
+    /**
      * Initializes the shops
      */
     private void initializeShops() {
+        debug("Initializing Shops...");
         int count = shopUtils.reloadShops(false);
-        getLogger().info("Initialized " + String.valueOf(count) + " Shops");
+        getLogger().info("Initialized " + count + " Shops");
+        debug("Initialized " + count + " Shops");
     }
 
     /**
@@ -403,13 +515,13 @@ public class ShopChest extends JavaPlugin {
     }
 
     /**
-     * Provides a reader for a text file located inside the jar.
+     * <p>Provides a reader for a text file located inside the jar.</p>
      * The returned reader will read text with the UTF-8 charset.
      * @param file the filename of the resource to load
-     * @return null if getResource(String) returns null
-     * @throws IllegalArgumentException - if file is null
+     * @return null if {@link #getResource(String)} returns null
+     * @throws IllegalArgumentException if file is null
      */
-    public Reader getTextResourceP(String file) throws IllegalArgumentException {
+    public Reader _getTextResource(String file) throws IllegalArgumentException {
        return getTextResource(file);
     }
 }

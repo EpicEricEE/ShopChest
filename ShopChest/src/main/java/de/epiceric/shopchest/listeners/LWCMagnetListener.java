@@ -29,10 +29,10 @@ public class LWCMagnetListener {
             });
 
         } catch (ClassNotFoundException ex) {
+            plugin.debug("Using not recommended version of LWC");
             plugin.getLogger().warning("Shop items can be sucked up by the magnet flag of a protected chest of LWC.");
             plugin.getLogger().warning("Use 'LWC Unofficial - Entity locking' v1.7.3 or later by 'Me_Goes_RAWR' to prevent this.");
         }
-        ;
     }
 
 

@@ -51,7 +51,9 @@ public class Shop {
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
             try {
                 plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
-                throw new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+                Exception e = new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+                plugin.debug(e);
+                throw e;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return;
@@ -59,7 +61,9 @@ public class Shop {
         } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
             try {
                 plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
-                throw new Exception("No space above chest at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+                Exception e = new Exception("No space above chest at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+                plugin.debug(e);
+                throw e;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return;
@@ -70,11 +74,11 @@ public class Shop {
         if (item == null || item.isDead()) createItem();
     }
 
-    private Shop(OfflinePlayer vendor, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
+    private Shop(OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
         this.id = 0;
         this.vendor = vendor;
         this.product = product;
-        this.location = null;
+        this.location = location;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.shopType = shopType;
@@ -85,6 +89,8 @@ public class Shop {
      */
     public void removeHologram() {
         if (hologram != null && hologram.exists()) {
+            plugin.debug("Removing hologram (#" + id + ")");
+
             for (Player p : Bukkit.getOnlinePlayers()) {
                 hologram.hidePlayer(p);
             }
@@ -97,8 +103,10 @@ public class Shop {
      * Removes the floating item of the shop
      */
     public void removeItem() {
-        if (item != null && !item.isDead())
+        if (item != null) {
+            plugin.debug("Removing shop item (#" + id + ")");
             item.remove();
+        }
     }
 
     /**
@@ -107,6 +115,8 @@ public class Shop {
      */
     private void createItem() {
         if (plugin.getShopChestConfig().show_shop_items) {
+            plugin.debug("Creating item (#" + id + ")");
+
             Item item;
             Location itemLocation;
             ItemStack itemStack;
@@ -121,6 +131,7 @@ public class Shop {
             item = location.getWorld().dropItem(itemLocation, itemStack);
             item.setVelocity(new Vector(0, 0, 0));
             item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
+            item.setMetadata("shopId", new FixedMetadataValue(plugin, id));
             item.setCustomNameVisible(false);
             item.setPickupDelay(Integer.MAX_VALUE);
 
@@ -132,6 +143,8 @@ public class Shop {
      * Creates the hologram of the shop
      */
     private void createHologram() {
+        plugin.debug("Creating hologram (#" + id + ")");
+
         boolean doubleChest;
 
         Chest[] chests = new Chest[2];
@@ -293,8 +306,8 @@ public class Shop {
     /**
      * @return A shop, which is not really a shop. It's just for "storing" the data (used in some events).
      */
-    public static Shop createImaginaryShop(OfflinePlayer vendor, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
-        return new Shop(vendor, product, buyPrice, sellPrice, shopType);
+    public static Shop createImaginaryShop(OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
+        return new Shop(vendor, product, location, buyPrice, sellPrice, shopType);
     }
 
     public enum ShopType {

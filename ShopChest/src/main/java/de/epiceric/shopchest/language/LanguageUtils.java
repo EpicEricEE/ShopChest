@@ -904,6 +904,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.HOLOGRAM_SELL, langConfig.getString("message.hologram.only-sell", "Sell %SELL-PRICE%"), Regex.SELL_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE, langConfig.getString("message.noPermission.create", "&cYou don't have permission to create a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_ADMIN, langConfig.getString("message.noPermission.create-admin", "&cYou don't have permission to create an admin shop.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED, langConfig.getString("message.noPermission.create-protected", "&cYou don't have permission to create a shop on a protected chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS, langConfig.getString("message.noPermission.open-others", "&cYou don't have permission to open this chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_BUY, langConfig.getString("message.noPermission.buy", "&cYou don't have permission to buy something.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_SELL, langConfig.getString("message.noPermission.sell", "&cYou don't have permission to sell something.")));
