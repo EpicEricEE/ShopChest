@@ -3,7 +3,7 @@
   <parent>
     <artifactId>ShopChest-Root</artifactId>
     <groupId>de.epiceric</groupId>
-    <version>1.9.0.1</version>
+    <version>1.9.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>ShopChest</artifactId>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>VaultAPI</artifactId>
-      <version>1.6</version>
+      <version>1.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

@@ -16,7 +16,7 @@ To use the API, you need to add the following repository and dependency in your 
   <dependency>
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest</artifactId>
-    <version>1.9.0.1</version>
+    <version>1.9.1</version>
     <scope>provided</scope>
   </dependency>
 </dependencies>
