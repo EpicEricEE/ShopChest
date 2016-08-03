@@ -1,4 +1,4 @@
-# English default language file by 'EpicEric' for version 1.9.0.1
+# English default language file by 'EpicEric' for version 1.9.1 
 
 # Set the message when a shop is created at the clicked chest.
 message.shop-created=&6Shop created.
@@ -204,6 +204,9 @@ message.noPermission.create=&cYou don't have permission to create a shop.
 
 # Set the message when a not permitted player tries to create an admin shop.
 message.noPermission.create-admin=&cYou don't have permission to create an admin shop.
+
+# Set the message when a not permitted player tries to create a shop on a protected chest.
+message.noPermission.create-protected=&cYou don't have permission to create a shop on a protected chest.
 
 # Set the message when a not permitted player tries to open another player's shop.
 message.noPermission.open-others=&cYou don't have permission to open this chest.
