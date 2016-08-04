@@ -1,7 +1,5 @@
 package de.epiceric.shopchest.listeners;
 
-import com.griefcraft.lwc.LWC;
-import com.griefcraft.model.Protection;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopBuySellEvent;
@@ -28,6 +26,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -36,7 +35,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.yi.acru.bukkit.Lockette.Lockette;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +55,47 @@ public class ShopInteractListener implements Listener {
         this.shopUtils = plugin.getShopUtils();
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerInteractCreate(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        Block b = e.getClickedBlock();
+
+        if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (ClickType.getPlayerClickType(p) != null) {
+                    if (ClickType.getPlayerClickType(p).getClickType() == ClickType.EnumClickType.CREATE) {
+                        if (!shopUtils.isShop(b.getLocation())) {
+                            if (e.isCancelled() && !perm.has(p, "shopchest.create.protected")) {
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
+                                ClickType.removePlayerClickType(p);
+                                return;
+                            }
+
+                            e.setCancelled(true);
+
+                            if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                                ClickType clickType = ClickType.getPlayerClickType(p);
+                                ItemStack product = clickType.getProduct();
+                                double buyPrice = clickType.getBuyPrice();
+                                double sellPrice = clickType.getSellPrice();
+                                ShopType shopType = clickType.getShopType();
+
+                                create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
+                            } else {
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
+                            }
+                        } else {
+                            e.setCancelled(true);
+                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP));
+                        }
+
+                        ClickType.removePlayerClickType(p);
+                    }
+                }
+            }
+        }
+    }
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         Block b = e.getClickedBlock();
@@ -71,53 +110,6 @@ public class ShopInteractListener implements Listener {
                     if (ClickType.getPlayerClickType(p) != null) {
 
                         switch (ClickType.getPlayerClickType(p).getClickType()) {
-
-                            case CREATE:
-                                e.setCancelled(true);
-
-                                if (!perm.has(p, "shopchest.create.protected")) {
-                                    if (plugin.hasLockette()) {
-                                        if (Lockette.isProtected(b)) {
-                                            if (!Lockette.isOwner(b, p) || !Lockette.isUser(b, p, true)) {
-                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
-                                                ClickType.removePlayerClickType(p);
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if (plugin.hasLWC()) {
-                                        if (LWC.getInstance().getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ()) != null) {
-                                            Protection protection = LWC.getInstance().getPhysicalDatabase().loadProtection(b.getLocation().getWorld().getName(), b.getX(), b.getY(), b.getZ());
-                                            if (!protection.isOwner(p) || !protection.isRealOwner(p)) {
-                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
-                                                ClickType.removePlayerClickType(p);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-
-
-                                if (!shopUtils.isShop(b.getLocation())) {
-                                    if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
-                                        ClickType clickType = ClickType.getPlayerClickType(p);
-                                        ItemStack product = clickType.getProduct();
-                                        double buyPrice = clickType.getBuyPrice();
-                                        double sellPrice = clickType.getSellPrice();
-                                        ShopType shopType = clickType.getShopType();
-
-                                        create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
-                                    } else {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
-                                    }
-                                } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP));
-                                }
-
-                                ClickType.removePlayerClickType(p);
-                                break;
-
                             case INFO:
                                 e.setCancelled(true);
 

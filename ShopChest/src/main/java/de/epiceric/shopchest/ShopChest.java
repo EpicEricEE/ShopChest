@@ -41,7 +41,6 @@ public class ShopChest extends JavaPlugin {
     private Config config = null;
     private Economy econ = null;
     private Permission perm = null;
-    private boolean lockette = false;
     private boolean lwc = false;
     private Database database;
     private boolean isUpdateNeeded = false;
@@ -239,7 +238,6 @@ public class ShopChest extends JavaPlugin {
             }, config.auto_reload_time * 20, config.auto_reload_time * 20);
         }
 
-        lockette = getServer().getPluginManager().isPluginEnabled("Lockette");
         lwc = getServer().getPluginManager().isPluginEnabled("LWC");
 
         Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
@@ -453,13 +451,6 @@ public class ShopChest extends JavaPlugin {
      */
     public boolean hasLWC() {
         return lwc;
-    }
-
-    /**
-     * @return Whether Lockette is available
-     */
-    public boolean hasLockette() {
-        return lockette;
     }
 
     /**
