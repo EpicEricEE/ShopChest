@@ -248,7 +248,7 @@ class ShopCommand extends BukkitCommand {
         }
 
         int count = shopUtils.reloadShops(true);
-        plugin.debug(player.getName() + " is reloaded " + count + " shops");
+        plugin.debug(player.getName() + " has reloaded " + count + " shops");
         player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(count))));
     }
 
