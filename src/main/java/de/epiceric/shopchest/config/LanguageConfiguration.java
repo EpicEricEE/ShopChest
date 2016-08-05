@@ -41,7 +41,7 @@ public class LanguageConfiguration extends FileConfiguration {
             }
         }
 
-        plugin.getLogger().warning("Using default value for: " + path + " (" + def + ")");
+        plugin.getLogger().info("Could not find translation for \"" + path + "\" in selected language file. Using default translation (" + def + ")");
         return def;
     }
 
