@@ -60,6 +60,7 @@ public class LocalizedMessage {
         SHOP_INFO_DISABLED,
         SHOP_INFO_NORMAL,
         SHOP_INFO_ADMIN,
+        SHOP_INFO_EXTENDED,
         BUY_SELL_DISABLED,
         BUY_SUCCESS,
         BUY_SUCESS_ADMIN,

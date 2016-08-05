@@ -17,7 +17,8 @@ public enum Regex {
     POTION_EFFECT("%POTION-EFFECT%"),
     MUSIC_TITLE("%MUSIC-TITLE%"),
     PROPERTY("%PROPERTY%"),
-    VALUE("%VALUE%");
+    VALUE("%VALUE%"),
+    EXTENDED("%EXTENDED%");
 
     private String name;
 

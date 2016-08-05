@@ -35,6 +35,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -331,11 +333,16 @@ public class ShopInteractListener implements Listener {
         String shopType = LanguageUtils.getMessage(shop.getShopType() == ShopType.NORMAL ? LocalizedMessage.Message.SHOP_INFO_NORMAL : LocalizedMessage.Message.SHOP_INFO_ADMIN);
         String stock = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_STOCK, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(amount)));
 
+        boolean potionExtended = false;
+
         Map<Enchantment, Integer> enchantmentMap;
 
         if (Utils.getMajorVersion() >= 9) {
             if (type == Material.TIPPED_ARROW || type == Material.LINGERING_POTION || type == Material.SPLASH_POTION) {
                 potionEffectString = LanguageUtils.getPotionEffectName(shop.getProduct());
+                PotionMeta potionMeta = (PotionMeta) shop.getProduct().getItemMeta();
+                potionExtended = potionMeta.getBasePotionData().isExtended();
+
                 if (potionEffectString == null)
                     potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
             }
@@ -343,6 +350,14 @@ public class ShopInteractListener implements Listener {
 
         if (type == Material.POTION) {
             potionEffectString = LanguageUtils.getPotionEffectName(shop.getProduct());
+            if (Utils.getMajorVersion() < 9) {
+                Potion potion = Potion.fromItemStack(shop.getProduct());
+                potionExtended = potion.hasExtendedDuration();
+            } else {
+                PotionMeta potionMeta = (PotionMeta) shop.getProduct().getItemMeta();
+                potionExtended = potionMeta.getBasePotionData().isExtended();
+            }
+
             if (potionEffectString == null)
                 potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
         }
@@ -374,7 +389,8 @@ public class ShopInteractListener implements Listener {
         if (enchantmentString.length() > 0)
             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS, new LocalizedMessage.ReplacedRegex(Regex.ENCHANTMENT, enchantmentString)));
         if (potionEffectString.length() > 0)
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT, new LocalizedMessage.ReplacedRegex(Regex.POTION_EFFECT, potionEffectString)));
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT, new LocalizedMessage.ReplacedRegex(Regex.POTION_EFFECT, potionEffectString),
+                    new LocalizedMessage.ReplacedRegex(Regex.EXTENDED, (potionExtended ? LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED) : ""))));
         if (musicDiscName.length() > 0)
             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE, new LocalizedMessage.ReplacedRegex(Regex.MUSIC_TITLE, musicDiscName)));
         executor.sendMessage(price);

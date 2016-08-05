@@ -38,8 +38,8 @@ message.shopInfo.stock=&6In Stock: &e%AMOUNT%
 message.shopInfo.enchantments=&6Enchantments: &e%ENCHANTMENT%
 
 # Set the potion effect message the player gets after entering '/shop info' if the product has a potion effect
-# Usable regex: %POTION-EFFECT%
-message.shopInfo.potion-effect=&6Potion Effect: &e%POTION-EFFECT%
+# Usable regex: %POTION-EFFECT%, %EXTENDED%
+message.shopInfo.potion-effect=&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%
 
 # Set the music disc title message the player gets after entering '/shop info' if the product is a music disc
 # Usable regex: %MUSIC-TITLE%
@@ -61,6 +61,10 @@ message.shopInfo.is-normal=&6Type: &eNormal
 
 # ... when the shop is an admin shop.
 message.shopInfo.is-admin=&6Type: &eAdmin
+
+# If the potion effect it extended, %EXTENDED% will be replaced by this.
+# If not, this will be empty.
+message.shopInfo.extended=(Extended)
 
 # Set the message when the player tries to create a shop with sell price and buy price set to 0
 message.buy-and-sell-disabled=&cYou can't create a shop with buying and selling disabled.
