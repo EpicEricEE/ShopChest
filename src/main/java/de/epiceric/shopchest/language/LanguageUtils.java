@@ -949,11 +949,14 @@ public class LanguageUtils {
         if (stack.getItemMeta() instanceof PotionMeta) {
             PotionMeta meta = (PotionMeta) stack.getItemMeta();
             PotionType potionType;
+            String upgradeString;
 
             if (Utils.getMajorVersion() < 9) {
                 potionType = Potion.fromItemStack(stack).getType();
+                upgradeString = (Potion.fromItemStack(stack).getTier() == Potion.Tier.TWO && plugin.getShopChestConfig().append_potion_level_to_item_name ? " II" : "");
             } else {
                 potionType = meta.getBasePotionData().getType();
+                upgradeString = (meta.getBasePotionData().isUpgraded() && plugin.getShopChestConfig().append_potion_level_to_item_name ? " II" : "");
             }
 
             for (PotionName potionName : potionNames) {
@@ -961,31 +964,31 @@ public class LanguageUtils {
                     if (Utils.getMajorVersion() < 9) {
                         if (Potion.fromItemStack(stack).isSplash()) {
                             if (potionName.getPotionItemType() == PotionName.PotionItemType.SPLASH_POTION && potionName.getPotionType() == potionType) {
-                                return potionName.getLocalizedName();
+                                return potionName.getLocalizedName() + upgradeString;
                             }
                         } else {
                             if (potionName.getPotionItemType() == PotionName.PotionItemType.POTION && potionName.getPotionType() == potionType) {
-                                return potionName.getLocalizedName();
+                                return potionName.getLocalizedName() + upgradeString;
                             }
                         }
                     } else {
                         if (potionName.getPotionItemType() == PotionName.PotionItemType.POTION && potionName.getPotionType() == potionType) {
-                            return potionName.getLocalizedName();
+                            return potionName.getLocalizedName() + upgradeString;
                         }
                     }
                 } else {
                     if (Utils.getMajorVersion() >= 9) {
                         if (material == Material.LINGERING_POTION) {
                             if (potionName.getPotionItemType() == PotionName.PotionItemType.LINGERING_POTION && potionName.getPotionType() == potionType) {
-                                return potionName.getLocalizedName();
+                                return potionName.getLocalizedName() + upgradeString;
                             }
                         } else if (material == Material.TIPPED_ARROW) {
                             if (potionName.getPotionItemType() == PotionName.PotionItemType.TIPPED_ARROW && potionName.getPotionType() == potionType) {
-                                return potionName.getLocalizedName();
+                                return potionName.getLocalizedName() + upgradeString;
                             }
                         } else if (material == Material.SPLASH_POTION) {
                             if (potionName.getPotionItemType() == PotionName.PotionItemType.SPLASH_POTION && potionName.getPotionType() == potionType) {
-                                return potionName.getLocalizedName();
+                                return potionName.getLocalizedName() + upgradeString;
                             }
                         }
                     }

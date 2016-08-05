@@ -21,6 +21,11 @@ enable-debug-log: false
 # Set whether players should be allowed to sell/buy broken items
 allow-broken-items: false
 
+# Set whether the level of a potion or tipped arrow (if upgraded) should be appended to the item name.
+# If set to true, the level ("II") will be displayed after the item name, but only if the item
+# does NOT have a custom name. If set to false, it will only be shown in the shop info message.
+append-potion-level-to-item-name: false
+
 # Set whether shops should automatically be removed from the database if an error occurred while loading
 # e.g. when no chest is found at a shop's location
 # This might be useful if you're removing shop chests with WorldEdit, resetting plots, or similar

@@ -82,6 +82,9 @@ public class Config {
     /** Whether admin shops should be excluded of the shop limits **/
     public boolean exclude_admin_shops;
 
+    /** Whether the extension of a potion or tipped arrow (if available) should be appended to the item name. **/
+    public boolean append_potion_level_to_item_name;
+
     /** Whether the shop items should be shown **/
     public boolean show_shop_items;
 
@@ -271,6 +274,7 @@ public class Config {
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
+        append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
         show_shop_items = plugin.getConfig().getBoolean("show-shop-items");
         remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
         maximal_distance = plugin.getConfig().getDouble("maximal-distance");
