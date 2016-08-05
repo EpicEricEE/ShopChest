@@ -363,7 +363,7 @@ public class ShopChest extends JavaPlugin {
         if (config.enable_debug_log) {
             try {
                 Calendar c = Calendar.getInstance();
-                String timestamp = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(c.getTime());
+                String timestamp = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(c.getTime());
                 fw.write(String.format("[%s] %s\r\n", timestamp, message));
                 fw.flush();
             } catch (IOException e) {
