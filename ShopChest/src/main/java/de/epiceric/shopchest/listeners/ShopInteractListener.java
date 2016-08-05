@@ -68,6 +68,7 @@ public class ShopInteractListener implements Listener {
                             if (e.isCancelled() && !perm.has(p, "shopchest.create.protected")) {
                                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
                                 ClickType.removePlayerClickType(p);
+                                plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest");
                                 return;
                             }
 
@@ -83,10 +84,12 @@ public class ShopInteractListener implements Listener {
                                 create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
                             } else {
                                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
+                                plugin.debug("Chest is blocked");
                             }
                         } else {
                             e.setCancelled(true);
                             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP));
+                            plugin.debug("Chest is already a shop");
                         }
 
                         ClickType.removePlayerClickType(p);
@@ -118,6 +121,7 @@ public class ShopInteractListener implements Listener {
                                     info(p, shop);
                                 } else {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
+                                    plugin.debug("Chest is not a shop");
                                 }
 
                                 ClickType.removePlayerClickType(p);
@@ -133,10 +137,12 @@ public class ShopInteractListener implements Listener {
                                         remove(p, shop);
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS));
+                                        plugin.debug(p.getName() + " is not permitted to remove another player's shop");
                                     }
 
                                 } else {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
+                                    plugin.debug("Chest is not a shop");
                                 }
 
                                 ClickType.removePlayerClickType(p);
@@ -158,12 +164,14 @@ public class ShopInteractListener implements Listener {
                                         e.setCancelled(false);
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
+                                        plugin.debug(p.getName() + " is not permitted to open another player's shop");
                                     }
                                 } else {
                                     e.setCancelled(false);
                                 }
                             } else {
                                 if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+                                    plugin.debug(p.getName() + " wants to buy");
                                     if (shop.getBuyPrice() > 0) {
                                         if (perm.has(p, "shopchest.buy")) {
                                             if (shop.getShopType() == ShopType.ADMIN) {
@@ -174,13 +182,16 @@ public class ShopInteractListener implements Listener {
                                                     buy(p, shop);
                                                 } else {
                                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
+                                                    plugin.debug("Shop is out of stock");
                                                 }
                                             }
                                         } else {
                                             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY));
+                                            plugin.debug(p.getName() + " is not permitted to buy");
                                         }
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUYING_DISABLED));
+                                        plugin.debug("Buying is disabled");
                                     }
                                 } else {
                                     e.setCancelled(false);
@@ -198,18 +209,22 @@ public class ShopInteractListener implements Listener {
                         Shop shop = shopUtils.getShop(b.getLocation());
 
                         if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
+                            plugin.debug(p.getName() + " wants to sell");
                             if (shop.getSellPrice() > 0) {
                                 if (perm.has(p, "shopchest.sell")) {
                                     if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                         sell(p, shop);
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
+                                        plugin.debug(p.getName() + " doesn't have enough items");
                                     }
                                 } else {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL));
+                                    plugin.debug(p.getName() + " is not permitted to sell");
                                 }
                             } else {
                                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELLING_DISABLED));
+                                plugin.debug("Selling is disabled");
                             }
                         } else {
                             e.setCancelled(false);
