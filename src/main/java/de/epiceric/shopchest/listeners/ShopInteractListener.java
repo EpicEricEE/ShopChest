@@ -62,39 +62,41 @@ public class ShopInteractListener implements Listener {
         Player p = e.getPlayer();
         Block b = e.getClickedBlock();
 
-        if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (ClickType.getPlayerClickType(p) != null) {
-                    if (ClickType.getPlayerClickType(p).getClickType() == ClickType.EnumClickType.CREATE) {
-                        if (!shopUtils.isShop(b.getLocation())) {
-                            if (e.isCancelled() && !perm.has(p, "shopchest.create.protected")) {
-                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
-                                ClickType.removePlayerClickType(p);
-                                plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest");
-                                return;
-                            }
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (ClickType.getPlayerClickType(p) != null) {
+                        if (ClickType.getPlayerClickType(p).getClickType() == ClickType.EnumClickType.CREATE) {
+                            if (!shopUtils.isShop(b.getLocation())) {
+                                if (e.isCancelled() && !perm.has(p, "shopchest.create.protected")) {
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
+                                    ClickType.removePlayerClickType(p);
+                                    plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest");
+                                    return;
+                                }
 
-                            e.setCancelled(true);
+                                e.setCancelled(true);
 
-                            if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
-                                ClickType clickType = ClickType.getPlayerClickType(p);
-                                ItemStack product = clickType.getProduct();
-                                double buyPrice = clickType.getBuyPrice();
-                                double sellPrice = clickType.getSellPrice();
-                                ShopType shopType = clickType.getShopType();
+                                if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                                    ClickType clickType = ClickType.getPlayerClickType(p);
+                                    ItemStack product = clickType.getProduct();
+                                    double buyPrice = clickType.getBuyPrice();
+                                    double sellPrice = clickType.getSellPrice();
+                                    ShopType shopType = clickType.getShopType();
 
-                                create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
+                                    create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
+                                } else {
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
+                                    plugin.debug("Chest is blocked");
+                                }
                             } else {
-                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
-                                plugin.debug("Chest is blocked");
+                                e.setCancelled(true);
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP));
+                                plugin.debug("Chest is already a shop");
                             }
-                        } else {
-                            e.setCancelled(true);
-                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP));
-                            plugin.debug("Chest is already a shop");
-                        }
 
-                        ClickType.removePlayerClickType(p);
+                            ClickType.removePlayerClickType(p);
+                        }
                     }
                 }
             }
