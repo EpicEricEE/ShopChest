@@ -346,6 +346,8 @@ public class ShopChest extends JavaPlugin {
             }
         }
 
+        database.disconnect();
+
         if (fw != null && config.enable_debug_log) {
             try {
                 fw.close();

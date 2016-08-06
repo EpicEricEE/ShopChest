@@ -3,7 +3,6 @@ package de.epiceric.shopchest.sql;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
-import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,22 +20,24 @@ public abstract class Database {
 
     public Database(ShopChest plugin) {
         this.plugin = plugin;
-        initialize();
     }
 
     /**
-     * @return Connection to the database
+     * @return New connection to the database
      */
     public abstract Connection getConnection();
 
     /**
-     * Initializes the database. <br>
+     * (Re-)Connects to the the database and initializes it. <br>
      * Creates the table (if doesn't exist) and tests the connection
      */
-    private void initialize() {
-        connection = getConnection();
-
+    public void connect() {
         try {
+            disconnect();
+
+            plugin.debug("Connecting to database...");
+            connection = getConnection();
+
             String queryCreateTable = "CREATE TABLE IF NOT EXISTS shop_list (" +
                     "`id` int(11) NOT NULL," +
                     "`vendor` tinytext NOT NULL," +
@@ -64,10 +65,11 @@ public abstract class Database {
             }
             plugin.debug("Initialized database with " + count + " entries");
 
-
             close(ps, rs);
 
         } catch (SQLException ex) {
+            plugin.debug("Failed to connect to database");
+            plugin.debug(ex);
             ex.printStackTrace();
         }
     }
@@ -286,6 +288,22 @@ public abstract class Database {
                 rs.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Closes the connection to the database
+     */
+    public void disconnect() {
+        try {
+            if (connection != null) {
+                plugin.debug("Disconnecting from database...");
+                connection.close();
+            }
+        } catch (SQLException e) {
+            plugin.debug("Failed to disconnect from database");
+            plugin.debug(e);
+            e.printStackTrace();
         }
     }
 

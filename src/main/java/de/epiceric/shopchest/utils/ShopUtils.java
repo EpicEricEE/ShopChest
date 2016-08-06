@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class ShopUtils {
 
@@ -206,6 +205,8 @@ public class ShopUtils {
      */
     public int reloadShops(boolean reloadConfig) {
         plugin.debug("Reloading shops...");
+
+        plugin.getShopDatabase().connect();
 
         if (reloadConfig) plugin.getShopChestConfig().reload(false, true);
 
