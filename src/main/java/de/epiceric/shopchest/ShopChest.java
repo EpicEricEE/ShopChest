@@ -135,10 +135,10 @@ public class ShopChest extends JavaPlugin {
             case "v1_10_R1":
                 break;
             default:
-                debug("Incompatible Server Version: " + Utils.getServerVersion());
-                getLogger().severe("Incompatible Server Version: " + Utils.getServerVersion() + "!");
-                getServer().getPluginManager().disablePlugin(this);
-                return;
+                debug("Server version not officially supported: " + Utils.getServerVersion() + "!");
+                debug("Plugin may still work, but more errors are expected!");
+                getLogger().warning("Server version not officially supported: " + Utils.getServerVersion() + "!");
+                getLogger().warning("Plugin may still work, but more errors are expected!");
         }
 
         debug("Loading utils and extras...");
