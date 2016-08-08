@@ -13,7 +13,6 @@ import java.util.List;
 
 public class Hologram {
 
-    private Class<?> entityArmorStandClass;
     private boolean exists = false;
     private int count;
     private List<Object> entityList = new ArrayList<>();
@@ -22,18 +21,27 @@ public class Hologram {
     private List<Player> visible = new ArrayList<>();
     private ShopChest plugin;
 
+    private Class<?> entityArmorStandClass = Utils.getNMSClass("EntityArmorStand");
+    private Class<?> nmsWorldClass = Utils.getNMSClass("World");
+    private Class<?> packetPlayOutSpawnEntityLivingClass = Utils.getNMSClass("PacketPlayOutSpawnEntityLiving");
+    private Class<?> packetPlayOutEntityDestroyClass = Utils.getNMSClass("PacketPlayOutEntityDestroy");
+    private Class<?> entityLivingClass = Utils.getNMSClass("EntityLiving");
+
     public Hologram(ShopChest plugin, String[] text, Location location) {
         this.plugin = plugin;
         this.text = text;
         this.location = location;
 
-        try {
-            entityArmorStandClass = Class.forName("net.minecraft.server." + Utils.getServerVersion() + ".EntityArmorStand");
-        } catch (ClassNotFoundException e) {
-            plugin.debug("Could not find EntityArmorStand class");
-            plugin.debug(e);
-            e.printStackTrace();
-            return;
+        Class[] requiredClasses = new Class[] {
+                nmsWorldClass, entityArmorStandClass, entityLivingClass,
+                packetPlayOutSpawnEntityLivingClass, packetPlayOutEntityDestroyClass,
+        };
+
+        for (Class c : requiredClasses) {
+            if (c == null) {
+                plugin.debug("Failed to create hologram: Could not find all required classes");
+                return;
+            }
         }
 
         create();
@@ -42,8 +50,6 @@ public class Hologram {
     private void create() {
         for (String text : this.text) {
             try {
-                Class<?> nmsWorldClass = Class.forName("net.minecraft.server." + Utils.getServerVersion() + ".World");
-
                 Object craftWorld = this.location.getWorld().getClass().cast(this.location.getWorld());
                 Object nmsWorld = nmsWorldClass.cast(craftWorld.getClass().getMethod("getHandle").invoke(craftWorld));
 
@@ -63,7 +69,7 @@ public class Hologram {
                 entityList.add(entityArmorStand);
                 this.location.subtract(0, 0.25, 0);
                 count++;
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                 plugin.debug("Could not create Hologram with reflection");
                 plugin.debug(e);
                 e.printStackTrace();
@@ -93,14 +99,11 @@ public class Hologram {
     public void showPlayer(Player p) {
         for (Object o : entityList) {
             try {
-                Class<?> packetClass = Class.forName("net.minecraft.server." + Utils.getServerVersion() + ".PacketPlayOutSpawnEntityLiving");
-                Class<?> entityLivingClass = Class.forName("net.minecraft.server." + Utils.getServerVersion() + ".EntityLiving");
-
                 Object entityLiving = entityLivingClass.cast(o);
-                Object packet = packetClass.getConstructor(entityLivingClass).newInstance(entityLiving);
+                Object packet = packetPlayOutSpawnEntityLivingClass.getConstructor(entityLivingClass).newInstance(entityLiving);
 
                 Utils.sendPacket(plugin, packet, p);
-            } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
+            } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
                 plugin.debug("Could not show Hologram to player with reflection");
                 plugin.debug(e);
                 e.printStackTrace();
@@ -115,14 +118,12 @@ public class Hologram {
     public void hidePlayer(Player p) {
         for (Object o : entityList) {
             try {
-                Class<?> packetClass = Class.forName("net.minecraft.server." + Utils.getServerVersion() + ".PacketPlayOutEntityDestroy");
-
                 int id = (int) entityArmorStandClass.getMethod("getId").invoke(o);
 
-                Object packet = packetClass.getConstructor(int[].class).newInstance((Object) new int[] {id});
+                Object packet = packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[] {id});
 
                 Utils.sendPacket(plugin, packet, p);
-            } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
+            } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
                 plugin.debug("Could not hide Hologram from player with reflection");
                 plugin.debug(e);
                 e.printStackTrace();

@@ -5,7 +5,6 @@ import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.Hologram;
-import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,15 +13,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.util.Vector;
-
-import java.util.UUID;
 
 public class Shop {
 
@@ -32,7 +25,7 @@ public class Shop {
     private ItemStack product;
     private Location location;
     private Hologram hologram;
-    private Item item;
+    private ShopItem item;
     private double buyPrice;
     private double sellPrice;
     private ShopType shopType;
@@ -71,7 +64,7 @@ public class Shop {
         }
 
         if (hologram == null || !hologram.exists()) createHologram();
-        if (item == null || item.isDead()) createItem();
+        if (item == null) createItem();
     }
 
     private Shop(OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
@@ -117,25 +110,18 @@ public class Shop {
         if (plugin.getShopChestConfig().show_shop_items) {
             plugin.debug("Creating item (#" + id + ")");
 
-            Item item;
             Location itemLocation;
             ItemStack itemStack;
-            ItemMeta itemMeta = product.getItemMeta();
-            itemMeta.setDisplayName(UUID.randomUUID().toString());
 
             itemLocation = new Location(location.getWorld(), hologram.getLocation().getX(), location.getY() + 1, hologram.getLocation().getZ());
-            itemStack = new ItemStack(product);
+            itemStack = product.clone();
             itemStack.setAmount(1);
-            itemStack.setItemMeta(itemMeta);
 
-            item = location.getWorld().dropItem(itemLocation, itemStack);
-            item.setVelocity(new Vector(0, 0, 0));
-            item.setMetadata("shopItem", new FixedMetadataValue(plugin, true));
-            item.setMetadata("shopId", new FixedMetadataValue(plugin, id));
-            item.setCustomNameVisible(false);
-            item.setPickupDelay(Integer.MAX_VALUE);
+            this.item = new ShopItem(plugin, itemStack, itemLocation);
 
-            this.item = item;
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                item.setVisible(p, true);
+            }
         }
     }
 
@@ -267,6 +253,13 @@ public class Shop {
      */
     public Hologram getHologram() {
         return hologram;
+    }
+
+    /**
+     * @return Floating {@link ShopItem} of the shop
+     */
+    public ShopItem getItem() {
+        return item;
     }
 
     /**

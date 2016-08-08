@@ -221,36 +221,6 @@ public class ShopUtils {
             }
         }
 
-        for (World world : Bukkit.getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (entity instanceof Item) {
-                    Item item = (Item) entity;
-                    if (item.hasMetadata("shopItem")) {
-                        if (item.isValid()) {
-                            plugin.debug("Removing not removed shop item (#" +
-                                    (item.hasMetadata("shopId") ? item.getMetadata("shopId").get(0).asString() : "?") + ")");
-
-                            item.remove();
-                        }
-                    }
-                }
-            }
-        }
-
-        for (World world : Bukkit.getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (entity instanceof Item) {
-                    Item item = (Item) entity;
-                    if (item.hasMetadata("shopItem")) {
-                        if (item.isValid()) {
-                            plugin.debug("Shop item still valid (#" +
-                                    (item.hasMetadata("shopId") ? item.getMetadata("shopId").get(0).asString() : "?") + ")");
-                        }
-                    }
-                }
-            }
-        }
-
         int count = 0;
         for (int id = 1; id <= highestId; id++) {
 

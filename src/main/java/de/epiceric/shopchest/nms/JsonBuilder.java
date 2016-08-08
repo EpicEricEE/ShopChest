@@ -15,8 +15,29 @@ public class JsonBuilder {
     private List<String> extras = new ArrayList<>();
     private ShopChest plugin;
 
+    private Class<?> iChatBaseComponentClass = Utils.getNMSClass("IChatBaseComponent");
+    private Class<?> packetPlayOutChatClass = Utils.getNMSClass("PacketPlayOutChat");
+    private Class<?> chatSerializerClass;
+
     public JsonBuilder(ShopChest plugin, String text, String hoverText, String downloadLink) {
         this.plugin = plugin;
+
+        if (Utils.getServerVersion().equals("v1_8_R1")) {
+            chatSerializerClass = Utils.getNMSClass("ChatSerializer");
+        } else {
+            chatSerializerClass = Utils.getNMSClass("ChatBaseComponent$ChatSerializer");
+        }
+
+        Class[] requiredClasses = new Class[] {
+          iChatBaseComponentClass, packetPlayOutChatClass, chatSerializerClass
+        };
+
+        for (Class c : requiredClasses) {
+            if (c == null) {
+                plugin.debug("Failed to instantiate JsonBuilder: Could not find all required classes");
+                return;
+            }
+        }
 
         parse(text, hoverText, downloadLink);
     }
@@ -90,24 +111,12 @@ public class JsonBuilder {
 
     public void sendJson(Player p) {
         try {
-            String version = Utils.getServerVersion();
-
-            Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + version + ".IChatBaseComponent");
-            Class<?> packetPlayOutChatClass = Class.forName("net.minecraft.server." + version + ".PacketPlayOutChat");
-            Class<?> chatSerializerClass;
-
-            if (version.equals("v1_8_R1")) {
-                chatSerializerClass = Class.forName("net.minecraft.server." + version + ".ChatSerializer");
-            } else {
-                chatSerializerClass = Class.forName("net.minecraft.server." + version + ".IChatBaseComponent$ChatSerializer");
-            }
-
             Object iChatBaseComponent = chatSerializerClass.getMethod("a", String.class).invoke(null, toString());
             Object packetPlayOutChat = packetPlayOutChatClass.getConstructor(iChatBaseComponentClass).newInstance(iChatBaseComponent);
 
             Utils.sendPacket(plugin, packetPlayOutChat, p);
         } catch (InstantiationException | InvocationTargetException |
-                IllegalAccessException | NoSuchMethodException | ClassNotFoundException e) {
+                IllegalAccessException | NoSuchMethodException e) {
             plugin.debug("Failed to send packet with reflection");
             plugin.debug(e);
             e.printStackTrace();

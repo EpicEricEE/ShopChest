@@ -11,7 +11,12 @@ public class SpawnEggMeta {
 
     private static String getNBTEntityID(ShopChest plugin, ItemStack stack) {
         try {
-            Class<?> craftItemStackClass = Class.forName("org.bukkit.craftbukkit." + Utils.getServerVersion() + ".inventory.CraftItemStack");
+            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");
+
+            if (craftItemStackClass == null) {
+                plugin.debug("Failed to get NBTEntityID: Could not find CraftItemStack class");
+                return null;
+            }
 
             Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, stack);
 
@@ -24,7 +29,7 @@ public class SpawnEggMeta {
             Object id = entityTagCompound.getClass().getMethod("getString", String.class).invoke(entityTagCompound, "id");
             if (id instanceof String) return (String) id;
 
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             plugin.debug("Could not get NBTEntityID with reflection");
             plugin.debug(e);
             e.printStackTrace();

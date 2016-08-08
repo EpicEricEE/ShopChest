@@ -54,6 +54,30 @@ public class Utils {
     }
 
     /**
+     * @param className Name of the class
+     * @return Class in {@code net.minecraft.server.[VERSION]} package with the specified name or {@code null} if the class was not found
+     */
+    public static Class<?> getNMSClass(String className) {
+        try {
+            return Class.forName("net.minecraft.server." + getServerVersion() + "." + className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param className Name of the class
+     * @return Class in {@code org.bukkit.craftbukkit.[VERSION]} package with the specified name or {@code null} if the class was not found
+     */
+    public static Class<?> getCraftClass(String className) {
+        try {
+            return Class.forName("org.bukkit.craftbukkit." + getServerVersion() + "." + className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+
+    /**
      * Send a packet to a player
      * @param packet Packet to send
      * @param player Player to which the packet should be sent

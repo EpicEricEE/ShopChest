@@ -27,7 +27,7 @@ public class NotifyUpdateOnJoinListener implements Listener {
         Player p = e.getPlayer();
 
         if (plugin.isUpdateNeeded()) {
-            if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
+            if (perm.has(p, "shopchest.notification.update")) {
                 JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, plugin.getLatestVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), plugin.getDownloadLink());
                 jb.sendJson(p);
             }

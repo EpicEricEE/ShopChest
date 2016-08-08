@@ -22,9 +22,6 @@ import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,7 +38,6 @@ public class ShopChest extends JavaPlugin {
     private Config config = null;
     private Economy econ = null;
     private Permission perm = null;
-    private boolean lwc = false;
     private Database database;
     private boolean isUpdateNeeded = false;
     private String latestVersion = "";
@@ -238,8 +234,6 @@ public class ShopChest extends JavaPlugin {
             }, config.auto_reload_time * 20, config.auto_reload_time * 20);
         }
 
-        lwc = getServer().getPluginManager().isPluginEnabled("LWC");
-
         Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
             @Override
             public void run() {
@@ -254,7 +248,7 @@ public class ShopChest extends JavaPlugin {
                     Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)));
 
                     for (Player p : getServer().getOnlinePlayers()) {
-                        if (p.isOp() || perm.has(p, "shopchest.notification.update")) {
+                        if (perm.has(p, "shopchest.notification.update")) {
                             JsonBuilder jb = new JsonBuilder(ShopChest.this, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
                             jb.sendJson(p);
                         }
@@ -287,16 +281,10 @@ public class ShopChest extends JavaPlugin {
 
         debug("Registering listeners...");
         getServer().getPluginManager().registerEvents(new HologramUpdateListener(this), this);
-        getServer().getPluginManager().registerEvents(new ItemProtectListener(this), this);
+        getServer().getPluginManager().registerEvents(new ShopItemListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyUpdateOnJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new ChestProtectListener(this), this);
-        getServer().getPluginManager().registerEvents(new ItemCustomNameListener(), this);
-
-        if (getServer().getPluginManager().isPluginEnabled("ClearLag"))
-            getServer().getPluginManager().registerEvents(new ClearLagListener(), this);
-
-        if (lwc) new LWCMagnetListener(this).initializeListener();
     }
 
     @Override
@@ -310,38 +298,6 @@ public class ShopChest extends JavaPlugin {
                 if (shop.getID() == i) {
                     shopUtils.removeShop(shop, false);
                     debug("Removed shop (#" + shop.getID() + ")");
-                }
-            }
-        }
-
-        for (World world : Bukkit.getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (entity instanceof Item) {
-                    Item item = (Item) entity;
-                    if (item.hasMetadata("shopItem")) {
-                        if (item.isValid()) {
-                            debug("Removing not removed shop item (#" +
-                                    (item.hasMetadata("shopId") ? item.getMetadata("shopId").get(0).asString() : "?") + ")");
-
-                            item.remove();
-                        }
-                    }
-                }
-            }
-        }
-
-        if (config.enable_debug_log) {
-            for (World world : Bukkit.getWorlds()) {
-                for (Entity entity : world.getEntities()) {
-                    if (entity instanceof Item) {
-                        Item item = (Item) entity;
-                        if (item.hasMetadata("shopItem")) {
-                            if (item.isValid()) {
-                                debug("Shop item still valid (#" +
-                                        (item.hasMetadata("shopId") ? item.getMetadata("shopId").get(0).asString() : "?") + ")");
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -424,13 +380,6 @@ public class ShopChest extends JavaPlugin {
      */
     public Database getShopDatabase() {
         return database;
-    }
-
-    /**
-     * @return Whether LWC is available
-     */
-    public boolean hasLWC() {
-        return lwc;
     }
 
     /**
