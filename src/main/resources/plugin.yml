@@ -21,6 +21,7 @@ permissions:
       shopchest.reload: true
       shopchest.update: true
       shopchest.limits: true
+      shopchest.config: true
   shopchest.create:
     description: Allows you to create a shop.
     default: true
