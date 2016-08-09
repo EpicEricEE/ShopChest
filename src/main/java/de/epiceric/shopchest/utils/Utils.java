@@ -2,6 +2,7 @@ package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -51,6 +52,55 @@ public class Utils {
         }
 
         return amount;
+    }
+
+    /**
+     * @param p Player whose item in his main hand should be returned
+     * @return {@link ItemStack} in his main hand, or {@code null} if he doesn't hold one
+     */
+    public static ItemStack getItemInMainHand(Player p) {
+        if (getMajorVersion() < 9) {
+            if (p.getItemInHand().getType() == Material.AIR)
+                return null;
+            else
+                return p.getItemInHand();
+        } else {
+            if (p.getInventory().getItemInMainHand().getType() == Material.AIR)
+                return null;
+            else
+                return p.getInventory().getItemInMainHand();
+        }
+    }
+
+    /**
+     * @param p Player whose item in his off hand should be returned
+     * @return {@link ItemStack} in his off hand, or {@code null} if he doesn't hold one or the server version is below 1.9
+     */
+    public static ItemStack getItemInOffHand(Player p) {
+        if (getMajorVersion() < 9) {
+            return null;
+        } else {
+            if (p.getInventory().getItemInOffHand().getType() == Material.AIR)
+                return null;
+            else
+                return p.getInventory().getItemInOffHand();
+        }
+    }
+
+    /**
+     * @param p Player whose item in his hand should be returned
+     * @return Item in his main hand, or the item in his off if he doesn't have one in this main hand, or {@code null}
+     *         if he doesn't have one in both hands
+     */
+    public static ItemStack getPreferredItemInHand(Player p) {
+        if (getMajorVersion() < 9) {
+            return getItemInMainHand(p);
+        } else {
+            if (getItemInMainHand(p) != null)
+                return getItemInMainHand(p);
+            else
+                return getItemInOffHand(p);
+        }
     }
 
     /**

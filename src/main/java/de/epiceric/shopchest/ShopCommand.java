@@ -15,6 +15,7 @@ import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
+import de.epiceric.shopchest.utils.Utils;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -274,7 +275,7 @@ class ShopCommand extends BukkitCommand {
 
         plugin.debug(p.getName() + " has enabled buying, selling or both");
 
-        if (p.getItemInHand().getType().equals(Material.AIR)) {
+        if (Utils.getPreferredItemInHand(p) == null) {
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND));
             return;
         }
@@ -291,7 +292,7 @@ class ShopCommand extends BukkitCommand {
                 itemStack = new ItemStack(Material.getMaterial(item), 1);
             }
 
-            if (itemStack.getType().equals(p.getItemInHand().getType()) && itemStack.getDurability() == p.getItemInHand().getDurability()) {
+            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_ITEM));
                 return;
             }
@@ -310,7 +311,7 @@ class ShopCommand extends BukkitCommand {
                 itemStack = new ItemStack(Material.getMaterial(key), 1);
             }
 
-            if (itemStack.getType().equals(p.getItemInHand().getType()) && itemStack.getDurability() == p.getItemInHand().getDurability()) {
+            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
                 if (buyEnabled) {
                     if ((buyPrice <= amount * price) && (buyPrice > 0)) {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * price))));
@@ -340,8 +341,8 @@ class ShopCommand extends BukkitCommand {
 
         plugin.debug(p.getName() + "'s buy price is high enough");
 
-        ItemStack itemStack = new ItemStack(p.getItemInHand().getType(), amount, p.getItemInHand().getDurability());
-        itemStack.setItemMeta(p.getItemInHand().getItemMeta());
+        ItemStack itemStack = new ItemStack(Utils.getPreferredItemInHand(p).getType(), amount, Utils.getPreferredItemInHand(p).getDurability());
+        itemStack.setItemMeta(Utils.getPreferredItemInHand(p).getItemMeta());
 
         if (Enchantment.DURABILITY.canEnchantItem(itemStack)) {
             if (itemStack.getDurability() > 0 && !plugin.getShopChestConfig().allow_broken_items) {
