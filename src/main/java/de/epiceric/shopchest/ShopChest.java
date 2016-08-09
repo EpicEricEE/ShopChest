@@ -285,6 +285,10 @@ public class ShopChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyUpdateOnJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new ChestProtectListener(this), this);
+
+        if (!Utils.getServerVersion().equals("v1_8_R1"))
+            getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);
+
     }
 
     @Override

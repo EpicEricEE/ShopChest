@@ -42,18 +42,6 @@ public class ChestProtectListener implements Listener {
     }
 
     @EventHandler
-    public void onBlockExplode(BlockExplodeEvent e) {
-        if (plugin.getShopChestConfig().explosion_protection) {
-            ArrayList<Block> bl = new ArrayList<>(e.blockList());
-            for (Block b : bl) {
-                if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-                    if (shopUtils.isShop(b.getLocation())) e.blockList().remove(b);
-                }
-            }
-        }
-    }
-
-    @EventHandler
     public void onEntityExplode(EntityExplodeEvent e) {
         if (plugin.getShopChestConfig().explosion_protection) {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
