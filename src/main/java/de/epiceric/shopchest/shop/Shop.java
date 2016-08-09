@@ -156,7 +156,7 @@ public class Shop {
         }
 
         Location holoLocation;
-        String[] holoText = new String[2];
+        String[] holoText = new String[plugin.getShopChestConfig().two_line_prices ? 3 : 2];
 
         if (doubleChest) {
 
@@ -183,18 +183,25 @@ public class Shop {
 
         } else holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
 
+        if (holoText.length == 3)
+            holoLocation.add(0, plugin.getShopChestConfig().hologram_lift, 0);
+
         holoText[0] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_FORMAT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
                 new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)));
 
-        if ((buyPrice <= 0) && (sellPrice > 0))
+        if ((buyPrice <= 0) && (sellPrice > 0)) {
             holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL, new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
-        else if ((buyPrice > 0) && (sellPrice <= 0))
+        } else if ((buyPrice > 0) && (sellPrice <= 0)) {
             holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
-        else if ((buyPrice > 0) && (sellPrice > 0))
-            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
-                    new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
-        else holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
-                    new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+        } else {
+            if (holoText.length == 2) {
+                holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
+                        new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+            } else {
+                holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
+                holoText[2] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL, new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+            }
+        }
 
         hologram = new Hologram(plugin, holoText, holoLocation);
     }

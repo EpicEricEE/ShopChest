@@ -82,6 +82,9 @@ public class Config {
     /** Whether admin shops should be excluded of the shop limits **/
     public boolean exclude_admin_shops;
 
+    /** Whether the buy- and sell price should be arranged below each other **/
+    public boolean two_line_prices;
+
     /** Whether the extension of a potion or tipped arrow (if available) should be appended to the item name. **/
     public boolean append_potion_level_to_item_name;
 
@@ -96,6 +99,9 @@ public class Config {
      * (e.g. when no chest is found at a shop's location)
      */
     public boolean remove_shop_on_error;
+
+    /** Amount the hologram should be lifted **/
+    public double hologram_lift;
 
     /** The maximum distance between a player and a shop to see the hologram **/
     public double maximal_distance;
@@ -271,12 +277,14 @@ public class Config {
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
+        two_line_prices = plugin.getConfig().getBoolean("two-line-prices");
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
         append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
         show_shop_items = plugin.getConfig().getBoolean("show-shop-items");
         remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
+        hologram_lift = plugin.getConfig().getDouble("hologram-lift");
         maximal_distance = plugin.getConfig().getDouble("maximal-distance");
         shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
         shop_creation_price_admin = plugin.getConfig().getDouble("shop-creation-price.admin");

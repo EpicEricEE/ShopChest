@@ -49,6 +49,9 @@ public class Hologram {
 
     private void create() {
         for (String text : this.text) {
+            if (text == null)
+                continue;
+
             try {
                 Object craftWorld = this.location.getWorld().getClass().cast(this.location.getWorld());
                 Object nmsWorld = nmsWorldClass.cast(craftWorld.getClass().getMethod("getHandle").invoke(craftWorld));

@@ -18,6 +18,19 @@ show-shop-items: true
 # The file may get large! Please enable this setting when reporting bugs.
 enable-debug-log: false
 
+# Set whether the buy- and sell price should be arranged below each other.
+# The first line will be the buy price with the message "message.hologram.only-buy",
+# the second line will be the sell price with the message "message.hologram.only-sell".
+# If buying or selling is disabled, a line for that price will not be created.
+# (The messages can be found and modified in the specified language file)
+two-line-prices: false
+
+# Set the amount (may be negative) the hologram should be lifted
+# in the y-axis (a higher number lifts the hologram more up, '1' equals to one block).
+# It's recommended to change the value (to around 0.2) if "two-line-prices" is set to true, to prevent
+# the floating item to intersect with the hologram.
+hologram-lift: 0
+
 # Set whether players should be allowed to sell/buy broken items
 allow-broken-items: false
 
