@@ -209,6 +209,9 @@ public class ShopInteractListener implements Listener {
                 } else if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 
                     if (shopUtils.isShop(b.getLocation())) {
+                        if (p.isSneaking())
+                            return;
+
                         e.setCancelled(true);
                         Shop shop = shopUtils.getShop(b.getLocation());
 

@@ -5,16 +5,17 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -35,7 +36,43 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-        if (shopUtils.isShop(e.getBlock().getLocation())) {
+        final Block b = e.getBlock();
+
+        if (shopUtils.isShop(b.getLocation())) {
+            final Shop shop = shopUtils.getShop(e.getBlock().getLocation());
+            Player p = e.getPlayer();
+
+            if (p.isSneaking()) {
+                if (shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+                    shopUtils.removeShop(shop, true);
+
+                    if (shop.getInventoryHolder() instanceof DoubleChest) {
+                        DoubleChest dc = (DoubleChest) shop.getInventoryHolder();
+                        final Chest l = (Chest) dc.getLeftSide();
+                        final Chest r = (Chest) dc.getRightSide();
+
+                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                Shop newShop = null;
+
+                                if (b.getLocation().equals(l.getLocation()))
+                                    newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), r.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+                                else if (b.getLocation().equals(r.getLocation()))
+                                    newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), l.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+
+                                shopUtils.addShop(newShop, true);
+                            }
+                        }, 1L);
+                        return;
+                    }
+
+                    plugin.debug(p.getName() + " broke his shop (#" + shop.getID() + ")");
+                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
+                    return;
+                }
+            }
+
             e.setCancelled(true);
             e.getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_BREAK_SHOP));
         }
