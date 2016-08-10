@@ -101,7 +101,7 @@ public class Config {
     public boolean remove_shop_on_error;
 
     /** Amount the hologram should be lifted **/
-    public double hologram_lift;
+    public double two_line_hologram_lift;
 
     /** The maximum distance between a player and a shop to see the hologram **/
     public double maximal_distance;
@@ -284,7 +284,7 @@ public class Config {
         append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
         show_shop_items = plugin.getConfig().getBoolean("show-shop-items");
         remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
-        hologram_lift = plugin.getConfig().getDouble("hologram-lift");
+        two_line_hologram_lift = plugin.getConfig().getDouble("two-line-hologram-lift");
         maximal_distance = plugin.getConfig().getDouble("maximal-distance");
         shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
         shop_creation_price_admin = plugin.getConfig().getDouble("shop-creation-price.admin");

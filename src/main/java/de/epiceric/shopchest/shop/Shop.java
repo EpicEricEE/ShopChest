@@ -183,9 +183,6 @@ public class Shop {
 
         } else holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
 
-        if (holoText.length == 3)
-            holoLocation.add(0, plugin.getShopChestConfig().hologram_lift, 0);
-
         holoText[0] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_FORMAT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
                 new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)));
 
@@ -202,6 +199,9 @@ public class Shop {
                 holoText[2] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL, new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
             }
         }
+
+        if (holoText.length == 3 && holoText[2] != null)
+            holoLocation.add(0, plugin.getShopChestConfig().two_line_hologram_lift, 0);
 
         hologram = new Hologram(plugin, holoText, holoLocation);
     }

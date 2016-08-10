@@ -25,11 +25,11 @@ enable-debug-log: false
 # (The messages can be found and modified in the specified language file)
 two-line-prices: false
 
-# Set the amount (may be negative) the hologram should be lifted
-# in the y-axis (a higher number lifts the hologram more up, '1' equals to one block).
-# It's recommended to change the value (to around 0.2) if "two-line-prices" is set to true, to prevent
-# the floating item to intersect with the hologram.
-hologram-lift: 0
+# Set the amount (may be negative) the hologram should be lifted in the y-axis,
+# when "two-line-prices" is set to true and buying and selling is enabled at the shop.
+# The higher the number, the higher will the hologram be.
+# A value of '1' equals to one block, and a value of '0.25' is equal to the height of one line.
+two-line-hologram-lift: 0.25
 
 # Set whether players should be allowed to sell/buy broken items
 allow-broken-items: false
