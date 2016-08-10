@@ -95,6 +95,7 @@ public class ShopChest extends JavaPlugin {
 
                 fw = new FileWriter(debugLogFile, true);
             } catch (IOException e) {
+                getLogger().info("Failed to instantiate FileWriter");
                 e.printStackTrace();
             }
         }
@@ -272,9 +273,9 @@ public class ShopChest extends JavaPlugin {
             debug("Trying to register command \"/" + config.main_command_name + "\"");
             ShopCommand.registerCommand(new ShopCommand(this, config.main_command_name, "Manage Shops.", "", new ArrayList<String>()), this);
         } catch (Exception e) {
+            getLogger().info("Failed to register command");
             debug("Failed to register command");
             debug(e);
-            e.printStackTrace();
         }
 
         initializeShops();
@@ -312,6 +313,7 @@ public class ShopChest extends JavaPlugin {
             try {
                 fw.close();
             } catch (IOException e) {
+                getLogger().severe("Failed to close FileWriter");
                 e.printStackTrace();
             }
         }

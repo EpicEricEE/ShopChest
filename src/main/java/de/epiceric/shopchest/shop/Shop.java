@@ -42,25 +42,15 @@ public class Shop {
 
         Block b = location.getBlock();
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
-            try {
-                plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
-                Exception e = new Exception("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
-                plugin.debug(e);
-                throw e;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return;
-            }
+            plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
+            plugin.getLogger().severe("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            plugin.debug("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            return;
         } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
-            try {
-                plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
-                Exception e = new Exception("No space above chest at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
-                plugin.debug(e);
-                throw e;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return;
-            }
+            plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
+            plugin.getLogger().severe("No space above chest at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            plugin.debug("No space above chest at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            return;
         }
 
         if (hologram == null || !hologram.exists()) createHologram();

@@ -27,7 +27,9 @@ public class MySQL extends Database {
 
             return connection;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            plugin.getLogger().severe("Failed to get database connection");
+            plugin.debug("Failed to get database connection");
+            plugin.debug(ex);
         }
 
         return null;

@@ -117,9 +117,9 @@ public class JsonBuilder {
             Utils.sendPacket(plugin, packetPlayOutChat, p);
         } catch (InstantiationException | InvocationTargetException |
                 IllegalAccessException | NoSuchMethodException e) {
-            plugin.debug("Failed to send packet with reflection");
+            plugin.getLogger().severe("Failed to send JSON with reflection");
+            plugin.debug("Failed to send JSON with reflection");
             plugin.debug(e);
-            e.printStackTrace();
         }
     }
 

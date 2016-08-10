@@ -68,9 +68,9 @@ public abstract class Database {
             close(ps, rs);
 
         } catch (SQLException ex) {
+            plugin.getLogger().severe("Failed to connect to database");
             plugin.debug("Failed to connect to database");
             plugin.debug(ex);
-            ex.printStackTrace();
         }
     }
 
@@ -112,7 +112,8 @@ public abstract class Database {
             return highestID;
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            plugin.debug("Failed to get highest used ID");
+            plugin.getLogger().severe("Failed to access database");
         } finally {
             close(ps, rs);
         }
@@ -133,7 +134,9 @@ public abstract class Database {
             plugin.debug("Removing shop from database (#" + shop.getID() + ")");
             ps.executeUpdate();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            plugin.getLogger().severe("Failed to access database");
+            plugin.debug("Failed to remove shop from database (#" + shop.getID() + ")");
+            plugin.debug(ex);
         } finally {
             close(ps, null);
         }
@@ -210,9 +213,8 @@ public abstract class Database {
                             plugin.debug("Getting sellprice: " + sellprice + " (#" + id + ")");
                             return sellprice;
                         case SHOPTYPE:
-                            ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
-                            plugin.debug("Getting shoptype: " + rs.getString("shoptype") + " (#" + id + ")");
                             String shoptype = rs.getString("shoptype");
+                            plugin.debug("Getting shoptype: " + shoptype + " (#" + id + ")");
 
                             if (shoptype.equals("INFINITE")) {
 
@@ -236,7 +238,9 @@ public abstract class Database {
             plugin.debug("Shop with ID not found, returning null. (#" + id + ")");
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            plugin.getLogger().severe("Failed to access database");
+            plugin.debug("Failed to get shop info " + shopInfo.toString() + "(#" + id + ")");
+            plugin.debug(ex);
         } finally {
             close(ps, rs);
         }
@@ -269,7 +273,9 @@ public abstract class Database {
 
             ps.executeUpdate();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            plugin.getLogger().severe("Failed to access database");
+            plugin.debug("Failed to add shop to database (#" + shop.getID() + ")");
+            plugin.debug(ex);
         } finally {
             close(ps, null);
         }
@@ -287,7 +293,8 @@ public abstract class Database {
             if (rs != null)
                 rs.close();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            plugin.debug("Failed to close PreparedStatement/ResultSet");
+            plugin.debug(ex);
         }
     }
 
@@ -296,14 +303,14 @@ public abstract class Database {
      */
     public void disconnect() {
         try {
-            if (connection != null) {
+            if (connection != null && !connection.isClosed()) {
                 plugin.debug("Disconnecting from database...");
                 connection.close();
             }
         } catch (SQLException e) {
+            plugin.getLogger().severe("Failed to disconnect from database");
             plugin.debug("Failed to disconnect from database");
             plugin.debug(e);
-            e.printStackTrace();
         }
     }
 

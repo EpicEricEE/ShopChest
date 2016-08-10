@@ -73,9 +73,9 @@ public class Hologram {
                 this.location.subtract(0, 0.25, 0);
                 count++;
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                plugin.getLogger().severe("Could not create Hologram with reflection");
                 plugin.debug("Could not create Hologram with reflection");
                 plugin.debug(e);
-                e.printStackTrace();
             }
 
 
@@ -107,9 +107,9 @@ public class Hologram {
 
                 Utils.sendPacket(plugin, packet, p);
             } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                plugin.getLogger().severe("Could not show Hologram to player with reflection");
                 plugin.debug("Could not show Hologram to player with reflection");
                 plugin.debug(e);
-                e.printStackTrace();
             }
         }
         visible.add(p);
@@ -127,9 +127,9 @@ public class Hologram {
 
                 Utils.sendPacket(plugin, packet, p);
             } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                plugin.getLogger().severe("Could not hide Hologram from player with reflection");
                 plugin.debug("Could not hide Hologram from player with reflection");
                 plugin.debug(e);
-                e.printStackTrace();
             }
         }
         visible.remove(p);
@@ -159,9 +159,9 @@ public class Hologram {
             try {
                 o.getClass().getMethod("die").invoke(o);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                plugin.getLogger().severe("Could not remove Hologram with reflection");
                 plugin.debug("Could not remove Hologram with reflection");
                 plugin.debug(e);
-                e.printStackTrace();
             }
         }
         exists = false;

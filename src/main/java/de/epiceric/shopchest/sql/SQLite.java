@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class SQLite extends Database {
 
@@ -22,7 +23,9 @@ public class SQLite extends Database {
             try {
                 dbFile.createNewFile();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                plugin.getLogger().severe("Failed to create database file");
+                plugin.debug("Failed to create database file");
+                plugin.debug(ex);
             }
         }
 
@@ -35,8 +38,10 @@ public class SQLite extends Database {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
 
             return connection;
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (ClassNotFoundException | SQLException ex) {
+            plugin.getLogger().severe("Failed to get database connection");
+            plugin.debug("Failed to get database connection");
+            plugin.debug(ex);
         }
 
         return null;

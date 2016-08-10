@@ -80,9 +80,9 @@ public class ShopItem {
             creationPackets[1] = packetPlayOutEntityMetadataClass.getConstructor(int.class, dataWatcherClass, boolean.class).newInstance(entityId, dataWatcher, true);
             creationPackets[2] = packetPlayOutEntityVelocityClass.getConstructor(int.class, double.class, double.class, double.class).newInstance(entityId, 0D, 0D, 0D);
         } catch (NoSuchMethodException | NoSuchFieldException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            plugin.getLogger().severe("Failed to create shop item");
             plugin.debug("Failed to create shop item with reflection");
             plugin.debug(e);
-            e.printStackTrace();
         }
     }
 
@@ -120,9 +120,9 @@ public class ShopItem {
                     Utils.sendPacket(plugin, packetPlayOutEntityDestroy, p);
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                plugin.getLogger().severe("Failed to destroy shop item");
                 plugin.debug("Failed to destroy shop item with reflection");
                 plugin.debug(e);
-                e.printStackTrace();
             }
         }
 

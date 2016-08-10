@@ -3,6 +3,7 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -135,6 +136,9 @@ public class Utils {
      */
     public static boolean sendPacket(ShopChest plugin, Object packet, Player player) {
         try {
+            if (packet == null)
+                return false;
+
             Class<?> packetClass = Class.forName("net.minecraft.server." + getServerVersion() + ".Packet");
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
             Object playerConnection = nmsPlayer.getClass().getField("playerConnection").get(nmsPlayer);
@@ -143,9 +147,9 @@ public class Utils {
 
             return true;
         } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException | InvocationTargetException e) {
+            plugin.getLogger().severe("Failed to send packet " + packet.getClass().getName());
             plugin.debug("Failed to send packet " + packet.getClass().getName());
             plugin.debug(e);
-            e.printStackTrace();
             return false;
         }
     }
@@ -195,7 +199,7 @@ public class Utils {
         YamlConfiguration config = new YamlConfiguration();
         try {
             config.loadFromString(new String(DatatypeConverter.parseBase64Binary(string), StandardCharsets.UTF_8));
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | InvalidConfigurationException e) {
             e.printStackTrace();
             return null;
         }

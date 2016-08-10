@@ -30,9 +30,9 @@ public class SpawnEggMeta {
             if (id instanceof String) return (String) id;
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            plugin.debug("Could not get NBTEntityID with reflection");
+            plugin.getLogger().severe("Failed to get NBTEntityID with reflection");
+            plugin.debug("Failed to get NBTEntityID with reflection");
             plugin.debug(e);
-            e.printStackTrace();
         }
 
         return null;

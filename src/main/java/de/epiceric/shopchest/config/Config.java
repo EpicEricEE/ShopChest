@@ -342,7 +342,7 @@ public class Config {
 
                     langConfig.loadFromString(sb.toString());
                 } catch (IOException | InvalidConfigurationException ex) {
-                    ex.printStackTrace();
+                    plugin.debug(ex);
                     plugin.getLogger().warning("Using default language values");
                 }
             } else {
@@ -350,7 +350,7 @@ public class Config {
                     langConfig.load(langDefaultFile);
                     plugin.getLogger().info("Using locale \"en_US\"");
                 } catch (IOException | InvalidConfigurationException e) {
-                    e.printStackTrace();
+                    plugin.debug(e);
                     plugin.getLogger().warning("Using default language values");
                 }
             }
@@ -359,7 +359,7 @@ public class Config {
                 plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\"");
                 langConfig.load(langConfigFile);
             } catch (IOException | InvalidConfigurationException ex) {
-                ex.printStackTrace();
+                plugin.debug(ex);
                 plugin.getLogger().warning("Using default language values");
             }
         }
