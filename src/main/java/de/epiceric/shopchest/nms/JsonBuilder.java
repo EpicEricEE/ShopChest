@@ -25,7 +25,7 @@ public class JsonBuilder {
         if (Utils.getServerVersion().equals("v1_8_R1")) {
             chatSerializerClass = Utils.getNMSClass("ChatSerializer");
         } else {
-            chatSerializerClass = Utils.getNMSClass("ChatBaseComponent$ChatSerializer");
+            chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");
         }
 
         Class[] requiredClasses = new Class[] {
