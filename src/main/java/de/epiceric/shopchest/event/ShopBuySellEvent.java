@@ -11,12 +11,16 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     private Player player;
     private Shop shop;
     private Type type;
+    private int newAmount;
+    private double newPrice;
     private boolean cancelled;
 
-    public ShopBuySellEvent(Player player, Shop shop, Type type) {
+    public ShopBuySellEvent(Player player, Shop shop, Type type, int newAmount, double newPrice) {
         this.player = player;
         this.shop = shop;
         this.type = type;
+        this.newAmount = newAmount;
+        this.newPrice = newPrice;
     }
 
     @Override
@@ -29,6 +33,20 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
      */
     public Type getType() {
         return type;
+    }
+
+    /**
+     * @return The amount which might be modified because of automatic item amount calculation
+     */
+    public int getNewAmount() {
+        return newAmount;
+    }
+
+    /**
+     * @return The price which might be modified because of automatic item amount calculation
+     */
+    public double getNewPrice() {
+        return newPrice;
     }
 
     @Override

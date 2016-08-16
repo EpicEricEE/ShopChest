@@ -14,6 +14,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Utils {
 
@@ -53,6 +54,65 @@ public class Utils {
         }
 
         return amount;
+    }
+
+    /**
+     * Get the amount of the given item, that fits in the given inventory
+     *
+     * @param inventory Inventory, where to search for free space
+     * @param itemStack Item, of which the amount that fits in the inventory should be returned
+     * @return Amount of the given item, that fits in the given inventory
+     */
+    public static int getFreeSpaceForItem(Inventory inventory, ItemStack itemStack) {
+        HashMap<Integer, Integer> slotFree = new HashMap<>();
+
+        if (inventory instanceof PlayerInventory) {
+            for (int i = 0; i < 36; i++) {
+                ItemStack item = inventory.getItem(i);
+                if (item == null) {
+                    slotFree.put(i, itemStack.getMaxStackSize());
+                } else {
+                    if (item.isSimilar(itemStack)) {
+                        int amountInSlot = item.getAmount();
+                        int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
+                        slotFree.put(i, amountToFullStack);
+                    }
+                }
+            }
+
+            if (getMajorVersion() >= 9) {
+                ItemStack item = inventory.getItem(40);
+                if (item == null) {
+                    slotFree.put(40, itemStack.getMaxStackSize());
+                } else {
+                    if (item.isSimilar(itemStack)) {
+                        int amountInSlot = item.getAmount();
+                        int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
+                        slotFree.put(40, amountToFullStack);
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < inventory.getSize(); i++) {
+                ItemStack item = inventory.getItem(i);
+                if (item == null) {
+                    slotFree.put(i, itemStack.getMaxStackSize());
+                } else {
+                    if (item.isSimilar(itemStack)) {
+                        int amountInSlot = item.getAmount();
+                        int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
+                        slotFree.put(i, amountToFullStack);
+                    }
+                }
+            }
+        }
+
+        int freeAmount = 0;
+        for (int value : slotFree.values()) {
+            freeAmount += value;
+        }
+
+        return freeAmount;
     }
 
     /**

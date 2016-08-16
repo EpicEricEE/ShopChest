@@ -31,6 +31,16 @@ two-line-prices: false
 # A value of '1' equals to one block, and a value of '0.25' is equal to the height of one line.
 two-line-hologram-lift: 0.25
 
+# Set whether players should be allowed to sell their items, even if the amount they have, is
+# lower than the amount, the shop owner has set for the given price, or if the inventory of the chest
+# doesn't have enough space for all the items, but only for a few, or if the player only has enough money for
+# a few items, but not for the amount, the shop owner has set. When set to true, players may also
+# buy items from a shop, even if the amount of items in the chest is lower than the amount, the shop owner has
+# set for the given price, or if they don't have enough space in the inventory for all of the items, but
+# only for a few, or if the shop owner doesn't have enough money to buy all of the items, the player wants to sell.
+# The price will be calculated correspondingly. (If it's not clear enough, please let me know)
+auto-calculate-item-amount: false
+
 # Set whether players should be allowed to sell/buy broken items
 allow-broken-items: false
 

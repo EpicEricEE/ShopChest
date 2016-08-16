@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.listeners;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopBuySellEvent;
 import de.epiceric.shopchest.event.ShopCreateEvent;
@@ -48,6 +49,7 @@ public class ShopInteractListener implements Listener {
     private Economy econ;
     private Database database;
     private ShopUtils shopUtils;
+    private Config config;
 
     public ShopInteractListener(ShopChest plugin) {
         this.plugin = plugin;
@@ -55,6 +57,7 @@ public class ShopInteractListener implements Listener {
         this.econ = plugin.getEconomy();
         this.database = plugin.getShopDatabase();
         this.shopUtils = plugin.getShopUtils();
+        this.config = plugin.getShopChestConfig();
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -185,8 +188,12 @@ public class ShopInteractListener implements Listener {
                                                 if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                                     buy(p, shop);
                                                 } else {
-                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
-                                                    plugin.debug("Shop is out of stock");
+                                                    if (config.auto_calculate_item_amount && Utils.getAmount(c.getInventory(), shop.getProduct()) > 0) {
+                                                        buy(p, shop);
+                                                    } else {
+                                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
+                                                        plugin.debug("Shop is out of stock");
+                                                    }
                                                 }
                                             }
                                         } else {
@@ -222,8 +229,12 @@ public class ShopInteractListener implements Listener {
                                     if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                         sell(p, shop);
                                     } else {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
-                                        plugin.debug(p.getName() + " doesn't have enough items");
+                                        if (config.auto_calculate_item_amount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
+                                            sell(p, shop);
+                                        } else {
+                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
+                                            plugin.debug(p.getName() + " doesn't have enough items");
+                                        }
                                     }
                                 } else {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL));
@@ -262,7 +273,7 @@ public class ShopInteractListener implements Listener {
         plugin.debug(executor.getName() + " is creating new shop...");
 
         int id = database.getNextFreeID();
-        double creationPrice = (shopType == ShopType.NORMAL) ? plugin.getShopChestConfig().shop_creation_price_normal : plugin.getShopChestConfig().shop_creation_price_admin;
+        double creationPrice = (shopType == ShopType.NORMAL) ? config.shop_creation_price_normal : config.shop_creation_price_admin;
 
         ShopCreateEvent event = new ShopCreateEvent(executor, Shop.createImaginaryShop(executor, product, location, buyPrice, sellPrice,shopType), creationPrice);
         Bukkit.getPluginManager().callEvent(event);
@@ -410,78 +421,78 @@ public class ShopInteractListener implements Listener {
      */
     private void buy(Player executor, Shop shop) {
         plugin.debug(executor.getName() + " is buying (#" + shop.getID() + ")");
-        if (econ.getBalance(executor) >= shop.getBuyPrice()) {
-            plugin.debug(executor.getName() + " has enough money (#" + shop.getID() + ")");
+        if (econ.getBalance(executor) >= shop.getBuyPrice() || config.auto_calculate_item_amount) {
+
+            int amountForMoney = (int) (shop.getProduct().getAmount() / shop.getBuyPrice() * econ.getBalance(executor));
+
+            if (amountForMoney == 0 && config.auto_calculate_item_amount) {
+                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_MONEY));
+                return;
+            }
+
+            plugin.debug(executor.getName() + " has enough money for " + amountForMoney + " item(s) (#" + shop.getID() + ")");
 
             Block b = shop.getLocation().getBlock();
             Chest c = (Chest) b.getState();
 
-            HashMap<Integer, Integer> slotFree = new HashMap<>();
+            int amountForChestSpace = Utils.getAmount(c.getInventory(), shop.getProduct());
+
+            if (amountForChestSpace == 0 && config.auto_calculate_item_amount) {
+                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
+                return;
+            }
+
             ItemStack product = new ItemStack(shop.getProduct());
             Inventory inventory = executor.getInventory();
 
-            for (int i = 0; i < 36; i++) {
-                ItemStack item = inventory.getItem(i);
-                if (item == null) {
-                    slotFree.put(i, product.getMaxStackSize());
-                } else {
-                    if (item.isSimilar(product)) {
-                        int amountInSlot = item.getAmount();
-                        int amountToFullStack = product.getMaxStackSize() - amountInSlot;
-                        slotFree.put(i, amountToFullStack);
-                    }
-                }
+            int freeSpace = Utils.getFreeSpaceForItem(inventory, product);
+
+            int amountForPlayerInvSpace = (freeSpace >= product.getAmount() ? product.getAmount() : freeSpace);
+
+            if (amountForPlayerInvSpace == 0 && config.auto_calculate_item_amount) {
+                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE));
+                return;
             }
 
-            if (Utils.getMajorVersion() >= 9) {
-                ItemStack item = inventory.getItem(40);
-                if (item == null) {
-                    slotFree.put(40, product.getMaxStackSize());
-                } else {
-                    if (item.isSimilar(product)) {
-                        int amountInSlot = item.getAmount();
-                        int amountToFullStack = product.getMaxStackSize() - amountInSlot;
-                        slotFree.put(40, amountToFullStack);
-                    }
-                }
-            }
+            int newAmount = Math.min(Math.min(amountForMoney, amountForChestSpace), amountForPlayerInvSpace);
+            if (newAmount > shop.getProduct().getAmount()) newAmount = shop.getProduct().getAmount();
 
-            int freeAmount = 0;
-            for (int value : slotFree.values()) {
-                freeAmount += value;
-            }
+            double newPrice = (shop.getBuyPrice() / shop.getProduct().getAmount()) * newAmount;
 
-            if (freeAmount >= product.getAmount()) {
-                plugin.debug(executor.getName() + " has enough inventory space (#" + shop.getID() + ")");
+            if (freeSpace >= product.getAmount() || (config.auto_calculate_item_amount && freeSpace >= newAmount)) {
+                plugin.debug(executor.getName() + " has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
 
-                EconomyResponse r = econ.withdrawPlayer(executor, shop.getBuyPrice());
-                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), shop.getBuyPrice()) : null;
+                ItemStack newProduct = new ItemStack(product);
+                newProduct.setAmount(newAmount);
+
+                EconomyResponse r = econ.withdrawPlayer(executor, newPrice);
+                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), newPrice) : null;
 
                 if (r.transactionSuccess()) {
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
-                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY);
+                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY, newAmount, newPrice);
                             Bukkit.getPluginManager().callEvent(event);
 
                             if (event.isCancelled()) {
-                                econ.depositPlayer(executor, shop.getBuyPrice());
-                                econ.withdrawPlayer(shop.getVendor(), shop.getBuyPrice());
+                                econ.depositPlayer(executor, newPrice);
+                                econ.withdrawPlayer(shop.getVendor(), newPrice);
                                 plugin.debug("Buy event cancelled (#" + shop.getID() + ")");
                                 return;
                             }
 
-                            addToInventory(inventory, product);
-                            removeFromInventory(c.getInventory(), product);
+                            addToInventory(inventory, newProduct);
+                            removeFromInventory(c.getInventory(), newProduct);
                             executor.updateInventory();
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
-                                    new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(shop.getBuyPrice())),
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
+                                    new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(newPrice)),
                                     new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
 
                             plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
 
                             if (shop.getVendor().isOnline()) {
-                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
-                                        new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(shop.getBuyPrice())),
+                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
+                                        new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(newPrice)),
                                         new LocalizedMessage.ReplacedRegex(Regex.PLAYER, executor.getName())));
                             }
 
@@ -490,19 +501,19 @@ public class ShopInteractListener implements Listener {
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r2.errorMessage)));
                         }
                     } else {
-                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY);
+                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY, newAmount, newPrice);
                         Bukkit.getPluginManager().callEvent(event);
 
                         if (event.isCancelled()) {
-                            econ.depositPlayer(executor, shop.getBuyPrice());
+                            econ.depositPlayer(executor, newPrice);
                             plugin.debug("Buy event cancelled (#" + shop.getID() + ")");
                             return;
                         }
 
-                        addToInventory(inventory, product);
+                        addToInventory(inventory, newProduct);
                         executor.updateInventory();
-                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
-                                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(shop.getBuyPrice()))));
+                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
+                                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(newPrice))));
 
                         plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
                     }
@@ -526,65 +537,77 @@ public class ShopInteractListener implements Listener {
     private void sell(Player executor, Shop shop) {
         plugin.debug(executor.getName() + " is selling (#" + shop.getID() + ")");
 
-        if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice() || shop.getShopType() == ShopType.ADMIN) {
-            plugin.debug("Vendor has enough money (#" + shop.getID() + ")");
+        if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice() || shop.getShopType() == ShopType.ADMIN || config.auto_calculate_item_amount) {
+            int amountForMoney = (int) (shop.getProduct().getAmount() / shop.getSellPrice() * econ.getBalance(shop.getVendor()));
+
+            plugin.debug("Vendor has enough money for " + amountForMoney + " item(s) (#" + shop.getID() + ")");
+
+            if (amountForMoney == 0 && config.auto_calculate_item_amount) {
+                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.VENDOR_NOT_ENOUGH_MONEY));
+                return;
+            }
 
             Block block = shop.getLocation().getBlock();
             Chest chest = (Chest) block.getState();
 
-            HashMap<Integer, Integer> slotFree = new HashMap<>();
+            int amountForItemCount = Utils.getAmount(executor.getInventory(), shop.getProduct());
+
+            if (amountForItemCount == 0 && config.auto_calculate_item_amount) {
+                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
+                return;
+            }
+
             ItemStack product = new ItemStack(shop.getProduct());
             Inventory inventory = chest.getInventory();
 
-            for (int i = 0; i < inventory.getSize(); i++) {
-                ItemStack item = inventory.getItem(i);
-                if (item == null) {
-                    slotFree.put(i, product.getMaxStackSize());
-                } else {
-                    if (item.isSimilar(product)) {
-                        int amountInSlot = item.getAmount();
-                        int amountToFullStack = product.getMaxStackSize() - amountInSlot;
-                        slotFree.put(i, amountToFullStack);
-                    }
-                }
+            int freeSpace = Utils.getFreeSpaceForItem(inventory, product);
+
+            int amountForChestSpace = (freeSpace >= product.getAmount() ? product.getAmount() : freeSpace);
+
+            if (amountForChestSpace == 0 && config.auto_calculate_item_amount) {
+                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE));
+                return;
             }
 
-            int freeAmount = 0;
-            for (int value : slotFree.values()) {
-                freeAmount += value;
-            }
+            int newAmount = Math.min(Math.min(amountForMoney, amountForItemCount), amountForChestSpace);
+            if (newAmount > shop.getProduct().getAmount()) newAmount = shop.getProduct().getAmount();
 
-            if (freeAmount >= product.getAmount()) {
-                plugin.debug("Chest has enough inventory space (#" + shop.getID() + ")");
+            double newPrice = (shop.getSellPrice() / shop.getProduct().getAmount()) * newAmount;
 
-                EconomyResponse r = econ.depositPlayer(executor, shop.getSellPrice());
-                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.withdrawPlayer(shop.getVendor(), shop.getSellPrice()) : null;
+            if (freeSpace >= product.getAmount() || (config.auto_calculate_item_amount && freeSpace >= newAmount)) {
+                plugin.debug("Chest has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
+
+                ItemStack newProduct = new ItemStack(product);
+                newProduct.setAmount(newAmount);
+
+                EconomyResponse r = econ.depositPlayer(executor, newPrice);
+                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.withdrawPlayer(shop.getVendor(), newPrice) : null;
 
                 if (r.transactionSuccess()) {
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
-                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL);
+                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL, newAmount, newPrice);
                             Bukkit.getPluginManager().callEvent(event);
 
                             if (event.isCancelled()) {
-                                econ.withdrawPlayer(executor, shop.getBuyPrice());
-                                econ.depositPlayer(shop.getVendor(), shop.getBuyPrice());
+                                econ.withdrawPlayer(executor, newPrice);
+                                econ.depositPlayer(shop.getVendor(), newPrice);
                                 plugin.debug("Sell event cancelled (#" + shop.getID() + ")");
                                 return;
                             }
 
-                            addToInventory(inventory, product);
-                            removeFromInventory(executor.getInventory(), product);
+                            addToInventory(inventory, newProduct);
+                            removeFromInventory(executor.getInventory(), newProduct);
                             executor.updateInventory();
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
-                                    new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(shop.getSellPrice())),
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
+                                    new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(newPrice)),
                                     new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
 
                             plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
 
                             if (shop.getVendor().isOnline()) {
-                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_SOLD, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
-                                        new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(shop.getSellPrice())),
+                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_SOLD, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
+                                        new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(newPrice)),
                                         new LocalizedMessage.ReplacedRegex(Regex.PLAYER, executor.getName())));
                             }
 
@@ -594,19 +617,19 @@ public class ShopInteractListener implements Listener {
                         }
 
                     } else {
-                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL);
+                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL, newAmount, newPrice);
                         Bukkit.getPluginManager().callEvent(event);
 
                         if (event.isCancelled()) {
-                            econ.withdrawPlayer(executor, shop.getBuyPrice());
+                            econ.withdrawPlayer(executor, newPrice);
                             plugin.debug("Sell event cancelled (#" + shop.getID() + ")");
                             return;
                         }
 
-                        removeFromInventory(executor.getInventory(), product);
+                        removeFromInventory(executor.getInventory(), newProduct);
                         executor.updateInventory();
-                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
-                                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(shop.getSellPrice()))));
+                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
+                                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(newPrice))));
 
                         plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
                     }

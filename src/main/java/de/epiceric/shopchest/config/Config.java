@@ -103,6 +103,9 @@ public class Config {
      */
     public boolean remove_shop_on_error;
 
+    /** Whether the item amount should be calculated to fit the available money or inventory space **/
+    public boolean auto_calculate_item_amount;
+
     /** Amount the hologram should be lifted **/
     public double two_line_hologram_lift;
 
@@ -276,6 +279,7 @@ public class Config {
         database_type = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
         minimum_prices = (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);
         allow_broken_items = plugin.getConfig().getBoolean("allow-broken-items");
+        auto_calculate_item_amount = plugin.getConfig().getBoolean("auto-calculate-item-amount");
         shopLimits_group = (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);
         shopLimits_player = (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
