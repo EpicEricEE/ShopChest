@@ -3,10 +3,10 @@
   <groupId>de.epiceric</groupId>
   <artifactId>ShopChest</artifactId>
   <versioning>
-    <release>1.9.1</release>
+    <release>1.10.0</release>
     <versions>
-      <version>1.9.1</version>
+      <version>1.10.0</version>
     </versions>
-    <lastUpdated>20160803143945</lastUpdated>
+    <lastUpdated>20160816180850</lastUpdated>
   </versioning>
 </metadata>
