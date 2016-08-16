@@ -98,6 +98,11 @@ database:
   # (You can leave this empty if you're using SQLite)
   mysql:
 
+    # ...interval in seconds, when the database should be pinged, to keep the connection alive
+    # This should be lower than the 'connect_timeout' variable in your MySQL server
+    # You can set this to '0' to disable the ping interval
+    ping-interval: 3600
+
     # ...hostname where the database is accessible
     hostname: ""
 

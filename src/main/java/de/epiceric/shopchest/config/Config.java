@@ -40,6 +40,9 @@ public class Config {
     /** The database type used for ShopChest. **/
     public Database.DatabaseType database_type;
 
+    /** The interval in seconds, a ping is sent to the MySQL server **/
+    public int database_mysql_ping_interval;
+
     /**
      * <p>The minimum prices for certain items</p>
      * This returns a key set, which contains e.g "STONE", "STONE:1", of the <i>minimum-prices</i> section in ShopChest's config.
@@ -264,6 +267,7 @@ public class Config {
      * Reload the configuration values from config.yml
      */
     public void reload(boolean firstLoad, boolean langReload) {
+        database_mysql_ping_interval = plugin.getConfig().getInt("database.mysql.ping-interval");
         database_mysql_host = plugin.getConfig().getString("database.mysql.hostname");
         database_mysql_port = plugin.getConfig().getInt("database.mysql.port");
         database_mysql_database = plugin.getConfig().getString("database.mysql.database");
@@ -271,7 +275,7 @@ public class Config {
         database_mysql_password = plugin.getConfig().getString("database.mysql.password");
         database_type = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
         minimum_prices = (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);
-        allow_broken_items = (plugin.getConfig().getBoolean("allow-broken-items"));
+        allow_broken_items = plugin.getConfig().getBoolean("allow-broken-items");
         shopLimits_group = (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);
         shopLimits_player = (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");

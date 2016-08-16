@@ -219,6 +219,16 @@ public class ShopChest extends JavaPlugin {
             debug("Using database type: MySQL");
             getLogger().info("Using MySQL");
             database = new MySQL(this);
+            if (config.database_mysql_ping_interval > 0) {
+                Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+                    @Override
+                    public void run() {
+                        if (database instanceof MySQL) {
+                            ((MySQL) database).ping();
+                        }
+                    }
+                }, config.database_mysql_ping_interval * 20L, config.database_mysql_ping_interval * 20L);
+            }
         }
 
         if (config.auto_reload_time > 0) {
