@@ -106,14 +106,14 @@ public class Config {
     /** Whether the item amount should be calculated to fit the available money or inventory space **/
     public boolean auto_calculate_item_amount;
 
-    /** Delay in ticks after a player joins, when the shop item spawn packets should be sent to the player **/
-    public long item_spawn_delay;
-
     /** Amount the hologram should be lifted **/
     public double two_line_hologram_lift;
 
     /** The maximum distance between a player and a shop to see the hologram **/
     public double maximal_distance;
+
+    /** The maximum distance between a player and a shop to see the shop item **/
+    public double maximal_item_distance;
 
     /** The price a player has to pay in order to create a normal shop **/
     public double shop_creation_price_normal;
@@ -286,7 +286,6 @@ public class Config {
         shopLimits_group = (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);
         shopLimits_player = (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
-        item_spawn_delay = plugin.getConfig().getLong("item-spawn-delay");
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
         two_line_prices = plugin.getConfig().getBoolean("two-line-prices");
@@ -298,6 +297,7 @@ public class Config {
         remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
         two_line_hologram_lift = plugin.getConfig().getDouble("two-line-hologram-lift");
         maximal_distance = plugin.getConfig().getDouble("maximal-distance");
+        maximal_item_distance = plugin.getConfig().getDouble("maximal-item-distance");
         shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
         shop_creation_price_admin = plugin.getConfig().getDouble("shop-creation-price.admin");
         default_limit = plugin.getConfig().getInt("shop-limits.default");

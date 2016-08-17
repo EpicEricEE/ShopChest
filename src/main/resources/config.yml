@@ -18,12 +18,6 @@ show-shop-items: true
 # The file may get large! Please enable this setting when reporting bugs.
 enable-debug-log: false
 
-# Set the delay in ticks (20 ticks = 1 second) after a player joins, when the spawn packets of the
-# floating shop item should be sent to the player. If you experience errors, that the items won't spawn
-# after joining, you may increase this value a bit. You can also set this to '0' to send the packets
-# without a delay after joining.
-item-spawn-delay: 20
-
 # Set whether the buy- and sell price should be arranged below each other.
 # The first line will be the buy price with the message "message.hologram.only-buy",
 # the second line will be the sell price with the message "message.hologram.only-sell".
@@ -60,9 +54,11 @@ append-potion-level-to-item-name: false
 # This might be useful if you're removing shop chests with WorldEdit, resetting plots, or similar
 remove-shop-on-error: false
 
-# Set the maximal distance to the shop where the player can see the hologram.
-# Value MUST be a number (e.g. 1, 1.5, 2.75, ...)
+# Set the maximal distance (in blocks) to the shop where the player can see the hologram.
 maximal-distance: 1.75
+
+# Set the maximal distance (in blocks) to the shop where the player can see the floatig shop item.
+maximal-item-distance: 40
 
 # Set the time in seconds between automatic shop reloads.
 # You can set this to 0 to disable automatic shop reloads.

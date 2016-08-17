@@ -25,19 +25,37 @@ public class ShopItemListener implements Listener {
         this.shopUtils = plugin.getShopUtils();
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(final PlayerJoinEvent e) {
-        long spawnDelay = plugin.getShopChestConfig().item_spawn_delay;
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+        for (Shop shop : shopUtils.getShops()) {
+            if (shop.getLocation().distance(p.getLocation()) <= plugin.getShopChestConfig().maximal_item_distance) {
+                shop.getItem().setVisible(p, true);
+            } else {
+                shop.getItem().setVisible(p, false);
+            }
+        }
+    }
 
-        if (spawnDelay > 0) {
-            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    for (Shop shop : plugin.getShopUtils().getShops()) {
-                        shop.getItem().setVisible(e.getPlayer(), true);
-                    }
-                }
-            }, spawnDelay);
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent e) {
+        Player p = e.getPlayer();
+        for (Shop shop : shopUtils.getShops()) {
+            if (shop.getLocation().distance(e.getTo()) <= plugin.getShopChestConfig().maximal_item_distance) {
+                shop.getItem().setVisible(p, true);
+            } else {
+                shop.getItem().setVisible(p, false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(final PlayerJoinEvent e) {
+        Player p = e.getPlayer();
+        for (Shop shop : shopUtils.getShops()) {
+            if (shop.getLocation().distance(p.getLocation()) <= plugin.getShopChestConfig().maximal_item_distance) {
+                shop.getItem().setVisible(p, true);
+            }
         }
     }
 
