@@ -201,14 +201,19 @@ public class Utils {
                 return false;
             }
 
-            Class<?> packetClass = Class.forName("net.minecraft.server." + getServerVersion() + ".Packet");
+            Class<?> packetClass = getNMSClass("Packet");
+            if (packetClass == null) {
+                plugin.debug("Failed to send packet: Could not find Packet class");
+                return false;
+            }
+
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
             Object playerConnection = nmsPlayer.getClass().getField("playerConnection").get(nmsPlayer);
 
             playerConnection.getClass().getMethod("sendPacket", packetClass).invoke(playerConnection, packet);
 
             return true;
-        } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException | InvocationTargetException e) {
             plugin.getLogger().severe("Failed to send packet " + packet.getClass().getName());
             plugin.debug("Failed to send packet " + packet.getClass().getName());
             plugin.debug(e);
