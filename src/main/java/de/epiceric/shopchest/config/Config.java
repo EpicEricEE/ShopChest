@@ -106,6 +106,9 @@ public class Config {
     /** Whether the item amount should be calculated to fit the available money or inventory space **/
     public boolean auto_calculate_item_amount;
 
+    /** Delay in ticks after a player joins, when the shop item spawn packets should be sent to the player **/
+    public long item_spawn_delay;
+
     /** Amount the hologram should be lifted **/
     public double two_line_hologram_lift;
 
@@ -283,6 +286,7 @@ public class Config {
         shopLimits_group = (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);
         shopLimits_player = (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
+        item_spawn_delay = plugin.getConfig().getLong("item-spawn-delay");
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
         two_line_prices = plugin.getConfig().getBoolean("two-line-prices");

@@ -288,8 +288,6 @@ public class ShopChest extends JavaPlugin {
             debug(e);
         }
 
-        initializeShops();
-
         debug("Registering listeners...");
         getServer().getPluginManager().registerEvents(new HologramUpdateListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopItemListener(this), this);
@@ -300,6 +298,7 @@ public class ShopChest extends JavaPlugin {
         if (!Utils.getServerVersion().equals("v1_8_R1"))
             getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);
 
+        initializeShops();
     }
 
     @Override

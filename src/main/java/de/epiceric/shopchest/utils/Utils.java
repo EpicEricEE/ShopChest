@@ -196,8 +196,10 @@ public class Utils {
      */
     public static boolean sendPacket(ShopChest plugin, Object packet, Player player) {
         try {
-            if (packet == null)
+            if (packet == null) {
+                plugin.debug("Failed to send packet: Packet is null");
                 return false;
+            }
 
             Class<?> packetClass = Class.forName("net.minecraft.server." + getServerVersion() + ".Packet");
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);

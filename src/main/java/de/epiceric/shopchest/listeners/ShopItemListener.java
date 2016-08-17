@@ -15,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.player.*;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class ShopItemListener implements Listener {
 
     private ShopUtils shopUtils;
@@ -27,10 +25,19 @@ public class ShopItemListener implements Listener {
         this.shopUtils = plugin.getShopUtils();
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        for (Shop shop : plugin.getShopUtils().getShops()) {
-            shop.getItem().setVisible(e.getPlayer(), true);
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerJoin(final PlayerJoinEvent e) {
+        long spawnDelay = plugin.getShopChestConfig().item_spawn_delay;
+
+        if (spawnDelay > 0) {
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    for (Shop shop : plugin.getShopUtils().getShops()) {
+                        shop.getItem().setVisible(e.getPlayer(), true);
+                    }
+                }
+            }, spawnDelay);
         }
     }
 

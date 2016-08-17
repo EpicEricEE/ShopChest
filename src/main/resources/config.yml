@@ -18,6 +18,12 @@ show-shop-items: true
 # The file may get large! Please enable this setting when reporting bugs.
 enable-debug-log: false
 
+# Set the delay in ticks (20 ticks = 1 second) after a player joins, when the spawn packets of the
+# floating shop item should be sent to the player. If you experience errors, that the items won't spawn
+# after joining, you may increase this value a bit. You can also set this to '0' to send the packets
+# without a delay after joining.
+item-spawn-delay: 20
+
 # Set whether the buy- and sell price should be arranged below each other.
 # The first line will be the buy price with the message "message.hologram.only-buy",
 # the second line will be the sell price with the message "message.hologram.only-sell".
