@@ -435,9 +435,9 @@ public class ShopInteractListener implements Listener {
             Block b = shop.getLocation().getBlock();
             Chest c = (Chest) b.getState();
 
-            int amountForChestSpace = Utils.getAmount(c.getInventory(), shop.getProduct());
+            int amountForChestItems = Utils.getAmount(c.getInventory(), shop.getProduct());
 
-            if (amountForChestSpace == 0 && config.auto_calculate_item_amount) {
+            if (amountForChestItems == 0 && config.auto_calculate_item_amount && shop.getShopType() != ShopType.ADMIN) {
                 executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
                 return;
             }
@@ -447,17 +447,23 @@ public class ShopInteractListener implements Listener {
 
             int freeSpace = Utils.getFreeSpaceForItem(inventory, product);
 
-            int amountForPlayerInvSpace = (freeSpace >= product.getAmount() ? product.getAmount() : freeSpace);
-
-            if (amountForPlayerInvSpace == 0 && config.auto_calculate_item_amount) {
+            if (freeSpace == 0 && config.auto_calculate_item_amount) {
                 executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE));
                 return;
             }
 
-            int newAmount = Math.min(Math.min(amountForMoney, amountForChestSpace), amountForPlayerInvSpace);
-            if (newAmount > shop.getProduct().getAmount()) newAmount = shop.getProduct().getAmount();
+            int newAmount = product.getAmount();
 
-            double newPrice = (shop.getBuyPrice() / shop.getProduct().getAmount()) * newAmount;
+            if (config.auto_calculate_item_amount) {
+                if (shop.getShopType() == ShopType.ADMIN)
+                    newAmount = Math.min(amountForMoney, freeSpace);
+                else
+                    newAmount = Math.min(Math.min(amountForMoney, amountForChestItems), freeSpace);
+            }
+
+            if (newAmount > product.getAmount()) newAmount = product.getAmount();
+
+            double newPrice = (shop.getBuyPrice() / product.getAmount()) * newAmount;
 
             if (freeSpace >= product.getAmount() || (config.auto_calculate_item_amount && freeSpace >= newAmount)) {
                 plugin.debug(executor.getName() + " has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
@@ -542,7 +548,7 @@ public class ShopInteractListener implements Listener {
 
             plugin.debug("Vendor has enough money for " + amountForMoney + " item(s) (#" + shop.getID() + ")");
 
-            if (amountForMoney == 0 && config.auto_calculate_item_amount) {
+            if (amountForMoney == 0 && config.auto_calculate_item_amount && shop.getShopType() != ShopType.ADMIN) {
                 executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.VENDOR_NOT_ENOUGH_MONEY));
                 return;
             }
@@ -564,15 +570,23 @@ public class ShopInteractListener implements Listener {
 
             int amountForChestSpace = (freeSpace >= product.getAmount() ? product.getAmount() : freeSpace);
 
-            if (amountForChestSpace == 0 && config.auto_calculate_item_amount) {
+            if (amountForChestSpace == 0 && config.auto_calculate_item_amount && shop.getShopType() != ShopType.ADMIN) {
                 executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE));
                 return;
             }
 
-            int newAmount = Math.min(Math.min(amountForMoney, amountForItemCount), amountForChestSpace);
-            if (newAmount > shop.getProduct().getAmount()) newAmount = shop.getProduct().getAmount();
+            int newAmount = product.getAmount();
 
-            double newPrice = (shop.getSellPrice() / shop.getProduct().getAmount()) * newAmount;
+            if (config.auto_calculate_item_amount) {
+                if (shop.getShopType() == ShopType.ADMIN)
+                    newAmount = amountForItemCount;
+                else
+                    newAmount = Math.min(Math.min(amountForMoney, amountForItemCount), amountForChestSpace);
+            }
+
+            if (newAmount > product.getAmount()) newAmount = product.getAmount();
+
+            double newPrice = (shop.getSellPrice() / product.getAmount()) * newAmount;
 
             if (freeSpace >= product.getAmount() || (config.auto_calculate_item_amount && freeSpace >= newAmount)) {
                 plugin.debug("Chest has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
