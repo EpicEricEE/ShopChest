@@ -1,4 +1,4 @@
-# French translation by 'HoloryTV' for version 1.9.1
+# French translation by 'HoloryTV' and 'Skymine' for version 1.10.2
 
 #  _   _       _                _____ _   _ 
 # | | | |     | |              |_   _| | | |
@@ -72,6 +72,10 @@ message.shopInfo.is-normal=&6Type: &eNormal
 # ... quand le shop est un shop admin.
 message.shopInfo.is-admin=&6Type: &eAdmin
 
+# Si la potion a l'effet prolongée, la variable %EXTENDED% sera remplacée.
+# Sinon, la variable sera vide.
+message.shopInfo.extended=(Prolongée)
+
 # Définir le message qu'obtiendra le joueur en essayant de créer un magasin avec un prix d'achat et de vente égal à 0.
 message.buy-and-sell-disabled=&cVous ne pouvez pas créer un magasin avec un prix d'achat et de vente égal à 0.
 
@@ -122,7 +126,11 @@ message.out-of-stock=&cMagasin en rupture de stock.
 message.error-occurred=&cUne erreur s'est produite: %ERROR%
 
 # Définir le message si les arguments <Quantité> and <Prix> de '/shop create' ne sont pas des nombres.
-message.amount-and-price-not-number=&cLa quantité et le prix doivent être des chiffres.
+message.amount-and-price-not-number=&cLa quantité et les prix doivent être des nombres.
+
+# Définir le message quand la config "allow-decimals-in-prices" est égal à false
+# et que le joueur tente d'écrire un prix avec décimal.
+message.prices-contain-decimals=&cLes prix doivent être des nombres entiers (pas de décimales).
 
 # Définir le message si le joueur n'a pas d'item dans sa main.
 message.no-item-in-hand=&cPas d'objet dans la main.

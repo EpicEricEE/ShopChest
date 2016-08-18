@@ -1,4 +1,4 @@
-# English default language file by 'EpicEric' for version 1.9.1 
+# English default language file by 'EpicEric' for version 1.10.2
 
 # Set the message when a shop is created at the clicked chest.
 message.shop-created=&6Shop created.
@@ -40,8 +40,8 @@ message.shopInfo.stock=&6In Stock: &e%AMOUNT%
 message.shopInfo.enchantments=&6Enchantments: &e%ENCHANTMENT%
 
 # Set the potion effect message the player gets after entering '/shop info' if the product has a potion effect
-# Usable regex: %POTION-EFFECT%
-message.shopInfo.potion-effect=&6Potion Effect: &e%POTION-EFFECT%
+# Usable regex: %POTION-EFFECT%, %EXTENDED%
+message.shopInfo.potion-effect=&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%
 
 # Set the music disc title message the player gets after entering '/shop info' if the product is a music disc
 # Usable regex: %MUSIC-TITLE%
@@ -63,6 +63,10 @@ message.shopInfo.is-normal=&6Type: &eNormal
 
 # ... when the shop is an admin shop.
 message.shopInfo.is-admin=&6Type: &eAdmin
+
+# If the potion effect it extended, %EXTENDED% will be replaced by this.
+# If not, this will be empty.
+message.shopInfo.extended=(Extended)
 
 # Set the message when the player tries to create a shop with sell price and buy price set to 0
 message.buy-and-sell-disabled=&cYou can't create a shop with buying and selling disabled.
@@ -113,8 +117,12 @@ message.out-of-stock=&cShop out of stock.
 # Usable regex: %ERROR%
 message.error-occurred=&cAn error occurred: %ERROR%
 
-# Set the message when the arguments <AMOUNT> and <PRICE> of '/shop create' are not a number.
-message.amount-and-price-not-number=&cAmount and price must be a number.
+# Set the message when the arguments <AMOUNT>, <BUY-PRICE> and/or <SELL-PRICE> of '/shop create' are not a number.
+message.amount-and-price-not-number=&cAmount and prices must be numbers.
+
+# Set the message when the config value "allow-decimals-in-prices" is set to false
+# and a player enters a price with decimals
+message.prices-contain-decimals=&cPrices must not contain decimals.
 
 # Set the message when the player doesn't hold an item in the hand.
 message.no-item-in-hand=&cNo item in hand
@@ -206,7 +214,7 @@ message.noPermission.create=&cYou don't have permission to create a shop.
 message.noPermission.create-admin=&cYou don't have permission to create an admin shop.
 
 # Set the message when a not permitted player tries to create a shop on a protected chest.
-message.noPermission.create-protected=&cYou don't have permission to create a shop on a protected chest.
+message.noPermission.create-protected=&cYou don't have permission to create a shop here.
 
 # Set the message when a not permitted player tries to open another player's shop.
 message.noPermission.open-others=&cYou don't have permission to open this chest.

@@ -1,4 +1,4 @@
-# German translation by 'EpicEric' for version 1.9.1
+# German translation by 'EpicEric' for version 1.10.2
 
 message.shop-created=&6Shop erstellt.
 message.chest-already-shop=&cTruhe ist bereits ein Shop.
@@ -11,13 +11,14 @@ message.shopInfo.vendor=&6Verkäufer: &e%VENDOR%
 message.shopInfo.product=&6Produkt: &e%AMOUNT% x %ITEMNAME%
 message.shopInfo.stock=&6Auf Lager: &e%AMOUNT%
 message.shopInfo.enchantments=&6Verzauberungen: &e%ENCHANTMENT%
-message.shopInfo.potion-effect=&6Trank-Effekte: &e%POTION-EFFECT%
+message.shopInfo.potion-effect=&6Trank-Effekte: &e%POTION-EFFECT% %EXTENDED%
 message.shopInfo.music-disc-title=&6Schallplattentitel: &e%MUSIC-TITLE%
 message.shopInfo.none=&7Keine
 message.shopInfo.price=&6Preis: Kauf: &e%BUY-PRICE%&6 Verkauf: &e%SELL-PRICE%
 message.shopInfo.disabled=&7Deaktiviert
 message.shopInfo.is-normal=&6Typ: &eNormal
 message.shopInfo.is-admin=&6Typ: &eAdmin
+message.shopInfo.extended=(Verlängert)
 message.buy-and-sell-disabled=&cDu kannst keinen Shop ohne Kauf- und Verkaufspreis erstellen.
 message.buy-success=&aDu hast &6%AMOUNT% x %ITEMNAME%&a für &6%BUY-PRICE%&a von &6%VENDOR% &agekauft.
 message.buy-success-admin=&aDu hast &6%AMOUNT% x %ITEMNAME%&a für &6%BUY-PRICE% &agekauft.
@@ -32,7 +33,8 @@ message.not-enough-items=&cNicht genug Items.
 message.vendor-not-enough-money=&cVerkäufer hat nicht genug Geld.
 message.out-of-stock=&cShop ausverkauft.
 message.error-occurred=&cEin Fehler ist aufgetreten: %ERROR%
-message.amount-and-price-not-number=&cAnzahl und Preis müssen Zahlen sein.
+message.amount-and-price-not-number=&cAnzahl und Preise müssen Zahlen sein.
+message.prices-contain-decimals=&cPreise dürfen keine Dezimalen enthalten.
 message.no-item-in-hand=&cKein Item in der Hand.
 message.click-chest-to-create-shop=&aKlicke auf eine Truhe, um einen Shop zu erstellen.
 message.click-chest-to-remove-shop=&aKlicke auf einen Shop, um ihn zu entfernen.
@@ -59,7 +61,7 @@ message.hologram.only-buy=Kauf %BUY-PRICE%
 message.hologram.only-sell=Verkauf %SELL-PRICE%
 message.noPermission.create=&cDu hast keine Berechtigung einen Shop zu erstellen.
 message.noPermission.create-admin=&cDu hast keine Berechtigung einen Admin-Shop zu erstellen.
-message.noPermission.create-protected=&cDu hast keine Berechtigung einen Shop auf einer gesicherten Truhe zu erstellen.
+message.noPermission.create-protected=&cDu hast keine Berechtigung hier einen Shop zu erstellen.
 message.noPermission.open-others=&cDu hast keine Berechtigung diesen Shop zu öffnen.
 message.noPermission.buy=&cDu hast keine Berechtigung etwas zu kaufen.
 message.noPermission.sell=&cDu hast keine Berechtigung etwas zu verkaufen.
