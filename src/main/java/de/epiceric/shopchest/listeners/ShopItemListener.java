@@ -64,7 +64,7 @@ public class ShopItemListener implements Listener {
 
         double itemDistanceSquared = plugin.getShopChestConfig().maximal_item_distance;
         itemDistanceSquared *= itemDistanceSquared;
-        World w = p.getWorld();
+        World w = playerLocation.getWorld();
 
         for (Shop shop : shopUtils.getShops()) {
             Location shopLocation = shop.getLocation();
