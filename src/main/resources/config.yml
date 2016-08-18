@@ -55,7 +55,7 @@ append-potion-level-to-item-name: false
 remove-shop-on-error: false
 
 # Set the maximal distance (in blocks) to the shop where the player can see the hologram.
-maximal-distance: 1.75
+maximal-distance: 2
 
 # Set the maximal distance (in blocks) to the shop where the player can see the floatig shop item.
 maximal-item-distance: 40
