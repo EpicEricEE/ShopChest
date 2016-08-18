@@ -36,17 +36,17 @@ public class ShopItemListener implements Listener {
             return;
         }
 
-        updateShopVisibility(e.getPlayer(), true);
+        updateShopItemVisibility(e.getPlayer(), true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent e) {
-        updateShopVisibility(e.getPlayer(), true, e.getTo());
+        updateShopItemVisibility(e.getPlayer(), true, e.getTo());
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        updateShopVisibility(e.getPlayer(), false);
+        updateShopItemVisibility(e.getPlayer(), false);
     }
 
     @EventHandler
@@ -56,11 +56,11 @@ public class ShopItemListener implements Listener {
         }
     }
 
-    private void updateShopVisibility(Player p, boolean hideIfAway) {
-        updateShopVisibility(p, hideIfAway, p.getLocation());
+    private void updateShopItemVisibility(Player p, boolean hideIfAway) {
+        updateShopItemVisibility(p, hideIfAway, p.getLocation());
     }
 
-    private void updateShopVisibility(Player p, boolean hideIfAway, Location playerLocation) {
+    private void updateShopItemVisibility(Player p, boolean hideIfAway, Location playerLocation) {
 
         double itemDistanceSquared = plugin.getShopChestConfig().maximal_item_distance;
         itemDistanceSquared *= itemDistanceSquared;
