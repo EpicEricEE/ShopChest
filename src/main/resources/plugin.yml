@@ -6,8 +6,6 @@ version: ${project.version}
 author: EpicEric
 website: ${project.url}
 depend: [Vault]
-softdepend: [ClearLag, LWC, Lockette]
-loadbefore: [ItemTags]
 
 permissions:
   shopchest.*:
