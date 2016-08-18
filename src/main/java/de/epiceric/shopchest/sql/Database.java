@@ -318,33 +318,55 @@ public abstract class Database {
      * @param price Price (buyprice or sellprice, depends on {@code type})
      * @param type Whether the player bought or sold something
      */
-    public void logEconomy(Player executor, ItemStack product, OfflinePlayer vendor, ShopType shopType, Location location, double price, ShopBuySellEvent.Type type) {
-        PreparedStatement ps = null;
+    public void logEconomy(final Player executor, final ItemStack product, final OfflinePlayer vendor, final ShopType shopType, final Location location, final double price, final ShopBuySellEvent.Type type) {
 
-        try {
-            ps = connection.prepareStatement("INSERT INTO shop_log (timestamp,executor,product,vendor,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?)");
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
 
-            ps.setString(1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
-            ps.setString(2, executor.getUniqueId().toString() + " (" + executor.getName() + ")");
-            ps.setString(3, product.getAmount() + " x " + LanguageUtils.getItemName(product));
-            ps.setString(4, vendor.getUniqueId().toString() + " (" + vendor.getName() + ")" + (shopType == ShopType.ADMIN ? " (ADMIN)" : ""));
-            ps.setString(5, location.getWorld().getName());
-            ps.setInt(6, location.getBlockX());
-            ps.setInt(7, location.getBlockY());
-            ps.setInt(8, location.getBlockZ());
-            ps.setDouble(9, price);
-            ps.setString(10, type.toString());
+                PreparedStatement ps = null;
+                boolean debugLogEnabled = plugin.getShopChestConfig().enable_debug_log;
 
-            plugin.debug("Logged economy transaction to database");
+                try {
+                    ps = connection.prepareStatement("INSERT INTO shop_log (timestamp,executor,product,vendor,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            plugin.getLogger().severe("Failed to access database");
-            plugin.debug("Failed to log economy transaction to database");
-            plugin.debug(ex);
-        } finally {
-            close(ps, null);
-        }
+                    ps.setString(1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
+                    ps.setString(2, executor.getUniqueId().toString() + " (" + executor.getName() + ")");
+                    ps.setString(3, product.getAmount() + " x " + LanguageUtils.getItemName(product));
+                    ps.setString(4, vendor.getUniqueId().toString() + " (" + vendor.getName() + ")" + (shopType == ShopType.ADMIN ? " (ADMIN)" : ""));
+                    ps.setString(5, location.getWorld().getName());
+                    ps.setInt(6, location.getBlockX());
+                    ps.setInt(7, location.getBlockY());
+                    ps.setInt(8, location.getBlockZ());
+                    ps.setDouble(9, price);
+                    ps.setString(10, type.toString());
+
+                    ps.executeUpdate();
+
+                    if (debugLogEnabled) {
+                        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                plugin.debug("Logged economy transaction to database");
+                            }
+                        });
+                    }
+                } catch (final SQLException ex) {
+                    plugin.getLogger().severe("Failed to access database");
+                    if (debugLogEnabled) {
+                        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                plugin.debug("Failed to log economy transaction to database");
+                                plugin.debug(ex);
+                            }
+                        });
+                    }
+                } finally {
+                    close(ps, null);
+                }
+            }
+        });
     }
 
     /**
