@@ -4,7 +4,9 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -25,38 +27,26 @@ public class ShopItemListener implements Listener {
         this.shopUtils = plugin.getShopUtils();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent e) {
-        Player p = e.getPlayer();
-        for (Shop shop : shopUtils.getShops()) {
-            if (shop.getLocation().distance(p.getLocation()) <= plugin.getShopChestConfig().maximal_item_distance) {
-                shop.getItem().setVisible(p, true);
-            } else {
-                shop.getItem().setVisible(p, false);
-            }
+
+        if (e.getFrom().getBlockX() == e.getTo().getBlockX()
+                && e.getFrom().getBlockZ() == e.getTo().getBlockZ()
+                && e.getFrom().getBlockY() == e.getTo().getBlockY()) {
+            return;
         }
+
+        updateShopItemVisibility(e.getPlayer(), true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent e) {
-        Player p = e.getPlayer();
-        for (Shop shop : shopUtils.getShops()) {
-            if (shop.getLocation().distance(e.getTo()) <= plugin.getShopChestConfig().maximal_item_distance) {
-                shop.getItem().setVisible(p, true);
-            } else {
-                shop.getItem().setVisible(p, false);
-            }
-        }
+        updateShopItemVisibility(e.getPlayer(), true, e.getTo());
     }
 
     @EventHandler
-    public void onPlayerJoin(final PlayerJoinEvent e) {
-        Player p = e.getPlayer();
-        for (Shop shop : shopUtils.getShops()) {
-            if (shop.getLocation().distance(p.getLocation()) <= plugin.getShopChestConfig().maximal_item_distance) {
-                shop.getItem().setVisible(p, true);
-            }
-        }
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        updateShopItemVisibility(e.getPlayer(), false);
     }
 
     @EventHandler
@@ -64,6 +54,27 @@ public class ShopItemListener implements Listener {
         for (Shop shop : plugin.getShopUtils().getShops()) {
             shop.getItem().setVisible(e.getPlayer(), false);
         }
+    }
+
+    private void updateShopItemVisibility(Player p, boolean hideIfAway) {
+        updateShopItemVisibility(p, hideIfAway, p.getLocation());
+    }
+
+    private void updateShopItemVisibility(Player p, boolean hideIfAway, Location playerLocation) {
+
+        double itemDistanceSquared = plugin.getShopChestConfig().maximal_item_distance;
+        itemDistanceSquared *= itemDistanceSquared;
+        World w = p.getWorld();
+
+        for (Shop shop : shopUtils.getShops()) {
+            Location shopLocation = shop.getLocation();
+            if (w.equals(shopLocation.getWorld()) && shopLocation.distanceSquared(playerLocation) <= itemDistanceSquared) {
+                shop.getItem().setVisible(p, true);
+            } else if (hideIfAway) {
+                shop.getItem().setVisible(p, false);
+            }
+        }
+
     }
 
     @EventHandler(priority = EventPriority.HIGH)
