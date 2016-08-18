@@ -70,6 +70,9 @@ public class Config {
      **/
     public List<String> blacklist;
 
+    /** Whether prices may contain decimals **/
+    public boolean allow_decimals_in_price;
+
     /** Whether the buy price of a shop must be greater than or equal the sell price **/
     public boolean buy_greater_or_equal_sell;
 
@@ -281,8 +284,9 @@ public class Config {
         database_mysql_password = plugin.getConfig().getString("database.mysql.password");
         database_type = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
         minimum_prices = (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);
+        allow_decimals_in_price = plugin.getConfig().getBoolean("allow-decimals-in-price");
         allow_broken_items = plugin.getConfig().getBoolean("allow-broken-items");
-        auto_calculate_item_amount = plugin.getConfig().getBoolean("auto-calculate-item-amount");
+        auto_calculate_item_amount = (allow_decimals_in_price && plugin.getConfig().getBoolean("auto-calculate-item-amount"));
         shopLimits_group = (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);
         shopLimits_player = (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");

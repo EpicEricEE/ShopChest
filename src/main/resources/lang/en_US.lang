@@ -115,8 +115,12 @@ message.out-of-stock=&cShop out of stock.
 # Usable regex: %ERROR%
 message.error-occurred=&cAn error occurred: %ERROR%
 
-# Set the message when the arguments <AMOUNT> and <PRICE> of '/shop create' are not a number.
-message.amount-and-price-not-number=&cAmount and price must be a number.
+# Set the message when the arguments <AMOUNT>, <BUY-PRICE> and/or <SELL-PRICE> of '/shop create' are not a number.
+message.amount-and-price-not-number=&cAmount and prices must be numbers.
+
+# Set the message when the config value "allow-decimals-in-prices" is set to false
+# and a player enters a price with decimals
+message.prices-contain-decimals=&cPrices must not contain decimals.
 
 # Set the message when the player doesn't hold an item in the hand.
 message.no-item-in-hand=&cNo item in hand

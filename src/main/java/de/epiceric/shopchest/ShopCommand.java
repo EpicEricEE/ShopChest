@@ -264,7 +264,14 @@ class ShopCommand extends BukkitCommand {
             return;
         }
 
-        plugin.debug(p.getName() + " has entered the numbers correctly");
+        plugin.debug(p.getName() + " has entered numbers as prices and amount");
+
+        if (!plugin.getShopChestConfig().allow_decimals_in_price && (buyPrice != (int) buyPrice || sellPrice != (int) sellPrice)) {
+            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS));
+            return;
+        }
+
+        plugin.debug(p.getName() + " has entered the numbers correctly (according to allow-decimals configuration)");
 
         boolean buyEnabled = !(buyPrice <= 0), sellEnabled = !(sellPrice <= 0);
 

@@ -41,6 +41,9 @@ two-line-hologram-lift: 0.25
 # The price will be calculated correspondingly. (If it's not clear enough, please let me know)
 auto-calculate-item-amount: false
 
+# Set whether prices may contain decimals (prices of existing shops will stay)
+allow-decimals-in-price: true
+
 # Set whether players should be allowed to sell/buy broken items
 allow-broken-items: false
 
