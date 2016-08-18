@@ -487,6 +487,8 @@ public class ShopInteractListener implements Listener {
                                 return;
                             }
 
+                            database.logEconomy(executor, newProduct, shop.getVendor(), shop.getShopType(), shop.getLocation(), newPrice, ShopBuySellEvent.Type.BUY);
+
                             addToInventory(inventory, newProduct);
                             removeFromInventory(c.getInventory(), newProduct);
                             executor.updateInventory();
@@ -515,6 +517,8 @@ public class ShopInteractListener implements Listener {
                             plugin.debug("Buy event cancelled (#" + shop.getID() + ")");
                             return;
                         }
+
+                        database.logEconomy(executor, newProduct, shop.getVendor(), shop.getShopType(), shop.getLocation(), newPrice, ShopBuySellEvent.Type.BUY);
 
                         addToInventory(inventory, newProduct);
                         executor.updateInventory();
@@ -610,6 +614,8 @@ public class ShopInteractListener implements Listener {
                                 return;
                             }
 
+                            database.logEconomy(executor, newProduct, shop.getVendor(), shop.getShopType(), shop.getLocation(), newPrice, ShopBuySellEvent.Type.SELL);
+
                             addToInventory(inventory, newProduct);
                             removeFromInventory(executor.getInventory(), newProduct);
                             executor.updateInventory();
@@ -639,6 +645,8 @@ public class ShopInteractListener implements Listener {
                             plugin.debug("Sell event cancelled (#" + shop.getID() + ")");
                             return;
                         }
+
+                        database.logEconomy(executor, newProduct, shop.getVendor(), shop.getShopType(), shop.getLocation(), newPrice, ShopBuySellEvent.Type.SELL);
 
                         removeFromInventory(executor.getInventory(), newProduct);
                         executor.updateInventory();

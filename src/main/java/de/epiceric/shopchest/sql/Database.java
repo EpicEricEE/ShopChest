@@ -1,6 +1,8 @@
 package de.epiceric.shopchest.sql;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.event.ShopBuySellEvent;
+import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.Utils;
@@ -8,17 +10,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.UUID;
 
 public abstract class Database {
 
-    public ShopChest plugin;
-    public Connection connection;
+    ShopChest plugin;
+    Connection connection;
 
-    public Database(ShopChest plugin) {
+    Database(ShopChest plugin) {
         this.plugin = plugin;
     }
 
@@ -38,24 +43,47 @@ public abstract class Database {
             plugin.debug("Connecting to database...");
             connection = getConnection();
 
-            String queryCreateTable = "CREATE TABLE IF NOT EXISTS shop_list (" +
-                    "`id` int(11) NOT NULL," +
-                    "`vendor` tinytext NOT NULL," +
-                    "`product` text NOT NULL," +
-                    "`world` tinytext NOT NULL," +
-                    "`x` int(11) NOT NULL," +
-                    "`y` int(11) NOT NULL," +
-                    "`z` int(11) NOT NULL," +
-                    "`buyprice` float(32) NOT NULL," +
-                    "`sellprice` float(32) NOT NULL," +
-                    "`shoptype` tinytext NOT NULL," +
-                    "PRIMARY KEY (`id`)" +
-                    ");";
+            String queryCreateTableShopList =
+                        "CREATE TABLE IF NOT EXISTS shop_list (" +
+                        "`id` int(11) NOT NULL," +
+                        "`vendor` tinytext NOT NULL," +
+                        "`product` text NOT NULL," +
+                        "`world` tinytext NOT NULL," +
+                        "`x` int(11) NOT NULL," +
+                        "`y` int(11) NOT NULL," +
+                        "`z` int(11) NOT NULL," +
+                        "`buyprice` float(32) NOT NULL," +
+                        "`sellprice` float(32) NOT NULL," +
+                        "`shoptype` tinytext NOT NULL," +
+                        "PRIMARY KEY (`id`)" +
+                        ");";
 
+            String queryCreateTableShopLog =
+                        "CREATE TABLE IF NOT EXISTS shop_log (" +
+                        "`id` INTEGER PRIMARY KEY " + (this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT") + "," +
+                        "`timestamp` TINYTEXT NOT NULL," +
+                        "`executor` TINYTEXT NOT NULL," +
+                        "`product` TINYTEXT NOT NULL," +
+                        "`vendor` TINYTEXT NOT NULL," +
+                        "`world` TINYTEXT NOT NULL," +
+                        "`x` INTEGER NOT NULL," +
+                        "`y` INTEGER NOT NULL," +
+                        "`z` INTEGER NOT NULL," +
+                        "`price` FLOAT NOT NULL," +
+                        "`type` TINYTEXT NOT NULL" +
+                        ");";
+
+            // Create table "shop_list"
             Statement s = connection.createStatement();
-            s.executeUpdate(queryCreateTable);
+            s.executeUpdate(queryCreateTableShopList);
             s.close();
 
+            // Create table "shop_log"
+            Statement s2 = connection.createStatement();
+            s2.executeUpdate(queryCreateTableShopLog);
+            s2.close();
+
+            // Count entries in table "shop_list"
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM shop_list");
             ResultSet rs = ps.executeQuery();
 
@@ -275,6 +303,44 @@ public abstract class Database {
         } catch (SQLException ex) {
             plugin.getLogger().severe("Failed to access database");
             plugin.debug("Failed to add shop to database (#" + shop.getID() + ")");
+            plugin.debug(ex);
+        } finally {
+            close(ps, null);
+        }
+    }
+
+    /**
+     * Log an economy transaction to the database
+     * @param executor Player who bought/sold something
+     * @param product ItemStack that was bought/sold
+     * @param vendor Vendor of the shop
+     * @param location Location of the shop
+     * @param price Price (buyprice or sellprice, depends on {@code type})
+     * @param type Whether the player bought or sold something
+     */
+    public void logEconomy(Player executor, ItemStack product, OfflinePlayer vendor, ShopType shopType, Location location, double price, ShopBuySellEvent.Type type) {
+        PreparedStatement ps = null;
+
+        try {
+            ps = connection.prepareStatement("INSERT INTO shop_log (timestamp,executor,product,vendor,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?)");
+
+            ps.setString(1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
+            ps.setString(2, executor.getUniqueId().toString() + " (" + executor.getName() + ")");
+            ps.setString(3, product.getAmount() + " x " + LanguageUtils.getItemName(product));
+            ps.setString(4, vendor.getUniqueId().toString() + " (" + vendor.getName() + ")" + (shopType == ShopType.ADMIN ? " (ADMIN)" : ""));
+            ps.setString(5, location.getWorld().getName());
+            ps.setInt(6, location.getBlockX());
+            ps.setInt(7, location.getBlockY());
+            ps.setInt(8, location.getBlockZ());
+            ps.setDouble(9, price);
+            ps.setString(10, type.toString());
+
+            plugin.debug("Logged economy transaction to database");
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            plugin.getLogger().severe("Failed to access database");
+            plugin.debug("Failed to log economy transaction to database");
             plugin.debug(ex);
         } finally {
             close(ps, null);
