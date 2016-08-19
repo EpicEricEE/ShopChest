@@ -106,7 +106,7 @@ public class ShopItem {
     }
 
     public void setVisible(final Player p, boolean visible) {
-        if (this.visible.containsKey(p) && this.visible.get(p) == visible)
+        if (isVisible(p) == visible)
             return;
 
         if (visible) {

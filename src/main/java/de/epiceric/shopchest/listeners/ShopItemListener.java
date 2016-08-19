@@ -27,26 +27,41 @@ public class ShopItemListener implements Listener {
         this.shopUtils = plugin.getShopUtils();
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent e) {
-
         if (e.getFrom().getBlockX() == e.getTo().getBlockX()
                 && e.getFrom().getBlockZ() == e.getTo().getBlockZ()
                 && e.getFrom().getBlockY() == e.getTo().getBlockY()) {
             return;
         }
 
-        updateShopItemVisibility(e.getPlayer(), true);
+        updateShopItemVisibility(e.getPlayer(), true, false);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerTeleport(PlayerTeleportEvent e) {
-        updateShopItemVisibility(e.getPlayer(), true, e.getTo());
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerTeleport(final PlayerTeleportEvent e) {
+        if (e.getFrom().getWorld().equals(e.getTo().getWorld())) {
+            if (e.getFrom().distanceSquared(e.getTo()) > 22500) {
+                Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        updateShopItemVisibility(e.getPlayer(), true, true, e.getTo());
+                    }
+                }, 20L);
+                return;
+            }
+            updateShopItemVisibility(e.getPlayer(), true, false, e.getTo());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent e) {
+        updateShopItemVisibility(e.getPlayer(), true, true);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        updateShopItemVisibility(e.getPlayer(), false);
+        updateShopItemVisibility(e.getPlayer(), false, false);
     }
 
     @EventHandler
@@ -56,12 +71,11 @@ public class ShopItemListener implements Listener {
         }
     }
 
-    private void updateShopItemVisibility(Player p, boolean hideIfAway) {
-        updateShopItemVisibility(p, hideIfAway, p.getLocation());
+    private void updateShopItemVisibility(Player p, boolean hideIfAway, boolean reset) {
+        updateShopItemVisibility(p, hideIfAway, reset, p.getLocation());
     }
 
-    private void updateShopItemVisibility(Player p, boolean hideIfAway, Location playerLocation) {
-
+    private void updateShopItemVisibility(Player p, boolean hideIfAway, boolean reset, Location playerLocation) {
         double itemDistanceSquared = plugin.getShopChestConfig().maximal_item_distance;
         itemDistanceSquared *= itemDistanceSquared;
         World w = playerLocation.getWorld();
@@ -69,12 +83,12 @@ public class ShopItemListener implements Listener {
         for (Shop shop : shopUtils.getShops()) {
             Location shopLocation = shop.getLocation();
             if (w.equals(shopLocation.getWorld()) && shopLocation.distanceSquared(playerLocation) <= itemDistanceSquared) {
-                shop.getItem().setVisible(p, true);
+                if (reset) shop.getItem().resetForPlayer(p);
+                else shop.getItem().setVisible(p, true);
             } else if (hideIfAway) {
                 shop.getItem().setVisible(p, false);
             }
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGH)
