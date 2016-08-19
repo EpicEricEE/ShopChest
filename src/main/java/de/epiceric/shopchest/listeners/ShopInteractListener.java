@@ -166,8 +166,9 @@ public class ShopInteractListener implements Listener {
                             if (p.isSneaking()) {
                                 if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
                                     if (perm.has(p, "shopchest.openOther")) {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
-                                        plugin.debug(p.getName() + " is opening " + shop.getVendor().getName() + "'s shop (#" + shop.getID() + ")" );
+                                        String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName)));
+                                        plugin.debug(p.getName() + " is opening " + vendorName + "'s shop (#" + shop.getID() + ")" );
                                         e.setCancelled(false);
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
@@ -338,7 +339,8 @@ public class ShopInteractListener implements Listener {
         int amount = Utils.getAmount(c.getInventory(), shop.getProduct());
         Material type = shop.getProduct().getType();
 
-        String vendor = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName()));
+        String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
+        String vendor = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName));
         String product = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
                 new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct())));
         String enchantmentString = "";
@@ -492,9 +494,11 @@ public class ShopInteractListener implements Listener {
                             addToInventory(inventory, newProduct);
                             removeFromInventory(c.getInventory(), newProduct);
                             executor.updateInventory();
+
+                            String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
                                     new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(newPrice)),
-                                    new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
+                                    new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
 
@@ -619,9 +623,11 @@ public class ShopInteractListener implements Listener {
                             addToInventory(inventory, newProduct);
                             removeFromInventory(executor.getInventory(), newProduct);
                             executor.updateInventory();
+
+                            String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
                                     new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(newPrice)),
-                                    new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
+                                    new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
 
