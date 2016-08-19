@@ -5,7 +5,7 @@ import de.epiceric.shopchest.config.LanguageConfiguration;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.nms.SpawnEggMeta;
 import de.epiceric.shopchest.utils.Utils;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
