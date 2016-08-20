@@ -22,7 +22,7 @@ public class MySQL extends Database {
 
             Class.forName("com.mysql.jdbc.Driver");
 
-            String connectUrl = "jdbc:mysql://" + plugin.getShopChestConfig().database_mysql_host + ":" + plugin.getShopChestConfig().database_mysql_port + "/" + plugin.getShopChestConfig().database_mysql_database;
+            String connectUrl = "jdbc:mysql://" + plugin.getShopChestConfig().database_mysql_host + ":" + plugin.getShopChestConfig().database_mysql_port + "/" + plugin.getShopChestConfig().database_mysql_database + "?autoReconnect=true";
             plugin.debug("Connecting to MySQL Server \"" + connectUrl + "\" as user \"" + plugin.getShopChestConfig().database_mysql_username + "\"");
 
             connection = DriverManager.getConnection(connectUrl, plugin.getShopChestConfig().database_mysql_username, plugin.getShopChestConfig().database_mysql_password);
