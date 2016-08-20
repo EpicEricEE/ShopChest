@@ -83,10 +83,12 @@ public class ShopItemListener implements Listener {
         for (Shop shop : shopUtils.getShops()) {
             Location shopLocation = shop.getLocation();
             if (w.equals(shopLocation.getWorld()) && shopLocation.distanceSquared(playerLocation) <= itemDistanceSquared) {
-                if (reset) shop.getItem().resetForPlayer(p);
-                else shop.getItem().setVisible(p, true);
+                if (shop.getItem() != null) {
+                    if (reset) shop.getItem().resetForPlayer(p);
+                    else shop.getItem().setVisible(p, true);
+                }
             } else if (hideIfAway) {
-                shop.getItem().setVisible(p, false);
+                if (shop.getItem() != null) shop.getItem().setVisible(p, false);
             }
         }
     }
