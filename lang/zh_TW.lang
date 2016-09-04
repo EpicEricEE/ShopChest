@@ -1,425 +1,425 @@
-# English default language file by 'EpicEric' for version 1.10.3
+﻿# Traditional chinese translation by 'yo777' for version 1.10.3
 
 # Set the message when a shop is created at the clicked chest.
-message.shop-created=&6Shop created.
+message.shop-created=&6商店創建成功
 
 # Set the message when the clicked chest already is a shop.
-message.chest-already-shop=&cChest already is shop.
+message.chest-already-shop=&c這個箱子已經是商店
 
 # Set the message when there is a block above the clicked chest.
-message.chest-blocked=&cThere must not be a block above the chest.
+message.chest-blocked=&c箱子前面不可以有方塊遮擋
 
 # Set the message when a player tries to place a chest next to a shop's chest
 # to create a double chest shop, but there is a block above the placed chest.
-message.double-chest-blocked=&cThere must not be a block above the chest.
+message.double-chest-blocked=&c箱子前面不可以有方塊遮擋
 
 # Set the message when the clicked shop is removed.
-message.shop-removed=&6Shop removed.
+message.shop-removed=&6商店移除成功
 
 # Set the message when the clicked chest is not a shop.
-message.chest-no-shop=&cChest is not a shop.
+message.chest-no-shop=&c這個箱子不是商店
 
 # Set the message when the player doesn't have enough money to create a shop
 # Usable Regex: %CREATION-PRICE%
-message.shop-create-not-enough-money=&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop.
+message.shop-create-not-enough-money=&c你沒有足夠的金錢創建商店. 你需要 &6%CREATION-PRICE% &c來創建商店
 
 # Set the vendor message the player gets after entering '/shop info'.
 # Usable regex: %VENDOR%
-message.shopInfo.vendor=&6Vendor: &e%VENDOR%
+message.shopInfo.vendor=&6供應商: &e%VENDOR%
 
 # Set the product message the player gets after entering '/shop info'.
 # Usable regex: %AMOUNT%, %ITEMNAME%
-message.shopInfo.product=&6Product: &e%AMOUNT% x %ITEMNAME%
+message.shopInfo.product=&6產品: &e%AMOUNT% x %ITEMNAME%
 
 # Set the in-stock message the player after entering '/shop info'.
 # Usable regex=%AMOUNT%
-message.shopInfo.stock=&6In Stock: &e%AMOUNT%
+message.shopInfo.stock=&6庫存數量: &e%AMOUNT%
 
 # Set the enchantments message the player gets after entering '/shop info' if the product is enchanted
 # Usable regex: %ENCHANTMENT%
-message.shopInfo.enchantments=&6Enchantments: &e%ENCHANTMENT%
+message.shopInfo.enchantments=&6附魔: &e%ENCHANTMENT%
 
 # Set the potion effect message the player gets after entering '/shop info' if the product has a potion effect
 # Usable regex: %POTION-EFFECT%, %EXTENDED%
-message.shopInfo.potion-effect=&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%
+message.shopInfo.potion-effect=&6藥水效果: &e%POTION-EFFECT% %EXTENDED%
 
 # Set the music disc title message the player gets after entering '/shop info' if the product is a music disc
 # Usable regex: %MUSIC-TITLE%
-message.shopInfo.music-disc-title=&6Music Disc Title: &e%MUSIC-TITLE%
+message.shopInfo.music-disc-title=&6唱片標題: &e%MUSIC-TITLE%
 
 # If the product is a tipped arrow but it doesn't have an effect, this gets displayed instead of the arrow effect
 message.shopInfo.none=&7None
 
 # Set the price message the player gets after entering '/shop info'.
 # Usable regex: %BUY-PRICE%, %SELL-PRICE%
-message.shopInfo.price=&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%
+message.shopInfo.price=&6Price: 買: &e%BUY-PRICE%&6 賣: &e%SELL-PRICE%
 
 # If the sell price or buy price is disabled, this message will be displayed instead of the price in the message above.
-message.shopInfo.disabled=&7Disabled
+message.shopInfo.disabled=&7不適用
 
 # Set the type message the player gets after entering '/shop info' ...
 # ... when the shop is normal.
-message.shopInfo.is-normal=&6Type: &eNormal
+message.shopInfo.is-normal=&6種類: &e普通商店
 
 # ... when the shop is an admin shop.
-message.shopInfo.is-admin=&6Type: &eAdmin
+message.shopInfo.is-admin=&6種類: &e管理員商店
 
 # If the potion effect it extended, %EXTENDED% will be replaced by this.
 # If not, this will be empty.
-message.shopInfo.extended=(Extended)
+message.shopInfo.extended=(擴展)
 
 # Set the message when the player tries to create a shop with sell price and buy price set to 0
-message.buy-and-sell-disabled=&cYou can't create a shop with buying and selling disabled.
+message.buy-and-sell-disabled=&c你不可以創建一個同時不適用於買和賣的商店
 
 # Set the message when the player successfully bought something.
 # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %VENDOR%
-message.buy-success=&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a.
+message.buy-success=&a你從 %VENDOR% 的商店用 &6%BUY-PRICE%&a 買了 &6%AMOUNT%個 %ITEMNAME%
 
 # Set the message when the player successfully bought something from an admin shop.
 # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%
-message.buy-success-admin=&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a.
+message.buy-success-admin=&a你用了 &6%BUY-PRICE%&a 買了 &6%AMOUNT%個 %ITEMNAME%
 
 # Set the message when the player successfully sold something.
 # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %VENDOR%
-message.sell-success=&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a.
+message.sell-success=&a你用 &6%SELL-PRICE%&a 賣了 &6%AMOUNT%個 %ITEMNAME%&a 給 &6%VENDOR%&a 的商店.
 
 # Set the message when the player successfully sold something to an admin shop.
 # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%
-message.sell-success-admin=&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a.
+message.sell-success-admin=&a你用 &6%SELL-PRICE%&a 賣了 &6%AMOUNT%個 %ITEMNAME%.
 
 # Set the message when a player bought something from the player's shop.
 # Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %PLAYER%
-message.someone-bought=&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop.
+message.someone-bought=&6%PLAYER% &a在你的商店用 &6%BUY-PRICE%&a 買了 &6%AMOUNT%個 %ITEMNAME%&a.
 
 # Set the message when a player sold something to the player's shop.
 # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %PLAYER%
-message.someone-sold=&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop.
+message.someone-sold=&6%PLAYER% &a用 &6%SELL-PRICE%&a 賣了 &6%AMOUNT%個 %ITEMNAME%&a 給你的商店.
 
 # Set the message when the inventory is full when the player is buying something.
-message.not-enough-inventory-space=&cNot enough space in inventory.
+message.not-enough-inventory-space=&c你的物品欄沒有足夠的空間
 
 # Set the message when the shop's inventory is full when the player is selling something.
-message.chest-not-enough-inventory-space=&cShop is full.
+message.chest-not-enough-inventory-space=&c商店滿了
 
 # Set the message when the player doesn't have enough money to buy something.
-message.not-enough-money=&cNot enough money.
+message.not-enough-money=&c你沒有足夠的金錢
 
 # Set the message when the player doesn't have enough items to sell.
-message.not-enough-items=&cNot enough items.
+message.not-enough-items=&c你沒有足夠的物品
 
 # Set the message when the vendor doesn't have enough money to buy something from the player
-message.vendor-not-enough-money=&cVendor has not enough money.
+message.vendor-not-enough-money=&c店主沒有足夠的商店
 
 # Set the message when the shop is out of stock.
-message.out-of-stock=&cShop out of stock.
+message.out-of-stock=&c商店沒有存貨了
 
 # Set the message when an error occurred.
 # Usable regex: %ERROR%
-message.error-occurred=&cAn error occurred: %ERROR%
+message.error-occurred=&c錯誤: %ERROR%
 
 # Set the message when the arguments <AMOUNT>, <BUY-PRICE> and/or <SELL-PRICE> of '/shop create' are not a number.
-message.amount-and-price-not-number=&cAmount and prices must be numbers.
+message.amount-and-price-not-number=&c數量和價錢必須為數字
 
 # Set the message when the config value "allow-decimals-in-prices" is set to false
 # and a player enters a price with decimals
-message.prices-contain-decimals=&cPrices must not contain decimals.
+message.prices-contain-decimals=&c價錢不可以有點數
 
 # Set the message when the player doesn't hold an item in the hand.
-message.no-item-in-hand=&cNo item in hand
+message.no-item-in-hand=&c你手中沒有物品
 
 # Set the message when the player must click a chest to create a shop.
-message.click-chest-to-create-shop=&aClick a chest to create a shop.
+message.click-chest-to-create-shop=&a右鍵一個箱子以創建商店
 
 # Set the message when the player must click a shop to remove it.
-message.click-chest-to-remove-shop=&aClick a shop-chest to remove the shop.
+message.click-chest-to-remove-shop=&a右鍵一個箱子以移除商店
 
 # Set the message when the player must click a shop to retrieve information.
-message.click-chest-for-info=&aClick a shop to retrieve information.
+message.click-chest-for-info=&a右鍵一個箱子以讀取資訊
 
 # Set the message when the player opened a shop.
 # Usable regex: %VENDOR%
-message.opened-shop=&aYou opened %VENDOR%'s shop.
+message.opened-shop=&a你開啟了 %VENDOR% 的商店.
 
 # Set the message when the player tries to break a shop.
-message.cannot-break-shop=&cYou can't break a shop.
+message.cannot-break-shop=&c你不可以破壞商店
 
 # Set the message when the player tries to sell a broken item.
-message.cannot-sell-broken-item=&cYou can't sell a broken item.
+message.cannot-sell-broken-item=&c你不可以售賣一個已損耗的工具
 
 # Set the message when the entered buy price is below the minimum price.
 # Usable regex: %MIN-PRICE%
-message.buy-price-too-low=&cThe buy price must be higher than %MIN-PRICE%.
+message.buy-price-too-low=&c購買價錢必須高於 %MIN-PRICE%.
 
 # Set the message when the entered sell price is below the minimum price.
 # Usable regex: %MIN-PRICE%
-message.sell-price-too-low=&cThe sell price must be higher than %MIN-PRICE%.
+message.sell-price-too-low=&c賣出價錢必須高於 %MIN-PRICE%.
 
 # Set the message when buying is disabled at the shop.
-message.buying-disabled=&cBuying is disabled at this shop.
+message.buying-disabled=&c這個商店不可以購買物品
 
 # Set the message when selling is disabled at the shop.
-message.selling-disabled=&cSelling is disabled at this shop.
+message.selling-disabled=&c這個商店不可以售賣物品
 
 # Set the message when reloading is done.
 # Usable regex: %AMOUNT% (Amount of shops)
-message.reloaded-shops=&aSuccessfully reloaded %AMOUNT% shop/s.
+message.reloaded-shops=&a成功重新讀取 %AMOUNT% 個商店.
 
 # Set the message when the player's shop limit is reached.
 # Usable regex: %LIMIT%
-message.shop-limit-reached=&cYou reached your limit of &6%LIMIT% &cshop/s.
+message.shop-limit-reached=&c你達到了你擁有的商店極限: &6%LIMIT% &c個商店.
 
 # Set the message that shows the player how many shop slots of his shop limit he has occupied.
 # Usable regex: %LIMIT%, %AMOUNT% (Amount of shops)
-message.occupied-shop-slots=&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied.
+message.occupied-shop-slots=&6你有 &c%AMOUNT%/%LIMIT% &6個商店空格被佔用了.
 
 # Set the message when the player tries to create a shop with an item which is listed in the blacklist.
-message.cannot-sell-item=&cYou cannot create a shop with this item.
+message.cannot-sell-item=&c這個物品不可以創建商店
 
 # Set the message when an update is available.
 # Usable regex: %VERSION%
-message.update.update-available=&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere.
+message.update.update-available=&6&l版本 &c%VERSION% &6的 &cShopChest &6現在可供下載了
 
 # Set the message you get when hovering over the available message.
-message.update.click-to-download=Click to download
+message.update.click-to-download=按我下載
 
 # Set the message when no update is available.
-message.update.no-update=&6&lNo new update available.
+message.update.no-update=&6&l沒有新的更新
 
 # Set the message when the update checker is started.
-message.update.checking=&6&lChecking for updates...
+message.update.checking=&6&l正在尋找更新...
 
 # Set the message when an error occurs while checking for updates.
-message.update.error=&c&lError while checking for updates.
+message.update.error=&c&l檢查更新時發生錯誤
 
 # Set the text in the first row of the shop's hologram
 # Usable regex: %ITEMNAME%, %AMOUNT%
-message.hologram.format=%AMOUNT% * %ITEMNAME%
+message.hologram.format=%AMOUNT%個 %ITEMNAME%
 
 # Set the text in the second row of the shop's hologram when the player can buy and sell an item.
 # Usable regex: %BUY-PRICE%, %SELL-PRICE%
-message.hologram.buy-and-sell=Buy %BUY-PRICE% | %SELL-PRICE% Sell
+message.hologram.buy-and-sell=買 %BUY-PRICE% | %SELL-PRICE% 賣
 
 # Set the text in the second row of the shop's hologram when the player can only buy an item.
 # Usable regex: %BUY-PRICE%
-message.hologram.only-buy=Buy %BUY-PRICE%
+message.hologram.only-buy=買 %BUY-PRICE%
 
 # Set the text in the second row of the shop's hologram when the player can only sell an item.
 # Usable regex: %SELL-PRICE%
-message.hologram.only-sell=Sell %SELL-PRICE%
+message.hologram.only-sell=賣 %SELL-PRICE%
 
 # Set the message when a not permitted player tries to create a shop.
-message.noPermission.create=&cYou don't have permission to create a shop.
+message.noPermission.create=&c你沒有權限創建商店
 
 # Set the message when a not permitted player tries to create an admin shop.
-message.noPermission.create-admin=&cYou don't have permission to create an admin shop.
+message.noPermission.create-admin=&c你沒有權限創建管理員商店
 
 # Set the message when a not permitted player tries to create a shop on a protected chest.
-message.noPermission.create-protected=&cYou don't have permission to create a shop here.
+message.noPermission.create-protected=&c你沒有權限在這裡創建商店
 
 # Set the message when a not permitted player tries to open another player's shop.
-message.noPermission.open-others=&cYou don't have permission to open this chest.
+message.noPermission.open-others=&c你沒有權限開啟這個商店
 
 # Set the message when a not permitted player tries to buy something.
-message.noPermission.buy=&cYou don't have permission to buy something.
+message.noPermission.buy=&c你沒有權限購買東西
 
 # Set the message when a not permitted player tries to sell something.
-message.noPermission.sell=&cYou don't have permission to sell something.
+message.noPermission.sell=&c你沒有權限賣出東西
 
 # Set the message when a not permitted player tries to remove another player's shop.
-message.noPermission.remove-others=&cYou don't have permission to remove this shop.
+message.noPermission.remove-others=&c你沒有權限移除這個商店
 
 # Set the message when a not permitted player tries to reload the shops.
-message.noPermission.reload=&cYou don't have permission to reload the shops.
+message.noPermission.reload=&c你沒有權限重新載入商店
 
 # Set the message when a not permitted player tries to check for updates.
-message.noPermission.update=&cYou don't have permission to check for updates.
+message.noPermission.update=&c你沒有權限檢查更新
 
 # Set the message when a not permitted player tries to view the shop limits.
-message.noPermission.limits=&cYou don't have permission to view the shop limits.
+message.noPermission.limits=&c你沒有權限查看商店數量最大值
 
 # Set the message when a not permitted player tries to change configuration values.
-message.noPermission.config=&cYou don't have permission to change configuration values.
+message.noPermission.config=&c你沒有權限更改設定檔內容
 
 # Set the command description message for '/shop create' when you type '/shop'.
-message.commandDescription.create=Create a shop.
+message.commandDescription.create=創建商店
 
 # Set the command description message for '/shop remove' when you type '/shop'.
-message.commandDescription.remove=Remove a shop.
+message.commandDescription.remove=移除商店
 
 # Set the command description message for '/shop info' when you type '/shop'.
-message.commandDescription.info=Retrieve shop information.
+message.commandDescription.info=查看商店資訊
 
 # Set the command description message for '/shop reload' when you type '/shop'.
-message.commandDescription.reload=Reload shops.
+message.commandDescription.reload=重新載入商店
 
 # Set the command description message for '/shop update' when you type '/shop'.
-message.commandDescription.update=Check for Updates.
+message.commandDescription.update=檢查更新
 
 # Set the command description message for '/shop limits' when you type '/shop'.
-message.commandDescription.limits=View shop limits.
+message.commandDescription.limits=查看商店數量最大值
 
 # Set the command description message for '/shop config' when you type '/shop'.
-message.commandDescription.config=Change configuration values.
+message.commandDescription.config=更改設定檔
 
 # Set the message a player gets after setting a configuration value per command
 # Usable regex: %PROPERTY%, %VALUE%
-message.config.set=&6Changed &a%PROPERTY% &6to &a%VALUE%&6.
+message.config.set=&6將 &a%PROPERTY% &6更改為 &a%VALUE%&6
 
 # Set the message a player gets after adding a value to a list in the configuration per command
 # Usable regex: %PROPERTY%, %VALUE%
-message.config.added=&6Added &a%VALUE% &6to &a%PROPERTY%&6.
+message.config.added=&6增加 &a%VALUE% &6到 &a%PROPERTY%&6
 
 # Set the message a player gets after removing a value from a list in the configuration per command
 # Usable regex: %PROPERTY%, %VALUE%
-message.config.removed=&6Removed &a%VALUE% &6from &a%PROPERTY%&6.
+message.config.removed=&6在 &a%PROPERTY%&6 中移除了 &a%VALUE%
 
 # Effect names that will be displayed in the place of %POTION-EFFECT%
-effect.none=No Effects
-effect.moveSpeed=Speed
-effect.moveSlowdown=Slowness
-effect.digSpeed=Haste
-effect.digSlowDown=Mining Fatigue
-effect.damageBoost=Strength
-effect.heal=Instant Health
-effect.harm=Instant Damage
-effect.jump=Jump Boost
-effect.confusion=Nausea
-effect.regeneration=Regeneration
-effect.resistance=Resistance
-effect.fireResistance=Fire Resistance
-effect.waterBreathing=Water Breathing
-effect.invisibility=Invisibility
-effect.blindness=Blindness
-effect.nightVision=Night Vision
-effect.hunger=Hunger
-effect.weakness=Weakness
-effect.poison=Poison
-effect.wither=Wither
-effect.healthBoost=Health Boost
-effect.absorption=Absorption
-effect.saturation=Saturation
-effect.glowing=Glowing
-effect.luck=Luck
-effect.unluck=Bad Luck
-effect.levitation=Levitation
+effect.none=沒有效果
+effect.moveSpeed=迅捷
+effect.moveSlowdown=緩速
+effect.digSpeed=挖掘加速
+effect.digSlowDown=挖掘緩速
+effect.damageBoost=力量
+effect.heal=治療
+effect.harm=傷害
+effect.jump=跳躍增強
+effect.confusion=噁心
+effect.regeneration=回復
+effect.resistance=抗性
+effect.fireResistance=抗火
+effect.waterBreathing=水下呼吸
+effect.invisibility=隱形
+effect.blindness=失明
+effect.nightVision=夜視
+effect.hunger=饑餓
+effect.weakness=虛弱
+effect.poison=中毒
+effect.wither=凋零
+effect.healthBoost=生命值提升
+effect.absorption=吸收
+effect.saturation=飽食
+effect.glowing=發光
+effect.luck=幸運
+effect.unluck=不幸
+effect.levitation=漂浮
 
 # Item names of a tipped arrow
-tipped_arrow.effect.empty=Tipped Arrow
-tipped_arrow.effect.water=Tipped Arrow
-tipped_arrow.effect.mundane=Tipped Arrow
-tipped_arrow.effect.thick=Tipped Arrow
-tipped_arrow.effect.awkward=Tipped Arrow
-tipped_arrow.effect.night_vision=Arrow of Night Vision
-tipped_arrow.effect.invisibility=Arrow of Invisibility
-tipped_arrow.effect.leaping=Arrow of Leaping
-tipped_arrow.effect.fire_resistance=Arrow of Fire Resistance
-tipped_arrow.effect.swiftness=Arrow of Swiftness
-tipped_arrow.effect.slowness=Arrow of Slowness
-tipped_arrow.effect.water=Arrow of Splashing
-tipped_arrow.effect.water_breathing=Arrow of Water Breathing
-tipped_arrow.effect.healing=Arrow of Healing
-tipped_arrow.effect.harming=Arrow of Harming
-tipped_arrow.effect.poison=Arrow of Poison
-tipped_arrow.effect.regeneration=Arrow of Regeneration
-tipped_arrow.effect.strength=Arrow of Strength
-tipped_arrow.effect.weakness=Arrow of Weakness
-tipped_arrow.effect.levitation=Arrow of Levitation
-tipped_arrow.effect.luck=Arrow of Luck
+tipped_arrow.effect.empty=藥水箭
+tipped_arrow.effect.water=飛濺之箭
+tipped_arrow.effect.mundane=藥水箭
+tipped_arrow.effect.thick=藥水箭
+tipped_arrow.effect.awkward=藥水箭
+tipped_arrow.effect.night_vision=夜視之箭
+tipped_arrow.effect.invisibility=隱形之箭
+tipped_arrow.effect.leaping=跳躍提升之箭
+tipped_arrow.effect.fire_resistance=抗火之箭
+tipped_arrow.effect.swiftness=迅捷之箭
+tipped_arrow.effect.slowness=緩速之箭
+tipped_arrow.effect.water=飛濺之箭
+tipped_arrow.effect.water_breathing=水下呼吸之箭
+tipped_arrow.effect.healing=治療之箭
+tipped_arrow.effect.harming=傷害之箭
+tipped_arrow.effect.poison=劇毒之箭
+tipped_arrow.effect.regeneration=回復之箭
+tipped_arrow.effect.strength=力量之箭
+tipped_arrow.effect.weakness=虛弱之箭
+tipped_arrow.effect.levitation=漂浮之箭
+tipped_arrow.effect.luck=幸運之箭
 
 # Item names of a normal potion
-potion.effect.empty=Uncraftable Potion
-potion.effect.water=Water Bottle
-potion.effect.mundane=Mundane Potion
-potion.effect.thick=Thick Potion
-potion.effect.awkward=Awkward Potion
-potion.effect.night_vision=Potion of Night Vision
-potion.effect.invisibility=Potion of Invisibility
-potion.effect.leaping=Potion of Leaping
-potion.effect.fire_resistance=Potion of Fire Resistance
-potion.effect.swiftness=Potion of Swiftness
-potion.effect.slowness=Potion of Slowness
-potion.effect.water_breathing=Potion of Water Breathing
-potion.effect.healing=Potion of Healing
-potion.effect.harming=Potion of Harming
-potion.effect.poison=Potion of Poison
-potion.effect.regeneration=Potion of Regeneration
-potion.effect.strength=Potion of Strength
-potion.effect.weakness=Potion of Weakness
-potion.effect.levitation=Potion of Levitation
-potion.effect.luck=Potion of Luck
+potion.effect.empty=不可合成的藥水
+potion.effect.water=水瓶
+potion.effect.mundane=平凡藥水
+potion.effect.thick=渾濁的藥水
+potion.effect.awkward=基礎藥水
+potion.effect.night_vision=夜視藥水
+potion.effect.invisibility=隱形藥水
+potion.effect.leaping=跳躍藥水
+potion.effect.fire_resistance=抗火藥水
+potion.effect.swiftness=迅捷藥水
+potion.effect.slowness=緩速藥水
+potion.effect.water_breathing=水下呼吸藥水
+potion.effect.healing=治療藥水
+potion.effect.harming=傷害藥水
+potion.effect.poison=劇毒藥水
+potion.effect.regeneration=回復藥水
+potion.effect.strength=力量藥水
+potion.effect.weakness=虛弱藥水
+potion.effect.levitation=漂浮藥水
+potion.effect.luck=幸運藥水
 
 # Item names of a splash potion
-splash_potion.effect.empty=Splash Uncraftable Potion
-splash_potion.effect.water=Splash Water Bottle
-splash_potion.effect.mundane=Mundane Splash Potion
-splash_potion.effect.thick=Thick Splash Potion
-splash_potion.effect.awkward=Awkward Splash Potion
-splash_potion.effect.night_vision=Splash Potion of Night Vision
-splash_potion.effect.invisibility=Splash Potion of Invisibility
-splash_potion.effect.leaping=Splash Potion of Leaping
-splash_potion.effect.fire_resistance=Splash Potion of Fire Resistance
-splash_potion.effect.swiftness=Splash Potion of Swiftness
-splash_potion.effect.slowness=Splash Potion of Slowness
-splash_potion.effect.water_breathing=Splash Potion of Water Breathing
-splash_potion.effect.healing=Splash Potion of Healing
-splash_potion.effect.harming=Splash Potion of Harming
-splash_potion.effect.poison=Splash Potion of Poison
-splash_potion.effect.regeneration=Splash Potion of Regeneration
-splash_potion.effect.strength=Splash Potion of Strength
-splash_potion.effect.weakness=Splash Potion of Weakness
-splash_potion.effect.levitation=Splash Potion of Levitation
-splash_potion.effect.luck=Splash Potion of Luck
+splash_potion.effect.empty=飛濺 不可合成的藥水
+splash_potion.effect.water=飛濺 水瓶
+splash_potion.effect.mundane=飛濺 平凡藥水
+splash_potion.effect.thick=飛濺 粘稠藥水
+splash_potion.effect.awkward=飛濺 基礎藥水
+splash_potion.effect.night_vision=飛濺 夜視藥水
+splash_potion.effect.invisibility=飛濺 隱形藥水
+splash_potion.effect.leaping=飛濺 跳躍藥水
+splash_potion.effect.fire_resistance=飛濺 抗火藥水
+splash_potion.effect.swiftness=飛濺 迅捷藥水
+splash_potion.effect.slowness=飛濺 緩速藥水
+splash_potion.effect.water_breathing=飛濺 水下呼吸藥水
+splash_potion.effect.healing=飛濺 治療藥水
+splash_potion.effect.harming=飛濺 傷害藥水
+splash_potion.effect.poison=飛濺 劇毒藥水
+splash_potion.effect.regeneration=飛濺 回復藥水
+splash_potion.effect.strength=飛濺 力量藥水
+splash_potion.effect.weakness=飛濺 虛弱藥水
+splash_potion.effect.levitation=飛濺 漂浮藥水
+splash_potion.effect.luck=飛濺 幸運藥水
 
 # Item names of a lingering potion
-lingering_potion.effect.empty=Lingering Uncraftable Potion
-lingering_potion.effect.water=Lingering Water Bottle
-lingering_potion.effect.mundane=Mundane Lingering Potion
-lingering_potion.effect.thick=Thick Lingering Potion
-lingering_potion.effect.awkward=Awkward Lingering Potion
-lingering_potion.effect.night_vision=Lingering Potion of Night Vision
-lingering_potion.effect.invisibility=Lingering Potion of Invisibility
-lingering_potion.effect.leaping=Lingering Potion of Leaping
-lingering_potion.effect.fire_resistance=Lingering Potion of Fire Resistance
-lingering_potion.effect.swiftness=Lingering Potion of Swiftness
-lingering_potion.effect.slowness=Lingering Potion of Slowness
-lingering_potion.effect.water_breathing=Lingering Potion of Water Breathing
-lingering_potion.effect.healing=Lingering Potion of Healing
-lingering_potion.effect.harming=Lingering Potion of Harming
-lingering_potion.effect.poison=Lingering Potion of Poison
-lingering_potion.effect.regeneration=Lingering Potion of Regeneration
-lingering_potion.effect.strength=Lingering Potion of Strength
-lingering_potion.effect.weakness=Lingering Potion of Weakness
-lingering_potion.effect.levitation=Lingering Potion of Levitation
-lingering_potion.effect.luck=Lingering Potion of Luck
+lingering_potion.effect.empty=滯留 不可合成的藥水
+lingering_potion.effect.water=滯留 水瓶
+lingering_potion.effect.mundane=滯留 平凡藥水
+lingering_potion.effect.thick=滯留 粘稠藥水
+lingering_potion.effect.awkward=滯留 基礎藥水
+lingering_potion.effect.night_vision=滯留 夜視藥水
+lingering_potion.effect.invisibility=滯留 隱形藥水
+lingering_potion.effect.leaping=滯留 跳躍藥水
+lingering_potion.effect.fire_resistance=滯留 抗火藥水
+lingering_potion.effect.swiftness=滯留 迅捷藥水
+lingering_potion.effect.slowness=滯留 緩速藥水
+lingering_potion.effect.water_breathing=滯留 水下呼吸藥水
+lingering_potion.effect.healing=滯留 治療藥水
+lingering_potion.effect.harming=滯留 傷害藥水
+lingering_potion.effect.poison=滯留 劇毒藥水
+lingering_potion.effect.regeneration=滯留 回復藥水
+lingering_potion.effect.strength=滯留 力量藥水
+lingering_potion.effect.weakness=滯留 虛弱藥水
+lingering_potion.effect.levitation=滯留 漂浮藥水
+lingering_potion.effect.luck=滯留 幸運藥水
 
 # Enchantment name that will be displayed instead of %ENCHANTMENT%
-enchantment.damage.all=Sharpness
-enchantment.damage.undead=Smite
-enchantment.damage.arthropods=Bane of Arthropods
-enchantment.knockback=Knockback
-enchantment.fire=Fire Aspect
-enchantment.protect.all=Protection
-enchantment.protect.fire=Fire Protection
-enchantment.protect.fall=Feather Falling
-enchantment.protect.explosion=Blast Protection
-enchantment.protect.projectile=Projectile Protection
-enchantment.oxygen=Respiration
-enchantment.waterWorker=Aqua Affinity
-enchantment.waterWalker=Depth Strider
-enchantment.frostWalker=Frost Walker
-enchantment.digging=Efficiency
-enchantment.untouching=Silk Touch
-enchantment.durability=Unbreaking
-enchantment.lootBonus=Looting
-enchantment.lootBonusDigger=Fortune
-enchantment.lootBonusFishing=Luck of the Sea
-enchantment.fishingSpeed=Lure
-enchantment.arrowDamage=Power
-enchantment.arrowFire=Flame
-enchantment.arrowKnockback=Punch
-enchantment.arrowInfinite=Infinity
-enchantment.thorns=Thorns
-enchantment.mending=Mending
+enchantment.damage.all=鋒利
+enchantment.damage.undead=不死剋星
+enchantment.damage.arthropods=節肢剋星
+enchantment.knockback=擊退
+enchantment.fire=燃燒
+enchantment.protect.all=保護
+enchantment.protect.fire=抗火性
+enchantment.protect.fall=輕盈
+enchantment.protect.explosion=防爆
+enchantment.protect.projectile=防彈
+enchantment.oxygen=水中呼吸
+enchantment.waterWorker=水中挖掘
+enchantment.waterWalker=深海漫遊
+enchantment.frostWalker=冰霜行者
+enchantment.digging=效率
+enchantment.untouching=絲綢之觸
+enchantment.durability=耐久
+enchantment.lootBonus=掠奪
+enchantment.lootBonusDigger=幸運
+enchantment.lootBonusFishing=海洋的祝福
+enchantment.fishingSpeed=魚餌
+enchantment.arrowDamage=強力
+enchantment.arrowFire=火焰
+enchantment.arrowKnockback=擊退
+enchantment.arrowInfinite=無限
+enchantment.thorns=尖刺
+enchantment.mending=經驗修補
 enchantment.level.1=I
 enchantment.level.2=II
 enchantment.level.3=III
@@ -432,183 +432,183 @@ enchantment.level.9=IX
 enchantment.level.10=X
 
 # If the product is a spawn egg, this will be displayed after 'item.monsterPlacer.name'
-entity.Creeper.name=Creeper
-entity.Skeleton.name=Skeleton
-entity.WitherSkeleton.name=Wither Skeleton
-entity.Stray.name=Stray
-entity.Spider.name=Spider
-entity.Giant.name=Giant
-entity.Zombie.name=Zombie
-entity.Husk.name=Husk
-entity.Slime.name=Slime
-entity.Ghast.name=Ghast
-entity.PigZombie.name=Zombie Pigman
-entity.Enderman.name=Enderman
-entity.Endermite.name=Endermite
-entity.Silverfish.name=Silverfish
-entity.CaveSpider.name=Cave Spider
-entity.Blaze.name=Blaze
-entity.LavaSlime.name=Magma Cube
-entity.MushroomCow.name=Mooshroom
-entity.Villager.name=Villager
-entity.SnowMan.name=Snow Golem
-entity.Witch.name=Witch
-entity.Guardian.name=Guardian
-entity.Shulker.name=Shulker
-entity.PolarBear.name=Polar Bear
-entity.Pig.name=Pig
-entity.Sheep.name=Sheep
-entity.Cow.name=Cow
-entity.Chicken.name=Chicken
-entity.Squid.name=Squid
-entity.Wolf.name=Wolf
-entity.Ozelot.name=Ocelot
-entity.Cat.name=Cat
-entity.Bat.name=Bat
-entity.EntityHorse.name=Horse
-entity.Donkey.name=Donkey
-entity.Mule.name=Mule
-entity.SkeletonHorse.name=Skeleton Horse
-entity.ZombieHorse.name=Zombie Horse
-entity.Rabbit.name=Rabbit
-entity.KillerBunny.name=The Killer Bunny
+entity.Creeper.name=苦力怕
+entity.Skeleton.name=骷髏
+entity.WitherSkeleton.name=凋零骷髏
+entity.Stray.name=流髑
+entity.Spider.name=蜘蛛
+entity.Giant.name=巨人
+entity.Zombie.name=僵屍
+entity.Husk.name=屍殼
+entity.Slime.name=史萊姆
+entity.Ghast.name=地獄幽靈
+entity.PigZombie.name=僵屍豬人
+entity.Enderman.name=終結使者
+entity.Endermite.name=終界蟎
+entity.Silverfish.name=蠹魚
+entity.CaveSpider.name=洞穴蜘蛛
+entity.Blaze.name=烈焰使者
+entity.LavaSlime.name=地獄史萊姆
+entity.MushroomCow.name=哞菇
+entity.Villager.name=村民
+entity.SnowMan.name=雪人
+entity.Witch.name=女巫
+entity.Guardian.name=深海守衛
+entity.Shulker.name=界伏蚌
+entity.PolarBear.name=北極熊
+entity.Pig.name=豬
+entity.Sheep.name=羊
+entity.Cow.name=牛
+entity.Chicken.name=雞
+entity.Squid.name=魷魚
+entity.Wolf.name=狼
+entity.Ozelot.name=山貓
+entity.Cat.name=貓
+entity.Bat.name=蝙蝠
+entity.EntityHorse.name=馬
+entity.Donkey.name=驢
+entity.Mule.name=騾
+entity.SkeletonHorse.name=骷髏馬
+entity.ZombieHorse.name=僵屍馬
+entity.Rabbit.name=兔子
+entity.KillerBunny.name=殺手兔
 
 # Item names that will be displayed in the hologram
-item.nameTag.name=Name Tag
-item.leash.name=Lead
-item.shovelIron.name=Iron Shovel
-item.pickaxeIron.name=Iron Pickaxe
-item.hatchetIron.name=Iron Axe
-item.flintAndSteel.name=Flint and Steel
-item.apple.name=Apple
-item.cookie.name=Cookie
-item.bow.name=Bow
-item.arrow.name=Arrow
-item.spectral_arrow.name=Spectral Arrow
-item.tipped_arrow.name=Tipped Arrow
-item.coal.name=Coal
-item.charcoal.name=Charcoal
-item.diamond.name=Diamond
-item.emerald.name=Emerald
-item.ingotIron.name=Iron Ingot
-item.ingotGold.name=Gold Ingot
-item.swordIron.name=Iron Sword
-item.swordWood.name=Wooden Sword
-item.shovelWood.name=Wooden Shovel
-item.pickaxeWood.name=Wooden Pickaxe
-item.hatchetWood.name=Wooden Axe
-item.swordStone.name=Stone Sword
-item.shovelStone.name=Stone Shovel
-item.pickaxeStone.name=Stone Pickaxe
-item.hatchetStone.name=Stone Axe
-item.swordDiamond.name=Diamond Sword
-item.shovelDiamond.name=Diamond Shovel
-item.pickaxeDiamond.name=Diamond Pickaxe
-item.hatchetDiamond.name=Diamond Axe
-item.stick.name=Stick
-item.bowl.name=Bowl
-item.mushroomStew.name=Mushroom Stew
-item.swordGold.name=Golden Sword
-item.shovelGold.name=Golden Shovel
-item.pickaxeGold.name=Golden Pickaxe
-item.hatchetGold.name=Golden Axe
-item.string.name=String
-item.feather.name=Feather
-item.sulphur.name=Gunpowder
-item.hoeWood.name=Wooden Hoe
-item.hoeStone.name=Stone Hoe
-item.hoeIron.name=Iron Hoe
-item.hoeDiamond.name=Diamond Hoe
-item.hoeGold.name=Golden Hoe
-item.seeds.name=Seeds
-item.seeds_pumpkin.name=Pumpkin Seeds
-item.seeds_melon.name=Melon Seeds
-item.melon.name=Melon
-item.wheat.name=Wheat
-item.bread.name=Bread
-item.helmetCloth.name=Leather Cap
-item.chestplateCloth.name=Leather Tunic
-item.leggingsCloth.name=Leather Pants
-item.bootsCloth.name=Leather Boots
-item.helmetChain.name=Chain Helmet
-item.chestplateChain.name=Chain Chestplate
-item.leggingsChain.name=Chain Leggings
-item.bootsChain.name=Chain Boots
-item.helmetIron.name=Iron Helmet
-item.chestplateIron.name=Iron Chestplate
-item.leggingsIron.name=Iron Leggings
-item.bootsIron.name=Iron Boots
-item.helmetDiamond.name=Diamond Helmet
-item.chestplateDiamond.name=Diamond Chestplate
-item.leggingsDiamond.name=Diamond Leggings
-item.bootsDiamond.name=Diamond Boots
-item.helmetGold.name=Golden Helmet
-item.chestplateGold.name=Golden Chestplate
-item.leggingsGold.name=Golden Leggings
-item.bootsGold.name=Golden Boots
-item.flint.name=Flint
-item.porkchopRaw.name=Raw Porkchop
-item.porkchopCooked.name=Cooked Porkchop
-item.chickenRaw.name=Raw Chicken
-item.chickenCooked.name=Cooked Chicken
-item.muttonRaw.name=Raw Mutton
-item.muttonCooked.name=Cooked Mutton
-item.rabbitRaw.name=Raw Rabbit
-item.rabbitCooked.name=Cooked Rabbit
-item.rabbitStew.name=Rabbit Stew
-item.rabbitFoot.name=Rabbit's Foot
-item.rabbitHide.name=Rabbit Hide
-item.beefRaw.name=Raw Beef
-item.beefCooked.name=Steak
-item.painting.name=Painting
-item.frame.name=Item Frame
-item.appleGold.name=Golden Apple
-item.sign.name=Sign
-item.doorOak.name=Oak Door
-item.doorSpruce.name=Spruce Door
-item.doorBirch.name=Birch Door
-item.doorJungle.name=Jungle Door
-item.doorAcacia.name=Acacia Door
-item.doorDarkOak.name=Dark Oak Door
-item.bucket.name=Bucket
-item.bucketWater.name=Water Bucket
-item.bucketLava.name=Lava Bucket
-item.minecart.name=Minecart
-item.saddle.name=Saddle
-item.doorIron.name=Iron Door
-item.redstone.name=Redstone
-item.snowball.name=Snowball
-item.boat.oak.name=Oak Boat
-item.boat.spruce.name=Spruce Boat
-item.boat.birch.name=Birch Boat
-item.boat.jungle.name=Jungle Boat
-item.boat.acacia.name=Acacia Boat
-item.boat.dark_oak.name=Dark Oak Boat
-item.leather.name=Leather
-item.milk.name=Milk
-item.brick.name=Brick
-item.clay.name=Clay
-item.reeds.name=Sugar Canes
-item.paper.name=Paper
-item.book.name=Book
-item.slimeball.name=Slimeball
-item.minecartChest.name=Minecart with Chest
-item.minecartFurnace.name=Minecart with Furnace
-item.minecartTnt.name=Minecart with TNT
-item.minecartHopper.name=Minecart with Hopper
-item.minecartCommandBlock.name=Minecart with Command Block
-item.egg.name=Egg
-item.compass.name=Compass
-item.fishingRod.name=Fishing Rod
-item.clock.name=Clock
-item.yellowDust.name=Glowstone Dust
-item.fish.cod.raw.name=Raw Fish
-item.fish.salmon.raw.name=Raw Salmon
-item.fish.pufferfish.raw.name=Pufferfish
-item.fish.clownfish.raw.name=Clownfish
-item.fish.cod.cooked.name=Cooked Fish
-item.fish.salmon.cooked.name=Cooked Salmon
-item.record.name=Music Disc
+item.nameTag.name=命名牌
+item.leash.name=拴繩
+item.shovelIron.name=鐵鏟
+item.pickaxeIron.name=鐵鎬
+item.hatchetIron.name=鐵斧
+item.flintAndSteel.name=打火石
+item.apple.name=蘋果
+item.cookie.name=曲奇
+item.bow.name=弓
+item.arrow.name=箭
+item.spectral_arrow.name=追跡之箭
+item.tipped_arrow.name=藥水箭
+item.coal.name=煤炭
+item.charcoal.name=木炭
+item.diamond.name=鑽石
+item.emerald.name=綠寶石
+item.ingotIron.name=鐵錠
+item.ingotGold.name=金錠
+item.swordIron.name=鐵劍
+item.swordWood.name=木劍
+item.shovelWood.name=木鏟
+item.pickaxeWood.name=木鎬
+item.hatchetWood.name=木斧
+item.swordStone.name=石劍
+item.shovelStone.name=石鏟
+item.pickaxeStone.name=石鎬
+item.hatchetStone.name=石斧
+item.swordDiamond.name=鑽石劍
+item.shovelDiamond.name=鑽石鏟
+item.pickaxeDiamond.name=鑽石鎬
+item.hatchetDiamond.name=鑽石斧
+item.stick.name=木棒
+item.bowl.name=碗
+item.mushroomStew.name=蘑菇湯
+item.swordGold.name=金劍
+item.shovelGold.name=金鏟
+item.pickaxeGold.name=金鎬
+item.hatchetGold.name=金斧
+item.string.name=線
+item.feather.name=羽毛
+item.sulphur.name=火藥
+item.hoeWood.name=木鋤
+item.hoeStone.name=石鋤
+item.hoeIron.name=鐵鋤
+item.hoeDiamond.name=鑽石鋤
+item.hoeGold.name=金鋤
+item.seeds.name=種子
+item.seeds_pumpkin.name=南瓜種子
+item.seeds_melon.name=西瓜種子
+item.melon.name=西瓜
+item.wheat.name=小麥
+item.bread.name=麵包
+item.helmetCloth.name=皮革帽子
+item.chestplateCloth.name=皮革上衣
+item.leggingsCloth.name=皮革褲子
+item.bootsCloth.name=皮革靴子
+item.helmetChain.name=鎖鏈頭盔
+item.chestplateChain.name=鎖鏈胸甲
+item.leggingsChain.name=鎖鏈護腿
+item.bootsChain.name=鎖鏈靴子
+item.helmetIron.name=鐵製頭盔
+item.chestplateIron.name=鐵製胸甲
+item.leggingsIron.name=鐵製護腿
+item.bootsIron.name=鐵質靴子
+item.helmetDiamond.name=鑽石頭盔
+item.chestplateDiamond.name=鑽石胸甲
+item.leggingsDiamond.name=鑽石護腿
+item.bootsDiamond.name=鑽石靴子
+item.helmetGold.name=黃金頭盔
+item.chestplateGold.name=黃金胸甲
+item.leggingsGold.name=黃金護腿
+item.bootsGold.name=黃金靴子
+item.flint.name=燧石
+item.porkchopRaw.name=生豬肉
+item.porkchopCooked.name=烤豬肉
+item.chickenRaw.name=生雞肉
+item.chickenCooked.name=烤雞
+item.muttonRaw.name=生羊肉
+item.muttonCooked.name=烤羊肉
+item.rabbitRaw.name=生兔肉
+item.rabbitCooked.name=烤兔肉
+item.rabbitStew.name=兔肉湯
+item.rabbitFoot.name=兔子腳
+item.rabbitHide.name=兔子皮
+item.beefRaw.name=生牛肉
+item.beefCooked.name=牛排
+item.painting.name=繪畫
+item.frame.name=物品展示欄
+item.appleGold.name=金蘋果
+item.sign.name=告示牌
+item.doorOak.name=橡木門
+item.doorSpruce.name=杉木門
+item.doorBirch.name=樺木門
+item.doorJungle.name=叢林木門
+item.doorAcacia.name=相思木門
+item.doorDarkOak.name=黑橡木門
+item.bucket.name=鐵桶
+item.bucketWater.name=水桶
+item.bucketLava.name=熔岩桶
+item.minecart.name=礦車
+item.saddle.name=鞍
+item.doorIron.name=鐵門
+item.redstone.name=紅石
+item.snowball.name=雪球
+item.boat.oak.name=橡木船
+item.boat.spruce.name=杉木船
+item.boat.birch.name=樺木船
+item.boat.jungle.name=叢林木船
+item.boat.acacia.name=相思木船
+item.boat.dark_oak.name=黑橡木船
+item.leather.name=皮革
+item.milk.name=牛奶
+item.brick.name=紅磚頭
+item.clay.name=粘土
+item.reeds.name=甘蔗
+item.paper.name=紙
+item.book.name=書
+item.slimeball.name=史萊姆球
+item.minecartChest.name=儲物箱礦車
+item.minecartFurnace.name=熔爐礦車
+item.minecartTnt.name=TNT礦車
+item.minecartHopper.name=漏斗礦車
+item.minecartCommandBlock.name=指令方塊礦車
+item.egg.name=蛋
+item.compass.name=指南針
+item.fishingRod.name=釣竿
+item.clock.name=時鐘
+item.yellowDust.name=螢光粉
+item.fish.cod.raw.name=生魚
+item.fish.salmon.raw.name=生鮭魚
+item.fish.pufferfish.raw.name=河豚
+item.fish.clownfish.raw.name=小丑魚
+item.fish.cod.cooked.name=烤魚
+item.fish.salmon.cooked.name=烤鮭魚片
+item.record.name=唱片
 item.record.13.desc=C418 - 13
 item.record.cat.desc=C418 - cat
 item.record.blocks.desc=C418 - blocks
@@ -621,148 +621,148 @@ item.record.strad.desc=C418 - strad
 item.record.ward.desc=C418 - ward
 item.record.11.desc=C418 - 11
 item.record.wait.desc=C418 - wait
-item.bone.name=Bone
-item.dyePowder.black.name=Ink Sac
-item.dyePowder.red.name=Rose Red
-item.dyePowder.green.name=Cactus Green
-item.dyePowder.brown.name=Cocoa Beans
-item.dyePowder.blue.name=Lapis Lazuli
-item.dyePowder.purple.name=Purple Dye
-item.dyePowder.cyan.name=Cyan Dye
-item.dyePowder.silver.name=Light Gray Dye
-item.dyePowder.gray.name=Gray Dye
-item.dyePowder.pink.name=Pink Dye
-item.dyePowder.lime.name=Lime Dye
-item.dyePowder.yellow.name=Dandelion Yellow
-item.dyePowder.lightBlue.name=Light Blue Dye
-item.dyePowder.magenta.name=Magenta Dye
-item.dyePowder.orange.name=Orange Dye
-item.dyePowder.white.name=Bone Meal
-item.sugar.name=Sugar
-item.cake.name=Cake
-item.bed.name=Bed
-item.diode.name=Redstone Repeater
-item.comparator.name=Redstone Comparator
-item.map.name=Map
-item.leaves.name=Leaves
-item.shears.name=Shears
-item.rottenFlesh.name=Rotten Flesh
-item.enderPearl.name=Ender Pearl
-item.blazeRod.name=Blaze Rod
-item.ghastTear.name=Ghast Tear
-item.netherStalkSeeds.name=Nether Wart
-item.potion.name=Potion
-item.end_crystal.name=End Crystal
-item.goldNugget.name=Gold Nugget
-item.glassBottle.name=Glass Bottle
-item.spiderEye.name=Spider Eye
-item.fermentedSpiderEye.name=Fermented Spider Eye
-item.blazePowder.name=Blaze Powder
-item.magmaCream.name=Magma Cream
-item.cauldron.name=Cauldron
-item.brewingStand.name=Brewing Stand
-item.eyeOfEnder.name=Eye of Ender
-item.speckledMelon.name=Glistering Melon
-item.monsterPlacer.name=Spawn
-item.expBottle.name=Bottle o' Enchanting
-item.fireball.name=Fire Charge
-item.writingBook.name=Book and Quill
-item.writtenBook.name=Written Book
-item.flowerPot.name=Flower Pot
-item.emptyMap.name=Empty Map
-item.carrots.name=Carrot
-item.carrotGolden.name=Golden Carrot
-item.potato.name=Potato
-item.potatoBaked.name=Baked Potato
-item.potatoPoisonous.name=Poisonous Potato
-item.skull.skeleton.name=Skeleton Skull
-item.skull.wither.name=Wither Skeleton Skull
-item.skull.zombie.name=Zombie Head
-item.skull.char.name=Head
-item.skull.player.name=%s's Head
-item.skull.creeper.name=Creeper Head
-item.skull.dragon.name=Dragon Head
-item.carrotOnAStick.name=Carrot on a Stick
-item.netherStar.name=Nether Star
-item.pumpkinPie.name=Pumpkin Pie
-item.enchantedBook.name=Enchanted Book
-item.fireworks.name=Firework Rocket
-item.fireworks.flight=Flight Duration:
-item.fireworksCharge.name=Firework Star
-item.fireworksCharge.black=Black
-item.fireworksCharge.red=Red
-item.fireworksCharge.green=Green
-item.fireworksCharge.brown=Brown
-item.fireworksCharge.blue=Blue
-item.fireworksCharge.purple=Purple
-item.fireworksCharge.cyan=Cyan
-item.fireworksCharge.silver=Light Gray
-item.fireworksCharge.gray=Gray
-item.fireworksCharge.pink=Pink
-item.fireworksCharge.lime=Lime
-item.fireworksCharge.yellow=Yellow
-item.fireworksCharge.lightBlue=Light Blue
-item.fireworksCharge.magenta=Magenta
-item.fireworksCharge.orange=Orange
-item.fireworksCharge.white=White
-item.fireworksCharge.customColor=Custom
-item.fireworksCharge.fadeTo=Fade to
-item.fireworksCharge.flicker=Twinkle
-item.fireworksCharge.trail=Trail
-item.fireworksCharge.type.0=Small Ball
-item.fireworksCharge.type.1=Large Ball
-item.fireworksCharge.type.2=Star-shaped
-item.fireworksCharge.type.3=Creeper-shaped
-item.fireworksCharge.type.4=Burst
-item.fireworksCharge.type=Unknown Shape
-item.netherbrick.name=Nether Brick
-item.netherquartz.name=Nether Quartz
-item.armorStand.name=Armor Stand
-item.horsearmormetal.name=Iron Horse Armor
-item.horsearmorgold.name=Gold Horse Armor
-item.horsearmordiamond.name=Diamond Horse Armor
-item.prismarineShard.name=Prismarine Shard
-item.prismarineCrystals.name=Prismarine Crystals
-item.chorusFruit.name=Chorus Fruit
-item.chorusFruitPopped.name=Popped Chorus Fruit
-item.beetroot.name=Beetroot
-item.beetroot_seeds.name=Beetroot Seeds
-item.beetroot_soup.name=Beetroot Soup
-item.dragon_breath.name=Dragon's Breath
-item.elytra.name=Elytra
-item.shield.name=Shield
-item.shield.black.name=Black Shield
-item.shield.red.name=Red Shield
-item.shield.green.name=Green Shield
-item.shield.brown.name=Brown Shield
-item.shield.blue.name=Blue Shield
-item.shield.purple.name=Purple Shield
-item.shield.cyan.name=Cyan Shield
-item.shield.silver.name=Light Gray Shield
-item.shield.gray.name=Gray Shield
-item.shield.pink.name=Pink Shield
-item.shield.lime.name=Lime Shield
-item.shield.yellow.name=Yellow Shield
-item.shield.lightBlue.name=Light Blue Shield
-item.shield.magenta.name=Magenta Shield
-item.shield.orange.name=Orange Shield
-item.shield.white.name=White Shield
-item.banner.black.name=Black Banner
-item.banner.red.name=Red Banner
-item.banner.green.name=Green Banner
-item.banner.brown.name=Brown Banner
-item.banner.blue.name=Blue Banner
-item.banner.purple.name=Purple Banner
-item.banner.cyan.name=Cyan Banner
-item.banner.silver.name=Light Gray Banner
-item.banner.gray.name=Gray Banner
-item.banner.pink.name=Pink Banner
-item.banner.lime.name=Lime Banner
-item.banner.yellow.name=Yellow Banner
-item.banner.lightBlue.name=Light Blue Banner
-item.banner.magenta.name=Magenta Banner
-item.banner.orange.name=Orange Banner
-item.banner.white.name=White Banner
+item.bone.name=骨頭
+item.dyePowder.black.name=墨囊
+item.dyePowder.red.name=玫瑰紅
+item.dyePowder.green.name=仙人掌綠
+item.dyePowder.brown.name=可可豆
+item.dyePowder.blue.name=青金石
+item.dyePowder.purple.name=紫色染料
+item.dyePowder.cyan.name=青色染料
+item.dyePowder.silver.name=淺灰色染料
+item.dyePowder.gray.name=灰色染料
+item.dyePowder.pink.name=粉紅色染料
+item.dyePowder.lime.name=淺綠色染料
+item.dyePowder.yellow.name=蒲公英黃
+item.dyePowder.lightBlue.name=淺藍色染料
+item.dyePowder.magenta.name=洋紅色染料
+item.dyePowder.orange.name=橙色染料
+item.dyePowder.white.name=骨粉
+item.sugar.name=糖
+item.cake.name=蛋糕
+item.bed.name=床
+item.diode.name=紅石中繼器
+item.comparator.name=紅石比較器
+item.map.name=地圖
+item.leaves.name=樹葉
+item.shears.name=剪刀
+item.rottenFlesh.name=腐肉
+item.enderPearl.name=終界珍珠
+item.blazeRod.name=烈焰桿
+item.ghastTear.name=幽靈之淚
+item.netherStalkSeeds.name=地獄疙瘩
+item.potion.name=藥水
+item.end_crystal.name=終界水晶
+item.goldNugget.name=金粒
+item.glassBottle.name=玻璃瓶
+item.spiderEye.name=蜘蛛眼
+item.fermentedSpiderEye.name=發酵蜘蛛眼
+item.blazePowder.name=烈焰粉
+item.magmaCream.name=岩漿球
+item.cauldron.name=鍋釜
+item.brewingStand.name=釀造台
+item.eyeOfEnder.name=終界之眼
+item.speckledMelon.name=鑲金西瓜
+item.monsterPlacer.name=生成
+item.expBottle.name=經驗瓶
+item.fireball.name=火焰彈
+item.writingBook.name=書和羽毛筆
+item.writtenBook.name=已寫過的書
+item.flowerPot.name=花盆
+item.emptyMap.name=空白地圖
+item.carrots.name=胡蘿蔔
+item.carrotGolden.name=金胡蘿蔔
+item.potato.name=馬鈴薯
+item.potatoBaked.name=烤馬鈴薯
+item.potatoPoisonous.name=毒馬鈴薯
+item.skull.skeleton.name=骷髏頭顱
+item.skull.wither.name=凋零骷髏頭顱
+item.skull.zombie.name=僵屍骷髏頭顱
+item.skull.char.name=頭顱
+item.skull.player.name=%s的頭顱
+item.skull.creeper.name=苦力怕頭顱
+item.skull.dragon.name=龍首
+item.carrotOnAStick.name=胡蘿蔔釣竿
+item.netherStar.name=地獄之星
+item.pumpkinPie.name=南瓜派
+item.enchantedBook.name=附魔書
+item.fireworks.name=煙火
+item.fireworks.flight=飛行時間
+item.fireworksCharge.name=火藥球
+item.fireworksCharge.black=黑色
+item.fireworksCharge.red=紅色
+item.fireworksCharge.green=綠色
+item.fireworksCharge.brown=棕色
+item.fireworksCharge.blue=藍色
+item.fireworksCharge.purple=紫色
+item.fireworksCharge.cyan=青色
+item.fireworksCharge.silver=淺灰色
+item.fireworksCharge.gray=灰色
+item.fireworksCharge.pink=粉紅色
+item.fireworksCharge.lime=青色
+item.fireworksCharge.yellow=黃色
+item.fireworksCharge.lightBlue=淺藍色
+item.fireworksCharge.magenta=洋紅色
+item.fireworksCharge.orange=橙色
+item.fireworksCharge.white=白色
+item.fireworksCharge.customColor=自定顏色
+item.fireworksCharge.fadeTo=褪色
+item.fireworksCharge.flicker=閃爍
+item.fireworksCharge.trail=軌跡
+item.fireworksCharge.type.0=小型球狀
+item.fireworksCharge.type.1=大型球狀
+item.fireworksCharge.type.2=星形
+item.fireworksCharge.type.3=苦力怕形
+item.fireworksCharge.type.4=爆裂形
+item.fireworksCharge.type=不明形狀
+item.netherbrick.name=地獄磚
+item.netherquartz.name=地獄石英
+item.armorStand.name=盔甲座
+item.horsearmormetal.name=鐵製馬鎧
+item.horsearmorgold.name=黃金製馬鎧
+item.horsearmordiamond.name=鑽石製馬鎧
+item.prismarineShard.name=海鱗碎片
+item.prismarineCrystals.name=海鱗晶體
+item.chorusFruit.name=歌萊果
+item.chorusFruitPopped.name=爆開的歌萊果
+item.beetroot.name=甜菜根
+item.beetroot_seeds.name=甜菜種子
+item.beetroot_soup.name=甜菜湯
+item.dragon_breath.name=龍之吐息
+item.elytra.name=鞘翅
+item.shield.name=盾牌
+item.shield.black.name=黑色盾牌
+item.shield.red.name=紅色盾牌
+item.shield.green.name=綠色盾牌
+item.shield.brown.name=棕色盾牌
+item.shield.blue.name=藍色盾牌
+item.shield.purple.name=紫色盾牌
+item.shield.cyan.name=青色盾牌
+item.shield.silver.name=淺灰色盾牌
+item.shield.gray.name=灰色盾牌
+item.shield.pink.name=粉紅色盾牌
+item.shield.lime.name=青色盾牌
+item.shield.yellow.name=黃色盾牌
+item.shield.lightBlue.name=淺藍色盾牌
+item.shield.magenta.name=洋紅色盾牌
+item.shield.orange.name=橙色盾牌
+item.shield.white.name=白色盾牌
+item.banner.black.name=黑色旗幟
+item.banner.red.name=紅色旗幟
+item.banner.green.name=綠色旗幟
+item.banner.brown.name=棕色旗幟
+item.banner.blue.name=藍色旗幟
+item.banner.purple.name=紫色盾牌
+item.banner.cyan.name=青色盾牌
+item.banner.silver.name=淺灰色盾牌
+item.banner.gray.name=灰色盾牌
+item.banner.pink.name=粉紅色盾牌
+item.banner.lime.name=青色盾牌
+item.banner.yellow.name=黃色盾牌
+item.banner.lightBlue.name=淺藍色盾牌
+item.banner.magenta.name=洋紅色盾牌
+item.banner.orange.name=橙色盾牌
+item.banner.white.name=白色盾牌
 item.banner.square_bottom_left.black=Black Base Dexter Canton
 item.banner.square_bottom_left.red=Red Base Dexter Canton
 item.banner.square_bottom_left.green=Green Base Dexter Canton
@@ -1373,357 +1373,357 @@ item.banner.straight_cross.orange=Orange Cross
 item.banner.straight_cross.white=White Cross
 
 # Block names that will be displayed in the hologram
-tile.barrier.name=Barrier
-tile.stone.stone.name=Stone
-tile.stone.granite.name=Granite
-tile.stone.graniteSmooth.name=Polished Granite
-tile.stone.diorite.name=Diorite
-tile.stone.dioriteSmooth.name=Polished Diorite
-tile.stone.andesite.name=Andesite
-tile.stone.andesiteSmooth.name=Polished Andesite
-tile.hayBlock.name=Hay Bale
-tile.grass.name=Grass Block
-tile.dirt.name=Dirt
-tile.dirt.default.name=Dirt
-tile.dirt.coarse.name=Coarse Dirt
-tile.dirt.podzol.name=Podzol
-tile.stonebrick.name=Cobblestone
-tile.wood.name=Wooden Planks
-tile.wood.oak.name=Oak Wood Planks
-tile.wood.spruce.name=Spruce Wood Planks
-tile.wood.birch.name=Birch Wood Planks
-tile.wood.jungle.name=Jungle Wood Planks
-tile.wood.acacia.name=Acacia Wood Planks
-tile.wood.big_oak.name=Dark Oak Wood Planks
-tile.sapling.oak.name=Oak Sapling
-tile.sapling.spruce.name=Spruce Sapling
-tile.sapling.birch.name=Birch Sapling
-tile.sapling.jungle.name=Jungle Sapling
-tile.sapling.acacia.name=Acacia Sapling
-tile.sapling.big_oak.name=Dark Oak Sapling
-tile.deadbush.name=Dead Bush
-tile.bedrock.name=Bedrock
-tile.water.name=Water
-tile.lava.name=Lava
-tile.sand.name=Sand
-tile.sand.default.name=Sand
-tile.sand.red.name=Red Sand
-tile.sandStone.name=Sandstone
-tile.sandStone.default.name=Sandstone
-tile.sandStone.chiseled.name=Chiseled Sandstone
-tile.sandStone.smooth.name=Smooth Sandstone
-tile.redSandStone.name=Red Sandstone
-tile.redSandStone.default.name=Red Sandstone
-tile.redSandStone.chiseled.name=Chiseled Red Sandstone
-tile.redSandStone.smooth.name=Smooth Red Sandstone
-tile.gravel.name=Gravel
-tile.oreGold.name=Gold Ore
-tile.oreIron.name=Iron Ore
-tile.oreCoal.name=Coal Ore
-tile.log.name=Wood
-tile.log.oak.name=Oak Wood
-tile.log.spruce.name=Spruce Wood
-tile.log.birch.name=Birch Wood
-tile.log.jungle.name=Jungle Wood
-tile.log.acacia.name=Acacia Wood
-tile.log.big_oak.name=Dark Oak Wood
-tile.leaves.name=Leaves
-tile.leaves.oak.name=Oak Leaves
-tile.leaves.spruce.name=Spruce Leaves
-tile.leaves.birch.name=Birch Leaves
-tile.leaves.jungle.name=Jungle Leaves
-tile.leaves.acacia.name=Acacia Leaves
-tile.leaves.big_oak.name=Dark Oak Leaves
-tile.tallgrass.name=Grass
-tile.tallgrass.shrub.name=Shrub
-tile.tallgrass.grass.name=Grass
-tile.tallgrass.fern.name=Fern
-tile.sponge.dry.name=Sponge
-tile.sponge.wet.name=Wet Sponge
-tile.glass.name=Glass
-tile.stainedGlass.name=Stained Glass
-tile.stainedGlass.black.name=Black Stained Glass
-tile.stainedGlass.red.name=Red Stained Glass
-tile.stainedGlass.green.name=Green Stained Glass
-tile.stainedGlass.brown.name=Brown Stained Glass
-tile.stainedGlass.blue.name=Blue Stained Glass
-tile.stainedGlass.purple.name=Purple Stained Glass
-tile.stainedGlass.cyan.name=Cyan Stained Glass
-tile.stainedGlass.silver.name=Light Gray Stained Glass
-tile.stainedGlass.gray.name=Gray Stained Glass
-tile.stainedGlass.pink.name=Pink Stained Glass
-tile.stainedGlass.lime.name=Lime Stained Glass
-tile.stainedGlass.yellow.name=Yellow Stained Glass
-tile.stainedGlass.lightBlue.name=Light Blue Stained Glass
-tile.stainedGlass.magenta.name=Magenta Stained Glass
-tile.stainedGlass.orange.name=Orange Stained Glass
-tile.stainedGlass.white.name=White Stained Glass
-tile.thinStainedGlass.name=Stained Glass Pane
-tile.thinStainedGlass.black.name=Black Stained Glass Pane
-tile.thinStainedGlass.red.name=Red Stained Glass Pane
-tile.thinStainedGlass.green.name=Green Stained Glass Pane
-tile.thinStainedGlass.brown.name=Brown Stained Glass Pane
-tile.thinStainedGlass.blue.name=Blue Stained Glass Pane
-tile.thinStainedGlass.purple.name=Purple Stained Glass Pane
-tile.thinStainedGlass.cyan.name=Cyan Stained Glass Pane
-tile.thinStainedGlass.silver.name=Light Gray Stained Glass Pane
-tile.thinStainedGlass.gray.name=Gray Stained Glass Pane
-tile.thinStainedGlass.pink.name=Pink Stained Glass Pane
-tile.thinStainedGlass.lime.name=Lime Stained Glass Pane
-tile.thinStainedGlass.yellow.name=Yellow Stained Glass Pane
-tile.thinStainedGlass.lightBlue.name=Light Blue Stained Glass Pane
-tile.thinStainedGlass.magenta.name=Magenta Stained Glass Pane
-tile.thinStainedGlass.orange.name=Orange Stained Glass Pane
-tile.thinStainedGlass.white.name=White Stained Glass Pane
-tile.thinGlass.name=Glass Pane
-tile.cloth.name=Wool
-tile.flower1.name=Flower
-tile.flower1.dandelion.name=Dandelion
-tile.flower2.name=Flower
-tile.flower2.poppy.name=Poppy
-tile.flower2.blueOrchid.name=Blue Orchid
-tile.flower2.allium.name=Allium
-tile.flower2.houstonia.name=Azure Bluet
-tile.flower2.tulipRed.name=Red Tulip
-tile.flower2.tulipOrange.name=Orange Tulip
-tile.flower2.tulipWhite.name=White Tulip
-tile.flower2.tulipPink.name=Pink Tulip
-tile.flower2.oxeyeDaisy.name=Oxeye Daisy
-tile.doublePlant.name=Plant
-tile.doublePlant.sunflower.name=Sunflower
-tile.doublePlant.syringa.name=Lilac
-tile.doublePlant.grass.name=Double Tallgrass
-tile.doublePlant.fern.name=Large Fern
-tile.doublePlant.rose.name=Rose Bush
-tile.doublePlant.paeonia.name=Peony
-tile.mushroom.name=Mushroom
-tile.blockGold.name=Block of Gold
-tile.blockIron.name=Block of Iron
-tile.stoneSlab.name=Stone Slab
-tile.stoneSlab.stone.name=Stone Slab
-tile.stoneSlab.sand.name=Sandstone Slab
-tile.stoneSlab.wood.name=Wooden Slab
-tile.stoneSlab.cobble.name=Cobblestone Slab
-tile.stoneSlab.brick.name=Bricks Slab
-tile.stoneSlab.smoothStoneBrick.name=Stone Bricks Slab
-tile.stoneSlab.netherBrick.name=Nether Brick Slab
-tile.stoneSlab.quartz.name=Quartz Slab
-tile.stoneSlab2.red_sandstone.name=Red Sandstone Slab
-tile.woodSlab.name=Wood Slab
-tile.woodSlab.oak.name=Oak Wood Slab
-tile.woodSlab.spruce.name=Spruce Wood Slab
-tile.woodSlab.birch.name=Birch Wood Slab
-tile.woodSlab.jungle.name=Jungle Wood Slab
-tile.woodSlab.acacia.name=Acacia Wood Slab
-tile.woodSlab.big_oak.name=Dark Oak Wood Slab
-tile.brick.name=Bricks
+tile.barrier.name=屏障
+tile.stone.stone.name=石頭
+tile.stone.granite.name=花崗岩
+tile.stone.graniteSmooth.name=平滑花崗岩
+tile.stone.diorite.name=閃長岩
+tile.stone.dioriteSmooth.name=平滑閃長岩
+tile.stone.andesite.name=安山岩
+tile.stone.andesiteSmooth.name=平滑安山岩
+tile.hayBlock.name=乾草捆
+tile.grass.name=草地
+tile.dirt.name=泥土
+tile.dirt.default.name=泥土
+tile.dirt.coarse.name=粗泥
+tile.dirt.podzol.name=灰壤
+tile.stonebrick.name=鵝卵石
+tile.wood.name=木材
+tile.wood.oak.name=橡木材
+tile.wood.spruce.name=杉木材
+tile.wood.birch.name=樺木材
+tile.wood.jungle.name=叢林木材
+tile.wood.acacia.name=相思木材
+tile.wood.big_oak.name=黑橡木材
+tile.sapling.oak.name=橡木樹苗
+tile.sapling.spruce.name=杉木樹苗
+tile.sapling.birch.name=樺木樹苗
+tile.sapling.jungle.name=叢林木樹苗
+tile.sapling.acacia.name=相思木樹苗
+tile.sapling.big_oak.name=黑橡木樹苗
+tile.deadbush.name=枯灌木
+tile.bedrock.name=基岩
+tile.water.name=水
+tile.lava.name=熔岩
+tile.sand.name=沙
+tile.sand.default.name=沙
+tile.sand.red.name=紅沙
+tile.sandStone.name=砂岩
+tile.sandStone.default.name=砂岩
+tile.sandStone.chiseled.name=浮雕砂岩
+tile.sandStone.smooth.name=平滑砂岩
+tile.redSandStone.name=紅砂岩
+tile.redSandStone.default.name=紅砂岩
+tile.redSandStone.chiseled.name=浮雕紅砂岩
+tile.redSandStone.smooth.name=平滑紅砂岩
+tile.gravel.name=礫石
+tile.oreGold.name=金礦
+tile.oreIron.name=鐵礦
+tile.oreCoal.name=煤礦
+tile.log.name=原木
+tile.log.oak.name=橡木原木
+tile.log.spruce.name=杉木原木
+tile.log.birch.name=樺木原木
+tile.log.jungle.name=叢林木原木
+tile.log.acacia.name=相思木原木
+tile.log.big_oak.name=黑橡木原木
+tile.leaves.name=樹葉
+tile.leaves.oak.name=橡木樹葉
+tile.leaves.spruce.name=杉木樹葉
+tile.leaves.birch.name=樺木樹葉
+tile.leaves.jungle.name=叢林木樹葉
+tile.leaves.acacia.name=相思木樹葉
+tile.leaves.big_oak.name=黑橡木樹葉
+tile.tallgrass.name=草
+tile.tallgrass.shrub.name=枯灌木
+tile.tallgrass.grass.name=草
+tile.tallgrass.fern.name=蕨
+tile.sponge.dry.name=海綿
+tile.sponge.wet.name=濕海綿
+tile.glass.name=玻璃
+tile.stainedGlass.name=玻璃
+tile.stainedGlass.black.name=黑色玻璃
+tile.stainedGlass.red.name=紅色玻璃
+tile.stainedGlass.green.name=綠色玻璃
+tile.stainedGlass.brown.name=棕色玻璃
+tile.stainedGlass.blue.name=藍色玻璃
+tile.stainedGlass.purple.name=紫色玻璃
+tile.stainedGlass.cyan.name=青色玻璃
+tile.stainedGlass.silver.name=淺灰色玻璃
+tile.stainedGlass.gray.name=灰色玻璃
+tile.stainedGlass.pink.name=粉紅色玻璃
+tile.stainedGlass.lime.name=青色玻璃
+tile.stainedGlass.yellow.name=黃色玻璃
+tile.stainedGlass.lightBlue.name=淺藍色玻璃
+tile.stainedGlass.magenta.name=洋紅色玻璃
+tile.stainedGlass.orange.name=橙色玻璃
+tile.stainedGlass.white.name=白色玻璃
+tile.thinStainedGlass.name=玻璃片
+tile.thinStainedGlass.black.name=黑色玻璃片
+tile.thinStainedGlass.red.name=紅色玻璃片
+tile.thinStainedGlass.green.name=綠色玻璃片
+tile.thinStainedGlass.brown.name=棕色玻璃片
+tile.thinStainedGlass.blue.name=藍色玻璃片
+tile.thinStainedGlass.purple.name=紫色玻璃片
+tile.thinStainedGlass.cyan.name=青色玻璃片
+tile.thinStainedGlass.silver.name=淺灰色玻璃片
+tile.thinStainedGlass.gray.name=灰色玻璃片
+tile.thinStainedGlass.pink.name=粉紅色玻璃片
+tile.thinStainedGlass.lime.name=青色玻璃片
+tile.thinStainedGlass.yellow.name=黃色玻璃片
+tile.thinStainedGlass.lightBlue.name=淺藍色玻璃片
+tile.thinStainedGlass.magenta.name=洋紅色玻璃片
+tile.thinStainedGlass.orange.name=橙色玻璃片
+tile.thinStainedGlass.white.name=白色玻璃片
+tile.thinGlass.name=玻璃片
+tile.cloth.name=羊毛
+tile.flower1.name=花
+tile.flower1.dandelion.name=蒲公英
+tile.flower2.name=花
+tile.flower2.poppy.name=罌粟
+tile.flower2.blueOrchid.name=藍色蝴蝶蘭
+tile.flower2.allium.name=紫紅球花
+tile.flower2.houstonia.name=雛草
+tile.flower2.tulipRed.name=紅色鬱金香
+tile.flower2.tulipOrange.name=橙色鬱金香
+tile.flower2.tulipWhite.name=白色鬱金香
+tile.flower2.tulipPink.name=粉紅色鬱金香
+tile.flower2.oxeyeDaisy.name=雛菊
+tile.doublePlant.name=植物
+tile.doublePlant.sunflower.name=向日葵
+tile.doublePlant.syringa.name=紫丁香
+tile.doublePlant.grass.name=芒草
+tile.doublePlant.fern.name=大型蕨類
+tile.doublePlant.rose.name=玫瑰叢
+tile.doublePlant.paeonia.name=牡丹花
+tile.mushroom.name=蘑菇
+tile.blockGold.name=金磚
+tile.blockIron.name=鐵磚
+tile.stoneSlab.name=石半磚
+tile.stoneSlab.stone.name=石半磚
+tile.stoneSlab.sand.name=砂岩半磚
+tile.stoneSlab.wood.name=木半磚
+tile.stoneSlab.cobble.name=鵝卵石半磚
+tile.stoneSlab.brick.name=紅磚半磚
+tile.stoneSlab.smoothStoneBrick.name=石磚半磚
+tile.stoneSlab.netherBrick.name=地獄磚半磚
+tile.stoneSlab.quartz.name=石英板紮un
+tile.stoneSlab2.red_sandstone.name=紅砂岩半磚
+tile.woodSlab.name=木半磚
+tile.woodSlab.oak.name=橡木半磚
+tile.woodSlab.spruce.name=杉木半磚
+tile.woodSlab.birch.name=樺木半磚
+tile.woodSlab.jungle.name=叢林木半磚
+tile.woodSlab.acacia.name=相思木半磚
+tile.woodSlab.big_oak.name=黑橡木半磚
+tile.brick.name=紅磚
 tile.tnt.name=TNT
-tile.bookshelf.name=Bookshelf
-tile.stoneMoss.name=Moss Stone
-tile.obsidian.name=Obsidian
-tile.torch.name=Torch
-tile.fire.name=Fire
-tile.mobSpawner.name=Monster Spawner
-tile.stairsWood.name=Oak Wood Stairs
-tile.stairsWoodSpruce.name=Spruce Wood Stairs
-tile.stairsWoodBirch.name=Birch Wood Stairs
-tile.stairsWoodJungle.name=Jungle Wood Stairs
-tile.stairsWoodAcacia.name=Acacia Wood Stairs
-tile.stairsWoodDarkOak.name=Dark Oak Wood Stairs
-tile.chest.name=Chest
-tile.chestTrap.name=Trapped Chest
-tile.redstoneDust.name=Redstone Dust
-tile.oreDiamond.name=Diamond Ore
-tile.blockCoal.name=Block of Coal
-tile.blockDiamond.name=Block of Diamond
-tile.workbench.name=Crafting Table
-tile.crops.name=Crops
-tile.farmland.name=Farmland
-tile.furnace.name=Furnace
-tile.sign.name=Sign
-tile.doorWood.name=Wooden Door
-tile.ladder.name=Ladder
-tile.rail.name=Rail
-tile.goldenRail.name=Powered Rail
-tile.activatorRail.name=Activator Rail
-tile.detectorRail.name=Detector Rail
-tile.stairsStone.name=Cobblestone Stairs
-tile.stairsSandStone.name=Sandstone Stairs
-tile.stairsRedSandStone.name=Red Sandstone Stairs
-tile.lever.name=Lever
-tile.pressurePlateStone.name=Stone Pressure Plate
-tile.pressurePlateWood.name=Wooden Pressure Plate
-tile.weightedPlate_light.name=Weighted Pressure Plate (Light)
-tile.weightedPlate_heavy.name=Weighted Pressure Plate (Heavy)
-tile.doorIron.name=Iron Door
-tile.oreRedstone.name=Redstone Ore
-tile.notGate.name=Redstone Torch
-tile.button.name=Button
-tile.snow.name=Snow
-tile.woolCarpet.name=Carpet
-tile.woolCarpet.black.name=Black Carpet
-tile.woolCarpet.red.name=Red Carpet
-tile.woolCarpet.green.name=Green Carpet
-tile.woolCarpet.brown.name=Brown Carpet
-tile.woolCarpet.blue.name=Blue Carpet
-tile.woolCarpet.purple.name=Purple Carpet
-tile.woolCarpet.cyan.name=Cyan Carpet
-tile.woolCarpet.silver.name=Light Gray Carpet
-tile.woolCarpet.gray.name=Gray Carpet
-tile.woolCarpet.pink.name=Pink Carpet
-tile.woolCarpet.lime.name=Lime Carpet
-tile.woolCarpet.yellow.name=Yellow Carpet
-tile.woolCarpet.lightBlue.name=Light Blue Carpet
-tile.woolCarpet.magenta.name=Magenta Carpet
-tile.woolCarpet.orange.name=Orange Carpet
-tile.woolCarpet.white.name=Carpet
-tile.ice.name=Ice
-tile.frostedIce.name=Frosted Ice
-tile.icePacked.name=Packed Ice
-tile.cactus.name=Cactus
-tile.clay.name=Clay
-tile.clayHardenedStained.name=Stained Hardened Clay
-tile.clayHardenedStained.black.name=Black Hardened Clay
-tile.clayHardenedStained.red.name=Red Hardened Clay
-tile.clayHardenedStained.green.name=Green Hardened Clay
-tile.clayHardenedStained.brown.name=Brown Hardened Clay
-tile.clayHardenedStained.blue.name=Blue Hardened Clay
-tile.clayHardenedStained.purple.name=Purple Hardened Clay
-tile.clayHardenedStained.cyan.name=Cyan Hardened Clay
-tile.clayHardenedStained.silver.name=Light Gray Hardened Clay
-tile.clayHardenedStained.gray.name=Gray Hardened Clay
-tile.clayHardenedStained.pink.name=Pink Hardened Clay
-tile.clayHardenedStained.lime.name=Lime Hardened Clay
-tile.clayHardenedStained.yellow.name=Yellow Hardened Clay
-tile.clayHardenedStained.lightBlue.name=Light Blue Hardened Clay
-tile.clayHardenedStained.magenta.name=Magenta Hardened Clay
-tile.clayHardenedStained.orange.name=Orange Hardened Clay
-tile.clayHardenedStained.white.name=White Hardened Clay
-tile.clayHardened.name=Hardened Clay
-tile.reeds.name=Sugar cane
-tile.jukebox.name=Jukebox
-tile.fence.name=Oak Fence
-tile.spruceFence.name=Spruce Fence
-tile.birchFence.name=Birch Fence
-tile.jungleFence.name=Jungle Fence
-tile.darkOakFence.name=Dark Oak Fence
-tile.acaciaFence.name=Acacia Fence
-tile.fenceGate.name=Oak Fence Gate
-tile.spruceFenceGate.name=Spruce Fence Gate
-tile.birchFenceGate.name=Birch Fence Gate
-tile.jungleFenceGate.name=Jungle Fence Gate
-tile.darkOakFenceGate.name=Dark Oak Fence Gate
-tile.acaciaFenceGate.name=Acacia Fence Gate
-tile.pumpkinStem.name=Pumpkin Stem
-tile.pumpkin.name=Pumpkin
-tile.litpumpkin.name=Jack o'Lantern
-tile.hellrock.name=Netherrack
-tile.hellsand.name=Soul Sand
-tile.lightgem.name=Glowstone
-tile.portal.name=Portal
-tile.cloth.black.name=Black Wool
-tile.cloth.red.name=Red Wool
-tile.cloth.green.name=Green Wool
-tile.cloth.brown.name=Brown Wool
-tile.cloth.blue.name=Blue Wool
-tile.cloth.purple.name=Purple Wool
-tile.cloth.cyan.name=Cyan Wool
-tile.cloth.silver.name=Light Gray Wool
-tile.cloth.gray.name=Gray Wool
-tile.cloth.pink.name=Pink Wool
-tile.cloth.lime.name=Lime Wool
-tile.cloth.yellow.name=Yellow Wool
-tile.cloth.lightBlue.name=Light Blue Wool
-tile.cloth.magenta.name=Magenta Wool
-tile.cloth.orange.name=Orange Wool
-tile.cloth.white.name=Wool
-tile.oreLapis.name=Lapis Lazuli Ore
-tile.blockLapis.name=Lapis Lazuli Block
-tile.dispenser.name=Dispenser
-tile.dropper.name=Dropper
-tile.musicBlock.name=Note Block
-tile.cake.name=Cake
-tile.bed.name=Bed
-tile.lockedchest.name=Locked chest
-tile.trapdoor.name=Wooden Trapdoor
-tile.ironTrapdoor.name=Iron Trapdoor
-tile.web.name=Cobweb
-tile.stonebricksmooth.name=Stone Bricks
-tile.stonebricksmooth.default.name=Stone Bricks
-tile.stonebricksmooth.mossy.name=Mossy Stone Bricks
-tile.stonebricksmooth.cracked.name=Cracked Stone Bricks
-tile.stonebricksmooth.chiseled.name=Chiseled Stone Bricks
-tile.monsterStoneEgg.name=Stone Monster Egg
-tile.monsterStoneEgg.stone.name=Stone Monster Egg
-tile.monsterStoneEgg.cobble.name=Cobblestone Monster Egg
-tile.monsterStoneEgg.brick.name=Stone Brick Monster Egg
-tile.monsterStoneEgg.mossybrick.name=Mossy Stone Brick Monster Egg
-tile.monsterStoneEgg.crackedbrick.name=Cracked Stone Brick Monster Egg
-tile.monsterStoneEgg.chiseledbrick.name=Chiseled Stone Brick Monster Egg
-tile.pistonBase.name=Piston
-tile.pistonStickyBase.name=Sticky Piston
-tile.fenceIron.name=Iron Bars
-tile.melon.name=Melon
-tile.stairsBrick.name=Brick Stairs
-tile.stairsStoneBrickSmooth.name=Stone Brick Stairs
-tile.vine.name=Vines
-tile.netherBrick.name=Nether Brick
-tile.netherFence.name=Nether Brick Fence
-tile.stairsNetherBrick.name=Nether Brick Stairs
-tile.netherStalk.name=Nether Wart
-tile.cauldron.name=Cauldron
-tile.enchantmentTable.name=Enchantment Table
-tile.anvil.name=Anvil
-tile.anvil.intact.name=Anvil
-tile.anvil.slightlyDamaged.name=Slightly Damaged Anvil
-tile.anvil.veryDamaged.name=Very Damaged Anvil
-tile.whiteStone.name=End Stone
-tile.endPortalFrame.name=End Portal
-tile.mycel.name=Mycelium
-tile.waterlily.name=Lily Pad
-tile.dragonEgg.name=Dragon Egg
-tile.redstoneLight.name=Redstone Lamp
-tile.cocoa.name=Cocoa
-tile.enderChest.name=Ender Chest
-tile.oreEmerald.name=Emerald Ore
-tile.blockEmerald.name=Block of Emerald
-tile.blockRedstone.name=Block of Redstone
-tile.tripWire.name=Tripwire
-tile.tripWireSource.name=Tripwire Hook
-tile.commandBlock.name=Command Block
-tile.repeatingCommandBlock.name=Repeating Command Block
-tile.chainCommandBlock.name=Chain Command Block
-tile.beacon.name=Beacon
-tile.cobbleWall.normal.name=Cobblestone Wall
-tile.cobbleWall.mossy.name=Mossy Cobblestone Wall
-tile.carrots.name=Carrots
-tile.potatoes.name=Potatoes
-tile.daylightDetector.name=Daylight Sensor
-tile.netherquartz.name=Nether Quartz Ore
-tile.hopper.name=Hopper
-tile.quartzBlock.name=Block of Quartz
-tile.quartzBlock.default.name=Block of Quartz
-tile.quartzBlock.chiseled.name=Chiseled Quartz Block
-tile.quartzBlock.lines.name=Pillar Quartz Block
-tile.stairsQuartz.name=Quartz Stairs
-tile.slime.name=Slime Block
-tile.prismarine.rough.name=Prismarine
-tile.prismarine.bricks.name=Prismarine Bricks
-tile.prismarine.dark.name=Dark Prismarine
-tile.seaLantern.name=Sea Lantern
-tile.endRod.name=End Rod
-tile.chorusPlant.name=Chorus Plant
-tile.chorusFlower.name=Chorus Flower
-tile.purpurBlock.name=Purpur Block
-tile.purpurPillar.name=Purpur Pillar
-tile.stairsPurpur.name=Purpur Stairs
-tile.purpurSlab.name=Purpur Slab
-tile.endBricks.name=End Stone Bricks
-tile.beetroots.name=Beetroots
-tile.grassPath.name=Grass Path
-tile.magma.name=Magma Block
-tile.netherWartBlock.name=Nether Wart Block
-tile.redNetherBrick.name=Red Nether Brick
-tile.boneBlock.name=Bone Block
-tile.structureVoid.name=Structure Void
-tile.structureBlock.name=Structure Block
+tile.bookshelf.name=書櫃
+tile.stoneMoss.name=青苔石
+tile.obsidian.name=黑曜石
+tile.torch.name=火把
+tile.fire.name=火
+tile.mobSpawner.name=生怪磚
+tile.stairsWood.name=橡木階梯
+tile.stairsWoodSpruce.name=杉木階梯
+tile.stairsWoodBirch.name=樺木階梯
+tile.stairsWoodJungle.name=叢林木階梯
+tile.stairsWoodAcacia.name=相思木階梯
+tile.stairsWoodDarkOak.name=黑橡木階梯
+tile.chest.name=儲物箱
+tile.chestTrap.name=陷阱儲物箱
+tile.redstoneDust.name=紅石
+tile.oreDiamond.name=鑽石礦
+tile.blockCoal.name=煤炭磚
+tile.blockDiamond.name=鑽石磚
+tile.workbench.name=工作台
+tile.crops.name=農作物
+tile.farmland.name=耕地
+tile.furnace.name=熔爐
+tile.sign.name=告示牌
+tile.doorWood.name=木門
+tile.ladder.name=梯子
+tile.rail.name=鐵軌
+tile.goldenRail.name=動力鐵軌
+tile.activatorRail.name=觸發鐵軌
+tile.detectorRail.name=壓力鐵軌
+tile.stairsStone.name=鵝卵石階梯
+tile.stairsSandStone.name=砂岩解題
+tile.stairsRedSandStone.name=紅砂岩階梯
+tile.lever.name=控制桿
+tile.pressurePlateStone.name=石製壓力版
+tile.pressurePlateWood.name=木製壓力版
+tile.weightedPlate_light.name=感重壓力版(輕)
+tile.weightedPlate_heavy.name=感重壓力版(重)
+tile.doorIron.name=鐵門
+tile.oreRedstone.name=紅石礦
+tile.notGate.name=紅石火把
+tile.button.name=按鈕
+tile.snow.name=雪
+tile.woolCarpet.name=地毯
+tile.woolCarpet.black.name=黑色地毯
+tile.woolCarpet.red.name=紅色地毯
+tile.woolCarpet.green.name=綠色地毯
+tile.woolCarpet.brown.name=棕色地毯
+tile.woolCarpet.blue.name=藍色地毯
+tile.woolCarpet.purple.name=紫色地毯
+tile.woolCarpet.cyan.name=青色地毯
+tile.woolCarpet.silver.name=淺灰色地毯
+tile.woolCarpet.gray.name=灰色地毯
+tile.woolCarpet.pink.name=粉紅色地毯
+tile.woolCarpet.lime.name=青色地毯
+tile.woolCarpet.yellow.name=黃色地毯
+tile.woolCarpet.lightBlue.name=淺藍色地毯
+tile.woolCarpet.magenta.name=洋紅色地毯
+tile.woolCarpet.orange.name=橙色地毯
+tile.woolCarpet.white.name=地毯
+tile.ice.name=冰
+tile.frostedIce.name=冰
+tile.icePacked.name=冰磚
+tile.cactus.name=仙人掌
+tile.clay.name=黏土
+tile.clayHardenedStained.name=硬化黏土
+tile.clayHardenedStained.black.name=黑色硬化黏土
+tile.clayHardenedStained.red.name=紅色硬化黏土
+tile.clayHardenedStained.green.name=綠色硬化黏土
+tile.clayHardenedStained.brown.name=棕色硬化黏土
+tile.clayHardenedStained.blue.name=藍色硬化黏土
+tile.clayHardenedStained.purple.name=紫色硬化黏土
+tile.clayHardenedStained.cyan.name=青色硬化黏土
+tile.clayHardenedStained.silver.name=淺灰色硬化黏土
+tile.clayHardenedStained.gray.name=灰色硬化黏土
+tile.clayHardenedStained.pink.name=粉紅色硬化粘土
+tile.clayHardenedStained.lime.name=青色硬化粘土
+tile.clayHardenedStained.yellow.name=黃色硬化粘土
+tile.clayHardenedStained.lightBlue.name=淺藍色硬化粘土
+tile.clayHardenedStained.magenta.name=洋紅色硬化粘土
+tile.clayHardenedStained.orange.name=橙色硬化粘土
+tile.clayHardenedStained.white.name=白色硬化粘土
+tile.clayHardened.name=硬化粘土
+tile.reeds.name=甘蔗
+tile.jukebox.name=唱片機
+tile.fence.name=橡木柵欄
+tile.spruceFence.name=杉木柵欄
+tile.birchFence.name=樺木柵欄
+tile.jungleFence.name=叢林木柵欄
+tile.darkOakFence.name=黑橡木柵欄
+tile.acaciaFence.name=相思木柵欄
+tile.fenceGate.name=橡木柵欄門
+tile.spruceFenceGate.name=杉木柵欄門
+tile.birchFenceGate.name=樺木柵欄門
+tile.jungleFenceGate.name=叢林木柵欄門
+tile.darkOakFenceGate.name=黑橡木柵欄門
+tile.acaciaFenceGate.name=相思木柵欄門
+tile.pumpkinStem.name=南瓜根莖
+tile.pumpkin.name=南瓜
+tile.litpumpkin.name=南瓜燈
+tile.hellrock.name=地獄石
+tile.hellsand.name=靈魂沙
+tile.lightgem.name=螢光石
+tile.portal.name=傳送門
+tile.cloth.black.name=黑色羊毛
+tile.cloth.red.name=紅色羊毛
+tile.cloth.green.name=綠色羊毛
+tile.cloth.brown.name=棕色羊毛
+tile.cloth.blue.name=藍色羊毛
+tile.cloth.purple.name=紫色羊毛
+tile.cloth.cyan.name=青色羊毛
+tile.cloth.silver.name=淺灰色羊毛
+tile.cloth.gray.name=灰色羊毛
+tile.cloth.pink.name=粉紅色羊毛
+tile.cloth.lime.name=青色羊毛
+tile.cloth.yellow.name=黃色羊毛
+tile.cloth.lightBlue.name=淺藍色羊毛
+tile.cloth.magenta.name=洋紅色羊毛
+tile.cloth.orange.name=橙色羊毛
+tile.cloth.white.name=羊毛
+tile.oreLapis.name=青金石礦
+tile.blockLapis.name=青金石磚
+tile.dispenser.name=發射器
+tile.dropper.name=漏斗
+tile.musicBlock.name=音階盒
+tile.cake.name=蛋糕
+tile.bed.name=床
+tile.lockedchest.name=鎖住的箱子
+tile.trapdoor.name=木製地板門
+tile.ironTrapdoor.name=鐵製地板門
+tile.web.name=蜘蛛網
+tile.stonebricksmooth.name=石磚
+tile.stonebricksmooth.default.name=石磚
+tile.stonebricksmooth.mossy.name=青苔石磚
+tile.stonebricksmooth.cracked.name=裂石磚
+tile.stonebricksmooth.chiseled.name=浮雕石磚
+tile.monsterStoneEgg.name=石頭怪物蛋
+tile.monsterStoneEgg.stone.name=石頭怪物蛋
+tile.monsterStoneEgg.cobble.name=鵝卵石怪物蛋
+tile.monsterStoneEgg.brick.name=石磚怪物蛋
+tile.monsterStoneEgg.mossybrick.name=青苔石磚怪物蛋
+tile.monsterStoneEgg.crackedbrick.name=裂石磚怪物蛋
+tile.monsterStoneEgg.chiseledbrick.name=浮雕石磚怪物蛋
+tile.pistonBase.name=活塞
+tile.pistonStickyBase.name=黏性活塞
+tile.fenceIron.name=鐵柵欄
+tile.melon.name=西瓜
+tile.stairsBrick.name=紅磚階梯
+tile.stairsStoneBrickSmooth.name=石磚階梯
+tile.vine.name=藤蔓
+tile.netherBrick.name=地獄磚
+tile.netherFence.name=地獄柵欄
+tile.stairsNetherBrick.name=地獄磚階梯
+tile.netherStalk.name=地獄疙瘩
+tile.cauldron.name=鍋釜
+tile.enchantmentTable.name=附魔台
+tile.anvil.name=鐵砧
+tile.anvil.intact.name=鐵砧
+tile.anvil.slightlyDamaged.name=輕微損耗的鐵砧
+tile.anvil.veryDamaged.name=嚴重損耗的鐵砧
+tile.whiteStone.name=終界石
+tile.endPortalFrame.name=終界傳送門
+tile.mycel.name=菌絲土
+tile.waterlily.name=荷葉
+tile.dragonEgg.name=龍蛋
+tile.redstoneLight.name=紅石燈
+tile.cocoa.name=可可豆
+tile.enderChest.name=終界箱
+tile.oreEmerald.name=綠寶石礦
+tile.blockEmerald.name=綠寶石磚
+tile.blockRedstone.name=紅石磚
+tile.tripWire.name=絆線鉤
+tile.tripWireSource.name=絆線鉤
+tile.commandBlock.name=指令方塊
+tile.repeatingCommandBlock.name=重複型指令方塊
+tile.chainCommandBlock.name=連鎖型指令方塊
+tile.beacon.name=烽火台
+tile.cobbleWall.normal.name=鵝卵石牆
+tile.cobbleWall.mossy.name=青苔石牆
+tile.carrots.name=胡蘿蔔
+tile.potatoes.name=馬鈴薯
+tile.daylightDetector.name=陽光感測器
+tile.netherquartz.name=地獄石英礦
+tile.hopper.name=漏斗
+tile.quartzBlock.name=石英磚
+tile.quartzBlock.default.name=石英磚
+tile.quartzBlock.chiseled.name=浮雕石英磚
+tile.quartzBlock.lines.name=柱狀石英磚
+tile.stairsQuartz.name=石英階梯
+tile.slime.name=史萊姆方塊
+tile.prismarine.rough.name=海鱗石
+tile.prismarine.bricks.name=海鱗石磚
+tile.prismarine.dark.name=暗海鱗石
+tile.seaLantern.name=海燈籠
+tile.endRod.name=終界燭
+tile.chorusPlant.name=歌萊枝
+tile.chorusFlower.name=歌萊花
+tile.purpurBlock.name=紫珀磚
+tile.purpurPillar.name=柱狀紫珀磚
+tile.stairsPurpur.name=紫珀磚階梯
+tile.purpurSlab.name=紫珀磚半磚
+tile.endBricks.name=終界石磚
+tile.beetroots.name=甜菜根
+tile.grassPath.name=草徑
+tile.magma.name=岩漿塊
+tile.netherWartBlock.name=地獄疙瘩塊
+tile.redNetherBrick.name=紅地獄磚
+tile.boneBlock.name=骨塊
+tile.structureVoid.name=結構空位
+tile.structureBlock.name=結構方塊
