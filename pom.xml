@@ -7,7 +7,7 @@
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest</artifactId>
     <packaging>jar</packaging>
-    <version>1.10.3</version>
+    <version>1.10.4</version>
     <name>ShopChest</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
     <description>Let your players create their own nice-looking shops to sell their stuff to other players!</description>
