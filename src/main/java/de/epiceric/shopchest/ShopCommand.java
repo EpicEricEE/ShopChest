@@ -273,7 +273,8 @@ class ShopCommand extends BukkitCommand {
 
         plugin.debug(p.getName() + " has entered the numbers correctly (according to allow-decimals configuration)");
 
-        boolean buyEnabled = !(buyPrice <= 0), sellEnabled = !(sellPrice <= 0);
+        boolean buyEnabled = buyPrice > 0;
+        boolean sellEnabled = sellPrice > 0;
 
         if (!buyEnabled && !sellEnabled) {
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SELL_DISABLED));
