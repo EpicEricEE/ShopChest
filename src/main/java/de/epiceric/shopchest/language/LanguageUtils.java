@@ -1109,8 +1109,10 @@ public class LanguageUtils {
                             Regex regex = replacedRegex.getRegex();
                             String toReplace = replacedRegex.getReplace();
                             if (regex == Regex.BUY_PRICE || regex == Regex.SELL_PRICE || regex == Regex.MIN_PRICE || regex == Regex.CREATION_PRICE) {
-                                double price = Double.parseDouble(toReplace);
-                                toReplace = plugin.getEconomy().format(price);
+                                if (!toReplace.equals(getMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED))) {
+                                    double price = Double.parseDouble(toReplace);
+                                    toReplace = plugin.getEconomy().format(price);
+                                }
                             }
                             _message = _message.replace(regex.getName(), toReplace);
                             usedRegexes.add(regex);
