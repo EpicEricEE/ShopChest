@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.player.*;
+import org.bukkit.event.world.StructureGrowEvent;
 
 public class ShopItemListener implements Listener {
 
@@ -173,6 +174,32 @@ public class ShopItemListener implements Listener {
         }
 
         e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onStructureGrow(StructureGrowEvent e) {
+        for (BlockState state : e.getBlocks()) {
+            Block newBlock = state.getBlock();
+            if (shopUtils.isShop(newBlock.getLocation()) || shopUtils.isShop(newBlock.getRelative(BlockFace.DOWN).getLocation())) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockGrow(BlockGrowEvent e) {
+        Block newBlock = e.getNewState().getBlock();
+        if (shopUtils.isShop(newBlock.getLocation()) || shopUtils.isShop(newBlock.getRelative(BlockFace.DOWN).getLocation())) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockSpread(BlockSpreadEvent e) {
+        Block newBlock = e.getNewState().getBlock();
+        if (shopUtils.isShop(newBlock.getLocation()) || shopUtils.isShop(newBlock.getRelative(BlockFace.DOWN).getLocation())) {
+            e.setCancelled(true);
+        }
     }
 
 }
