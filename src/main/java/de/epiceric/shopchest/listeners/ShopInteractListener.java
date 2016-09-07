@@ -475,9 +475,10 @@ public class ShopInteractListener implements Listener {
                 newProduct.setAmount(newAmount);
 
                 EconomyResponse r = econ.withdrawPlayer(executor, newPrice);
-                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), newPrice) : null;
 
                 if (r.transactionSuccess()) {
+                    EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), newPrice) : null;
+
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
                             ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY, newAmount, newPrice);
@@ -510,8 +511,9 @@ public class ShopInteractListener implements Listener {
                             }
 
                         } else {
-                            plugin.debug("Economy transaction failed: " + r2.errorMessage + " (#" + shop.getID() + ")");
+                            plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r2.errorMessage)));
+                            econ.depositPlayer(executor, newPrice);
                         }
                     } else {
                         ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY, newAmount, newPrice);
@@ -533,7 +535,7 @@ public class ShopInteractListener implements Listener {
                         plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
                     }
                 } else {
-                    plugin.debug("Economy transaction failed: " + r.errorMessage + " (#" + shop.getID() + ")");
+                    plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
                     executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
                 }
             } else {
@@ -604,9 +606,10 @@ public class ShopInteractListener implements Listener {
                 newProduct.setAmount(newAmount);
 
                 EconomyResponse r = econ.depositPlayer(executor, newPrice);
-                EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.withdrawPlayer(shop.getVendor(), newPrice) : null;
 
                 if (r.transactionSuccess()) {
+                    EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.withdrawPlayer(shop.getVendor(), newPrice) : null;
+
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
                             ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL, newAmount, newPrice);
@@ -639,8 +642,9 @@ public class ShopInteractListener implements Listener {
                             }
 
                         } else {
-                            plugin.debug("Economy transaction failed: " + r2.errorMessage + " (#" + shop.getID() + ")");
+                            plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r2.errorMessage)));
+                            econ.withdrawPlayer(executor, newPrice);
                         }
 
                     } else {
@@ -664,7 +668,7 @@ public class ShopInteractListener implements Listener {
                     }
 
                 } else {
-                    plugin.debug("Economy transaction failed: " + r.errorMessage + " (#" + shop.getID() + ")");
+                    plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
                     executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
                 }
 
