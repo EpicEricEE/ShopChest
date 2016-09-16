@@ -1,0 +1,1738 @@
+# Russian translation by 'imDaniX' for version 1.10.4
+
+# Set the message when a shop is created at the clicked chest.
+message.shop-created=&6Магазин создан.
+
+# Set the message when the clicked chest already is a shop.
+message.chest-already-shop=&cСундук уже является магазином.
+
+# Set the message when there is a block above the clicked chest.
+message.chest-blocked=&cНад сундуком не должно быть блоков.
+
+# Set the message when a player tries to place a chest next to a shop's chest
+# to create a double chest shop, but there is a block above the placed chest.
+message.double-chest-blocked=&cНад сундуком не должно быть блоков.
+
+# Set the message when the clicked shop is removed.
+message.shop-removed=&6Магазин удален.
+
+# Set the message when the clicked chest is not a shop.
+message.chest-no-shop=&cСундук не является магазином.
+
+# Set the message when the player doesn't have enough money to create a shop
+# Usable Regex: %CREATION-PRICE%
+message.shop-create-not-enough-money=&cНедостаточно денег. Для создания магазина вам требуется &6%CREATION-PRICE%&c.
+
+# Set the vendor message the player gets after entering '/shop info'.
+# Usable regex: %VENDOR%
+message.shopInfo.vendor=&6Продавец: &e%VENDOR%
+
+# Set the product message the player gets after entering '/shop info'.
+# Usable regex: %AMOUNT%, %ITEMNAME%
+message.shopInfo.product=&6Товар: &e%AMOUNT% x %ITEMNAME%
+
+# Set the in-stock message the player after entering '/shop info'.
+# Usable regex=%AMOUNT%
+message.shopInfo.stock=&6В наличии: &e%AMOUNT%
+
+# Set the enchantments message the player gets after entering '/shop info' if the product is enchanted
+# Usable regex: %ENCHANTMENT%
+message.shopInfo.enchantments=&6Зачарования: &e%ENCHANTMENT%
+
+# Set the potion effect message the player gets after entering '/shop info' if the product has a potion effect
+# Usable regex: %POTION-EFFECT%, %EXTENDED%
+message.shopInfo.potion-effect=&6Эффекты Зелья: &e%POTION-EFFECT% %EXTENDED%
+
+# Set the music disc title message the player gets after entering '/shop info' if the product is a music disc
+# Usable regex: %MUSIC-TITLE%
+message.shopInfo.music-disc-title=&6Название Пластинки: &e%MUSIC-TITLE%
+
+# If the product is a tipped arrow but it doesn't have an effect, this gets displayed instead of the arrow effect
+message.shopInfo.none=&7Нет эффекта
+
+# Set the price message the player gets after entering '/shop info'.
+# Usable regex: %BUY-PRICE%, %SELL-PRICE%
+message.shopInfo.price=&6Цена: Покупка: &e%BUY-PRICE%&6 Продажа: &e%SELL-PRICE%
+
+# If the sell price or buy price is disabled, this message will be displayed instead of the price in the message above.
+message.shopInfo.disabled=&7Отключена
+
+# Set the type message the player gets after entering '/shop info' ...
+# ... when the shop is normal.
+message.shopInfo.is-normal=&6Тип: &eМагазин игрока
+
+# ... when the shop is an admin shop.
+message.shopInfo.is-admin=&6Тип: &eАдминшоп
+
+# If the potion effect it extended, %EXTENDED% will be replaced by this.
+# If not, this will be empty.
+message.shopInfo.extended=(Продолжительный)
+
+# Set the message when the player tries to create a shop with sell price and buy price set to 0
+message.buy-and-sell-disabled=&cВы не можете создать магазин с одновременно отключенными покупрой и продажей.
+
+# Set the message when the player successfully bought something.
+# Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %VENDOR%
+message.buy-success=&aВы купили &6%AMOUNT% x %ITEMNAME%&a за &6%BUY-PRICE%&a у &6%VENDOR%&a.
+
+# Set the message when the player successfully bought something from an admin shop.
+# Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%
+message.buy-success-admin=&aВы купили &6%AMOUNT% x %ITEMNAME%&a за &6%BUY-PRICE%&a.
+
+# Set the message when the player successfully sold something.
+# Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %VENDOR%
+message.sell-success=&aВы продали &6%AMOUNT% x %ITEMNAME%&a за &6%SELL-PRICE%&a у &6%VENDOR%&a.
+
+# Set the message when the player successfully sold something to an admin shop.
+# Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%
+message.sell-success-admin=&aВы продали &6%AMOUNT% x %ITEMNAME%&a за &6%SELL-PRICE%&a.
+
+# Set the message when a player bought something from the player's shop.
+# Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %PLAYER%
+message.someone-bought=&6%PLAYER% &aкупил &6%AMOUNT% x %ITEMNAME%&a за &6%BUY-PRICE%&a из вашего магазина.
+
+# Set the message when a player sold something to the player's shop.
+# Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %PLAYER%
+message.someone-sold=&6%PLAYER% &aпродал &6%AMOUNT% x %ITEMNAME%&a за &6%SELL-PRICE%&a вашему магазину.
+
+# Set the message when the inventory is full when the player is buying something.
+message.not-enough-inventory-space=&cВ вашем инвентаре недостаточно места.
+
+# Set the message when the shop's inventory is full when the player is selling something.
+message.chest-not-enough-inventory-space=&cМагазин переполнен.
+
+# Set the message when the player doesn't have enough money to buy something.
+message.not-enough-money=&cНедостаточно денег.
+
+# Set the message when the player doesn't have enough items to sell.
+message.not-enough-items=&cНедостаточно предметов.
+
+# Set the message when the vendor doesn't have enough money to buy something from the player
+message.vendor-not-enough-money=&cУ продавца недостаточно денег.
+
+# Set the message when the shop is out of stock.
+message.out-of-stock=&cВ магазине не осталось товаров.
+
+# Set the message when an error occurred.
+# Usable regex: %ERROR%
+message.error-occurred=&cОшибка: %ERROR%
+
+# Set the message when the arguments <AMOUNT>, <BUY-PRICE> and/or <SELL-PRICE> of '/shop create' are not a number.
+message.amount-and-price-not-number=&cКоличество и цены указываются цифрами.
+
+# Set the message when the config value "allow-decimals-in-prices" is set to false
+# and a player enters a price with decimals
+message.prices-contain-decimals=&cЦены не должны содержать знаков после запятой.
+
+# Set the message when the player doesn't hold an item in the hand.
+message.no-item-in-hand=&cВ руке нет предмета.
+
+# Set the message when the player must click a chest to create a shop.
+message.click-chest-to-create-shop=&aКликните по сундуку, чтобы создать магазин.
+
+# Set the message when the player must click a shop to remove it.
+message.click-chest-to-remove-shop=&aКликните по сундуку магазина, чтобы удалить магазин.
+
+# Set the message when the player must click a shop to retrieve information.
+message.click-chest-for-info=&aКликните по магазину, чтобы получить информацию.
+
+# Set the message when the player opened a shop.
+# Usable regex: %VENDOR%
+message.opened-shop=&aВы открыли магазин %VENDOR%.
+
+# Set the message when the player tries to break a shop.
+message.cannot-break-shop=&cВы не можете разрушить магазин.
+
+# Set the message when the player tries to sell a broken item.
+message.cannot-sell-broken-item=&cВы не можете продавать сломанный предмет.
+
+# Set the message when the entered buy price is below the minimum price.
+# Usable regex: %MIN-PRICE%
+message.buy-price-too-low=&cЦена покупки должна быть более %MIN-PRICE%.
+
+# Set the message when the entered sell price is below the minimum price.
+# Usable regex: %MIN-PRICE%
+message.sell-price-too-low=&cЦена продажи должна быть более %MIN-PRICE%.
+
+# Set the message when buying is disabled at the shop.
+message.buying-disabled=&cПокупка отключена в этом магазине.
+
+# Set the message when selling is disabled at the shop.
+message.selling-disabled=&cПродажа отключена в этом магазине.
+
+# Set the message when reloading is done.
+# Usable regex: %AMOUNT% (Amount of shops)
+message.reloaded-shops=&aУспешно перезагружено %AMOUNT% магазинов.
+
+# Set the message when the player's shop limit is reached.
+# Usable regex: %LIMIT%
+message.shop-limit-reached=&cВы достигли свой лимит в &6%LIMIT% &cмагазинов.
+
+# Set the message that shows the player how many shop slots of his shop limit he has occupied.
+# Usable regex: %LIMIT%, %AMOUNT% (Amount of shops)
+message.occupied-shop-slots=&6Занято &c%AMOUNT%/%LIMIT% &6слотов магазина.
+
+# Set the message when the player tries to create a shop with an item which is listed in the blacklist.
+message.cannot-sell-item=&cВы не можете создать магазин с этим предметом.
+
+# Set the message when an update is available.
+# Usable regex: %VERSION%
+message.update.update-available=&6&lДоступна новая версия &cShopChest %VERSION%&6&l.
+
+# Set the message you get when hovering over the available message.
+message.update.click-to-download=Кликните, чтобы скачать.
+
+# Set the message when no update is available.
+message.update.no-update=&6&lНовых обновлений нет.
+
+# Set the message when the update checker is started.
+message.update.checking=&6&lПоиск обновлений...
+
+# Set the message when an error occurs while checking for updates.
+message.update.error=&c&lОшибка при поиске обновлений.
+
+# Set the text in the first row of the shop's hologram
+# Usable regex: %ITEMNAME%, %AMOUNT%
+message.hologram.format=%AMOUNT% x %ITEMNAME%
+
+# Set the text in the second row of the shop's hologram when the player can buy and sell an item.
+# Usable regex: %BUY-PRICE%, %SELL-PRICE%
+message.hologram.buy-and-sell=Покупка %BUY-PRICE% | %SELL-PRICE% Продажа
+
+# Set the text in the second row of the shop's hologram when the player can only buy an item.
+# Usable regex: %BUY-PRICE%
+message.hologram.only-buy=Покупка %BUY-PRICE%
+
+# Set the text in the second row of the shop's hologram when the player can only sell an item.
+# Usable regex: %SELL-PRICE%
+message.hologram.only-sell=Продажа %SELL-PRICE%
+
+# Set the message when a not permitted player tries to create a shop.
+message.noPermission.create=&cУ вас нет прав для создания магазина.
+
+# Set the message when a not permitted player tries to create an admin shop.
+message.noPermission.create-admin=&cУ вас нет прав для создания админшопа.
+
+# Set the message when a not permitted player tries to create a shop on a protected chest.
+message.noPermission.create-protected=&cУ вас нет прав для создания магазина в этом месте.
+
+# Set the message when a not permitted player tries to open another player's shop.
+message.noPermission.open-others=&cУ вас нет прав для открытия этого сундука.
+
+# Set the message when a not permitted player tries to buy something.
+message.noPermission.buy=&cУ вас нет прав для покупки чего-либо.
+
+# Set the message when a not permitted player tries to sell something.
+message.noPermission.sell=&cУ вас нет прав для продажи чего-либо.
+
+# Set the message when a not permitted player tries to remove another player's shop.
+message.noPermission.remove-others=&cУ вас нет прав для удаления этого магазина.
+
+# Set the message when a not permitted player tries to reload the shops.
+message.noPermission.reload=&cУ вас нет прав для перезагрузки магазинов.
+
+# Set the message when a not permitted player tries to check for updates.
+message.noPermission.update=&cУ вас нет прав для проверки обновлений.
+
+# Set the message when a not permitted player tries to view the shop limits.
+message.noPermission.limits=&cУ вас нет прав для посмотра лимита магазина.
+
+# Set the message when a not permitted player tries to change configuration values.
+message.noPermission.config=&cУ вас нет прав изменять конфигурации.
+
+# Set the command description message for '/shop create' when you type '/shop'.
+message.commandDescription.create=Создать магазин.
+
+# Set the command description message for '/shop remove' when you type '/shop'.
+message.commandDescription.remove=Удалить магазин.
+
+# Set the command description message for '/shop info' when you type '/shop'.
+message.commandDescription.info=Получить информацию по магазину.
+
+# Set the command description message for '/shop reload' when you type '/shop'.
+message.commandDescription.reload=Перезагурзить магазины.
+
+# Set the command description message for '/shop update' when you type '/shop'.
+message.commandDescription.update=Проверить обновления.
+
+# Set the command description message for '/shop limits' when you type '/shop'.
+message.commandDescription.limits=Просмотреть лимит магазинов.
+
+# Set the command description message for '/shop config' when you type '/shop'.
+message.commandDescription.config=Изменить конфигурации.
+
+# Set the message a player gets after setting a configuration value per command
+# Usable regex: %PROPERTY%, %VALUE%
+message.config.set=&6Изменено &a%PROPERTY% &6на &a%VALUE%&6.
+
+# Set the message a player gets after adding a value to a list in the configuration per command
+# Usable regex: %PROPERTY%, %VALUE%
+message.config.added=&6Добавлено &a%VALUE% &6к &a%PROPERTY%&6.
+
+# Set the message a player gets after removing a value from a list in the configuration per command
+# Usable regex: %PROPERTY%, %VALUE%
+message.config.removed=&6Удалено &a%VALUE% &6из &a%PROPERTY%&6.
+
+# Effect names that will be displayed in the place of %POTION-EFFECT%
+effect.none=Без эффектов
+effect.moveSpeed=Скорость
+effect.moveSlowdown=Медлительность
+effect.digSpeed=Ускорение
+effect.digSlowDown=Утомление
+effect.damageBoost=Сила
+effect.heal=Мгновенное лечение
+effect.harm=Моментальный урон
+effect.jump=Прыгучесть
+effect.confusion=Тошнота
+effect.regeneration=осстановление
+effect.resistance=Сопротивление урону
+effect.fireResistance=Огнестойкость
+effect.waterBreathing=Дыхание под водой
+effect.invisibility=Невидимость
+effect.blindness=Слепота
+effect.nightVision=Ночное зрение
+effect.hunger=Голод
+effect.weakness=Слабость
+effect.poison=Отравление
+effect.wither=Иссушение
+effect.healthBoost=Повышение здоровья
+effect.absorption=Поглощение
+effect.saturation=Сытость
+effect.glowing=Свечение
+effect.luck=Удача
+effect.unluck=Неудача
+effect.levitation=Левитация
+
+# Item names of a tipped arrow
+tipped_arrow.effect.empty=Обработанная стрела
+tipped_arrow.effect.water=Обработанная стрела
+tipped_arrow.effect.mundane=Обработанная стрела
+tipped_arrow.effect.thick=Обработанная стрела
+tipped_arrow.effect.awkward=Обработанная стрела
+tipped_arrow.effect.night_vision=Стрела ночного зрения
+tipped_arrow.effect.invisibility=Стрела невидимости
+tipped_arrow.effect.leaping=Стрела прыгучести
+tipped_arrow.effect.fire_resistance=Стрела огнестойкости
+tipped_arrow.effect.swiftness=Стрела стремительности
+tipped_arrow.effect.slowness=Стрела замедления
+tipped_arrow.effect.water=Стрела брызг
+tipped_arrow.effect.water_breathing=Стрела водного дыхания
+tipped_arrow.effect.healing=Стрела исцеления
+tipped_arrow.effect.harming=Стрела вреда
+tipped_arrow.effect.poison=Стрела отравления
+tipped_arrow.effect.regeneration=Стрела регенерации
+tipped_arrow.effect.strength=Стрела силы
+tipped_arrow.effect.weakness=Стрела слабости
+tipped_arrow.effect.levitation=Стрела левитации
+tipped_arrow.effect.luck=Стрела удачи
+
+# Item names of a normal potion
+potion.effect.empty=Несоздаваемое зелье
+potion.effect.water=Пузырек воды
+potion.effect.mundane=Заурядное зелье
+potion.effect.thick=Густое зелье
+potion.effect.awkward=Мутное зелья
+potion.effect.night_vision=Зелье ночного зрения
+potion.effect.invisibility=Зелье невидимости
+potion.effect.leaping=Зелье прыгучести
+potion.effect.fire_resistance=Зелье огнестойокости
+potion.effect.swiftness=Зелье стремительности
+potion.effect.slowness=Зелье замедления
+potion.effect.water_breathing=Зелье водного дыхания
+potion.effect.healing=Зелье исцеления
+potion.effect.harming=Зелье вреда
+potion.effect.poison=Зелье отравления
+potion.effect.regeneration=Зелье регенерации
+potion.effect.strength=Зелье силы
+potion.effect.weakness=Зелье слабости
+potion.effect.levitation=Зелье левитации
+potion.effect.luck=Зелье удачи
+
+# Item names of a splash potion
+splash_potion.effect.empty=Взрывное несоздаваемое зелье
+splash_potion.effect.water=Взрывной пузырек воды
+splash_potion.effect.mundane=Взрывное заурядное зелье
+splash_potion.effect.thick=Взрывное густое зелье
+splash_potion.effect.awkward=Взрывное мутное зелья
+splash_potion.effect.night_vision=Взрывное зелье ночного зрения
+splash_potion.effect.invisibility=Взрывное зелье невидимости
+splash_potion.effect.leaping=Взрывное зелье прыгучести
+splash_potion.effect.fire_resistance=Взрывное зелье огнестойокости
+splash_potion.effect.swiftness=Взрывное зелье стремительности
+splash_potion.effect.slowness=Взрывное зелье замедления
+splash_potion.effect.water_breathing=Взрывное зелье водного дыхания
+splash_potion.effect.healing=Взрывное зелье исцеления
+splash_potion.effect.harming=Взрывное зелье вреда
+splash_potion.effect.poison=Взрывное зелье отравления
+splash_potion.effect.regeneration=Взрывное зелье регенерации
+splash_potion.effect.strength=Взрывное зелье силы
+splash_potion.effect.weakness=Взрывное зелье слабости
+splash_potion.effect.levitation=Взрывное зелье левитации
+splash_potion.effect.luck=Взрывное зелье удачи
+
+# Item names of a lingering potion
+lingering_potion.effect.empty=Взвешенное несоздаваемое зелье
+lingering_potion.effect.water=Взвешенный пузырек воды
+lingering_potion.effect.mundane=Взвешенное заурядное зелье
+lingering_potion.effect.thick=Взвешенное густое зелье
+lingering_potion.effect.awkward=Взвешенное мутное зелья
+lingering_potion.effect.night_vision=Взвешенное зелье ночного зрения
+lingering_potion.effect.invisibility=Взвешенное зелье невидимости
+lingering_potion.effect.leaping=Взвешенное зелье прыгучести
+lingering_potion.effect.fire_resistance=Взвешенное зелье огнестойокости
+lingering_potion.effect.swiftness=Взвешенное зелье стремительности
+lingering_potion.effect.slowness=Взвешенное зелье замедления
+lingering_potion.effect.water_breathing=Взвешенное зелье водного дыхания
+lingering_potion.effect.healing=Взвешенное зелье исцеления
+lingering_potion.effect.harming=Взвешенное зелье вреда
+lingering_potion.effect.poison=Взвешенное зелье отравления
+lingering_potion.effect.regeneration=Взвешенное зелье регенерации
+lingering_potion.effect.strength=Взвешенное зелье силы
+lingering_potion.effect.weakness=Взвешенное зелье слабости
+lingering_potion.effect.levitation=Взвешенное зелье левитации
+lingering_potion.effect.luck=Взвешенное зелье удачи
+
+# Enchantment name that will be displayed instead of %ENCHANTMENT%
+enchantment.damage.all=Острота
+enchantment.damage.arthropods=Гибель насекомых
+enchantment.damage.undead=Небесная кара
+enchantment.knockback=Отдача
+enchantment.fire=Заговор огня
+enchantment.protect.all=Защита
+enchantment.protect.explosion=Взрывоустойчивость
+enchantment.protect.fall=Невесомость
+enchantment.protect.fire=Огнеупорность
+enchantment.protect.projectile=Защита от снарядов
+enchantment.oxygen=Подводное дыхание
+enchantment.waterWorker=Подводник
+enchantment.waterWalker=Подводная ходьба
+enchantment.frostWalker=Ледоход
+enchantment.digging=Эффективность
+enchantment.untouching=Шелковое касание
+enchantment.durability=Прочность
+enchantment.lootBonus=Добыча
+enchantment.lootBonusDigger=Удача
+enchantment.lootBonusFishing=Морская удача
+enchantment.fishingSpeed=Приманка
+enchantment.arrowDamage=Сила
+enchantment.arrowFire=Горящая стрела
+enchantment.arrowKnockback=Откидывание
+enchantment.arrowInfinite=Бесконечность
+enchantment.thorns=Шипы
+enchantment.mending=Починка
+enchantment.level.1=I
+enchantment.level.2=II
+enchantment.level.3=III
+enchantment.level.4=IV
+enchantment.level.5=V
+enchantment.level.6=VI
+enchantment.level.7=VII
+enchantment.level.8=VIII
+enchantment.level.9=IX
+enchantment.level.10=X
+
+# If the product is a spawn egg, this will be displayed after 'item.monsterPlacer.name'
+entity.Creeper.name=Крипер
+entity.Skeleton.name=Скелет
+entity.WitherSkeleton.name=Скелет-иссушитель
+entity.Stray.name=Зимогор
+entity.Spider.name=Паук
+entity.Giant.name=Гигант
+entity.Zombie.name=Зомби
+entity.Husk.name=Кадавр
+entity.Slime.name=Слизень
+entity.Ghast.name=Гаст
+entity.PigZombie.name=Свнозомби
+entity.Enderman.name=Эндермен
+entity.Endermite.name=Эндермит
+entity.Silverfish.name=Чешуйница
+entity.CaveSpider.name=Пещерный паук
+entity.Blaze.name=Ифрит
+entity.LavaSlime.name=Адский слизень
+entity.MushroomCow.name=Муухомор
+entity.Villager.name=Житель
+entity.SnowMan.name=Снеговик
+entity.Witch.name=Ведьма
+entity.Guardian.name=Страж
+entity.Shulker.name=Шалкер
+entity.PolarBear.name=Полярный медведь
+entity.Pig.name=Свинья
+entity.Sheep.name=Овца
+entity.Cow.name=Корова
+entity.Chicken.name=Курица
+entity.Squid.name=Спрут
+entity.Wolf.name=Волк
+entity.Ozelot.name=Оцелот
+entity.Cat.name=Кот
+entity.Bat.name=Летучая мышь
+entity.EntityHorse.name=Лошадь
+entity.Donkey.name=Осёл
+entity.Mule.name=Мул
+entity.SkeletonHorse.name=Лошадь-скелет
+entity.ZombieHorse.name=Лошадь-зомби
+entity.Rabbit.name=Кролик
+entity.KillerBunny.name=Кролик-убийца
+
+# Item names that will be displayed in the hologram
+item.apple.name=Яблоко
+item.appleGold.name=Золотое яблоко
+item.armorStand.name=Стойка для брони
+item.arrow.name=Стрела
+item.banner.black.name=Чёрный флаг
+item.banner.blue.name=Синий флаг
+item.banner.border.black=Чёрная кайма
+item.banner.border.blue=Синяя кайма
+item.banner.border.brown=Коричневая кайма
+item.banner.border.cyan=Бирюзовая кайма
+item.banner.border.gray=Серая кайма
+item.banner.border.green=Зелёная кайма
+item.banner.border.lightBlue=Голубая кайма
+item.banner.border.lime=Лаймовая кайма
+item.banner.border.magenta=Пурпурная кайма
+item.banner.border.orange=Оранжевая кайма
+item.banner.border.pink=Розовая кайма
+item.banner.border.purple=Фиолетовая кайма
+item.banner.border.red=Красная кайма
+item.banner.border.silver=Светло-серая кайма
+item.banner.border.white=Белая кайма
+item.banner.border.yellow=Жёлтая кайма
+item.banner.bricks.black=Чёрная муровка
+item.banner.bricks.blue=Синяя муровка
+item.banner.bricks.brown=Коричневая муровка
+item.banner.bricks.cyan=Бирюзовая муровка
+item.banner.bricks.gray=Серая муровка
+item.banner.bricks.green=Зелёная муровка
+item.banner.bricks.lightBlue=Голубая муровка
+item.banner.bricks.lime=Лаймовая муровка
+item.banner.bricks.magenta=Пурпурная муровка
+item.banner.bricks.orange=Оранжевая муровка
+item.banner.bricks.pink=Розовая муровка
+item.banner.bricks.purple=Фиолетовая муровка
+item.banner.bricks.red=Красная муровка
+item.banner.bricks.silver=Светло-серая муровка
+item.banner.bricks.white=Белая муровка
+item.banner.bricks.yellow=Жёлтая муровка
+item.banner.brown.name=Коричневый флаг
+item.banner.circle.black=Чёрный круг
+item.banner.circle.blue=Синий круг
+item.banner.circle.brown=Коричневый круг
+item.banner.circle.cyan=Бирюзовый круг
+item.banner.circle.gray=Серый круг
+item.banner.circle.green=Зелёный круг
+item.banner.circle.lightBlue=Голубой круг
+item.banner.circle.lime=Лаймовый круг
+item.banner.circle.magenta=Пурпурный круг
+item.banner.circle.orange=Оранжевый круг
+item.banner.circle.pink=Розовый круг
+item.banner.circle.purple=Фиолетовый круг
+item.banner.circle.red=Красный круг
+item.banner.circle.silver=Светло-серый круг
+item.banner.circle.white=Белый круг
+item.banner.circle.yellow=Жёлтый круг
+item.banner.creeper.black=Чёрный крипер
+item.banner.creeper.blue=Синий крипер
+item.banner.creeper.brown=Коричневый крипер
+item.banner.creeper.cyan=Бирюзовый крипер
+item.banner.creeper.gray=Серый крипер
+item.banner.creeper.green=Зелёный крипер
+item.banner.creeper.lightBlue=Голубой крипер
+item.banner.creeper.lime=Лаймовый крипер
+item.banner.creeper.magenta=Пурпурный крипер
+item.banner.creeper.orange=Оранжевый крипер
+item.banner.creeper.pink=Розовое лицо крипера
+item.banner.creeper.purple=Фиолетовое лицо крипера
+item.banner.creeper.red=Красный крипер
+item.banner.creeper.silver=Светло-серый крипер
+item.banner.creeper.white=Белый крипер
+item.banner.creeper.yellow=Жёлтый крипер
+item.banner.cross.black=Чёрный Андреевский крест
+item.banner.cross.blue=Синий Андреевский крест
+item.banner.cross.brown=Коричневый Андреевский крест
+item.banner.cross.cyan=Бирюзовый Андреевский крест
+item.banner.cross.gray=Серый Андреевский крест
+item.banner.cross.green=Зелёный Андреевский крест
+item.banner.cross.lightBlue=Голубой Андреевский крест
+item.banner.cross.lime=Лаймовый Андреевский крест
+item.banner.cross.magenta=Пурпурный Андреевский крест
+item.banner.cross.orange=Оранжевый Андреевский крест
+item.banner.cross.pink=Розовый Андреевский крест
+item.banner.cross.purple=Фиолетовый Андреевский крест
+item.banner.cross.red=Красный Андреевский крест
+item.banner.cross.silver=Светло-серый Андреевский крест
+item.banner.cross.white=Белый Андреевский крест
+item.banner.cross.yellow=Жёлтый Андреевский крест
+item.banner.curly_border.black=Чёрная зубчатая кайма
+item.banner.curly_border.blue=Синяя зубчатая кайма
+item.banner.curly_border.brown=Коричневая зубчатая кайма
+item.banner.curly_border.cyan=Бирюзовая зубчатая кайма
+item.banner.curly_border.gray=Серая зубчатая кайма
+item.banner.curly_border.green=Зелёная зубчатая кайма
+item.banner.curly_border.lightBlue=Голубая зубчатая кайма
+item.banner.curly_border.lime=Лаймовая зубчатая кайма
+item.banner.curly_border.magenta=Пурпурная зубчатая кайма
+item.banner.curly_border.orange=Оранжевая зубчатая кайма
+item.banner.curly_border.pink=Розовая зубчатая кайма
+item.banner.curly_border.purple=Фиолетовая зубчатая кайма
+item.banner.curly_border.red=Красная зубчатая кайма
+item.banner.curly_border.silver=Светло-серая зубчатая кайма
+item.banner.curly_border.white=Белая зубчатая кайма
+item.banner.curly_border.yellow=Жёлтая зубчатая кайма
+item.banner.cyan.name=Бирюзовый флаг
+item.banner.diagonal_left.black=Чёрное скошение слева
+item.banner.diagonal_left.blue=Синее скошение слева
+item.banner.diagonal_left.brown=Коричневое скошение слева
+item.banner.diagonal_left.cyan=Бирюзовое скошение слева
+item.banner.diagonal_left.gray=Серое скошение слева
+item.banner.diagonal_left.green=Зелёное скошение слева
+item.banner.diagonal_left.lightBlue=Голубое скошение слева
+item.banner.diagonal_left.lime=Лаймовое скошение слева
+item.banner.diagonal_left.magenta=Пурпурное скошение слева
+item.banner.diagonal_left.orange=Оранжевое скошение слева
+item.banner.diagonal_left.pink=Розовое скошение слева
+item.banner.diagonal_left.purple=Розовое скошение слева
+item.banner.diagonal_left.red=Красное скошение слева
+item.banner.diagonal_left.silver=Светло-серое скошение слева
+item.banner.diagonal_left.white=Белое скошение слева
+item.banner.diagonal_left.yellow=Жёлтое скошение слева
+item.banner.diagonal_right.black=Чёрное скошение
+item.banner.diagonal_right.blue=Синее скошение
+item.banner.diagonal_right.brown=Коричневое скошение
+item.banner.diagonal_right.cyan=Бирюзовое скошение
+item.banner.diagonal_right.gray=Серое скошение
+item.banner.diagonal_right.green=Зелёное скошение
+item.banner.diagonal_right.lightBlue=Голубое скошение
+item.banner.diagonal_right.lime=Лаймовое скошение
+item.banner.diagonal_right.magenta=Пурпурное скошение
+item.banner.diagonal_right.orange=Оранжевое скошение
+item.banner.diagonal_right.pink=Розовое скошение
+item.banner.diagonal_right.purple=Фиолетовое скошение
+item.banner.diagonal_right.red=Красное скошение
+item.banner.diagonal_right.silver=Светло-серое скошение
+item.banner.diagonal_right.white=Белое скошение
+item.banner.diagonal_right.yellow=Жёлтое скошение
+item.banner.diagonal_up_left.black=Чёрное опрокинутое скошение
+item.banner.diagonal_up_left.blue=Синее опрокинутое скошение
+item.banner.diagonal_up_left.brown=Коричневое опрокинутое скошение
+item.banner.diagonal_up_left.cyan=Бирюзовое опрокинутое скошение
+item.banner.diagonal_up_left.gray=Серое опрокинутое скошение
+item.banner.diagonal_up_left.green=Зелёное опрокинутое скошение
+item.banner.diagonal_up_left.lightBlue=Голубое опрокинутое скошение
+item.banner.diagonal_up_left.lime=Лаймовое опрокинутое скошение
+item.banner.diagonal_up_left.magenta=Пурпурное опрокинутое скошение
+item.banner.diagonal_up_left.orange=Оранжевое опрокинутое скошение
+item.banner.diagonal_up_left.pink=Розовое опрокинутое скошение
+item.banner.diagonal_up_left.purple=Фиолетовое опрокинутое скошение
+item.banner.diagonal_up_left.red=Красное опрокинутое скошение
+item.banner.diagonal_up_left.silver=Светло-серое опрокинутое скошение
+item.banner.diagonal_up_left.white=Белое опрокинутое скошение
+item.banner.diagonal_up_left.yellow=Жёлтое опрокинутое скошение
+item.banner.diagonal_up_right.black=Чёрное опрокинутое скошение слева
+item.banner.diagonal_up_right.blue=Синее опрокинутое скошение слева
+item.banner.diagonal_up_right.brown=Коричневое опрокинутое скошение слева
+item.banner.diagonal_up_right.cyan=Бирюзовое опрокинутое скошение слева
+item.banner.diagonal_up_right.gray=Серое опрокинутое скошение слева
+item.banner.diagonal_up_right.green=Зелёное опрокинутое скошение слева
+item.banner.diagonal_up_right.lightBlue=Голубое опрокинутое скошение слева
+item.banner.diagonal_up_right.lime=Лаймовое опрокинутое скошение слева
+item.banner.diagonal_up_right.magenta=Пурпурное опрокинутое скошение слева
+item.banner.diagonal_up_right.orange=Оранжевое опрокинутое скошение слева
+item.banner.diagonal_up_right.pink=Розовое опрокинутое скошение слева
+item.banner.diagonal_up_right.purple=Фиолетовое опрокинутое скошение слева
+item.banner.diagonal_up_right.red=Красное опрокинутое скошение слева
+item.banner.diagonal_up_right.silver=Светло-серое опрокинутое скошение слева
+item.banner.diagonal_up_right.white=Белое опрокинутое скошение слева
+item.banner.diagonal_up_right.yellow=Жёлтое опрокинутое скошение слева
+item.banner.flower.black=Чёрный цветок
+item.banner.flower.blue=Синий цветок
+item.banner.flower.brown=Коричневый цветок
+item.banner.flower.cyan=Бирюзовый цветок
+item.banner.flower.gray=Серый цветок
+item.banner.flower.green=Зелёный цветок
+item.banner.flower.lightBlue=Голубой цветок
+item.banner.flower.lime=Лаймовый цветок
+item.banner.flower.magenta=Пурпурный цветок
+item.banner.flower.orange=Оранжевый цветок
+item.banner.flower.pink=Розовый цветок
+item.banner.flower.purple=Фиолетовый цветок
+item.banner.flower.red=Красный цветок
+item.banner.flower.silver=Светло-серый цветок
+item.banner.flower.white=Белый цветок
+item.banner.flower.yellow=Жёлтый цветок
+item.banner.gradient.black=Чёрный градиент
+item.banner.gradient.blue=Синий градиент
+item.banner.gradient.brown=Коричневый градиент
+item.banner.gradient.cyan=Бирюзовый градиент
+item.banner.gradient.gray=Серый градиент
+item.banner.gradient.green=Зелёный градиент
+item.banner.gradient.lightBlue=Голубой градиент
+item.banner.gradient.lime=Лаймовый градиент
+item.banner.gradient.magenta=Пурпурный градиент
+item.banner.gradient.orange=Оранжевый градиент
+item.banner.gradient.pink=Розовый градиент
+item.banner.gradient.purple=Фиолетовый градиент
+item.banner.gradient.red=Красный градиент
+item.banner.gradient.silver=Светло-серый градиент
+item.banner.gradient.white=Белый градиент
+item.banner.gradient.yellow=Жёлтый градиент
+item.banner.gradient_up.black=Чёрный обратный градиент
+item.banner.gradient_up.blue=Синий обратный градиент
+item.banner.gradient_up.brown=Коричневый обратный градиент
+item.banner.gradient_up.cyan=Бирюзовый обратный градиент
+item.banner.gradient_up.gray=Серый обратный градиент
+item.banner.gradient_up.green=Зелёный обратный градиент
+item.banner.gradient_up.lightBlue=Голубой обратный градиент
+item.banner.gradient_up.lime=Лаймовый обратный градиент
+item.banner.gradient_up.magenta=Пурпурный обратный градиент
+item.banner.gradient_up.orange=Оранжевый обратный градиент
+item.banner.gradient_up.pink=Розовый обратный градиент
+item.banner.gradient_up.purple=Фиолетовый обратный градиент
+item.banner.gradient_up.red=Красный обратный градиент
+item.banner.gradient_up.silver=Светло-серый обратный градиент
+item.banner.gradient_up.white=Белый обратный градиент
+item.banner.gradient_up.yellow=Жёлтый обратный градиент
+item.banner.gray.name=Серый флаг
+item.banner.green.name=Зелёный флаг
+item.banner.half_horizontal.black=Чёрная верхняя половина
+item.banner.half_horizontal.blue=Синяя верхняя половина
+item.banner.half_horizontal.brown=Коричневая верхняя половина
+item.banner.half_horizontal.cyan=Бирюзовая верхняя половина
+item.banner.half_horizontal.gray=Серая верхняя половина
+item.banner.half_horizontal.green=Зелёная верхняя половина
+item.banner.half_horizontal.lightBlue=Голубая верхняя половина
+item.banner.half_horizontal.lime=Лаймовая верхняя половина
+item.banner.half_horizontal.magenta=Пурпурная верхняя половина
+item.banner.half_horizontal.orange=Оранжевая верхняя половина
+item.banner.half_horizontal.pink=Розовая верхняя половина
+item.banner.half_horizontal.purple=Фиолетовая верхняя половина
+item.banner.half_horizontal.red=Красная верхняя половина
+item.banner.half_horizontal.silver=Светло-серая верхняя половина
+item.banner.half_horizontal.white=Белая верхняя половина
+item.banner.half_horizontal.yellow=Жёлтая верхняя половина
+item.banner.half_horizontal_bottom.black=Чёрная нижняя половина
+item.banner.half_horizontal_bottom.blue=Синяя нижняя половина
+item.banner.half_horizontal_bottom.brown=Коричневая нижняя половина
+item.banner.half_horizontal_bottom.cyan=Бирюзовая нижняя половина
+item.banner.half_horizontal_bottom.gray=Серая нижняя половина
+item.banner.half_horizontal_bottom.green=Зелёная нижняя половина
+item.banner.half_horizontal_bottom.lightBlue=Голубая нижняя половина
+item.banner.half_horizontal_bottom.lime=Лаймовая нижняя половина
+item.banner.half_horizontal_bottom.magenta=Пурпурная нижняя половина
+item.banner.half_horizontal_bottom.orange=Оранжевая нижняя половина
+item.banner.half_horizontal_bottom.pink=Розовая нижняя половина
+item.banner.half_horizontal_bottom.purple=Фиолетовая нижняя половина
+item.banner.half_horizontal_bottom.red=Красная нижняя половина
+item.banner.half_horizontal_bottom.silver=Светло-серая нижняя половина
+item.banner.half_horizontal_bottom.white=Белая нижняя половина
+item.banner.half_horizontal_bottom.yellow=Жёлтая нижняя половина
+item.banner.half_vertical.black=Чёрная левая половина
+item.banner.half_vertical.blue=Синяя левая половина
+item.banner.half_vertical.brown=Коричневая левая половина
+item.banner.half_vertical.cyan=Бирюзовая левая половина
+item.banner.half_vertical.gray=Серая левая половина
+item.banner.half_vertical.green=Зелёная левая половина
+item.banner.half_vertical.lightBlue=Голубая левая половина
+item.banner.half_vertical.lime=Лаймовая левая половина
+item.banner.half_vertical.magenta=Пурпурная левая половина
+item.banner.half_vertical.orange=Оранжевая левая половина
+item.banner.half_vertical.pink=Розовая левая половина
+item.banner.half_vertical.purple=Фиолетовая левая половина
+item.banner.half_vertical.red=Красная левая половина
+item.banner.half_vertical.silver=Светло-серая левая половина
+item.banner.half_vertical.white=Белая левая половина
+item.banner.half_vertical.yellow=Жёлтая левая половина
+item.banner.half_vertical_right.black=Чёрная правая половина
+item.banner.half_vertical_right.blue=Синяя правая половина
+item.banner.half_vertical_right.brown=Коричневая правая половина
+item.banner.half_vertical_right.cyan=Бирюзовая правая половина
+item.banner.half_vertical_right.gray=Серая правая половина
+item.banner.half_vertical_right.green=Зелёная правая половина
+item.banner.half_vertical_right.lightBlue=Голубая правая половина
+item.banner.half_vertical_right.lime=Лаймовая правая половина
+item.banner.half_vertical_right.magenta=Пурпурная правая половина
+item.banner.half_vertical_right.orange=Оранжевая правая половина
+item.banner.half_vertical_right.pink=Розовая правая половина
+item.banner.half_vertical_right.purple=Фиолетовая правая половина
+item.banner.half_vertical_right.red=Красная правая половина
+item.banner.half_vertical_right.silver=Светло-серая правая половина
+item.banner.half_vertical_right.white=Белая правая половина
+item.banner.half_vertical_right.yellow=Жёлтая правая половина
+item.banner.lightBlue.name=Голубой флаг
+item.banner.lime.name=Лаймовый флаг
+item.banner.magenta.name=Пурпурный флаг
+item.banner.mojang.black=Чёрное нечто
+item.banner.mojang.blue=Синее нечто
+item.banner.mojang.brown=Коричневое нечто
+item.banner.mojang.cyan=Бирюзовое нечто
+item.banner.mojang.gray=Серое нечто
+item.banner.mojang.green=Зелёное нечто
+item.banner.mojang.lightBlue=Голубое нечто
+item.banner.mojang.lime=Лаймовое нечто
+item.banner.mojang.magenta=Пурпурное нечто
+item.banner.mojang.orange=Оранжевое нечто
+item.banner.mojang.pink=Розовое нечто
+item.banner.mojang.purple=Фиолетовое нечто
+item.banner.mojang.red=Красное нечто
+item.banner.mojang.silver=Светло-серое нечто
+item.banner.mojang.white=Белое нечто
+item.banner.mojang.yellow=Жёлтое нечто
+item.banner.orange.name=Оранжевый флаг
+item.banner.pink.name=Розовый флаг
+item.banner.purple.name=Фиолетовый флаг
+item.banner.red.name=Красный флаг
+item.banner.rhombus.black=Чёрный ромб
+item.banner.rhombus.blue=Синий ромб
+item.banner.rhombus.brown=Коричневый ромб
+item.banner.rhombus.cyan=Бирюзовый ромб
+item.banner.rhombus.gray=Серый ромб
+item.banner.rhombus.green=Зелёный ромб
+item.banner.rhombus.lightBlue=Голубой ромб
+item.banner.rhombus.lime=Лаймовый ромб
+item.banner.rhombus.magenta=Пурпурный ромб
+item.banner.rhombus.orange=Оранжевый ромб
+item.banner.rhombus.pink=Розовый ромб
+item.banner.rhombus.purple=Фиолетовый ромб
+item.banner.rhombus.red=Красный ромб
+item.banner.rhombus.silver=Светло-серый ромб
+item.banner.rhombus.white=Белый ромб
+item.banner.rhombus.yellow=Жёлтый ромб
+item.banner.silver.name=Светло-серый флаг
+item.banner.skull.black=Чёрный череп
+item.banner.skull.blue=Синий череп
+item.banner.skull.brown=Коричневый череп
+item.banner.skull.cyan=Бирюзовый череп
+item.banner.skull.gray=Серый череп
+item.banner.skull.green=Зелёный череп
+item.banner.skull.lightBlue=Голубой череп
+item.banner.skull.lime=Лаймовый череп
+item.banner.skull.magenta=Пурпурный череп
+item.banner.skull.orange=Оранжевый череп
+item.banner.skull.pink=Розовый череп
+item.banner.skull.purple=Фиолетовый череп
+item.banner.skull.red=Красный череп
+item.banner.skull.silver=Светло-серый череп
+item.banner.skull.white=Белый череп
+item.banner.skull.yellow=Жёлтый череп
+item.banner.small_stripes.black=Чёрные столбы
+item.banner.small_stripes.blue=Синие столбы
+item.banner.small_stripes.brown=Коричневые столбы
+item.banner.small_stripes.cyan=Бирюзовые столбы
+item.banner.small_stripes.gray=Серые столбы
+item.banner.small_stripes.green=Зелёные столбы
+item.banner.small_stripes.lightBlue=Голубые столбы
+item.banner.small_stripes.lime=Лаймовые столбы
+item.banner.small_stripes.magenta=Пурпурные столбы
+item.banner.small_stripes.orange=Оранжевые столбы
+item.banner.small_stripes.pink=Розовые столбы
+item.banner.small_stripes.purple=Фиолетовые столбы
+item.banner.small_stripes.red=Красные столбы
+item.banner.small_stripes.silver=Светло-серые столбы
+item.banner.small_stripes.white=Белые столбы
+item.banner.small_stripes.yellow=Жёлтые столбы
+item.banner.square_bottom_left.black=Чёрный нижний правый крыж
+item.banner.square_bottom_left.blue=Синий нижний правый крыж
+item.banner.square_bottom_left.brown=Коричневый нижний правый крыж
+item.banner.square_bottom_left.cyan=Бирюзовый нижний правый крыж
+item.banner.square_bottom_left.gray=Серый нижний правый крыж
+item.banner.square_bottom_left.green=Зелёный нижний правый крыж
+item.banner.square_bottom_left.lightBlue=Голубой нижний правый крыж
+item.banner.square_bottom_left.lime=Лаймовый нижний правый крыж
+item.banner.square_bottom_left.magenta=Пурпурный нижний правый крыж
+item.banner.square_bottom_left.orange=Оранжевый нижний правый крыж
+item.banner.square_bottom_left.pink=Розовый нижний правый крыж
+item.banner.square_bottom_left.purple=Фиолетовый нижний правый крыж
+item.banner.square_bottom_left.red=Красный нижний правый крыж
+item.banner.square_bottom_left.silver=Светло-серый нижний правый крыж
+item.banner.square_bottom_left.white=Белый нижний правый крыж
+item.banner.square_bottom_left.yellow=Жёлтый нижний правый крыж
+item.banner.square_bottom_right.black=Чёрный нижний левый крыж
+item.banner.square_bottom_right.blue=Синий нижний левый крыж
+item.banner.square_bottom_right.brown=Коричневый нижний левый крыж
+item.banner.square_bottom_right.cyan=Бирюзовый нижний левый крыж
+item.banner.square_bottom_right.gray=Серый нижний левый крыж
+item.banner.square_bottom_right.green=Зелёный нижний левый крыж
+item.banner.square_bottom_right.lightBlue=Голубой нижний левый крыж
+item.banner.square_bottom_right.lime=Лаймовый нижний левый крыж
+item.banner.square_bottom_right.magenta=Пурпурный нижний левый крыж
+item.banner.square_bottom_right.orange=Оранжевый нижний левый крыж
+item.banner.square_bottom_right.pink=Розовый нижний левый крыж
+item.banner.square_bottom_right.purple=Фиолетовый нижний левый крыж
+item.banner.square_bottom_right.red=Красный нижний левый крыж
+item.banner.square_bottom_right.silver=Светло-серый нижний левый крыж
+item.banner.square_bottom_right.white=Белый нижний левый крыж
+item.banner.square_bottom_right.yellow=Жёлтый нижний левый крыж
+item.banner.square_top_left.black=Чёрный верхний правый крыж
+item.banner.square_top_left.blue=Синий верхний правый крыж
+item.banner.square_top_left.brown=Коричневый верхний правый крыж
+item.banner.square_top_left.cyan=Бирюзовый верхний правый крыж
+item.banner.square_top_left.gray=Серый верхний правый крыж
+item.banner.square_top_left.green=Зелёный верхний правый крыж
+item.banner.square_top_left.lightBlue=Голубой верхний правый крыж
+item.banner.square_top_left.lime=Лаймовый верхний правый крыж
+item.banner.square_top_left.magenta=Пурпурный верхний правый крыж
+item.banner.square_top_left.orange=Оранжевый верхний правый крыж
+item.banner.square_top_left.pink=Розовый верхний правый крыж
+item.banner.square_top_left.purple=Пурпурный верхний правый крыж
+item.banner.square_top_left.red=Красный верхний правый крыж
+item.banner.square_top_left.silver=Светло-серый верхний правый крыж
+item.banner.square_top_left.white=Белый верхний правый крыж
+item.banner.square_top_left.yellow=Жёлтый верхний правый крыж
+item.banner.square_top_right.black=Чёрный верхний левый крыж
+item.banner.square_top_right.blue=Синий верхний левый крыж
+item.banner.square_top_right.brown=Коричневый верхний левый крыж
+item.banner.square_top_right.cyan=Бирюзовый верхний левый крыж
+item.banner.square_top_right.gray=Серый верхний левый крыж
+item.banner.square_top_right.green=Зелёный верхний левый крыж
+item.banner.square_top_right.lightBlue=Голубой верхний левый крыж
+item.banner.square_top_right.lime=Лаймовый верхний левый крыж
+item.banner.square_top_right.magenta=Пурпурный верхний левый крыж
+item.banner.square_top_right.orange=Оранжевый верхний левый крыж
+item.banner.square_top_right.pink=Розовый верхний левый крыж
+item.banner.square_top_right.purple=Фиолетовый верхний левый крыж
+item.banner.square_top_right.red=Красный верхний левый крыж
+item.banner.square_top_right.silver=Светло-серый верхний левый крыж
+item.banner.square_top_right.white=Белый верхний левый крыж
+item.banner.square_top_right.yellow=Жёлтый верхний левый крыж
+item.banner.straight_cross.black=Чёрный крест
+item.banner.straight_cross.blue=Синий крест
+item.banner.straight_cross.brown=Коричневый крест
+item.banner.straight_cross.cyan=Бирюзовый крест
+item.banner.straight_cross.gray=Серый крест
+item.banner.straight_cross.green=Зелёный крест
+item.banner.straight_cross.lightBlue=Голубой крест
+item.banner.straight_cross.lime=Лаймовый крест
+item.banner.straight_cross.magenta=Пурпурный крест
+item.banner.straight_cross.orange=Оранжевый крест
+item.banner.straight_cross.pink=Розовый крест
+item.banner.straight_cross.purple=Фиолетовый крест
+item.banner.straight_cross.red=Красный крест
+item.banner.straight_cross.silver=Светло-серый крест
+item.banner.straight_cross.white=Белый крест
+item.banner.straight_cross.yellow=Жёлтый крест
+item.banner.stripe_bottom.black=Чёрное основание
+item.banner.stripe_bottom.blue=Синее основание
+item.banner.stripe_bottom.brown=Коричневое основание
+item.banner.stripe_bottom.cyan=Бирюзовое основание
+item.banner.stripe_bottom.gray=Серое основание
+item.banner.stripe_bottom.green=Зелёное основание
+item.banner.stripe_bottom.lightBlue=Голубое основание
+item.banner.stripe_bottom.lime=Лаймовое основание
+item.banner.stripe_bottom.magenta=Пурпурное основание
+item.banner.stripe_bottom.orange=Оранжевое основание
+item.banner.stripe_bottom.pink=Розовое основание
+item.banner.stripe_bottom.purple=Фиолетовое основание
+item.banner.stripe_bottom.red=Красное основание
+item.banner.stripe_bottom.silver=Светло-серое основание
+item.banner.stripe_bottom.white=Белое основание
+item.banner.stripe_bottom.yellow=Жёлтое основание
+item.banner.stripe_center.black=Чёрный столб
+item.banner.stripe_center.blue=Синий столб
+item.banner.stripe_center.brown=Коричневый столб
+item.banner.stripe_center.cyan=Бирюзовый столб
+item.banner.stripe_center.gray=Серый столб
+item.banner.stripe_center.green=Зелёный столб
+item.banner.stripe_center.lightBlue=Голубой столб
+item.banner.stripe_center.lime=Лаймовый столб
+item.banner.stripe_center.magenta=Пурпурный столб
+item.banner.stripe_center.orange=Оранжевый столб
+item.banner.stripe_center.pink=Розовый столб
+item.banner.stripe_center.purple=Фиолетовый столб
+item.banner.stripe_center.red=Красный столб
+item.banner.stripe_center.silver=Светло-серый столб
+item.banner.stripe_center.white=Белый столб
+item.banner.stripe_center.yellow=Жёлтый столб
+item.banner.stripe_downleft.black=Чёрная левосторонняя перевязь
+item.banner.stripe_downleft.blue=Синяя левосторонняя перевязь
+item.banner.stripe_downleft.brown=Коричневая левосторонняя перевязь
+item.banner.stripe_downleft.cyan=Бирюзовая левосторонняя перевязь
+item.banner.stripe_downleft.gray=Серая левосторонняя перевязь
+item.banner.stripe_downleft.green=Зелёная левосторонняя перевязь
+item.banner.stripe_downleft.lightBlue=Голубая левосторонняя перевязь
+item.banner.stripe_downleft.lime=Лаймовая левосторонняя перевязь
+item.banner.stripe_downleft.magenta=Пурпурная левосторонняя перевязь
+item.banner.stripe_downleft.orange=Оранжевая левосторонняя перевязь
+item.banner.stripe_downleft.pink=Розовая левосторонняя перевязь
+item.banner.stripe_downleft.purple=Фиолетовая левосторонняя перевязь
+item.banner.stripe_downleft.red=Красная левосторонняя перевязь
+item.banner.stripe_downleft.silver=Светло-серая левосторонняя перевязь
+item.banner.stripe_downleft.white=Белая левосторонняя перевязь
+item.banner.stripe_downleft.yellow=Жёлтая левосторонняя перевязь
+item.banner.stripe_downright.black=Чёрная перевязь
+item.banner.stripe_downright.blue=Синяя перевязь
+item.banner.stripe_downright.brown=Коричневая перевязь
+item.banner.stripe_downright.cyan=Бирюзовая перевязь
+item.banner.stripe_downright.gray=Серая перевязь
+item.banner.stripe_downright.green=Зелёная перевязь
+item.banner.stripe_downright.lightBlue=Голубая перевязь
+item.banner.stripe_downright.lime=Лаймовая перевязь
+item.banner.stripe_downright.magenta=Пурпурная перевязь
+item.banner.stripe_downright.orange=Оранжевая перевязь
+item.banner.stripe_downright.pink=Розовая перевязь
+item.banner.stripe_downright.purple=Фиолетовая перевязь
+item.banner.stripe_downright.red=Красная перевязь
+item.banner.stripe_downright.silver=Светло-серая перевязь
+item.banner.stripe_downright.white=Белая перевязь
+item.banner.stripe_downright.yellow=Жёлтая перевязь
+item.banner.stripe_left.black=Чёрный правосторонний столб
+item.banner.stripe_left.blue=Синий правосторонний столб
+item.banner.stripe_left.brown=Коричневый правосторонний столб
+item.banner.stripe_left.cyan=Бирюзовый правосторонний столб
+item.banner.stripe_left.gray=Серый правосторонний столб
+item.banner.stripe_left.green=Зелёный правосторонний столб
+item.banner.stripe_left.lightBlue=Голубой правосторонний столб
+item.banner.stripe_left.lime=Лаймовый правосторонний столб
+item.banner.stripe_left.magenta=Пурпурный правосторонний столб
+item.banner.stripe_left.orange=Оранжевый правосторонний столб
+item.banner.stripe_left.pink=Розовый правосторонний столб
+item.banner.stripe_left.purple=Фиолетовый правосторонний столб
+item.banner.stripe_left.red=Красный правосторонний столб
+item.banner.stripe_left.silver=Светло-серый правосторонний столб
+item.banner.stripe_left.white=Белый правосторонний столб
+item.banner.stripe_left.yellow=Жёлтый правосторонний столб
+item.banner.stripe_middle.black=Чёрный пояс
+item.banner.stripe_middle.blue=Синий пояс
+item.banner.stripe_middle.brown=Коричневый пояс
+item.banner.stripe_middle.cyan=Бирюзовый пояс
+item.banner.stripe_middle.gray=Серый пояс
+item.banner.stripe_middle.green=Зелёный пояс
+item.banner.stripe_middle.lightBlue=Голубой пояс
+item.banner.stripe_middle.lime=Лаймовый пояс
+item.banner.stripe_middle.magenta=Пурпурный пояс
+item.banner.stripe_middle.orange=Оранжевый пояс
+item.banner.stripe_middle.pink=Розовый пояс
+item.banner.stripe_middle.purple=Фиолетовый пояс
+item.banner.stripe_middle.red=Красный пояс
+item.banner.stripe_middle.silver=Светло-серый пояс
+item.banner.stripe_middle.white=Белый пояс
+item.banner.stripe_middle.yellow=Жёлтый пояс
+item.banner.stripe_right.black=Чёрный левосторонний столб
+item.banner.stripe_right.blue=Синий левосторонний столб
+item.banner.stripe_right.brown=Коричневый левосторонний столб
+item.banner.stripe_right.cyan=Бирюзовый левосторонний столб
+item.banner.stripe_right.gray=Серый левосторонний столб
+item.banner.stripe_right.green=Зелёный левосторонний столб
+item.banner.stripe_right.lightBlue=Голубой левосторонний столб
+item.banner.stripe_right.lime=Лаймовый левосторонний столб
+item.banner.stripe_right.magenta=Пурпурный левосторонний столб
+item.banner.stripe_right.orange=Оранжевый левосторонний столб
+item.banner.stripe_right.pink=Розовый левосторонний столб
+item.banner.stripe_right.purple=Фиолетовый левосторонний столб
+item.banner.stripe_right.red=Красный левосторонний столб
+item.banner.stripe_right.silver=Светло-серый левосторонний столб
+item.banner.stripe_right.white=Белый левосторонний столб
+item.banner.stripe_right.yellow=Жёлтый левосторонний столб
+item.banner.stripe_top.black=Чёрная глава
+item.banner.stripe_top.blue=Синяя глава
+item.banner.stripe_top.brown=Коричневая глава
+item.banner.stripe_top.cyan=Бирюзовая глава
+item.banner.stripe_top.gray=Серая глава
+item.banner.stripe_top.green=Зелёная глава
+item.banner.stripe_top.lightBlue=Голубая глава
+item.banner.stripe_top.lime=Лаймовая глава
+item.banner.stripe_top.magenta=Пурпурная глава
+item.banner.stripe_top.orange=Оранжевая глава
+item.banner.stripe_top.pink=Розовая глава
+item.banner.stripe_top.purple=Фиолетовая глава
+item.banner.stripe_top.red=Красная глава
+item.banner.stripe_top.silver=Светло-серая глава
+item.banner.stripe_top.white=Белая глава
+item.banner.stripe_top.yellow=Жёлтая глава
+item.banner.triangle_bottom.black=Чёрное остриё
+item.banner.triangle_bottom.blue=Синее остриё
+item.banner.triangle_bottom.brown=Коричневое остриё
+item.banner.triangle_bottom.cyan=Бирюзовое остриё
+item.banner.triangle_bottom.gray=Серое остриё
+item.banner.triangle_bottom.green=Зелёное остриё
+item.banner.triangle_bottom.lightBlue=Голубое остриё
+item.banner.triangle_bottom.lime=Лаймовое остриё
+item.banner.triangle_bottom.magenta=Пурпурное остриё
+item.banner.triangle_bottom.orange=Оранжевое остриё
+item.banner.triangle_bottom.pink=Розовое остриё
+item.banner.triangle_bottom.purple=Фиолетовое остриё
+item.banner.triangle_bottom.red=Красное остриё
+item.banner.triangle_bottom.silver=Светло-серое остриё
+item.banner.triangle_bottom.white=Белое остриё
+item.banner.triangle_bottom.yellow=Жёлтое остриё
+item.banner.triangle_top.black=Чёрное опрокинутое остриё
+item.banner.triangle_top.blue=Синее опрокинутое остриё
+item.banner.triangle_top.brown=Коричневое опрокинутое остриё
+item.banner.triangle_top.cyan=Бирюзовое опрокинутое остриё
+item.banner.triangle_top.gray=Серое опрокинутое остриё
+item.banner.triangle_top.green=Зелёное опрокинутое остриё
+item.banner.triangle_top.lightBlue=Голубое опрокинутое остриё
+item.banner.triangle_top.lime=Лаймовое опрокинутое остриё
+item.banner.triangle_top.magenta=Пурпурное опрокинутое остриё
+item.banner.triangle_top.orange=Оранжевое опрокинутое остриё
+item.banner.triangle_top.pink=Розовое опрокинутое остриё
+item.banner.triangle_top.purple=Фиолетовое опрокинутое остриё
+item.banner.triangle_top.red=Красное опрокинутое остриё
+item.banner.triangle_top.silver=Светло-серое опрокинутое остриё
+item.banner.triangle_top.white=Белое опрокинутое остриё
+item.banner.triangle_top.yellow=Жёлтое опрокинутое остриё
+item.banner.triangles_bottom.black=Чёрное зубчатое основание
+item.banner.triangles_bottom.blue=Синее зубчатое основание
+item.banner.triangles_bottom.brown=Коричневое зубчатое основание
+item.banner.triangles_bottom.cyan=Бирюзовое зубчатое основание
+item.banner.triangles_bottom.gray=Серое зубчатое основание
+item.banner.triangles_bottom.green=Зелёное зубчатое основание
+item.banner.triangles_bottom.lightBlue=Голубое зубчатое основание
+item.banner.triangles_bottom.lime=Лаймовое зубчатое основание
+item.banner.triangles_bottom.magenta=Пурпурное зубчатое основание
+item.banner.triangles_bottom.orange=Оранжевое зубчатое основание
+item.banner.triangles_bottom.pink=Розовое зубчатое основание
+item.banner.triangles_bottom.purple=Фиолетовое зубчатое основание
+item.banner.triangles_bottom.red=Красное зубчатое основание
+item.banner.triangles_bottom.silver=Светло-серое зубчатое основание
+item.banner.triangles_bottom.white=Белое зубчатое основание
+item.banner.triangles_bottom.yellow=Жёлтое зубчатое основание
+item.banner.triangles_top.black=Чёрная зубчатая глава
+item.banner.triangles_top.blue=Синяя зубчатая глава
+item.banner.triangles_top.brown=Коричневая зубчатая глава
+item.banner.triangles_top.cyan=Бирюзовая зубчатая глава
+item.banner.triangles_top.gray=Серая зубчатая глава
+item.banner.triangles_top.green=Зелёная зубчатая глава
+item.banner.triangles_top.lightBlue=Голубая зубчатая глава
+item.banner.triangles_top.lime=Лаймовая зубчатая глава
+item.banner.triangles_top.magenta=Пурпурная зубчатая глава
+item.banner.triangles_top.orange=Оранжевая зубчатая глава
+item.banner.triangles_top.pink=Розовая зубчатая глава
+item.banner.triangles_top.purple=Фиолетовая зубчатая глава
+item.banner.triangles_top.red=Красная зубчатая глава
+item.banner.triangles_top.silver=Светло-серая зубчатая глава
+item.banner.triangles_top.white=Белая зубчатая глава
+item.banner.triangles_top.yellow=Жёлтая зубчатая глава
+item.banner.white.name=Белый флаг
+item.banner.yellow.name=Жёлтый флаг
+item.bed.name=Кровать
+item.beefCooked.name=Стейк
+item.beefRaw.name=Сырая говядина
+item.beetroot.name=Свёкла
+item.beetroot_seeds.name=Семена свёклы
+item.beetroot_soup.name=Свекольный суп
+item.blazePowder.name=Огненный порошок
+item.blazeRod.name=Огненный жезл
+item.boat.acacia.name=Акациевая лодка
+item.boat.birch.name=Берёзовая лодка
+item.boat.dark_oak.name=Лодка из тёмного дуба
+item.boat.jungle.name=Лодка из тропического дерева
+item.boat.oak.name=Дубовая лодка
+item.boat.spruce.name=Еловая лодка
+item.bone.name=Кость
+item.book.name=Книга
+item.bootsChain.name=Кольчужные ботинки
+item.bootsCloth.name=Кожаные ботинки
+item.bootsDiamond.name=Алмазные ботинки
+item.bootsGold.name=Золотые ботинки
+item.bootsIron.name=Железные ботинки
+item.bow.name=Лук
+item.bowl.name=Миска
+item.bread.name=Хлеб
+item.brewingStand.name=Зельеварка
+item.brick.name=Кирпич
+item.bucket.name=Ведро
+item.bucketLava.name=Ведро лавы
+item.bucketWater.name=Ведро воды
+item.cake.name=Торт
+item.carrotGolden.name=Золотая морковь
+item.carrotOnAStick.name=Удочка с морковкой
+item.carrots.name=Морковь
+item.cauldron.name=Котёл
+item.charcoal.name=Древесный уголь
+item.chestplateChain.name=Кольчуга
+item.chestplateCloth.name=Кожаная куртка
+item.chestplateDiamond.name=Алмазный нагрудник
+item.chestplateGold.name=Золотой нагрудник
+item.chestplateIron.name=Железный нагрудник
+item.chickenCooked.name=Жареная курица
+item.chickenRaw.name=Курятина
+item.chorusFruit.name=Плод хоруса
+item.chorusFruitPopped.name=Прожаренный плод хоруса
+item.clay.name=Глина
+item.clock.name=Часы
+item.coal.name=Уголь
+item.comparator.name=Редстоуновый компаратор
+item.compass.name=Компас
+item.cookie.name=Печенье
+item.diamond.name=Алмаз
+item.diode.name=Редстоуновый повторитель
+item.doorAcacia.name=Акациевая дверь
+item.doorBirch.name=Берёзовая дверь
+item.doorDarkOak.name=Дверь из тёмного дуба
+item.doorIron.name=Железная дверь
+item.doorJungle.name=Дверь из тропического дерева
+item.doorOak.name=Дубовая дверь
+item.doorSpruce.name=Еловая дверь
+item.dragon_breath.name=Драконье дыхание
+item.dyePowder.black.name=Чернильный мешок
+item.dyePowder.blue.name=Лазурит
+item.dyePowder.brown.name=Какао-бобы
+item.dyePowder.cyan.name=Бирюзовый краситель
+item.dyePowder.gray.name=Серый краситель
+item.dyePowder.green.name=Зелёный краситель
+item.dyePowder.lightBlue.name=Голубой краситель
+item.dyePowder.lime.name=Лаймовый краситель
+item.dyePowder.magenta.name=Пурпурный краситель
+item.dyePowder.orange.name=Оранжевый краситель
+item.dyePowder.pink.name=Розовый краситель
+item.dyePowder.purple.name=Фиолетовый краситель
+item.dyePowder.red.name=Красный краситель
+item.dyePowder.silver.name=Светло-серый краситель
+item.dyePowder.white.name=Костная мука
+item.dyePowder.yellow.name=Жёлтый краситель
+item.dyed=Крашеный
+item.egg.name=Яйцо
+item.elytra.name=Элитры
+item.emerald.name=Изумруд
+item.emptyMap.name=Чистая карта
+item.enchantedBook.name=Зачарованная книга
+item.end_crystal.name=Кристалл Энда
+item.enderPearl.name=Эндер-жемчуг
+item.expBottle.name=Пузырёк опыта
+item.eyeOfEnder.name=Око Эндера
+item.feather.name=Перо
+item.fermentedSpiderEye.name=Маринованный паучий глаз
+item.fireball.name=Огненный заряд
+item.fireworks.name=Фейерверк
+item.fireworksCharge.black=Чёрный
+item.fireworksCharge.blue=Синий
+item.fireworksCharge.brown=Коричневый
+item.fireworksCharge.customColor=Пользовательский
+item.fireworksCharge.cyan=Бирюзовый
+item.fireworksCharge.fadeTo=Затухать в
+item.fireworksCharge.flicker=Мерцание
+item.fireworksCharge.gray=Серый
+item.fireworksCharge.green=Зелёный
+item.fireworksCharge.lightBlue=Голубой
+item.fireworksCharge.lime=Лаймовый
+item.fireworksCharge.magenta=Пурпурный
+item.fireworksCharge.name=Пиротехническая звезда
+item.fireworksCharge.orange=Оранжевый
+item.fireworksCharge.pink=Розовый
+item.fireworksCharge.purple=Фиолетовый
+item.fireworksCharge.red=Красный
+item.fireworksCharge.silver=Светло-серый
+item.fireworksCharge.trail=След
+item.fireworksCharge.type=Неизвестная форма
+item.fireworksCharge.type.0=Малый Шар
+item.fireworksCharge.type.1=Большой шар
+item.fireworksCharge.type.2=Звездообразный
+item.fireworksCharge.type.3=Криперообразный
+item.fireworksCharge.type.4=Всплеск
+item.fireworksCharge.white=Белый
+item.fireworksCharge.yellow=Жёлтый
+item.fish.clownfish.raw.name=Рыба-клоун
+item.fish.cod.cooked.name=Жареная треска
+item.fish.cod.raw.name=Сырая треска
+item.fish.pufferfish.raw.name=Иглобрюх
+item.fish.salmon.cooked.name=Жаренный лосось
+item.fish.salmon.raw.name=Сырой лосось
+item.fishingRod.name=Удочка
+item.flint.name=Кремень
+item.flintAndSteel.name=Огниво
+item.flowerPot.name=Цветочный горшок
+item.frame.name=Рамка
+item.ghastTear.name=Слеза гаста
+item.glassBottle.name=Пузырёк
+item.goldNugget.name=Золотой самородок
+item.hatchetDiamond.name=Алмазный топор
+item.hatchetGold.name=Золотой топор
+item.hatchetIron.name=Железный топор
+item.hatchetStone.name=Каменный топор
+item.hatchetWood.name=Деревянный топор
+item.helmetChain.name=Койф
+item.helmetCloth.name=Кожаный шлем
+item.helmetDiamond.name=Алмазный шлем
+item.helmetGold.name=Золотой шлем
+item.helmetIron.name=Железный шлем
+item.hoeDiamond.name=Алмазная мотыга
+item.hoeGold.name=Золотая мотыга
+item.hoeIron.name=Железная мотыга
+item.hoeStone.name=Каменная мотыга
+item.hoeWood.name=Деревянная мотыга
+item.horsearmordiamond.name=Алмазная конская броня
+item.horsearmorgold.name=Золотая конская броня
+item.horsearmormetal.name=Железная конская броня
+item.ingotGold.name=Золотой слиток
+item.ingotIron.name=Железный слиток
+item.leash.name=Поводок
+item.leather.name=Кожа
+item.leaves.name=Листья
+item.leggingsChain.name=Кольчужные поножи
+item.leggingsCloth.name=Кожаные штаны
+item.leggingsDiamond.name=Алмазные поножи
+item.leggingsGold.name=Золотые поножи
+item.leggingsIron.name=Железные поножи
+item.magmaCream.name=Сгусток магмы
+item.map.name=Карта
+item.melon.name=Арбуз
+item.milk.name=Молоко
+item.minecart.name=Вагонетка
+item.minecartChest.name=Грузовая вагонетка
+item.minecartCommandBlock.name=Вагонетка с командным блоком
+item.minecartFurnace.name=Самоходная вагонетка
+item.minecartHopper.name=Вагонетка с загрузочной воронкой
+item.minecartTnt.name=Вагонетка с динамитом
+item.monsterPlacer.name=Яйцо призыва —
+item.mushroomStew.name=Тушёные грибы
+item.muttonCooked.name=Жареная баранина
+item.muttonRaw.name=Сырая баранина
+item.nameTag.name=Бирка
+item.netherStalkSeeds.name=Нарост из Незера
+item.netherStar.name=Звезда из Незера
+item.netherbrick.name=Незеритовый кирпич
+item.netherquartz.name=Незер-кварц
+item.painting.name=Картина
+item.paper.name=Бумага
+item.pickaxeDiamond.name=Алмазная кирка
+item.pickaxeGold.name=Золотая кирка
+item.pickaxeIron.name=Железная кирка
+item.pickaxeStone.name=Каменная кирка
+item.pickaxeWood.name=Деревянная кирка
+item.porkchopCooked.name=Жареная свинина
+item.porkchopRaw.name=Сырая свинина
+item.potato.name=Картофель
+item.potatoBaked.name=Печёный картофель
+item.potatoPoisonous.name=Ядовитый картофель
+item.potion.name=Зелье
+item.prismarineCrystals.name=Кристалл призмарина
+item.prismarineShard.name=Осколок призмарина
+item.pumpkinPie.name=Тыквенный пирог
+item.rabbitCooked.name=Жареная крольчатина
+item.rabbitFoot.name=Кроличья лапка
+item.rabbitHide.name=Кроличья шкурка
+item.rabbitRaw.name=Сырая крольчатина
+item.rabbitStew.name=Тушёный кролик
+item.record.11.desc=C418 — 11
+item.record.13.desc=C418 — 13
+item.record.blocks.desc=C418 — blocks
+item.record.cat.desc=C418 — cat
+item.record.chirp.desc=C418 — chirp
+item.record.far.desc=C418 — far
+item.record.mall.desc=C418 — mall
+item.record.mellohi.desc=C418 — mellohi
+item.record.name=Пластинка
+item.record.stal.desc=C418 — stal
+item.record.strad.desc=C418 — strad
+item.record.wait.desc=C418 — wait
+item.record.ward.desc=C418 — ward
+item.redstone.name=Редстоун
+item.reeds.name=Сахарный тростник
+item.rottenFlesh.name=Гнилая плоть
+item.ruby.name=Рубин
+item.saddle.name=Седло
+item.seeds.name=Семена пшеницы
+item.seeds_melon.name=Семена арбуза
+item.seeds_pumpkin.name=Семена тыквы
+item.shears.name=Ножницы
+item.shield.black.name=Чёрный щит
+item.shield.blue.name=Синий щит
+item.shield.brown.name=Коричневый щит
+item.shield.cyan.name=Бирюзовый щит
+item.shield.gray.name=Серый щит
+item.shield.green.name=Зелёный щит
+item.shield.lightBlue.name=Голубой щит
+item.shield.lime.name=Лаймовый щит
+item.shield.magenta.name=Пурпурный щит
+item.shield.name=Щит
+item.shield.orange.name=Оранжевый щит
+item.shield.pink.name=Розовый щит
+item.shield.purple.name=Фиолетовый щит
+item.shield.red.name=Красный щит
+item.shield.silver.name=Светло-серый щит
+item.shield.white.name=Белый щит
+item.shield.yellow.name=Жёлтый щит
+item.shovelDiamond.name=Алмазная лопата
+item.shovelGold.name=Золотая лопата
+item.shovelIron.name=Железная лопата
+item.shovelStone.name=Каменная лопата
+item.shovelWood.name=Деревянная лопата
+item.sign.name=Табличка
+item.skull.char.name=Голова
+item.skull.creeper.name=Голова крипера
+item.skull.dragon.name=Голова дракона
+item.skull.player.name=Голова %s
+item.skull.skeleton.name=Череп
+item.skull.wither.name=Череп визер-скелета
+item.skull.zombie.name=Голова зомби
+item.slimeball.name=Сгусток слизи
+item.snowball.name=Снежок
+item.speckledMelon.name=Сверкающий арбуз
+item.spectral_arrow.name=Спектральная стрела
+item.spiderEye.name=Паучий глаз
+item.stick.name=Палка
+item.string.name=Нить
+item.sugar.name=Сахар
+item.sulphur.name=Порох
+item.swordDiamond.name=Алмазный меч
+item.swordGold.name=Золотой меч
+item.swordIron.name=Железный меч
+item.swordStone.name=Каменный меч
+item.swordWood.name=Деревянный меч
+item.tipped_arrow.name=Обработанная стрела
+item.unbreakable=Неразрушаемый
+item.wheat.name=Пшеница
+item.writingBook.name=Книга и перо
+item.writtenBook.name=Завершённая книга
+item.yellowDust.name=Светопыль
+
+# Block names that will be displayed in the hologram
+tile.acaciaFence.name=Акациевый забор
+tile.acaciaFenceGate.name=Акациевая калитка
+tile.activatorRail.name=Активирующие рельсы
+tile.anvil.intact.name=Наковальня
+tile.anvil.name=Наковальня
+tile.anvil.slightlyDamaged.name=Повреждённая наковальня
+tile.anvil.veryDamaged.name=Сильно повреждённая наковальня
+tile.barrier.name=Барьер
+tile.beacon.name=Маяк
+tile.beacon.primary=Основной эффект
+tile.beacon.secondary=Вторичный эффект
+tile.bed.name=Кровать
+tile.bed.noSleep=Спать можно только ночью
+tile.bed.notSafe=Вы не можете спать, пока рядом есть монстры
+tile.bed.notValid=Ваша кровать пропала или доступ к ней затруднён
+tile.bed.occupied=Эта кровать занята
+tile.bedrock.name=Бедрок
+tile.beetroots.name=Свёкла
+tile.birchFence.name=Берёзовый забор
+tile.birchFenceGate.name=Берёзовая калитка
+tile.blockCoal.name=Угольный блок
+tile.blockDiamond.name=Алмазный блок
+tile.blockEmerald.name=Изумрудный блок
+tile.blockGold.name=Золотой блок
+tile.blockIron.name=Железный блок
+tile.blockLapis.name=Блок лазурита
+tile.blockRedstone.name=Редстоуновый блок
+tile.boneBlock.name=Костный блок
+tile.bookshelf.name=Книжная полка
+tile.brick.name=Кирпичи
+tile.button.name=Кнопка
+tile.cactus.name=Кактус
+tile.cake.name=Торт
+tile.carrots.name=Морковь
+tile.cauldron.name=Котёл
+tile.chainCommandBlock.name=Последовательный командный блок
+tile.chest.name=Сундук
+tile.chestTrap.name=Сундук-ловушка
+tile.chorusFlower.name=Цветок хоруса
+tile.chorusPlant.name=Хорус
+tile.clay.name=Глина
+tile.clayHardened.name=Обожжёная глина
+tile.clayHardenedStained.black.name=Чёрная обожжённая глина
+tile.clayHardenedStained.blue.name=Синяя обожжённая глина
+tile.clayHardenedStained.brown.name=Коричневая обожжённая глина
+tile.clayHardenedStained.cyan.name=Бирюзовая обожжённая глина
+tile.clayHardenedStained.gray.name=Серая обожжённая глина
+tile.clayHardenedStained.green.name=Зелёная обожжённая глина
+tile.clayHardenedStained.lightBlue.name=Голубая обожжённая глина
+tile.clayHardenedStained.lime.name=Лаймовая обожжённая глина
+tile.clayHardenedStained.magenta.name=Пурпурная обожжённая глина
+tile.clayHardenedStained.name=Окрашенная обожжённая глина
+tile.clayHardenedStained.orange.name=Оранжевая обожжённая глина
+tile.clayHardenedStained.pink.name=Розовая обожжённая глина
+tile.clayHardenedStained.purple.name=Фиолетовая обожжённая глина
+tile.clayHardenedStained.red.name=Красная обожжённая глина
+tile.clayHardenedStained.silver.name=Светло-серая обожжённая глина
+tile.clayHardenedStained.white.name=Белая обожжённая глина
+tile.clayHardenedStained.yellow.name=Жёлтая обожжённая глина
+tile.cloth.black.name=Чёрная шерсть
+tile.cloth.blue.name=Синяя шерсть
+tile.cloth.brown.name=Коричневая шерсть
+tile.cloth.cyan.name=Бирюзовая шерсть
+tile.cloth.gray.name=Серая шерсть
+tile.cloth.green.name=Зелёная шерсть
+tile.cloth.lightBlue.name=Голубая шерсть
+tile.cloth.lime.name=Лаймовая шерсть
+tile.cloth.magenta.name=Пурпурная шерсть
+tile.cloth.name=Шерсть
+tile.cloth.orange.name=Оранжевая шерсть
+tile.cloth.pink.name=Розовая шерсть
+tile.cloth.purple.name=Фиолетовая шерсть
+tile.cloth.red.name=Красная шерсть
+tile.cloth.silver.name=Светло-серая шерсть
+tile.cloth.white.name=Шерсть
+tile.cloth.yellow.name=Жёлтая шерсть
+tile.cobbleWall.mossy.name=Замшелая каменная ограда
+tile.cobbleWall.normal.name=Каменная ограда
+tile.cocoa.name=Какао
+tile.commandBlock.name=Командный блок
+tile.crops.name=Всходы
+tile.darkOakFence.name=Забор из тёмного дуба
+tile.darkOakFenceGate.name=Калитка из тёмного дуба
+tile.daylightDetector.name=Датчик дневного света
+tile.deadbush.name=Мёртвый куст
+tile.detectorRail.name=Рельсы с датчиком
+tile.dirt.coarse.name=Каменистая земля
+tile.dirt.default.name=Земля
+tile.dirt.name=Земля
+tile.dirt.podzol.name=Подзол
+tile.dispenser.name=Раздатчик
+tile.doorIron.name=Железная дверь
+tile.doorWood.name=Деревянная дверь
+tile.doublePlant.fern.name=Раскидистый папоротник
+tile.doublePlant.grass.name=Высокая трава
+tile.doublePlant.name=Растение
+tile.doublePlant.paeonia.name=Пион
+tile.doublePlant.rose.name=Розовый куст
+tile.doublePlant.sunflower.name=Подсолнух
+tile.doublePlant.syringa.name=Сирень
+tile.dragonEgg.name=Яйцо дракона
+tile.dropper.name=Выбрасыватель
+tile.enchantmentTable.name=Стол зачарований
+tile.endBricks.name=Эндерняковые кирпичи
+tile.endPortalFrame.name=Портал в Энд
+tile.endRod.name=Стержень Энда
+tile.enderChest.name=Эндер-сундук
+tile.farmland.name=Пашня
+tile.fence.name=Дубовый забор
+tile.fenceGate.name=Дубовая калитка
+tile.fenceIron.name=Железные прутья
+tile.fire.name=Огонь
+tile.flower1.dandelion.name=Одуванчик
+tile.flower1.name=Одуванчик
+tile.flower2.allium.name=Лук-батун
+tile.flower2.blueOrchid.name=Синяя орхидея
+tile.flower2.houstonia.name=Голубой василёк
+tile.flower2.name=Цветок
+tile.flower2.oxeyeDaisy.name=Ромашка
+tile.flower2.poppy.name=Мак
+tile.flower2.tulipOrange.name=Оранжевый тюльпан
+tile.flower2.tulipPink.name=Розовый тюльпан
+tile.flower2.tulipRed.name=Красный тюльпан
+tile.flower2.tulipWhite.name=Белый тюльпан
+tile.frostedIce.name=Талый лёд
+tile.furnace.name=Печь
+tile.glass.name=Стекло
+tile.goldenRail.name=Энергорельсы
+tile.grass.name=Дёрн
+tile.grassPath.name=Тропа
+tile.gravel.name=Гравий
+tile.hayBlock.name=Сноп сена
+tile.hellrock.name=Незерит
+tile.hellsand.name=Песок душ
+tile.hopper.name=Воронка
+tile.ice.name=Лёд
+tile.icePacked.name=Плотный лёд
+tile.ironTrapdoor.name=Железный люк
+tile.jukebox.name=Проигрыватель
+tile.jungleFence.name=Забор из тропического дерева
+tile.jungleFenceGate.name=Калитка из тропического дерева
+tile.ladder.name=Лестница
+tile.lava.name=Лава
+tile.leaves.acacia.name=Листья акации
+tile.leaves.big_oak.name=Листья тёмного дуба
+tile.leaves.birch.name=Берёзовые листья
+tile.leaves.jungle.name=Листья тропического дерева
+tile.leaves.name=Листья
+tile.leaves.oak.name=Дубовые листья
+tile.leaves.spruce.name=Хвоя
+tile.lever.name=Рычаг
+tile.lightgem.name=Светокамень
+tile.litpumpkin.name=Светильник Джека
+tile.lockedchest.name=Запертый сундук
+tile.log.acacia.name=Акация
+tile.log.big_oak.name=Тёмный дуб
+tile.log.birch.name=Берёза
+tile.log.jungle.name=Тропическое дерево
+tile.log.name=Дерево
+tile.log.oak.name=Дуб
+tile.log.spruce.name=Ель
+tile.magma.name=Магма
+tile.melon.name=Арбуз
+tile.mobSpawner.name=Рассадник монстров
+tile.monsterStoneEgg.brick.name=Каменный кирпич с монстрами
+tile.monsterStoneEgg.chiseledbrick.name=Резной каменный кирпич с монстрами
+tile.monsterStoneEgg.cobble.name=Булыжник с монстрами
+tile.monsterStoneEgg.crackedbrick.name=Потрескавшийся каменный кирпич с монстрами
+tile.monsterStoneEgg.mossybrick.name=Замшелый каменный кирпич с монстрами
+tile.monsterStoneEgg.name=Камень с монстрами
+tile.monsterStoneEgg.stone.name=Камень с монстрами
+tile.mushroom.name=Гриб
+tile.musicBlock.name=Нотный блок
+tile.mycel.name=Мицелий
+tile.netherBrick.name=Незеритовый кирпич
+tile.netherFence.name=Незеритовый забор
+tile.netherStalk.name=Нарост из Незера
+tile.netherWartBlock.name=Блок нароста из Незера
+tile.netherquartz.name=Незер-кварцевая руда
+tile.notGate.name=Редстоуновый факел
+tile.obsidian.name=Обсидиан
+tile.oreCoal.name=Уголь
+tile.oreDiamond.name=Алмазная руда
+tile.oreEmerald.name=Изумрудная руда
+tile.oreGold.name=Золотая руда
+tile.oreIron.name=Железная руда
+tile.oreLapis.name=Лазуритовая руда
+tile.oreRedstone.name=Редстоуновая руда
+tile.oreRuby.name=Рубиновая руда
+tile.pistonBase.name=Поршень
+tile.pistonStickyBase.name=Липкий поршень
+tile.portal.name=Портал
+tile.potatoes.name=Картофель
+tile.pressurePlateStone.name=Каменная нажимная плита
+tile.pressurePlateWood.name=Деревянная нажимная плита
+tile.prismarine.bricks.name=Призмариновый кирпич
+tile.prismarine.dark.name=Тёмный призмарин
+tile.prismarine.rough.name=Призмарин
+tile.pumpkin.name=Тыква
+tile.pumpkinStem.name=Стебель тыквы
+tile.purpurBlock.name=Пурпур-блок
+tile.purpurPillar.name=Пурпуровый пилон
+tile.purpurSlab.name=Пурпуровая плита
+tile.quartzBlock.chiseled.name=Резной кварцевый блок
+tile.quartzBlock.default.name=Кварцевый блок
+tile.quartzBlock.lines.name=Кварцевая колонна 
+tile.quartzBlock.name=Кварцевый блок
+tile.rail.name=Рельсы
+tile.redNetherBrick.name=Красный незеритовый кирпич
+tile.redSandStone.chiseled.name=Резной красный песчаник
+tile.redSandStone.default.name=Красный песчаник
+tile.redSandStone.name=Красный песчаник
+tile.redSandStone.smooth.name=Гладкий красный песчаник
+tile.redstoneDust.name=Редстоун
+tile.redstoneLight.name=Редстоуновый фонарь
+tile.reeds.name=Сахарный тростник
+tile.repeatingCommandBlock.name=Повторяющий командный блок
+tile.sand.default.name=Песок
+tile.sand.name=Песок
+tile.sand.red.name=Красный песок
+tile.sandStone.chiseled.name=Резной песчаник
+tile.sandStone.default.name=Песчаник
+tile.sandStone.name=Песчаник
+tile.sandStone.smooth.name=Гладкий песчаник
+tile.sapling.acacia.name=Саженец акации
+tile.sapling.big_oak.name=Саженец тёмного дуба
+tile.sapling.birch.name=Саженец берёзы
+tile.sapling.jungle.name=Саженец тропического дерева
+tile.sapling.oak.name=Саженец дуба
+tile.sapling.spruce.name=Еловый саженец
+tile.seaLantern.name=Морской фонарь
+tile.sign.name=Табличка
+tile.slime.name=Блок слизи
+tile.snow.name=Снег
+tile.sponge.dry.name=Губка
+tile.sponge.wet.name=Мокрая губка
+tile.spruceFence.name=Еловый забор
+tile.spruceFenceGate.name=Еловая калитка
+tile.stainedGlass.black.name=Чёрное стекло
+tile.stainedGlass.blue.name=Синее стекло
+tile.stainedGlass.brown.name=Коричневое стекло
+tile.stainedGlass.cyan.name=Бирюзовое стекло
+tile.stainedGlass.gray.name=Серое стекло
+tile.stainedGlass.green.name=Зелёное стекло
+tile.stainedGlass.lightBlue.name=Голубое стекло
+tile.stainedGlass.lime.name=Лаймовое стекло
+tile.stainedGlass.magenta.name=Пурпурное стекло
+tile.stainedGlass.name=Цветное стекло
+tile.stainedGlass.orange.name=Оранжевое стекло
+tile.stainedGlass.pink.name=Розовое стекло
+tile.stainedGlass.purple.name=Фиолетовое стекло
+tile.stainedGlass.red.name=Красное стекло
+tile.stainedGlass.silver.name=Светло-серое стекло
+tile.stainedGlass.white.name=Белое стекло
+tile.stainedGlass.yellow.name=Жёлтое стекло
+tile.stairsBrick.name=Кирпичные ступеньки
+tile.stairsNetherBrick.name=Незеритовые ступеньки
+tile.stairsPurpur.name=Пурпуровые ступеньки
+tile.stairsQuartz.name=Кварцевые ступеньки
+tile.stairsRedSandStone.name=Ступеньки из красного песчаника
+tile.stairsSandStone.name=Песчаниковые ступеньки
+tile.stairsStone.name=Булыжные ступеньки
+tile.stairsStoneBrickSmooth.name=Ступеньки из каменного кирпича
+tile.stairsWood.name=Дубовые ступеньки
+tile.stairsWoodAcacia.name=Акациевые ступеньки
+tile.stairsWoodBirch.name=Берёзовые ступеньки
+tile.stairsWoodDarkOak.name=Ступеньки из тёмного дуба
+tile.stairsWoodJungle.name=Ступеньки из тропического дерева
+tile.stairsWoodSpruce.name=Еловые ступеньки
+tile.stone.andesite.name=Андезит
+tile.stone.andesiteSmooth.name=Гладкий андезит
+tile.stone.diorite.name=Диорит
+tile.stone.dioriteSmooth.name=Гладкий диорит
+tile.stone.granite.name=Гранит
+tile.stone.graniteSmooth.name=Гладкий гранит
+tile.stone.stone.name=Камень
+tile.stoneMoss.name=Замшелый булыжник
+tile.stoneSlab.brick.name=Кирпичная плита
+tile.stoneSlab.cobble.name=Булыжная плита
+tile.stoneSlab.name=Каменная плита
+tile.stoneSlab.netherBrick.name=Незеритовая плита
+tile.stoneSlab.quartz.name=Кварцевая плита
+tile.stoneSlab.sand.name=Песчаниковая плита
+tile.stoneSlab.smoothStoneBrick.name=Плита из каменных кирпичей
+tile.stoneSlab.stone.name=Каменная плита
+tile.stoneSlab.wood.name=Деревянная плита
+tile.stoneSlab2.red_sandstone.name=Плита из красного песчаника
+tile.stonebrick.name=Булыжник
+tile.stonebricksmooth.chiseled.name=Резные каменные кирпичи
+tile.stonebricksmooth.cracked.name=Потрескавшиеся каменные кирпичи
+tile.stonebricksmooth.default.name=Каменные кирпичи
+tile.stonebricksmooth.mossy.name=Замшелые каменные кирпичи
+tile.stonebricksmooth.name=Каменные кирпичи
+tile.structureBlock.name=Блок-конструктор
+tile.structureVoid.name=Пустой блок
+tile.tallgrass.fern.name=Папоротник
+tile.tallgrass.grass.name=Трава
+tile.tallgrass.name=Трава
+tile.tallgrass.shrub.name=Куст
+tile.thinGlass.name=Стеклянная панель
+tile.thinStainedGlass.black.name=Чёрная стеклянная панель
+tile.thinStainedGlass.blue.name=Синяя стеклянная панель
+tile.thinStainedGlass.brown.name=Коричневая стеклянная панель
+tile.thinStainedGlass.cyan.name=Бирюзовая стеклянная панель
+tile.thinStainedGlass.gray.name=Серая стеклянная панель
+tile.thinStainedGlass.green.name=Зелёная стеклянная панель
+tile.thinStainedGlass.lightBlue.name=Голубая стеклянная панель
+tile.thinStainedGlass.lime.name=Лаймовая стеклянная панель
+tile.thinStainedGlass.magenta.name=Пурпурная стеклянная панель
+tile.thinStainedGlass.name=Цветная стеклянная панель
+tile.thinStainedGlass.orange.name=Оранжевая стеклянная панель
+tile.thinStainedGlass.pink.name=Розовая стеклянная панель
+tile.thinStainedGlass.purple.name=Фиолетовая стеклянная панель
+tile.thinStainedGlass.red.name=Красная стеклянная панель
+tile.thinStainedGlass.silver.name=Светло-серая стеклянная панель
+tile.thinStainedGlass.white.name=Белая стеклянная панель
+tile.thinStainedGlass.yellow.name=Жёлтая стеклянная панель
+tile.tnt.name=Динамит
+tile.torch.name=Факел
+tile.trapdoor.name=Люк
+tile.tripWire.name=Растяжка
+tile.tripWireSource.name=Крюк
+tile.vine.name=Лоза
+tile.water.name=Вода
+tile.waterlily.name=Кувшинка
+tile.web.name=Паутина
+tile.weightedPlate_heavy.name=Большегрузная весовая пластина
+tile.weightedPlate_light.name=Весовая пластина
+tile.whiteStone.name=Эндерняк
+tile.wood.acacia.name=Доски из акации
+tile.wood.big_oak.name=Доски из тёмного дуба
+tile.wood.birch.name=Берёзовые доски
+tile.wood.jungle.name=Доски из тропического дерева
+tile.wood.name=Доски
+tile.wood.oak.name=Дубовые доски
+tile.wood.spruce.name=Еловые доски
+tile.woodSlab.acacia.name=Акациевая плита
+tile.woodSlab.big_oak.name=Плита из тёмного дуба
+tile.woodSlab.birch.name=Берёзовая плита
+tile.woodSlab.jungle.name=Плита из тропического дерева
+tile.woodSlab.name=Деревянная плита
+tile.woodSlab.oak.name=Дубовая плита
+tile.woodSlab.spruce.name=Еловая плита
+tile.woolCarpet.black.name=Чёрный ковёр
+tile.woolCarpet.blue.name=Синий ковёр
+tile.woolCarpet.brown.name=Коричневый ковёр
+tile.woolCarpet.cyan.name=Бирюзовый ковёр
+tile.woolCarpet.gray.name=Серый ковёр
+tile.woolCarpet.green.name=Зелёный ковёр
+tile.woolCarpet.lightBlue.name=Голубой ковёр
+tile.woolCarpet.lime.name=Лаймовый ковёр
+tile.woolCarpet.magenta.name=Пурпурный ковёр
+tile.woolCarpet.name=Ковёр
+tile.woolCarpet.orange.name=Оранжевый ковёр
+tile.woolCarpet.pink.name=Розовый ковёр
+tile.woolCarpet.purple.name=Фиолетовый ковёр
+tile.woolCarpet.red.name=Красный ковёр
+tile.woolCarpet.silver.name=Светло-серый ковёр
+tile.woolCarpet.white.name=Ковёр
+tile.woolCarpet.yellow.name=Жёлтый ковёр
+tile.workbench.name=Верстак
