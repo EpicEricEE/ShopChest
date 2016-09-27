@@ -936,7 +936,7 @@ public class LanguageUtils {
             ItemMeta meta = stack.getItemMeta();
             if (meta.getDisplayName() != null) {
                 return meta.getDisplayName();
-            } else if (meta instanceof BookMeta) {
+            } else if (meta instanceof BookMeta && ((BookMeta) meta).hasTitle()) {
                 return ((BookMeta) meta).getTitle();
             } else if (meta instanceof SkullMeta) {
                 if (((SkullMeta) meta).hasOwner()) {
