@@ -68,6 +68,8 @@ public class SpawnEggMeta {
                 return EntityType.HORSE;
             case "PolarBear":
                 return EntityType.POLAR_BEAR;
+            case "Ozelot":
+                return EntityType.OCELOT;
             default:
                 return EntityType.valueOf(nbtEntityID.toUpperCase());
 
