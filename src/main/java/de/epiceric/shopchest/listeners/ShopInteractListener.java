@@ -31,7 +31,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -296,8 +295,13 @@ public class ShopInteractListener implements Listener {
         shopUtils.addShop(shop, true);
         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED));
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()));
+        for (Player p : location.getWorld().getPlayers()) {
+            if (p.getLocation().distanceSquared(location) <= config.maximal_distance) {
+                shop.getHologram().showPlayer(p);
+            }
+            if (p.getLocation().distanceSquared(location) <= config.maximal_item_distance) {
+                shop.getItem().setVisible(p, true);
+            }
         }
 
     }
