@@ -143,7 +143,7 @@ public class Config {
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
 
-        reload(true, true);
+        reload(true, true, true);
     }
 
     /**
@@ -161,7 +161,7 @@ public class Config {
 
             plugin.saveConfig();
             plugin.reloadConfig();
-            reload(false, langChange);
+            reload(false, langChange, false);
 
             return;
         } catch (NumberFormatException e) { /* Value not an integer */ }
@@ -172,7 +172,7 @@ public class Config {
 
             plugin.saveConfig();
             plugin.reloadConfig();
-            reload(false, langChange);
+            reload(false, langChange, false);
 
             return;
         } catch (NumberFormatException e) { /* Value not a double */ }
@@ -187,7 +187,7 @@ public class Config {
         plugin.saveConfig();
         plugin.reloadConfig();
 
-        reload(false, langChange);
+        reload(false, langChange, false);
     }
 
     /**
@@ -205,7 +205,7 @@ public class Config {
 
             plugin.saveConfig();
             plugin.reloadConfig();
-            reload(false, false);
+            reload(false, false, false);
 
             return;
         } catch (NumberFormatException e) { /* Value not an integer */ }
@@ -216,7 +216,7 @@ public class Config {
 
             plugin.saveConfig();
             plugin.reloadConfig();
-            reload(false, false);
+            reload(false, false, false);
 
             return;
         } catch (NumberFormatException e) { /* Value not a double */ }
@@ -231,7 +231,7 @@ public class Config {
         plugin.saveConfig();
         plugin.reloadConfig();
 
-        reload(false, false);
+        reload(false, false, false);
     }
 
     public void remove(String property, String value) {
@@ -243,7 +243,7 @@ public class Config {
 
             plugin.saveConfig();
             plugin.reloadConfig();
-            reload(false, false);
+            reload(false, false, false);
 
             return;
         } catch (NumberFormatException e) { /* Value not an integer */ }
@@ -254,7 +254,7 @@ public class Config {
 
             plugin.saveConfig();
             plugin.reloadConfig();
-            reload(false, false);
+            reload(false, false, false);
 
             return;
         } catch (NumberFormatException e) { /* Value not a double */ }
@@ -269,13 +269,13 @@ public class Config {
         plugin.saveConfig();
         plugin.reloadConfig();
 
-        reload(false, false);
+        reload(false, false, false);
     }
 
     /**
      * Reload the configuration values from config.yml
      */
-    public void reload(boolean firstLoad, boolean langReload) {
+    public void reload(boolean firstLoad, boolean langReload, boolean showMessages) {
         database_mysql_ping_interval = plugin.getConfig().getInt("database.mysql.ping-interval");
         database_mysql_host = plugin.getConfig().getString("database.mysql.hostname");
         database_mysql_port = plugin.getConfig().getInt("database.mysql.port");
@@ -309,7 +309,7 @@ public class Config {
         main_command_name = plugin.getConfig().getString("main-command-name");
         language_file = plugin.getConfig().getString("language-file");
 
-        if (firstLoad || langReload) loadLanguageConfig();
+        if (firstLoad || langReload) loadLanguageConfig(showMessages);
         if (!firstLoad && langReload) LanguageUtils.load();
     }
 
@@ -320,7 +320,7 @@ public class Config {
         return langConfig;
     }
 
-    private void loadLanguageConfig() {
+    private void loadLanguageConfig(boolean showMessages) {
         langConfig = new LanguageConfiguration(plugin);
         File langFolder = new File(plugin.getDataFolder(), "lang");
 
@@ -340,9 +340,9 @@ public class Config {
 
                     if (r == null) {
                         r = plugin._getTextResource("lang/en_US.lang");
-                        plugin.getLogger().info("Using locale \"en_US\" (Streamed from jar file)");
+                        if (showMessages) plugin.getLogger().info("Using locale \"en_US\" (Streamed from jar file)");
                     } else {
-                        plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\" (Streamed from jar file)");
+                        if (showMessages) plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\" (Streamed from jar file)");
                     }
 
                     BufferedReader br = new BufferedReader(r);
@@ -358,25 +358,31 @@ public class Config {
 
                     langConfig.loadFromString(sb.toString());
                 } catch (IOException | InvalidConfigurationException ex) {
-                    plugin.debug(ex);
-                    plugin.getLogger().warning("Using default language values");
+                    if (showMessages) {
+                        plugin.getLogger().warning("Using default language values");
+                        ex.printStackTrace();
+                    }
                 }
             } else {
                 try {
                     langConfig.load(langDefaultFile);
-                    plugin.getLogger().info("Using locale \"en_US\"");
+                    if (showMessages) plugin.getLogger().info("Using locale \"en_US\"");
                 } catch (IOException | InvalidConfigurationException e) {
-                    plugin.debug(e);
-                    plugin.getLogger().warning("Using default language values");
+                    if (showMessages) {
+                        plugin.getLogger().warning("Using default language values");
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
             try {
-                plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\"");
+                if (showMessages) plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\"");
                 langConfig.load(langConfigFile);
             } catch (IOException | InvalidConfigurationException ex) {
-                plugin.debug(ex);
-                plugin.getLogger().warning("Using default language values");
+                if (showMessages) {
+                    plugin.getLogger().warning("Using default language values");
+                    ex.printStackTrace();
+                }
             }
         }
     }

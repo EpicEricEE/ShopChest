@@ -240,7 +240,7 @@ public class ShopChest extends JavaPlugin {
                     ShopReloadEvent event = new ShopReloadEvent(Bukkit.getConsoleSender());
                     Bukkit.getServer().getPluginManager().callEvent(event);
 
-                    if (!event.isCancelled()) getLogger().info("Successfully reloaded " + String.valueOf(shopUtils.reloadShops(true)) + " shops.");
+                    if (!event.isCancelled()) shopUtils.reloadShops(true, false);
                 }
             }, config.auto_reload_time * 20, config.auto_reload_time * 20);
         }
@@ -364,7 +364,7 @@ public class ShopChest extends JavaPlugin {
      */
     private void initializeShops() {
         debug("Initializing Shops...");
-        int count = shopUtils.reloadShops(false);
+        int count = shopUtils.reloadShops(false, false);
         getLogger().info("Initialized " + count + " Shops");
         debug("Initialized " + count + " Shops");
     }

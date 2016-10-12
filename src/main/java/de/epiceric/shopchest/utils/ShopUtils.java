@@ -201,14 +201,15 @@ public class ShopUtils {
     /**
      * Reload the shops
      * @param reloadConfig Whether the configuration should also be reloaded
+     * @param showConsoleMessages Whether messages about the language file should be shown in the console
      * @return Amount of shops, which were reloaded
      */
-    public int reloadShops(boolean reloadConfig) {
+    public int reloadShops(boolean reloadConfig, boolean showConsoleMessages) {
         plugin.debug("Reloading shops...");
 
         plugin.getShopDatabase().connect();
 
-        if (reloadConfig) plugin.getShopChestConfig().reload(false, true);
+        if (reloadConfig) plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
 
         int highestId = plugin.getShopDatabase().getHighestID();
 
