@@ -76,6 +76,7 @@ public class LocalizedMessage {
         OUT_OF_STOCK,
         ERROR_OCCURRED,
         AMOUNT_PRICE_NOT_NUMBER,
+        AMOUNT_IS_ZERO,
         PRICES_CONTAIN_DECIMALS,
         NO_ITEM_IN_HAND,
         CLICK_CHEST_CREATE,

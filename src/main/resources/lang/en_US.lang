@@ -118,6 +118,9 @@ message.error-occurred=&cAn error occurred: %ERROR%
 # Set the message when the arguments <AMOUNT>, <BUY-PRICE> and/or <SELL-PRICE> of '/shop create' are not a number.
 message.amount-and-price-not-number=&cAmount and prices must be numbers.
 
+# Set the message when the argument <AMOUNT> is zero
+message.amount-is-zero=&cAmount must be greater than 0.
+
 # Set the message when the config value "allow-decimals-in-prices" is set to false
 # and a player enters a price with decimals
 message.prices-contain-decimals=&cPrices must not contain decimals.

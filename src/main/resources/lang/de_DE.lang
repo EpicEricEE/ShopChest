@@ -32,6 +32,7 @@ message.vendor-not-enough-money=&cVerkäufer hat nicht genug Geld.
 message.out-of-stock=&cShop ausverkauft.
 message.error-occurred=&cEin Fehler ist aufgetreten: %ERROR%
 message.amount-and-price-not-number=&cAnzahl und Preise müssen Zahlen sein.
+message.amount-is-zero=&cAnzahl muss größer als 0 sein.
 message.prices-contain-decimals=&cPreise dürfen keine Dezimalen enthalten.
 message.no-item-in-hand=&cKein Item in der Hand.
 message.click-chest-to-create-shop=&aKlicke auf eine Truhe, um einen Shop zu erstellen.

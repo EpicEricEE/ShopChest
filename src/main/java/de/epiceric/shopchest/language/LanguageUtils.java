@@ -879,6 +879,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.OUT_OF_STOCK, langConfig.getString("message.out-of-stock", "&cShop out of stock.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.ERROR_OCCURRED, langConfig.getString("message.error-occurred", "&cAn error occurred: %ERROR%"), Regex.ERROR));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER, langConfig.getString("message.amount-and-price-not-number", "&cAmount and price must be a number.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO, langConfig.getString("message.amount-is-zero", "&cAmount must be greater than 0.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS, langConfig.getString("message.prices-contain-decimals", "&cPrices must not contain decimals.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND, langConfig.getString("message.no-item-in-hand", "&cNo item in hand")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE, langConfig.getString("message.click-chest-to-create-shop", "&aClick a chest to create a shop.")));

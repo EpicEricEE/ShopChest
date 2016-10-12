@@ -264,6 +264,11 @@ class ShopCommand extends BukkitCommand {
             return;
         }
 
+        if (amount <= 0) {
+            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO));
+            return;
+        }
+
         plugin.debug(p.getName() + " has entered numbers as prices and amount");
 
         if (!plugin.getShopChestConfig().allow_decimals_in_price && (buyPrice != (int) buyPrice || sellPrice != (int) sellPrice)) {
