@@ -73,7 +73,10 @@ public class ChestProtectListener implements Listener {
                 }
             }
 
-            shop.getItem().resetForPlayer(p);
+            if (shop.getItem() != null) {
+                shop.getItem().resetForPlayer(p);
+            }
+
             e.setCancelled(true);
             e.getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_BREAK_SHOP));
         }

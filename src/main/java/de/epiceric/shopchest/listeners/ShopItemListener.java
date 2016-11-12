@@ -68,7 +68,9 @@ public class ShopItemListener implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         for (Shop shop : plugin.getShopUtils().getShops()) {
-            shop.getItem().setVisible(e.getPlayer(), false);
+            if (shop.getItem() != null) {
+                shop.getItem().setVisible(e.getPlayer(), false);
+            }
         }
     }
 
@@ -100,7 +102,10 @@ public class ShopItemListener implements Listener {
         Block below = b.getRelative(BlockFace.DOWN);
 
         if (shopUtils.isShop(below.getLocation())) {
-            shopUtils.getShop(below.getLocation()).getItem().resetForPlayer(e.getPlayer());
+            Shop shop = shopUtils.getShop(below.getLocation());
+            if (shop.getItem() != null) {
+                shop.getItem().resetForPlayer(e.getPlayer());
+            }
             e.setCancelled(true);
         }
     }
@@ -111,7 +116,10 @@ public class ShopItemListener implements Listener {
             Block below = blockState.getBlock().getRelative(BlockFace.DOWN);
 
             if (shopUtils.isShop(below.getLocation())) {
-                shopUtils.getShop(below.getLocation()).getItem().resetForPlayer(e.getPlayer());
+                Shop shop = shopUtils.getShop(below.getLocation());
+                if (shop.getItem() != null) {
+                    shop.getItem().resetForPlayer(e.getPlayer());
+                }
                 e.setCancelled(true);
             }
         }
@@ -142,7 +150,10 @@ public class ShopItemListener implements Listener {
             if (shopUtils.isShop(belowNewBlock.getLocation())) {
                 e.setCancelled(true);
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    shopUtils.getShop(belowNewBlock.getLocation()).getItem().resetForPlayer(p);
+                    Shop shop = shopUtils.getShop(belowNewBlock.getLocation());
+                    if (shop.getItem() != null) {
+                        shop.getItem().resetForPlayer(p);
+                    }
                 }
             }
         }
@@ -163,11 +174,17 @@ public class ShopItemListener implements Listener {
 
         if (shopUtils.isShop(clicked.getLocation())) {
             if (e.getBucket() == Material.LAVA_BUCKET) {
-                shopUtils.getShop(clicked.getLocation()).getItem().resetForPlayer(e.getPlayer());
+                Shop shop = shopUtils.getShop(clicked.getLocation());
+                if (shop.getItem() != null) {
+                    shop.getItem().resetForPlayer(e.getPlayer());
+                }
             }
         } else if (shopUtils.isShop(underWater.getLocation())) {
             if (e.getBucket() == Material.LAVA_BUCKET) {
-                shopUtils.getShop(underWater.getLocation()).getItem().resetForPlayer(e.getPlayer());
+                Shop shop = shopUtils.getShop(underWater.getLocation());
+                if (shop.getItem() != null) {
+                    shop.getItem().resetForPlayer(e.getPlayer());
+                }
             }
         } else {
             return;
