@@ -7,10 +7,9 @@ import de.epiceric.shopchest.sql.Database;
 import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.*;
 
@@ -124,53 +123,27 @@ public class ShopUtils {
     public int getShopLimit(Player p) {
         int limit = plugin.getShopChestConfig().default_limit;
 
-        if (plugin.getPermission().hasGroupSupport()) {
-            List<String> groups = new ArrayList<String>();
+        for (PermissionAttachmentInfo permInfo : p.getEffectivePermissions()) {
+            if (permInfo.getPermission().startsWith("shopchest.limit.")) {
+                if (permInfo.getPermission().contains("shopchest.limit.*")) {
+                    limit = -1;
+                    break;
+                } else {
+                    String[] spl = permInfo.getPermission().split("shopchest.limit.");
 
-            for (String key : plugin.getShopChestConfig().shopLimits_group) {
-                for (int i = 0; i < plugin.getPermission().getGroups().length; i++) {
-                    if (plugin.getPermission().getGroups()[i].equals(key)) {
-                        if (plugin.getPermission().playerInGroup(p, key)) {
-                            groups.add(key);
+                    if (spl.length > 1) {
+                        try {
+                            int newLimit = Integer.valueOf(spl[1]);
+                            limit = Math.max(limit, newLimit);
+                        } catch (NumberFormatException ignored) {
+                            /* Ignore and continue */
                         }
                     }
                 }
             }
-
-            if (groups.size() != 0) {
-                List<Integer> limits = new ArrayList<>();
-                for (String group : groups) {
-                    int gLimit = ShopChest.getInstance().getConfig().getInt("shop-limits.group." + group);
-                    limits.add(gLimit);
-                }
-
-                int highestLimit = 0;
-                for (int l : limits) {
-                    if (l > highestLimit) {
-                        highestLimit = l;
-                    } else if (l == -1) {
-                        highestLimit = -1;
-                        break;
-                    }
-                }
-
-                limit = highestLimit;
-            }
         }
 
-        for (String key : plugin.getShopChestConfig().shopLimits_player) {
-            int pLimit = ShopChest.getInstance().getConfig().getInt("shop-limits.player." + key);
-            if (Utils.isUUID(key)) {
-                if (p.getUniqueId().equals(UUID.fromString(key))) {
-                    limit = pLimit;
-                }
-            } else {
-                if (p.getName().equals(key)) {
-                    limit = pLimit;
-                }
-            }
-        }
-
+        if (limit < -1) limit = -1;
         return limit;
     }
 

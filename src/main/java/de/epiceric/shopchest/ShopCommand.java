@@ -120,17 +120,13 @@ class ShopCommand extends BukkitCommand {
                         return true;
                     }
                 } else if (args[0].equalsIgnoreCase("limits")) {
-                    if (perm.has(p, "shopchest.limits")) {
-                        plugin.debug(p.getName() + " is viewing his shop limits: " + shopUtils.getShopAmount(p) + "/" + shopUtils.getShopLimit(p));
-                        int limit = shopUtils.getShopLimit(p);
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS,
-                                new LocalizedMessage.ReplacedRegex(Regex.LIMIT, (limit < 0 ? "∞" : String.valueOf(limit))),
-                                new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
+                    plugin.debug(p.getName() + " is viewing his shop limits: " + shopUtils.getShopAmount(p) + "/" + shopUtils.getShopLimit(p));
+                    int limit = shopUtils.getShopLimit(p);
+                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS,
+                            new LocalizedMessage.ReplacedRegex(Regex.LIMIT, (limit < 0 ? "∞" : String.valueOf(limit))),
+                            new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
 
-                        return true;
-                    } else {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_LIMITS));
-                    }
+                    return true;
                 } else if (args[0].equalsIgnoreCase("config")) {
                     if (perm.has(p, "shopchest.config")) {
                         if (args.length >= 4) {
@@ -167,8 +163,6 @@ class ShopCommand extends BukkitCommand {
                     sendBasicHelpMessage(p);
                     return true;
                 }
-
-                return true;
             }
 
         } else {

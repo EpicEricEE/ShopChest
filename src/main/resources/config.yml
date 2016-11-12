@@ -132,30 +132,3 @@ database:
     # ...password you are going to login with
     # Be careful, as anyone who can read this file, can read the password!
     password: ""
-
-# Priority: default < group < player
-shop-limits:
-
-  # Set whether admin shops should be excluded of the shop limits.
-  # If set to true, admin shops won't be added to a player's shop count.
-  exclude-admin-shops: true
-  
-  # Set the amount of shops anyone who's not listed in the sections below can have.
-  # If you don't want the players to have a limit, set the value to -1.
-  default: 5
-  
-  # Set the amount of shops a player in a specific permission group can have.
-  # If you don't want the group to have a limit, set the value to -1.
-  # To add an item DELETE THE '[]' after 'group:' and follow the format below.
-  # Important: You must have exactly 4 spaces between the text and the edge.
-  group: []
-  #  "VIP": 10
-
-  # Set the amount of shops a specific player can have.
-  # You can add a player by its name or by its UUID, but please do NOT provide the name and the UUID.
-  # If you don't want the player to have a limit, set the value to -1.
-  # To add an item DELETE THE '[]' after 'player:' and follow the format below.
-  # Important: You must have exactly 4 spaces between the text and the edge.
-  player: []
-  #  "EpicEric": 50
-  #  "898afbbe-6566-4a0f-b0ac-145868b3cb12": 50

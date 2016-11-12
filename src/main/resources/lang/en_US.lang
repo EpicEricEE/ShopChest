@@ -235,9 +235,6 @@ message.noPermission.reload=&cYou don't have permission to reload the shops.
 # Set the message when a not permitted player tries to check for updates.
 message.noPermission.update=&cYou don't have permission to check for updates.
 
-# Set the message when a not permitted player tries to view the shop limits.
-message.noPermission.limits=&cYou don't have permission to view the shop limits.
-
 # Set the message when a not permitted player tries to change configuration values.
 message.noPermission.config=&cYou don't have permission to change configuration values.
 

@@ -18,7 +18,7 @@ permissions:
       shopchest.notification.update: true
       shopchest.reload: true
       shopchest.update: true
-      shopchest.limits: true
+      shopchest.limit.*: true
       shopchest.config: true
   shopchest.create:
     description: Allows you to create a shop.
@@ -54,9 +54,8 @@ permissions:
   shopchest.update:
     description: Allows you to check for updates.
     default: op
-  shopchest.limits:
-    description: Allows you to view shop limits.
-    default: true
+  shopchest.limit.*:
+    default: op
   shopchest.config:
     description: Allows you to change configuration values per command.
     default: op
