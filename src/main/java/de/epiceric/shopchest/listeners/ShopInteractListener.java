@@ -254,7 +254,7 @@ public class ShopInteractListener implements Listener {
             }
 
         } else {
-            if (ClickType.getPlayerClickType(p) != null) ClickType.removePlayerClickType(p);
+            ClickType.removePlayerClickType(p);
         }
 
     }
@@ -719,7 +719,7 @@ public class ShopInteractListener implements Listener {
                 ItemStack item = inventory.getItem(slot);
 
                 if (item != null) {
-                    if (item.isSimilar(itemStack)) {
+                    if (Utils.isItemSimilar(item, itemStack, false)) {
                         if (item.getAmount() != item.getMaxStackSize()) {
                             ItemStack newItemStack = new ItemStack(item);
                             newItemStack.setAmount(item.getAmount() + 1);
@@ -777,7 +777,7 @@ public class ShopInteractListener implements Listener {
                 ItemStack item = inventory.getItem(slot);
 
                 if (item != null) {
-                    if (item.isSimilar(itemStack)) {
+                    if (Utils.isItemSimilar(item, itemStack, false)) {
                         if (item.getAmount() > 0) {
                             int newAmount = item.getAmount() - 1;
 

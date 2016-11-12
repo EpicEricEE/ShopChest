@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.*;
+import org.bukkit.material.MaterialData;
 
 import javax.xml.bind.DatatypeConverter;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,124 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Utils {
+
+    /**
+     * Check if two items are similar to each other
+     * @param itemStack1 The first item
+     * @param itemStack2 The second item
+     * @param checkAmount Whether the amount should be checked or ignored
+     * @return {@code true} if the given items are similar or {@code false} if not
+     */
+    public static boolean isItemSimilar(ItemStack itemStack1, ItemStack itemStack2, boolean checkAmount) {
+        if (itemStack1 == null || itemStack2 == null) {
+            return false;
+        }
+
+        boolean similar;
+
+        similar = (!checkAmount || (itemStack1.getAmount() == itemStack2.getAmount()));
+        similar &= (itemStack1.getType() == itemStack2.getType());
+        similar &= (itemStack1.getDurability() == itemStack2.getDurability());
+        similar &= (itemStack1.getEnchantments().equals(itemStack2.getEnchantments()));
+        similar &= (itemStack1.getMaxStackSize() == itemStack2.getMaxStackSize());
+
+        if (!similar) {
+            return false;
+        }
+
+        MaterialData itemData1 = itemStack1.getData();
+        MaterialData itemData2 = itemStack2.getData();
+
+        if (itemData1 != null && itemData2 != null) {
+            similar = itemData1.getItemType() == itemData2.getItemType();
+        }
+
+        ItemMeta itemMeta1 = itemStack1.getItemMeta();
+        ItemMeta itemMeta2 = itemStack2.getItemMeta();
+
+        if (itemMeta1.hasDisplayName()) similar  = (itemMeta1.getDisplayName().equals(itemMeta2.getDisplayName()));
+        if (itemMeta1.hasEnchants())    similar &= (itemMeta1.getEnchants().equals(itemMeta2.getEnchants()));
+        if (itemMeta1.hasLore())        similar &= (itemMeta1.getLore().equals(itemMeta2.getLore()));
+
+        similar &= (itemMeta1.getItemFlags().equals(itemMeta2.getItemFlags()));
+        similar &= (itemMeta1.getClass().equals(itemMeta2.getClass()));
+
+        if (!similar) {
+            return false;
+        }
+
+        if (itemMeta1 instanceof BannerMeta) {
+            BannerMeta bannerMeta1 = (BannerMeta) itemMeta1;
+            BannerMeta bannerMeta2 = (BannerMeta) itemMeta2;
+
+            similar = (bannerMeta1.getBaseColor() == bannerMeta2.getBaseColor());
+            similar &= (bannerMeta1.getPatterns().equals(bannerMeta2.getPatterns()));
+
+        } else if (itemMeta1 instanceof BlockStateMeta) {
+            BlockStateMeta bsMeta1 = (BlockStateMeta) itemMeta1;
+            BlockStateMeta bsMeta2 = (BlockStateMeta) itemMeta2;
+
+            similar = (bsMeta1.getBlockState() == bsMeta2.getBlockState());
+
+        } else if (itemMeta1 instanceof BookMeta) {
+            BookMeta bookMeta1 = (BookMeta) itemMeta1;
+            BookMeta bookMeta2 = (BookMeta) itemMeta2;
+
+            if (bookMeta1.hasAuthor())     similar  = (bookMeta1.getAuthor().equals(bookMeta2.getAuthor()));
+            if (bookMeta1.hasTitle())      similar &= (bookMeta1.getTitle().equals(bookMeta2.getTitle()));
+            if (bookMeta1.hasPages())      similar &= (bookMeta1.getPages().equals(bookMeta2.getPages()));
+
+            similar &= (bookMeta1.getGeneration() == bookMeta2.getGeneration());
+
+        } else if (itemMeta1 instanceof EnchantmentStorageMeta) {
+            EnchantmentStorageMeta esMeta1 = (EnchantmentStorageMeta) itemMeta1;
+            EnchantmentStorageMeta esMeta2 = (EnchantmentStorageMeta) itemMeta2;
+
+            if (esMeta1.hasStoredEnchants()) similar = (esMeta1.getStoredEnchants().equals(esMeta2.getStoredEnchants()));
+
+        } else if (itemMeta1 instanceof FireworkEffectMeta) {
+            FireworkEffectMeta feMeta1 = (FireworkEffectMeta) itemMeta1;
+            FireworkEffectMeta feMeta2 = (FireworkEffectMeta) itemMeta2;
+
+            if (feMeta1.hasEffect()) similar = (feMeta1.getEffect().equals(feMeta2.getEffect()));
+
+        } else if (itemMeta1 instanceof FireworkMeta) {
+            FireworkMeta fireworkMeta1 = (FireworkMeta) itemMeta1;
+            FireworkMeta fireworkMeta2 = (FireworkMeta) itemMeta2;
+
+            if (fireworkMeta1.hasEffects()) similar = (fireworkMeta1.getEffects().equals(fireworkMeta2.getEnchants()));
+            similar &= (fireworkMeta1.getPower() == fireworkMeta2.getPower());
+
+        } else if (itemMeta1 instanceof LeatherArmorMeta) {
+            LeatherArmorMeta laMeta1 = (LeatherArmorMeta) itemMeta1;
+            LeatherArmorMeta laMeta2 = (LeatherArmorMeta) itemMeta2;
+
+            similar = (laMeta1.getColor() == laMeta2.getColor());
+        } else if (itemMeta1 instanceof MapMeta) {
+            MapMeta mapMeta1 = (MapMeta) itemMeta1;
+            MapMeta mapMeta2 = (MapMeta) itemMeta2;
+
+            similar = (mapMeta1.isScaling() == mapMeta2.isScaling());
+        } else if (itemMeta1 instanceof PotionMeta) {
+            PotionMeta potionMeta1 = (PotionMeta) itemMeta1;
+            PotionMeta potionMeta2 = (PotionMeta) itemMeta2;
+
+            if (potionMeta1.hasCustomEffects()) similar = (potionMeta1.getCustomEffects().equals(potionMeta2.getCustomEffects()));
+            similar &= (potionMeta1.getBasePotionData().equals(potionMeta2.getBasePotionData()));
+
+        } else if (itemMeta1 instanceof SkullMeta) {
+            SkullMeta skullMeta1 = (SkullMeta) itemMeta1;
+            SkullMeta skullMeta2 = (SkullMeta) itemMeta2;
+
+            if (skullMeta1.hasOwner()) similar = skullMeta1.getOwner().equals(skullMeta2.getOwner());
+        }
+
+        if (!similar) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * Gets the amount of items in an inventory
@@ -46,10 +166,8 @@ public class Utils {
         }
 
         for (ItemStack item : inventoryItems) {
-            if (item != null) {
-                if (item.isSimilar(itemStack)) {
-                    amount += item.getAmount();
-                }
+            if (isItemSimilar(item, itemStack, false)) {
+                amount += item.getAmount();
             }
         }
 
@@ -72,7 +190,7 @@ public class Utils {
                 if (item == null) {
                     slotFree.put(i, itemStack.getMaxStackSize());
                 } else {
-                    if (item.isSimilar(itemStack)) {
+                    if (isItemSimilar(item, itemStack, false)) {
                         int amountInSlot = item.getAmount();
                         int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
                         slotFree.put(i, amountToFullStack);
@@ -85,7 +203,7 @@ public class Utils {
                 if (item == null) {
                     slotFree.put(40, itemStack.getMaxStackSize());
                 } else {
-                    if (item.isSimilar(itemStack)) {
+                    if (isItemSimilar(item, itemStack, false)) {
                         int amountInSlot = item.getAmount();
                         int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
                         slotFree.put(40, amountToFullStack);
@@ -98,7 +216,7 @@ public class Utils {
                 if (item == null) {
                     slotFree.put(i, itemStack.getMaxStackSize());
                 } else {
-                    if (item.isSimilar(itemStack)) {
+                    if (isItemSimilar(item, itemStack, false)) {
                         int amountInSlot = item.getAmount();
                         int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
                         slotFree.put(i, amountToFullStack);
