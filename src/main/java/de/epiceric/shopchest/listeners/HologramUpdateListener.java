@@ -21,17 +21,9 @@ public class HologramUpdateListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent e) {
-
-        if (e.getFrom().getBlockX() == e.getTo().getBlockX()
-                && e.getFrom().getBlockZ() == e.getTo().getBlockZ()
-                && e.getFrom().getBlockY() == e.getTo().getBlockY()) {
-            return;
-        }
-
         Player p = e.getPlayer();
         Location playerLocation = p.getLocation();
-        double hologramDistanceSquared = plugin.getShopChestConfig().maximal_distance;
-        hologramDistanceSquared *= hologramDistanceSquared;
+        double hologramDistanceSquared = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
 
         for (Shop shop : plugin.getShopUtils().getShops()) {
             Block b = shop.getLocation().getBlock();
