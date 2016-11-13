@@ -1,7 +1,6 @@
 package de.epiceric.shopchest;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopReloadEvent;
@@ -154,7 +153,7 @@ public class ShopChest extends JavaPlugin {
                 for (World world : getServer().getWorlds()) {
                     worldGuard.getRegionManager(world).load();
                 }
-            } catch (StorageException e) {
+            } catch (Exception e) {
                 getLogger().severe("Failed to reload WorldGuard region manager. WorldGuard support will probably not work!");
                 debug("Failed to load WorldGuard region manager");
                 debug(e);
