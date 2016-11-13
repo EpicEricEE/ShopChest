@@ -76,7 +76,9 @@ public class Utils {
             BlockStateMeta bsMeta1 = (BlockStateMeta) itemMeta1;
             BlockStateMeta bsMeta2 = (BlockStateMeta) itemMeta2;
 
-            similar = (bsMeta1.getBlockState() == bsMeta2.getBlockState());
+            similar = (bsMeta1.hasBlockState() == bsMeta2.hasBlockState());
+
+            if (bsMeta1.hasBlockState()) similar &= (bsMeta1.getBlockState().equals(bsMeta2.getBlockState()));
 
         } else if (itemMeta1 instanceof BookMeta) {
             BookMeta bookMeta1 = (BookMeta) itemMeta1;
@@ -131,11 +133,7 @@ public class Utils {
             if (skullMeta1.hasOwner()) similar = skullMeta1.getOwner().equals(skullMeta2.getOwner());
         }
 
-        if (!similar) {
-            return false;
-        }
-
-        return true;
+        return similar;
     }
 
     /**
