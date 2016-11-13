@@ -51,20 +51,6 @@ public class Config {
     public Set<String> minimum_prices;
 
     /**
-     * <p>The shop limits of certain groups</p>
-     * This returns a key set, which contains the group names, of the <i>shop-limits.group</i> section in ShopChest's config.
-     * To actually retrieve the limits for a group, you have to get the Integer <i>shop-limits.group.<b>key</b></i>.
-     **/
-    public Set<String> shopLimits_group;
-
-    /**
-     * <p>The shop limits of certain players</p>
-     * This returns a key set, which contains the player names, of the <i>shop-limits.player</i> section in ShopChest's config.
-     * To actually retrieve the limits for a player, you have to get the Integer <i>shop-limits.player.<b>key</b></i>.
-     **/
-    public Set<String> shopLimits_player;
-
-    /**
      * <p>List containing items, of which players can't create a shop</p>
      * If this list contains an item (e.g "STONE", "STONE:1"), it's in the blacklist.
      **/
@@ -124,7 +110,7 @@ public class Config {
     /** The price a player has to pay in order to create an admin shop **/
     public double shop_creation_price_admin;
 
-    /** The default shop limit for players and groups that are not listed in {@link #shopLimits_player} or in {@link #shopLimits_group} **/
+    /** The default shop limit for players whose limit is not set via a permission **/
     public int default_limit;
 
     /** The time between automatic shop reloads (if set to 0, the timer will be disabled) **/
@@ -287,8 +273,6 @@ public class Config {
         allow_decimals_in_price = plugin.getConfig().getBoolean("allow-decimals-in-price");
         allow_broken_items = plugin.getConfig().getBoolean("allow-broken-items");
         auto_calculate_item_amount = (allow_decimals_in_price && plugin.getConfig().getBoolean("auto-calculate-item-amount"));
-        shopLimits_group = (plugin.getConfig().getConfigurationSection("shop-limits.group") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.group").getKeys(true);
-        shopLimits_player = (plugin.getConfig().getConfigurationSection("shop-limits.player") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("shop-limits.player").getKeys(true);
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");

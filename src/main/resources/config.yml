@@ -132,3 +132,16 @@ database:
     # ...password you are going to login with
     # Be careful, as anyone who can read this file, can read the password!
     password: ""
+
+# Shop limits are handled with permissions.
+# A player with permission "shopchest.limit.X" has a limit of X shops,
+# a player with permission "shopchest.limit.*" doesn't have a shop limit.
+shop-limits:
+
+  # Set whether admin shops should be excluded of the shop limits.
+  # If set to true, admin shops won't be added to a player's shop count.
+  exclude-admin-shops: true
+
+  # Set the amount of shops anyone who's not listed in the sections below can have.
+  # If you don't want the players to have a limit, set the value to -1.
+  default: 5
