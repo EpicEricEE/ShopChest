@@ -1,5 +1,7 @@
 package de.epiceric.shopchest;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopReloadEvent;
@@ -19,10 +21,13 @@ import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import de.epiceric.shopchest.utils.Utils;
+import de.epiceric.shopchest.worldguard.ShopFlag;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,6 +50,7 @@ public class ShopChest extends JavaPlugin {
     private ShopUtils shopUtils;
     private File debugLogFile;
     private FileWriter fw;
+    private WorldGuardPlugin worldGuard;
 
     /**
      * @return An instance of ShopChest
@@ -136,6 +142,23 @@ public class ShopChest extends JavaPlugin {
                 debug("Plugin may still work, but more errors are expected!");
                 getLogger().warning("Server version not officially supported: " + Utils.getServerVersion() + "!");
                 getLogger().warning("Plugin may still work, but more errors are expected!");
+        }
+
+        Plugin worldGuardPlugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+        if (worldGuardPlugin instanceof WorldGuardPlugin) {
+            worldGuard = (WorldGuardPlugin) worldGuardPlugin;
+            ShopFlag.init();
+
+            try {
+                // Reload WorldGuard regions, so that custom flags are applied
+                for (World world : getServer().getWorlds()) {
+                    worldGuard.getRegionManager(world).load();
+                }
+            } catch (StorageException e) {
+                getLogger().severe("Failed to reload WorldGuard region manager. WorldGuard support will probably not work!");
+                debug("Failed to load WorldGuard region manager");
+                debug(e);
+            }
         }
 
         debug("Loading utils and extras...");
@@ -298,6 +321,9 @@ public class ShopChest extends JavaPlugin {
         if (!Utils.getServerVersion().equals("v1_8_R1"))
             getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);
 
+        if (hasWorldGuard())
+            getServer().getPluginManager().registerEvents(new WorldGuardListener(this), this);
+
         initializeShops();
     }
 
@@ -367,6 +393,20 @@ public class ShopChest extends JavaPlugin {
         int count = shopUtils.reloadShops(false, false);
         getLogger().info("Initialized " + count + " Shops");
         debug("Initialized " + count + " Shops");
+    }
+
+    /**
+     * @return Whether the plugin 'WorldGuard' is enabled
+     */
+    public boolean hasWorldGuard() {
+        return worldGuard != null;
+    }
+
+    /**
+     * @return An instance of {@link WorldGuardPlugin} or {@code null} if WorldGuard is not enabled
+     */
+    public WorldGuardPlugin getWorldGuard() {
+        return worldGuard;
     }
 
     /**
