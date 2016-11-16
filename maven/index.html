@@ -2,7 +2,7 @@
 <html lang="en-us">
 	<head>
 		<meta charset="UTF-8">
-		<title>ShopChest by EpicEricEE</title>
+		<title>Maven repository for ShopChest</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
 		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -14,16 +14,14 @@
 			<h1 class="project-name">Maven Repository</h1>
 			<h2 class="project-tagline">ShopChest's Dependencies</h2>
 			<a href="https://www.spigotmc.org/resources/shopchest.11431/" class="btn"><b>ShopChest</b><br>by EpicEricEE</a>
-			<a href="https://www.spigotmc.org/resources/lwc-unofficial-entity-locking.2162/" class="btn"><b>LWC Entity Locking</b><br>by Me_Goes_RAWR</a>
-			<a href="https://www.spigotmc.org/resources/lockette-uuid-supported.3054/" class="btn"><b>Lockette</b><br>by vk2gpz</a>
-			<a href="http://dev.bukkit.org/bukkit-plugins/clearlagg/" class="btn"><b>ClearLag</b><br>by bob7l</a>
 			<a href="http://dev.bukkit.org/bukkit-plugins/vault/" class="btn"><b>Vault</b><br>by MilkBowl</a>
+			<a href="http://dev.bukkit.org/bukkit-plugins/worldguard/" class="btn"><b>WorldGuard</b><br>by sk89q</a>
+			<a href="https://www.spigotmc.org/resources/chestshop-for-iconomy-recreation.9376/" class="btn"><b>ChestShop</b><br>by Acrobot & moloco</a>
+
 		</section>
 
 		<section class="main-content">
-			<h3>
-				<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ShopChest
-			</h3>
+			<h3>ShopChest</h3>
 			
 			<p><a href="https://www.spigotmc.org/resources/shopchest.11431/">ShopChest</a> is a shop plugin for Spigot or Bukkit servers. It's maintained by <a href="https://github.com/EpicEricEE" class="user-mention">@EpicEricEE</a> and has a public GitHub repository <a href="https://github.com/EpicEricEE/ShopChest/">here</a>. All the plugins below are dependencies, which you need when building ShopChest.</p>
 			<pre><code>&lt;repositories&gt;
@@ -41,82 +39,16 @@
 		&lt;scope&gt;provided&lt;/scope&gt;
 	&lt;/dependency&gt;
 &lt;/dependencies&gt;</code></pre>
-				
-			<h3>
-				<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>LWC Entity Locking
-			</h3>
-
-			<p><a href="https://www.spigotmc.org/resources/lwc-unofficial-entity-locking.2162/">LWC Entity Locking</a> by <a href="https://github.com/megoesrawr" class="user-mention">@megoesrawr</a>, which you can find on GitHub <a href="https://github.com/megoesrawr/LWCEntityLocking">here</a>, is a fork of <a href="https://www.spigotmc.org/resources/lwc.2150/">LWC</a> by <a href="https://github.com/Hidendra" class="user-mention">@Hidendra</a>, which also has a <a href="https://github.com/Hidendra/LWC">public GitHub repository</a>. It has some more features, and if you are used to using LWC on your server, I highly recommend using this version, as it lets me cancel the magnet flag for certain items. If you are using Hidendra's LWC, the floating items above a shop chest might get sucked up by the magnet.</p>
-
-			<pre><code>&lt;repositories&gt;
-	&lt;repository&gt;
-		&lt;id&gt;shopchest-repo&lt;/id&gt;
-		&lt;url&gt;https://epicericee.github.io/ShopChest/maven/&lt;/url&gt;
-	&lt;/repository&gt;
-&lt;/repositories&gt;
-
-&lt;dependencies&gt;
-	&lt;dependency&gt;
-		&lt;groupId&gt;com.griefcraft.lwc&lt;/groupId&gt;
-		&lt;artifactId&gt;lwc-entity-locking&lt;/artifactId&gt;
-		&lt;version&gt;1.7.3&lt;/version&gt;
-		&lt;scope&gt;provided&lt;/scope&gt;
-	&lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
 			
-			<h3>
-				<a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Lockette
-			</h3>
-
-			<p><a href="https://www.spigotmc.org/resources/lockette-uuid-supported.3054/">Lockette</a> is a plugin by <a href="https://github.com/vk2gpz" class="user-mention">@vk2gpz</a> and more, which lets you lock chests, doors, etc. It also has a public GitHub repository <a href="https://github.com/vk2gpz/Lockette">here</a>. I'm using it's API to prevent players from creating shops on locked chests or similar. When building ShopChest, you need this plugin as a dependency.</p>
-
-			<pre><code>&lt;repositories&gt;
-	&lt;repository&gt;
-		&lt;id&gt;shopchest-repo&lt;/id&gt;
-		&lt;url&gt;https://epicericee.github.io/ShopChest/maven/&lt;/url&gt;
-	&lt;/repository&gt;
-&lt;/repositories&gt;
-
-&lt;dependencies&gt;
-	&lt;dependency&gt;
-		&lt;groupId&gt;org.yi.acru.bukkit&lt;/groupId&gt;
-		&lt;artifactId&gt;lockette&lt;/artifactId&gt;
-		&lt;version&gt;1.8.36&lt;/version&gt;
-		&lt;scope&gt;provided&lt;/scope&gt;
-	&lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
 			
-			<h3>
-				<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ClearLag
-			</h3>
+			<h3>VaultAPI</h3>
 
-			<p><a href="http://dev.bukkit.org/bukkit-plugins/clearlagg/">ClearLag</a> is a plugin, which reduces lag and RAM/CPU usage. It's maintained by <a href="http://dev.bukkit.org/profiles/bob7l/" class="user-mention">@bob7l</a>, but unfortunately there is no public GitHub repository. Still, this plugin is needed for building ShopChest, because it's the only way to prevent it from removing the floating items on top of a shop chest.</p>
-			
-			<pre><code>&lt;repositories&gt;
-	&lt;repository&gt;
-		&lt;id&gt;shopchest-repo&lt;/id&gt;		&lt;url&gt;https://epicericee.github.io/ShopChest/maven/&lt;/url&gt;
-	&lt;/repository&gt;
-&lt;/repositories&gt;
-
-&lt;dependencies&gt;
-	&lt;dependency&gt;
-		&lt;groupId&gt;me.minebuilders&lt;/groupId&gt;
-		&lt;artifactId&gt;clearlag&lt;/artifactId&gt;
-		&lt;version&gt;2.9.1&lt;/version&gt;
-		&lt;scope&gt;provided&lt;/scope&gt;
-	&lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
-			
-			<h3>
-				<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>VaultAPI
-			</h3>
-
-			<p><a href="http://dev.bukkit.org/bukkit-plugins/vault/">Vault</a> is an API for plugins, which have economy and permission support. It combines the methods of several economy and permission plugins, so developers only have to use the one in Vault and still support mutliple plugins. Vault is made by <a href="https://github.com/MilkBowl" class="user-mention">MilkBowl</a> and is found on GitHub <a href="https://github.com/MilkBowl/Vault">here</a>. The API has an extra repository on GitHub, which can be found <a href="https://github.com/MilkBowl/VaultAPI">here</a></p>
+			<p><a href="http://dev.bukkit.org/bukkit-plugins/vault/">Vault</a> is an API for plugins, which have economy and permission support. It combines the methods of several economy and permission plugins, so developers only have to use the one in Vault and still support mutliple plugins. Vault is made by <a href="https://github.com/MilkBowl" class="user-mention">@MilkBowl</a> and is found on GitHub <a href="https://github.com/MilkBowl/Vault">here</a>. The API has an extra repository on GitHub, which can be found <a href="https://github.com/MilkBowl/VaultAPI">here</a></p>
 
 			<pre><code>&lt;repositories&gt;
 	&lt;repository&gt;
 		&lt;id&gt;vault-repo&lt;/id&gt;
-		&lt;url&gt;http://nexus.theyeticave.net/content/repositories/pub_releases/&lt;/url&gt;
+		&lt;url&gt;http://nexus.hc.to/content/repositories/pub_releases/&lt;/url&gt;
 	&lt;/repository&gt;
 &lt;/repositories&gt;
 
@@ -125,6 +57,48 @@
 		&lt;groupId&gt;net.milkbowl.vault&lt;/groupId&gt;
 		&lt;artifactId&gt;VaultAPI&lt;/artifactId&gt;
 		&lt;version&gt;1.6&lt;/version&gt;
+		&lt;scope&gt;provided&lt;/scope&gt;
+	&lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+
+
+			<h3>WorldGuard</h3>
+
+			<p><a href="https://dev.bukkit.org/bukkit-plugins/worldguard/">WorldGuard</a> is a powerful and very popuplar protection plugin, whose API features are needed for ShopChest to support it. WorldGuard is created by <a href="https://github.com/sk89q" class="user-mention">@sk89q</a> and is found on GitHub <a href="https://github.com/sk89q/worldguard">here</a>.</p>
+
+			<pre><code>&lt;repositories&gt;
+	&lt;repository&gt;
+		&lt;id&gt;sk89q-repo&lt;/id&gt;
+		&lt;url&gt;http://maven.sk89q.com/artifactory/repo/&lt;/url&gt;
+	&lt;/repository&gt;
+&lt;/repositories&gt;
+
+&lt;dependencies&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;cin.sk89q&lt;/groupId&gt;
+		&lt;artifactId&gt;worldguard&lt;/artifactId&gt;
+		&lt;version&gt;6.1.1-SNAPSHOT&lt;/version&gt;
+		&lt;scope&gt;provided&lt;/scope&gt;
+	&lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+
+
+			<h3>ChestShop</h3>
+
+			<p><a href="https://dev.bukkit.org/bukkit-plugins/chestshop/">ChestShop</a> is a shop plugin for Spigot or Bukkit servers. It was originally maintained by <a href="https://github.com/Acrobot" class="user-mention">@Acrobot</a> and has a public GitHub repository <a href="https://github.com/Acrobot/ChestShop-3">here</a>. However, the last update by Acrobot was in July 2015, but <a href="https://www.spigotmc.org/members/moloco.76925/" class="user-mention">@moloco</a> has published a new version for the latest Minecraft versions, that you can find <a href="https://www.spigotmc.org/resources/chestshop-for-iconomy-recreation.9376/">here</a>.</p>
+
+			<pre><code>&lt;repositories&gt;
+	&lt;repository&gt;
+		&lt;id&gt;shopchest-repo&lt;/id&gt;
+		&lt;url&gt;https://epicericee.github.io/ShopChest/maven/&lt;/url&gt;
+	&lt;/repository&gt;
+&lt;/repositories&gt;
+
+&lt;dependencies&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;com.Acrobot&lt;/groupId&gt;
+		&lt;artifactId&gt;ChestShop&lt;/artifactId&gt;
+		&lt;version&gt;3.8.12&lt;/version&gt;
 		&lt;scope&gt;provided&lt;/scope&gt;
 	&lt;/dependency&gt;
 &lt;/dependencies&gt;</code></pre>
