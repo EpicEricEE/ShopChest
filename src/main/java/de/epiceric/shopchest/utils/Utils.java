@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.nms.CustomBookMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.material.MaterialData;
+import org.bukkit.potion.Potion;
 
 import javax.xml.bind.DatatypeConverter;
 import java.lang.reflect.InvocationTargetException;
@@ -72,7 +74,7 @@ public class Utils {
             similar = (bannerMeta1.getBaseColor() == bannerMeta2.getBaseColor());
             similar &= (bannerMeta1.getPatterns().equals(bannerMeta2.getPatterns()));
 
-        } else if (itemMeta1 instanceof BlockStateMeta) {
+        } else if (!getServerVersion().equals("v1_8_R1") && itemMeta1 instanceof BlockStateMeta) {
             BlockStateMeta bsMeta1 = (BlockStateMeta) itemMeta1;
             BlockStateMeta bsMeta2 = (BlockStateMeta) itemMeta2;
 
@@ -88,7 +90,21 @@ public class Utils {
             if (bookMeta1.hasTitle())      similar &= (bookMeta1.getTitle().equals(bookMeta2.getTitle()));
             if (bookMeta1.hasPages())      similar &= (bookMeta1.getPages().equals(bookMeta2.getPages()));
 
-            similar &= (bookMeta1.getGeneration() == bookMeta2.getGeneration());
+            if ((getMajorVersion() == 9 && getRevision() == 1) || getMajorVersion() == 8) {
+                CustomBookMeta.Generation generation1 = CustomBookMeta.getGeneration(itemStack1);
+                CustomBookMeta.Generation generation2 = CustomBookMeta.getGeneration(itemStack2);
+
+                if (generation1 == null) generation1 = CustomBookMeta.Generation.ORIGINAL;
+                if (generation2 == null) generation2 = CustomBookMeta.Generation.ORIGINAL;
+
+                similar &= (generation1 == generation2);
+
+            } else if (getMajorVersion() >= 10) {
+                if (!bookMeta1.hasGeneration()) bookMeta1.setGeneration(BookMeta.Generation.ORIGINAL);
+                if (!bookMeta2.hasGeneration()) bookMeta2.setGeneration(BookMeta.Generation.ORIGINAL);
+
+                similar &= (bookMeta1.getGeneration() == bookMeta2.getGeneration());
+            }
 
         } else if (itemMeta1 instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta esMeta1 = (EnchantmentStorageMeta) itemMeta1;
@@ -124,7 +140,17 @@ public class Utils {
             PotionMeta potionMeta2 = (PotionMeta) itemMeta2;
 
             if (potionMeta1.hasCustomEffects()) similar = (potionMeta1.getCustomEffects().equals(potionMeta2.getCustomEffects()));
-            similar &= (potionMeta1.getBasePotionData().equals(potionMeta2.getBasePotionData()));
+
+            if (getMajorVersion() >= 9)  {
+                similar &= (potionMeta1.getBasePotionData().equals(potionMeta2.getBasePotionData()));
+            } else {
+                Potion potion1 = Potion.fromItemStack(itemStack1);
+                Potion potion2 = Potion.fromItemStack(itemStack2);
+
+                similar &= (potion1.getType() == potion2.getType());
+                similar &= (potion1.getEffects().equals(potion2.getEffects()));
+                similar &= (potion1.getLevel() == potion2.getLevel());
+            }
 
         } else if (itemMeta1 instanceof SkullMeta) {
             SkullMeta skullMeta1 = (SkullMeta) itemMeta1;
@@ -185,7 +211,7 @@ public class Utils {
         if (inventory instanceof PlayerInventory) {
             for (int i = 0; i < 36; i++) {
                 ItemStack item = inventory.getItem(i);
-                if (item == null) {
+                if (item == null || item.getType() == Material.AIR) {
                     slotFree.put(i, itemStack.getMaxStackSize());
                 } else {
                     if (isItemSimilar(item, itemStack, false)) {
@@ -198,7 +224,7 @@ public class Utils {
 
             if (getMajorVersion() >= 9) {
                 ItemStack item = inventory.getItem(40);
-                if (item == null) {
+                if (item == null || item.getType() == Material.AIR) {
                     slotFree.put(40, itemStack.getMaxStackSize());
                 } else {
                     if (isItemSimilar(item, itemStack, false)) {
@@ -211,7 +237,7 @@ public class Utils {
         } else {
             for (int i = 0; i < inventory.getSize(); i++) {
                 ItemStack item = inventory.getItem(i);
-                if (item == null) {
+                if (item == null || item.getType() == Material.AIR) {
                     slotFree.put(i, itemStack.getMaxStackSize());
                 } else {
                     if (isItemSimilar(item, itemStack, false)) {
@@ -347,10 +373,17 @@ public class Utils {
     }
 
     /**
+     * @return The revision of the current server version (e.g. <i>2</i> for v1_9_R2, <i>1</i> for v1_10_R1)
+     */
+    public static int getRevision() {
+        return Integer.parseInt(getServerVersion().substring(getServerVersion().length() - 1));
+    }
+
+    /**
      * @return The major version of the server (e.g. <i>9</i> for 1.9.2, <i>10</i> for 1.10)
      */
     public static int getMajorVersion() {
-        return Integer.valueOf(getServerVersion().split("_")[1]);
+        return Integer.parseInt(getServerVersion().split("_")[1]);
     }
 
     /**

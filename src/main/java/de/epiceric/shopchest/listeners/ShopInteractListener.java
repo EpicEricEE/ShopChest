@@ -660,7 +660,7 @@ public class ShopInteractListener implements Listener {
 
             double newPrice = (shop.getSellPrice() / product.getAmount()) * newAmount;
 
-            if (freeSpace >= product.getAmount() || (config.auto_calculate_item_amount && freeSpace >= newAmount)) {
+            if (freeSpace >= product.getAmount() || (config.auto_calculate_item_amount && freeSpace >= newAmount) || shop.getShopType() == ShopType.ADMIN) {
                 plugin.debug("Chest has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
 
                 ItemStack newProduct = new ItemStack(product);
@@ -775,7 +775,7 @@ public class ShopInteractListener implements Listener {
             while (added < amount) {
                 ItemStack item = inventory.getItem(slot);
 
-                if (item != null) {
+                if (item != null && item.getType() != Material.AIR) {
                     if (Utils.isItemSimilar(item, itemStack, false)) {
                         if (item.getAmount() != item.getMaxStackSize()) {
                             ItemStack newItemStack = new ItemStack(item);
@@ -833,7 +833,7 @@ public class ShopInteractListener implements Listener {
             while (removed < amount) {
                 ItemStack item = inventory.getItem(slot);
 
-                if (item != null) {
+                if (item != null && item.getType() != Material.AIR) {
                     if (Utils.isItemSimilar(item, itemStack, false)) {
                         if (item.getAmount() > 0) {
                             int newAmount = item.getAmount() - 1;
