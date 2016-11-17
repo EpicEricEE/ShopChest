@@ -142,6 +142,6 @@ shop-limits:
   # If set to true, admin shops won't be added to a player's shop count.
   exclude-admin-shops: true
 
-  # Set the amount of shops anyone who's not listed in the sections below can have.
-  # If you don't want the players to have a limit, set the value to -1.
+  # Set the amount of shops that anyone who doesn't have a specific permission may have.
+  # If you don't want the players to have a limit by default, set the value to -1.
   default: 5
