@@ -108,7 +108,7 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.LONG_GRASS, 2, langConfig.getString("tile.tallgrass.fern.name", "Fern")));
         itemNames.add(new ItemName(Material.DEAD_BUSH, langConfig.getString("tile.deadbush.name", "Dead Bush")));
         itemNames.add(new ItemName(Material.PISTON_BASE, langConfig.getString("tile.pistonBase.name", "Piston")));
-        itemNames.add(new ItemName(Material.WOOL, langConfig.getString("tile.cloth.white.name", "Wool")));
+        itemNames.add(new ItemName(Material.WOOL, langConfig.getString("tile.cloth.white.name", "White Wool")));
         itemNames.add(new ItemName(Material.WOOL, 1, langConfig.getString("tile.cloth.orange.name", "Orange Wool")));
         itemNames.add(new ItemName(Material.WOOL, 2, langConfig.getString("tile.cloth.magenta.name", "Magenta Wool")));
         itemNames.add(new ItemName(Material.WOOL, 3, langConfig.getString("tile.cloth.lightBlue.name", "Light Blue Wool")));
@@ -375,6 +375,27 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.STRUCTURE_VOID, langConfig.getString("tile.structureVoid.name", "Structure Void")));
         }
 
+        if (Utils.getMajorVersion() >= 11) {
+            // Add Block Names of 1.11
+            itemNames.add(new ItemName(Material.OBSERVER, langConfig.getString("tile.observer.name", "Observer")));
+            itemNames.add(new ItemName(Material.WHITE_SHULKER_BOX, langConfig.getString("tile.shulkerBoxWhite.name", "White Shulker Box")));
+            itemNames.add(new ItemName(Material.ORANGE_SHULKER_BOX, langConfig.getString("tile.shulkerBoxOrange.name", "Orange Shulker Box")));
+            itemNames.add(new ItemName(Material.MAGENTA_SHULKER_BOX, langConfig.getString("tile.shulkerBoxMagenta.name", "Magenta Shulker Box")));
+            itemNames.add(new ItemName(Material.LIGHT_BLUE_SHULKER_BOX, langConfig.getString("tile.shulkerBoxLightBlue.name", "Light Blue Shulker Box")));
+            itemNames.add(new ItemName(Material.YELLOW_SHULKER_BOX, langConfig.getString("tile.shulkerBoxYellow.name", "Yellow Shulker Box")));
+            itemNames.add(new ItemName(Material.LIME_SHULKER_BOX, langConfig.getString("tile.shulkerBoxLime.name", "Lime Shulker Box")));
+            itemNames.add(new ItemName(Material.PINK_SHULKER_BOX, langConfig.getString("tile.shulkerBoxPink.name", "Pink Shulker Box")));
+            itemNames.add(new ItemName(Material.GRAY_SHULKER_BOX, langConfig.getString("tile.shulkerBoxGray.name", "Gray Shulker Box")));
+            itemNames.add(new ItemName(Material.SILVER_SHULKER_BOX, langConfig.getString("tile.shulkerBoxSilver.name", "Light Gray Shulker Box")));
+            itemNames.add(new ItemName(Material.CYAN_SHULKER_BOX, langConfig.getString("tile.shulkerBoxCyan.name", "Cyan Shulker Box")));
+            itemNames.add(new ItemName(Material.PURPLE_SHULKER_BOX, langConfig.getString("tile.shulkerBoxPurple.name", "Purple Shulker Box")));
+            itemNames.add(new ItemName(Material.BLUE_SHULKER_BOX, langConfig.getString("tile.shulkerBoxBlue.name", "Blue Shulker Box")));
+            itemNames.add(new ItemName(Material.BROWN_SHULKER_BOX, langConfig.getString("tile.shulkerBoxBrown.name", "Brown Shulker Box")));
+            itemNames.add(new ItemName(Material.GREEN_SHULKER_BOX, langConfig.getString("tile.shulkerBoxGreen.name", "Green Shulker Box")));
+            itemNames.add(new ItemName(Material.RED_SHULKER_BOX, langConfig.getString("tile.shulkerBoxRed.name", "Red Shulker Box")));
+            itemNames.add(new ItemName(Material.BLACK_SHULKER_BOX, langConfig.getString("tile.shulkerBoxBlack.name", "Black Shulker Box")));
+        }
+
         // Add Item Names
         itemNames.add(new ItemName(Material.IRON_SPADE, langConfig.getString("item.shovelIron.name", "Iron Shovel")));
         itemNames.add(new ItemName(Material.IRON_PICKAXE, langConfig.getString("item.pickaxeIron.name", "Iron Pickaxe")));
@@ -571,7 +592,7 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.COMMAND_MINECART, langConfig.getString("item.minecartCommandBlock.name", "Minecart with Command Block")));
         itemNames.add(new ItemName(Material.MUTTON, langConfig.getString("item.muttonRaw.name", "Raw Mutton")));
         itemNames.add(new ItemName(Material.COOKED_MUTTON, langConfig.getString("item.muttonCooked.name", "Cooked Mutton")));
-        itemNames.add(new ItemName(Material.BANNER, langConfig.getString("item.banner.black.name", "Black Banner"))); //TODO ADD BANNER DESCRIPTIONS
+        itemNames.add(new ItemName(Material.BANNER, langConfig.getString("item.banner.black.name", "Black Banner")));
         itemNames.add(new ItemName(Material.BANNER, 1, langConfig.getString("item.banner.red.name", "Red Banner")));
         itemNames.add(new ItemName(Material.BANNER, 2, langConfig.getString("item.banner.green.name", "Green Banner")));
         itemNames.add(new ItemName(Material.BANNER, 3, langConfig.getString("item.banner.brown.name", "Brown Banner")));
@@ -625,6 +646,12 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.BOAT_DARK_OAK, langConfig.getString("item.boat.dark_oak.name", "Dark Oak Boat")));
         }
 
+        if (Utils.getMajorVersion() >= 11) {
+            // Add Item Names of 1.11
+            itemNames.add(new ItemName(Material.TOTEM, langConfig.getString("item.totem.name", "Totem of Undying")));
+            itemNames.add(new ItemName(Material.SHULKER_SHELL, langConfig.getString("item.shulkerShell.name", "Shulker Shell")));
+        }
+
         // Add Enchantment Names
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_DAMAGE, langConfig.getString("enchantment.arrowDamage", "Power")));
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_FIRE, langConfig.getString("enchantment.arrowFire", "Flame")));
@@ -658,6 +685,12 @@ public class LanguageUtils {
             enchantmentNames.add(new EnchantmentName(Enchantment.MENDING, langConfig.getString("enchantment.mending", "Mending")));
         }
 
+        if (Utils.getMajorVersion() >= 11) {
+            // Add Enchantment Names of 1.11
+            enchantmentNames.add(new EnchantmentName(Enchantment.BINDING_CURSE, langConfig.getString("enchantment.binding_curse", "Curse of Binding")));
+            enchantmentNames.add(new EnchantmentName(Enchantment.VANISHING_CURSE, langConfig.getString("enchantment.vanishing_curse", "Curse of Vanishing")));
+        }
+
         // Add Enchantment Level Names
         enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(1, langConfig.getString("enchantment.level.1", "I")));
         enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(2, langConfig.getString("enchantment.level.2", "II")));
@@ -671,6 +704,7 @@ public class LanguageUtils {
         enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(10, langConfig.getString("enchantment.level.10", "X")));
 
         // Add Entity Names
+        String horseName = (Utils.getMajorVersion() >= 11 ? "entity.Horse.name" : "entity.EntityHorse.name");
         entityNames.add(new EntityName(EntityType.CREEPER, langConfig.getString("entity.Creeper.name", "Creeper")));
         entityNames.add(new EntityName(EntityType.SKELETON, langConfig.getString("entity.Skeleton.name", "Skeleton")));
         entityNames.add(new EntityName(EntityType.SPIDER, langConfig.getString("entity.Spider.name", "Spider")));
@@ -695,7 +729,7 @@ public class LanguageUtils {
         entityNames.add(new EntityName(EntityType.WOLF, langConfig.getString("entity.Wolf.name", "Wolf")));
         entityNames.add(new EntityName(EntityType.MUSHROOM_COW, langConfig.getString("entity.MushroomCow.name", "Mooshroom")));
         entityNames.add(new EntityName(EntityType.OCELOT, langConfig.getString("entity.Ozelot.name", "Ocelot")));
-        entityNames.add(new EntityName(EntityType.HORSE, langConfig.getString("entity.EntityHorse.name", "Horse")));
+        entityNames.add(new EntityName(EntityType.HORSE, langConfig.getString(horseName, "Horse")));
         entityNames.add(new EntityName(EntityType.RABBIT, langConfig.getString("entity.Rabbit.name", "Rabbit")));
         entityNames.add(new EntityName(EntityType.VILLAGER, langConfig.getString("entity.Villager.name", "Villager")));
 
@@ -707,6 +741,23 @@ public class LanguageUtils {
         if (Utils.getMajorVersion() >= 10) {
             // Add Entity Names of 1.10
             entityNames.add(new EntityName(EntityType.POLAR_BEAR, langConfig.getString("entity.PolarBear.name", "Polar Bear")));
+        }
+
+        if (Utils.getMajorVersion() >= 11) {
+            // Add Entity Names of 1.11
+            entityNames.add(new EntityName(EntityType.ZOMBIE_VILLAGER, langConfig.getString("entity.ZombieVillager.name", "Zombie Villager")));
+            entityNames.add(new EntityName(EntityType.ELDER_GUARDIAN, langConfig.getString("entity.ElderGuardian.name", "Elder Guardian")));
+            entityNames.add(new EntityName(EntityType.EVOKER, langConfig.getString("entity.EvocationIllager.name", "Evoker")));
+            entityNames.add(new EntityName(EntityType.VEX, langConfig.getString("entity.Vex.name", "Vex")));
+            entityNames.add(new EntityName(EntityType.VINDICATOR, langConfig.getString("entity.VindicationIllager.name", "Vindicator")));
+            entityNames.add(new EntityName(EntityType.LLAMA, langConfig.getString("entity.Llama.name", "Llama")));
+            entityNames.add(new EntityName(EntityType.WITHER_SKELETON, langConfig.getString("entity.WitherSkeleton.name", "Wither Skeleton")));
+            entityNames.add(new EntityName(EntityType.STRAY, langConfig.getString("entity.Stray.name", "Stray")));
+            entityNames.add(new EntityName(EntityType.ZOMBIE_HORSE, langConfig.getString("entity.ZombieHorse.name", "Zombie Horse")));
+            entityNames.add(new EntityName(EntityType.SKELETON_HORSE, langConfig.getString("entity.SkeletonHorse.name", "Skeleton Horse")));
+            entityNames.add(new EntityName(EntityType.DONKEY, langConfig.getString("entity.Donkey.name", "Donkey")));
+            entityNames.add(new EntityName(EntityType.MULE, langConfig.getString("entity.Mule.name", "Mule")));
+            entityNames.add(new EntityName(EntityType.HUSK, langConfig.getString("entity.Husk.name", "Husk")));
         }
 
         // Add Potion Effect Names
@@ -779,7 +830,7 @@ public class LanguageUtils {
             potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.LUCK, langConfig.getString("tipped_arrow.effect.luck", "Arrow of Luck")));
             potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.MUNDANE, langConfig.getString("tipped_arrow.effect.mundane", "Tipped Arrow")));
             potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.THICK, langConfig.getString("tipped_arrow.effect.thick", "Tipped Arrow")));
-            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.UNCRAFTABLE, langConfig.getString("tipped_arrow.effect.empty", "Tipped Arrow")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.UNCRAFTABLE, langConfig.getString("tipped_arrow.effect.empty", "Uncraftable Tipped Arrow")));
         }
 
         // Add Splash Potion Names
@@ -955,7 +1006,7 @@ public class LanguageUtils {
 
             if (Utils.getMajorVersion() < 9) {
                 potionType = Potion.fromItemStack(stack).getType();
-                upgradeString = (Potion.fromItemStack(stack).getTier() == Potion.Tier.TWO && plugin.getShopChestConfig().append_potion_level_to_item_name ? " II" : "");
+                upgradeString = (Potion.fromItemStack(stack).getLevel() == 2 && plugin.getShopChestConfig().append_potion_level_to_item_name ? " II" : "");
             } else {
                 potionType = meta.getBasePotionData().getType();
                 upgradeString = (meta.getBasePotionData().isUpgraded() && plugin.getShopChestConfig().append_potion_level_to_item_name ? " II" : "");
@@ -1008,7 +1059,7 @@ public class LanguageUtils {
                     }
                 }
 
-                return itemName.getLocalizedName() + " " + formatDefaultString(spawnedType.toString());
+                return itemName.getLocalizedName() + " " + formatDefaultString(String.valueOf(spawnedType));
 
             }
 
@@ -1056,7 +1107,7 @@ public class LanguageUtils {
 
         if (Utils.getMajorVersion() < 9) {
             potionType = Potion.fromItemStack(itemStack).getType();
-            upgraded = (Potion.fromItemStack(itemStack).getTier() == Potion.Tier.TWO);
+            upgraded = Potion.fromItemStack(itemStack).getLevel() == 2;
         } else {
             potionType = potionMeta.getBasePotionData().getType();
             upgraded = potionMeta.getBasePotionData().isUpgraded();

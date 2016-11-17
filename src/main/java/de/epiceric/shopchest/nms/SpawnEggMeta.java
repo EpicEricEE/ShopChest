@@ -44,16 +44,26 @@ public class SpawnEggMeta {
      */
     public static EntityType getEntityTypeFromItemStack(ShopChest plugin, ItemStack stack) {
         if (Utils.getMajorVersion() == 8) {
+            EntityType type = null;
+
             for (EntityType entityType : EntityType.values()) {
                 if (entityType.getTypeId() == stack.getDurability()) {
-                    return entityType;
+                    type = entityType;
+                    break;
                 }
             }
+
+            return type;
         }
 
         String nbtEntityID = getNBTEntityID(plugin, stack);
 
         if (nbtEntityID == null) return null;
+
+        if (Utils.getMajorVersion() >= 11) {
+            if (nbtEntityID.contains(":")) nbtEntityID = nbtEntityID.split(":")[1];
+            return EntityType.fromName(nbtEntityID);
+        }
 
         switch (nbtEntityID) {
             case "PigZombie":
