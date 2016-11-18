@@ -187,6 +187,7 @@ entity.Squid.name=Tintenfisch
 entity.Stray.name=Eiswanderer
 entity.Vex.name=Plagegeist
 entity.Villager.name=Dorfbewohner
+entity.VindicationIllager.name=Diener
 entity.Witch.name=Hexe
 entity.WitherSkeleton.name=Witherskelett
 entity.Wolf.name=Wolf
