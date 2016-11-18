@@ -100,8 +100,8 @@ public class Utils {
                 similar &= (generation1 == generation2);
 
             } else if (getMajorVersion() >= 10) {
-                if (!bookMeta1.hasGeneration()) bookMeta1.setGeneration(BookMeta.Generation.ORIGINAL);
-                if (!bookMeta2.hasGeneration()) bookMeta2.setGeneration(BookMeta.Generation.ORIGINAL);
+                if (bookMeta1.getGeneration() == null) bookMeta1.setGeneration(BookMeta.Generation.ORIGINAL);
+                if (bookMeta2.getGeneration() == null) bookMeta2.setGeneration(BookMeta.Generation.ORIGINAL);
 
                 similar &= (bookMeta1.getGeneration() == bookMeta2.getGeneration());
             }
