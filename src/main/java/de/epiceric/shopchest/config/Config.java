@@ -68,6 +68,9 @@ public class Config {
     /** Whether shops should be protected by explosions **/
     public boolean explosion_protection;
 
+    /** Whether hologram interaction should be enabled **/
+    public boolean enable_hologram_interaction;
+
     /** Whether the debug log file should be created **/
     public boolean enable_debug_log;
 
@@ -277,6 +280,7 @@ public class Config {
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
         two_line_prices = plugin.getConfig().getBoolean("two-line-prices");
+        enable_hologram_interaction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");

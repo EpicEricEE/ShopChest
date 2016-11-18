@@ -14,6 +14,12 @@ language-file: "en_US"
 # Set whether the floating shop items on top of the chest should be shown
 show-shop-items: true
 
+# Set whether interaction with the hologram should be enabled.
+# If set to true, a player can do the exact same thing with the
+# hologram, as with the chest. You can even open the chest if you
+# are the vendor or have permission.
+enable-hologram-interaction: true
+
 # Set whether a debug log file should be created.
 # The file may get large! Please enable this setting when reporting bugs.
 enable-debug-log: false

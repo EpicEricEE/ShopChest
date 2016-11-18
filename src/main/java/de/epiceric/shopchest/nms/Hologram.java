@@ -3,19 +3,23 @@ package de.epiceric.shopchest.nms;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Hologram {
 
+    private static List<Hologram> holograms = new ArrayList<>();
+
     private boolean exists = false;
-    private int count;
     private List<Object> entityList = new ArrayList<>();
+    private List<UUID> entityUuidList = new ArrayList<>();
     private String[] text;
     private Location location;
     private List<Player> visible = new ArrayList<>();
@@ -25,6 +29,7 @@ public class Hologram {
     private Class<?> nmsWorldClass = Utils.getNMSClass("World");
     private Class<?> packetPlayOutSpawnEntityLivingClass = Utils.getNMSClass("PacketPlayOutSpawnEntityLiving");
     private Class<?> packetPlayOutEntityDestroyClass = Utils.getNMSClass("PacketPlayOutEntityDestroy");
+    private Class<?> entityClass = Utils.getNMSClass("Entity");
     private Class<?> entityLivingClass = Utils.getNMSClass("EntityLiving");
 
     public Hologram(ShopChest plugin, String[] text, Location location) {
@@ -33,8 +38,8 @@ public class Hologram {
         this.location = location;
 
         Class[] requiredClasses = new Class[] {
-                nmsWorldClass, entityArmorStandClass, entityLivingClass,
-                packetPlayOutSpawnEntityLivingClass, packetPlayOutEntityDestroyClass,
+                nmsWorldClass, entityArmorStandClass, entityLivingClass, entityClass,
+                packetPlayOutSpawnEntityLivingClass, packetPlayOutEntityDestroyClass
         };
 
         for (Class c : requiredClasses) {
@@ -48,19 +53,35 @@ public class Hologram {
     }
 
     private void create() {
-        for (String text : this.text) {
-            if (text == null)
-                continue;
+        Location loc = location.clone();
+
+        for (int i = 0; i <= text.length; i++) {
+            String text = null;
+
+            if (i != this.text.length) {
+                text = this.text[i];
+                if (text == null) continue;
+            } else {
+                if (!plugin.getShopChestConfig().enable_hologram_interaction) {
+                    loc = location.clone();
+                    loc.add(0, 1, 0);
+                } else {
+                    continue;
+                }
+            }
 
             try {
-                Object craftWorld = this.location.getWorld().getClass().cast(this.location.getWorld());
-                Object nmsWorld = nmsWorldClass.cast(craftWorld.getClass().getMethod("getHandle").invoke(craftWorld));
+                Object craftWorld = loc.getWorld().getClass().cast(loc.getWorld());
+                Object nmsWorldServer = craftWorld.getClass().getMethod("getHandle").invoke(craftWorld);
 
                 Constructor entityArmorStandConstructor = entityArmorStandClass.getConstructor(nmsWorldClass, double.class, double.class, double.class);
-                Object entityArmorStand = entityArmorStandConstructor.newInstance(nmsWorld, this.location.getX(), this.location.getY(), this.getLocation().getZ());
+                Object entityArmorStand = entityArmorStandConstructor.newInstance(nmsWorldServer, loc.getX(), loc.getY(),loc.getZ());
 
-                entityArmorStandClass.getMethod("setCustomName", String.class).invoke(entityArmorStand, text);
-                entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class).invoke(entityArmorStand, true);
+                if (text != null) {
+                    entityArmorStandClass.getMethod("setCustomName", String.class).invoke(entityArmorStand, text);
+                    entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class).invoke(entityArmorStand, true);
+                }
+
                 entityArmorStandClass.getMethod("setInvisible", boolean.class).invoke(entityArmorStand, true);
 
                 if (Utils.getMajorVersion() < 10) {
@@ -69,9 +90,17 @@ public class Hologram {
                     entityArmorStandClass.getMethod("setNoGravity", boolean.class).invoke(entityArmorStand, true);
                 }
 
+                // Probably like an addEntity() method...
+                Method b = nmsWorldServer.getClass().getDeclaredMethod("b", entityClass);
+                b.setAccessible(true);
+                b.invoke(nmsWorldServer, entityArmorStand);
+
+                Object uuid = entityClass.getMethod("getUniqueID").invoke(entityArmorStand);
+
+                entityUuidList.add((UUID) uuid);
                 entityList.add(entityArmorStand);
-                this.location.subtract(0, 0.25, 0);
-                count++;
+
+                loc.subtract(0, 0.25, 0);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                 plugin.getLogger().severe("Could not create Hologram with reflection");
                 plugin.debug("Could not create Hologram with reflection");
@@ -81,11 +110,7 @@ public class Hologram {
 
         }
 
-        for (int i = 0; i < count; i++) {
-            this.location.add(0, 0.25, 0);
-        }
-
-        count = 0;
+        holograms.add(this);
         exists = true;
     }
 
@@ -151,6 +176,14 @@ public class Hologram {
     }
 
     /**
+     * @param armorStand Armor stand to check
+     * @return Whether the given armor stand is part of the hologram
+     */
+    public boolean contains(ArmorStand armorStand) {
+        return entityUuidList.contains(armorStand.getUniqueId());
+    }
+
+    /**
      * Removes the hologram. <br>
      * IHologram will be hidden from all players and will be killed
      */
@@ -165,6 +198,32 @@ public class Hologram {
             }
         }
         exists = false;
+        holograms.remove(this);
+    }
+
+    /**
+     * @param armorStand Armor stand that's part of a hologram
+     * @return Hologram, the armor stand is part of
+     */
+    public static Hologram getHologram(ArmorStand armorStand) {
+        for (Hologram hologram : holograms) {
+            if (hologram.contains(armorStand)) return hologram;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param armorStand Armor stand to check
+     * @return Whether the armor stand is part of a hologram
+     */
+    public static boolean isPartOfHologram(ArmorStand armorStand) {
+        for (Hologram hologram : holograms) {
+            if (hologram.contains(armorStand)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

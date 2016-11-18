@@ -13,6 +13,7 @@ import de.epiceric.shopchest.event.ShopInfoEvent;
 import de.epiceric.shopchest.event.ShopRemoveEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
+import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
@@ -30,12 +31,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -122,8 +128,7 @@ public class ShopInteractListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent e) {
+    private void handleInteractEvent(PlayerInteractEvent e, boolean calledFromInteractEvent) {
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
 
@@ -176,24 +181,33 @@ public class ShopInteractListener implements Listener {
                     } else {
 
                         if (shopUtils.isShop(b.getLocation())) {
-                            e.setCancelled(true);
                             Shop shop = shopUtils.getShop(b.getLocation());
 
                             if (p.isSneaking()) {
-                                if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-                                    if (perm.has(p, "shopchest.openOther")) {
-                                        String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName)));
-                                        plugin.debug(p.getName() + " is opening " + vendorName + "'s shop (#" + shop.getID() + ")" );
-                                        e.setCancelled(false);
+                                if (Utils.getPreferredItemInHand(p) == null) {
+                                    e.setCancelled(true);
+                                    if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+                                        if (perm.has(p, "shopchest.openOther")) {
+                                            String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
+                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName)));
+                                            plugin.debug(p.getName() + " is opening " + vendorName + "'s shop (#" + shop.getID() + ")");
+                                            e.setCancelled(false);
+                                            if (!calledFromInteractEvent) {
+                                                p.openInventory(shop.getInventoryHolder().getInventory());
+                                            }
+                                        } else {
+                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
+                                            plugin.debug(p.getName() + " is not permitted to open another player's shop");
+                                        }
                                     } else {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
-                                        plugin.debug(p.getName() + " is not permitted to open another player's shop");
+                                        e.setCancelled(false);
+                                        if (!calledFromInteractEvent) {
+                                            p.openInventory(shop.getInventoryHolder().getInventory());
+                                        }
                                     }
-                                } else {
-                                    e.setCancelled(false);
                                 }
                             } else {
+                                e.setCancelled(true);
                                 if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
                                     plugin.debug(p.getName() + " wants to buy");
                                     if (shop.getBuyPrice() > 0) {
@@ -245,10 +259,12 @@ public class ShopInteractListener implements Listener {
                                     }
                                 } else {
                                     e.setCancelled(false);
+                                    if (!calledFromInteractEvent) {
+                                        p.openInventory(shop.getInventoryHolder().getInventory());
+                                    }
                                 }
                             }
                         }
-
                     }
 
 
@@ -309,7 +325,75 @@ public class ShopInteractListener implements Listener {
         } else {
             ClickType.removePlayerClickType(p);
         }
+    }
 
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent e) {
+        handleInteractEvent(e, true);
+    }
+
+    @EventHandler
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent e) {
+        if (!plugin.getShopChestConfig().enable_hologram_interaction) return;
+
+        Entity entity = e.getRightClicked();
+        Player p = e.getPlayer();
+
+        if (e.getHand() == EquipmentSlot.HAND) {
+            if (entity instanceof ArmorStand) {
+                ArmorStand armorStand = (ArmorStand) entity;
+                if (Hologram.isPartOfHologram(armorStand)) {
+                    Hologram hologram = Hologram.getHologram(armorStand);
+                    if (hologram != null) {
+                        Block b = null;
+                        for (Shop shop : plugin.getShopUtils().getShops()) {
+                            if (shop.getHologram().equals(hologram)) {
+                                b = shop.getLocation().getBlock();
+                            }
+                        }
+
+                        if (b != null) {
+                            PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null, EquipmentSlot.HAND);
+                            handleInteractEvent(interactEvent, false);
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDamageEntity(EntityDamageByEntityEvent e) {
+        if (!plugin.getShopChestConfig().enable_hologram_interaction) return;
+
+        Entity entity = e.getEntity();
+        Entity damager = e.getDamager();
+
+        if (!(damager instanceof Player)) return;
+        Player p = (Player) damager;
+
+        if (entity instanceof ArmorStand) {
+            ArmorStand armorStand = (ArmorStand) entity;
+            if (Hologram.isPartOfHologram(armorStand)) {
+                Hologram hologram = Hologram.getHologram(armorStand);
+                if (hologram != null) {
+                    Block b = null;
+                    for (Shop shop : plugin.getShopUtils().getShops()) {
+                        if (shop.getHologram().equals(hologram)) {
+                            b = shop.getLocation().getBlock();
+                        }
+                    }
+
+                    if (b != null) {
+                        PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.LEFT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null, EquipmentSlot.HAND);
+                        handleInteractEvent(interactEvent, false);
+                    }
+
+                }
+            }
+        }
     }
 
     /**
