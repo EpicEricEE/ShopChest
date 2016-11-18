@@ -238,6 +238,9 @@ message.noPermission.update=&cYou don't have permission to check for updates.
 # Set the message when a not permitted player tries to change configuration values.
 message.noPermission.config=&cYou don't have permission to change configuration values.
 
+# Set the message when a not permitted player tries to extend another player's shop's chest.
+message.noPermission.extend-others=&cYou don't have permission to extend this chest.
+
 # Set the command description message for '/shop create' when you type '/shop'.
 message.commandDescription.create=Create a shop.
 

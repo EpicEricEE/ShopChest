@@ -68,6 +68,7 @@ message.noPermission.remove-others=&cDu hast keine Berechtigung diesen Shop zu e
 message.noPermission.reload=&cDu hast keine Berechtigung die Shops neu zu laden.
 message.noPermission.update=&cDu hast keine Berechtigung nach Aktualisierungen zu suchen.
 message.noPermission.config=&cDu hast keine Berechtigung Konfigurationswerte zu verändern.
+message.noPermission.extend-others=&cDu hast keine Berechtigung diesen Shop zu erweitern.
 message.commandDescription.create=Erstelle einen Shop.
 message.commandDescription.remove=Entferne einen Shop.
 message.commandDescription.info=Rufe Informationen über den Shop ab.

@@ -43,6 +43,8 @@ public class ChestProtectListener implements Listener {
             Player p = e.getPlayer();
 
             if (p.isSneaking()) {
+                plugin.debug(String.format("%s tries to break %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+
                 if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("shopchest.removeOther")) {
                     shopUtils.removeShop(shop, true);
 
@@ -96,7 +98,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-
+        Player p = e.getPlayer();
         Block b = e.getBlockPlaced();
         if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
 
@@ -109,26 +111,31 @@ public class ChestProtectListener implements Listener {
                 Chest l = (Chest) dc.getLeftSide();
 
                 if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) {
-                    plugin.debug(e.getPlayer().getName() + " tried to extend a shop to a double chest");
+                    Shop shop;
 
-                    if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
-                        Shop shop;
+                    if (b.getLocation().equals(r.getLocation())) {
+                        shop = shopUtils.getShop(l.getLocation());
+                    } else if (b.getLocation().equals(l.getLocation())) {
+                        shop = shopUtils.getShop(r.getLocation());
+                    } else {
+                        return;
+                    }
 
-                        if (b.getLocation().equals(r.getLocation())) {
-                            shop = shopUtils.getShop(l.getLocation());
-                        } else if (b.getLocation().equals(l.getLocation())) {
-                            shop = shopUtils.getShop(r.getLocation());
+                    plugin.debug(String.format("%s tries to extend %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+
+                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("shopchest.extendOther")) {
+                        if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                            shopUtils.removeShop(shop, true);
+                            Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+                            shopUtils.addShop(newShop, true);
+                            plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
                         } else {
-                            return;
+                            e.setCancelled(true);
+                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
                         }
-
-                        shopUtils.removeShop(shop, true);
-
-                        Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-                        shopUtils.addShop(newShop, true);
                     } else {
                         e.setCancelled(true);
-                        e.getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
+                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_OTHERS));
                     }
                 }
 
