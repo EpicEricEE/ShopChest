@@ -23,8 +23,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 
 class ShopCommand extends BukkitCommand {
 
@@ -48,130 +48,125 @@ class ShopCommand extends BukkitCommand {
         plugin.debug("Registering command " + command.getName());
 
         Object commandMap = plugin.getServer().getClass().getMethod("getCommandMap").invoke(plugin.getServer());
-        commandMap.getClass().getMethod("register", String.class, Command.class).invoke(commandMap, "shopchest", command);
+        commandMap.getClass().getMethod("register", String.class, Command.class).invoke(commandMap, "shop", command);
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        boolean needsHelp = true;
 
-            if (args.length == 0) {
-                sendBasicHelpMessage(p);
-                return true;
+        if (args.length > 0) {
+            if (!(sender instanceof Player)) {
+                switch (args[0].toUpperCase(Locale.US)) {
+                    case "CREATE":
+                    case "REMOVE":
+                    case "INFO":
+                    case "LIMITS":
+                        sender.sendMessage(ChatColor.RED + "Only players can use this command.");
+                        return true;
+                }
             } else {
+                Player p = (Player) sender;
+
                 if (args[0].equalsIgnoreCase("create")) {
+
                     if (p.hasPermission(Permissions.CREATE)) {
                         if (args.length == 4) {
+                            needsHelp = false;
                             create(args, ShopType.NORMAL, p);
-                            return true;
                         } else if (args.length == 5) {
                             if (args[4].equalsIgnoreCase("normal")) {
+                                needsHelp = false;
                                 create(args, ShopType.NORMAL, p);
-                                return true;
                             } else if (args[4].equalsIgnoreCase("admin")) {
+                                needsHelp = false;
                                 if (p.hasPermission(Permissions.CREATE_ADMIN)) {
                                     create(args, ShopType.ADMIN, p);
-                                    return true;
                                 } else {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_ADMIN));
-                                    return true;
                                 }
-                            } else {
-                                sendBasicHelpMessage(p);
-                                return true;
                             }
-                        } else {
-                            sendBasicHelpMessage(p);
-                            return true;
                         }
                     } else {
+                        needsHelp = false;
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE));
-                        return true;
                     }
                 } else if (args[0].equalsIgnoreCase("remove")) {
+                    needsHelp = false;
                     remove(p);
-                    return true;
                 } else if (args[0].equalsIgnoreCase("info")) {
+                    needsHelp = false;
                     info(p);
-                    return true;
-                } else if (args[0].equalsIgnoreCase("reload")) {
-                    if (p.hasPermission(Permissions.RELOAD)) {
-                        reload(p);
-                        return true;
-                    } else {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_RELOAD));
-                        return true;
-                    }
-                } else if (args[0].equalsIgnoreCase("update")) {
-                    if (p.hasPermission(Permissions.UPDATE)) {
-                        checkUpdates(p);
-                        return true;
-                    } else {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_UPDATE));
-                        return true;
-                    }
                 } else if (args[0].equalsIgnoreCase("limits")) {
+                    needsHelp = false;
                     plugin.debug(p.getName() + " is viewing his shop limits: " + shopUtils.getShopAmount(p) + "/" + shopUtils.getShopLimit(p));
                     int limit = shopUtils.getShopLimit(p);
                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS,
                             new LocalizedMessage.ReplacedRegex(Regex.LIMIT, (limit < 0 ? "∞" : String.valueOf(limit))),
                             new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
-
-                    return true;
-                } else if (args[0].equalsIgnoreCase("config")) {
-                    if (p.hasPermission(Permissions.CONFIG)) {
-                        if (args.length >= 4) {
-                            plugin.debug(p.getName() + " is changing the configuration");
-
-                            String property = args[2];
-                            String value = args[3];
-
-                            if (args[1].equalsIgnoreCase("set")) {
-                                plugin.getShopChestConfig().set(property, value);
-                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
-                                return true;
-                            } else if (args[1].equalsIgnoreCase("add")) {
-                                plugin.getShopChestConfig().add(property, value);
-                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
-                                return true;
-                            } else if (args[1].equalsIgnoreCase("remove")) {
-                                plugin.getShopChestConfig().remove(property, value);
-                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
-                                return true;
-                            } else {
-                                sendBasicHelpMessage(p);
-                                return true;
-                            }
-                        } else {
-                            sendBasicHelpMessage(p);
-                            return true;
-                        }
-                    } else {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG));
-                        return true;
-                    }
-                } else {
-                    sendBasicHelpMessage(p);
-                    return true;
                 }
             }
 
-        } else {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Only players can execute this command.");
-            return true;
+            if (args[0].equalsIgnoreCase("reload")) {
+                needsHelp = false;
+                if (sender.hasPermission(Permissions.RELOAD)) {
+                    reload(sender);
+                } else {
+                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_RELOAD));
+                }
+            } else if (args[0].equalsIgnoreCase("update")) {
+                needsHelp = false;
+                if (sender.hasPermission(Permissions.UPDATE)) {
+                    checkUpdates(sender);
+                } else {
+                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_UPDATE));
+                }
+            } else if (args[0].equalsIgnoreCase("config")) {
+                if (sender.hasPermission(Permissions.CONFIG)) {
+                    if (args.length >= 4) {
+                        needsHelp = false;
+                        changeConfig(sender, args);
+                    }
+                } else {
+                    needsHelp = false;
+                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG));
+                }
+            }
         }
 
+
+        if (needsHelp) sendBasicHelpMessage(sender);
+        return true;
+    }
+
+    private void changeConfig(CommandSender sender, String[] args) {
+        plugin.debug(sender.getName() + " is changing the configuration");
+
+        String property = args[2];
+        String value = args[3];
+
+        if (args[1].equalsIgnoreCase("set")) {
+            plugin.getShopChestConfig().set(property, value);
+            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
+        } else if (args[1].equalsIgnoreCase("add")) {
+            plugin.getShopChestConfig().add(property, value);
+            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
+        } else if (args[1].equalsIgnoreCase("remove")) {
+            plugin.getShopChestConfig().remove(property, value);
+            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, new LocalizedMessage.ReplacedRegex(Regex.PROPERTY, property), new LocalizedMessage.ReplacedRegex(Regex.VALUE, value)));
+        } else {
+            sendBasicHelpMessage(sender);
+        }
     }
 
     /**
      * A given player checks for updates
-     * @param player The command executor
+     * @param sender The command executor
      */
-    private void checkUpdates(Player player) {
-        plugin.debug(player.getName() + " is checking for updates");
+    private void checkUpdates(CommandSender sender) {
+        plugin.debug(sender.getName() + " is checking for updates");
 
-        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
+        sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
 
         UpdateChecker uc = new UpdateChecker(ShopChest.getInstance());
         UpdateCheckerResult result = uc.check();
@@ -181,30 +176,34 @@ class ShopCommand extends BukkitCommand {
             plugin.setDownloadLink(uc.getLink());
             plugin.setUpdateNeeded(true);
 
-            JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, uc.getVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), uc.getLink());
-            jb.sendJson(player);
+            if (sender instanceof Player) {
+                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, uc.getVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), uc.getLink());
+                jb.sendJson((Player) sender);
+            } else {
+                sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, uc.getVersion())));
+            }
 
         } else if (result == UpdateCheckerResult.FALSE) {
             plugin.setLatestVersion("");
             plugin.setDownloadLink("");
             plugin.setUpdateNeeded(false);
-            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE));
+            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE));
         } else {
             plugin.setLatestVersion("");
             plugin.setDownloadLink("");
             plugin.setUpdateNeeded(false);
-            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
+            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
         }
     }
 
     /**
      * A given player reloads the shops
-     * @param player The command executor
+     * @param sender The command executor
      */
-    private void reload(Player player) {
-        plugin.debug(player.getName() + " is reloading the shops");
+    private void reload(CommandSender sender) {
+        plugin.debug(sender.getName() + " is reloading the shops");
 
-        ShopReloadEvent event = new ShopReloadEvent(player);
+        ShopReloadEvent event = new ShopReloadEvent(sender);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()){
             plugin.debug("Reload event cancelled");
@@ -212,8 +211,8 @@ class ShopCommand extends BukkitCommand {
         }
 
         int count = shopUtils.reloadShops(true, true);
-        plugin.debug(player.getName() + " has reloaded " + count + " shops");
-        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(count))));
+        plugin.debug(sender.getName() + " has reloaded " + count + " shops");
+        sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(count))));
     }
 
     /**
@@ -413,33 +412,34 @@ class ShopCommand extends BukkitCommand {
     }
 
     /**
-     * Sends the basic help message to a given player
-     * @param player Player who will receive the message
+     * Sends the basic help message
+     * @param sender {@link CommandSender} who will receive the message
      */
-    private void sendBasicHelpMessage(Player player) {
-        plugin.debug("Sending basic help message to " + player.getName());
+    private void sendBasicHelpMessage(CommandSender sender) {
+        plugin.debug("Sending basic help message to " + sender.getName());
 
-        if (player.hasPermission(Permissions.CREATE_ADMIN)) {
-            player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
-        } else {
-            player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
+        if (sender instanceof Player) {
+            if (sender.hasPermission(Permissions.CREATE_ADMIN)) {
+                sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
+            } else {
+                sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
+            }
+
+            sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " remove - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE));
+            sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " info - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO));
+            sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " limits - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS));
         }
 
-        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " remove - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE));
-        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " info - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO));
-
-        if (player.hasPermission(Permissions.RELOAD)) {
-            player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " reload - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD));
+        if (sender.hasPermission(Permissions.RELOAD)) {
+            sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " reload - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD));
         }
 
-        if (player.hasPermission(Permissions.UPDATE)) {
-            player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " update - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE));
+        if (sender.hasPermission(Permissions.UPDATE)) {
+            sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " update - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE));
         }
 
-        player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " limits - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS));
-
-        if (player.hasPermission(Permissions.CONFIG)) {
-            player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " config <set|add|remove> <property> <value> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG));
+        if (sender.hasPermission(Permissions.CONFIG)) {
+            sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " config <set|add|remove> <property> <value> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG));
         }
     }
 
