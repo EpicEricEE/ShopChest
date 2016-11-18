@@ -16,9 +16,11 @@ public class LanguageConfiguration extends FileConfiguration {
     private HashMap<String, String> values = new HashMap<>();
 
     private ShopChest plugin;
+    private boolean showMessages;
 
-    public LanguageConfiguration(ShopChest plugin) {
+    public LanguageConfiguration(ShopChest plugin, boolean showMessages) {
         this.plugin = plugin;
+        this.showMessages = showMessages;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class LanguageConfiguration extends FileConfiguration {
             }
         }
 
-        plugin.getLogger().info("Could not find translation for \"" + path + "\" in selected language file. Using default translation (" + def + ")");
+        if (showMessages) plugin.getLogger().info("Could not find translation for \"" + path + "\" in selected language file. Using default translation (" + def + ")");
         return def;
     }
 

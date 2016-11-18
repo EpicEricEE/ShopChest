@@ -309,7 +309,7 @@ public class Config {
     }
 
     private void loadLanguageConfig(boolean showMessages) {
-        langConfig = new LanguageConfiguration(plugin);
+        langConfig = new LanguageConfiguration(plugin, showMessages);
         File langFolder = new File(plugin.getDataFolder(), "lang");
 
         if (!(new File(langFolder, "en_US.lang")).exists())
@@ -345,11 +345,13 @@ public class Config {
                     }
 
                     langConfig.loadFromString(sb.toString());
-                } catch (IOException | InvalidConfigurationException ex) {
+                } catch (IOException | InvalidConfigurationException e) {
                     if (showMessages) {
                         plugin.getLogger().warning("Using default language values");
-                        ex.printStackTrace();
                     }
+
+                    plugin.debug("Using default language values (#1)");
+                    plugin.debug(e);
                 }
             } else {
                 try {
@@ -358,19 +360,23 @@ public class Config {
                 } catch (IOException | InvalidConfigurationException e) {
                     if (showMessages) {
                         plugin.getLogger().warning("Using default language values");
-                        e.printStackTrace();
                     }
+
+                    plugin.debug("Using default language values (#2)");
+                    plugin.debug(e);
                 }
             }
         } else {
             try {
                 if (showMessages) plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\"");
                 langConfig.load(langConfigFile);
-            } catch (IOException | InvalidConfigurationException ex) {
+            } catch (IOException | InvalidConfigurationException e) {
                 if (showMessages) {
                     plugin.getLogger().warning("Using default language values");
-                    ex.printStackTrace();
                 }
+
+                plugin.debug("Using default language values (#3)");
+                plugin.debug(e);
             }
         }
     }
