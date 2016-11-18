@@ -47,10 +47,8 @@ class ShopCommand extends BukkitCommand {
     static void registerCommand(Command command, ShopChest plugin) throws ReflectiveOperationException {
         plugin.debug("Registering command " + command.getName());
 
-        Method commandMap = plugin.getServer().getClass().getMethod("getCommandMap");
-        Object cmdmap = commandMap.invoke(plugin.getServer());
-        Method register = cmdmap.getClass().getMethod("register", String.class, Command.class);
-        register.invoke(cmdmap, command.getName(), command);
+        Object commandMap = plugin.getServer().getClass().getMethod("getCommandMap").invoke(plugin.getServer());
+        commandMap.getClass().getMethod("register", String.class, Command.class).invoke(commandMap, "shopchest", command);
     }
 
     @Override
