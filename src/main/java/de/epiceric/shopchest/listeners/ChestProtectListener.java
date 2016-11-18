@@ -4,6 +4,7 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -45,7 +46,7 @@ public class ChestProtectListener implements Listener {
             if (p.isSneaking()) {
                 plugin.debug(String.format("%s tries to break %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
 
-                if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("shopchest.removeOther")) {
+                if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.REMOVE_OTHER)) {
                     shopUtils.removeShop(shop, true);
 
                     if (shop.getInventoryHolder() instanceof DoubleChest) {
@@ -123,7 +124,7 @@ public class ChestProtectListener implements Listener {
 
                     plugin.debug(String.format("%s tries to extend %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
 
-                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("shopchest.extendOther")) {
+                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.EXTEND_OTHER)) {
                         if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
                             shopUtils.removeShop(shop, true);
                             Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());

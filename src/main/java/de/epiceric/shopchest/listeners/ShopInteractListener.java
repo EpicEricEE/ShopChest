@@ -18,12 +18,12 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.worldguard.ShopFlag;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,7 +55,6 @@ import java.util.Map;
 public class ShopInteractListener implements Listener {
 
     private ShopChest plugin;
-    private Permission perm;
     private Economy econ;
     private Database database;
     private ShopUtils shopUtils;
@@ -64,7 +63,6 @@ public class ShopInteractListener implements Listener {
 
     public ShopInteractListener(ShopChest plugin) {
         this.plugin = plugin;
-        this.perm = plugin.getPermission();
         this.econ = plugin.getEconomy();
         this.database = plugin.getShopDatabase();
         this.shopUtils = plugin.getShopUtils();
@@ -92,7 +90,7 @@ public class ShopInteractListener implements Listener {
                                     worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.CREATE_SHOP);
                                 }
 
-                                if ((e.isCancelled() || !worldGuardAllowed) && !perm.has(p, "shopchest.create.protected")) {
+                                if ((e.isCancelled() || !worldGuardAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
                                     ClickType.removePlayerClickType(p);
                                     plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest");
@@ -161,7 +159,7 @@ public class ShopInteractListener implements Listener {
                                 if (shopUtils.isShop(b.getLocation())) {
                                     Shop shop = shopUtils.getShop(b.getLocation());
 
-                                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || perm.has(p, "shopchest.removeOther")) {
+                                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.REMOVE_OTHER)) {
                                         remove(p, shop);
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS));
@@ -187,7 +185,7 @@ public class ShopInteractListener implements Listener {
                                 if (Utils.getPreferredItemInHand(p) == null) {
                                     e.setCancelled(true);
                                     if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-                                        if (perm.has(p, "shopchest.openOther")) {
+                                        if (p.hasPermission(Permissions.OPEN_OTHER)) {
                                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
                                             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName)));
                                             plugin.debug(p.getName() + " is opening " + vendorName + "'s shop (#" + shop.getID() + ")");
@@ -211,7 +209,7 @@ public class ShopInteractListener implements Listener {
                                 if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
                                     plugin.debug(p.getName() + " wants to buy");
                                     if (shop.getBuyPrice() > 0) {
-                                        if (perm.has(p, "shopchest.buy")) {
+                                        if (p.hasPermission(Permissions.BUY)) {
                                             boolean worldGuardAllowed = true;
 
                                             if (shop.getShopType() == ShopType.ADMIN) {
@@ -280,7 +278,7 @@ public class ShopInteractListener implements Listener {
                         if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
                             plugin.debug(p.getName() + " wants to sell");
                             if (shop.getSellPrice() > 0) {
-                                if (perm.has(p, "shopchest.sell")) {
+                                if (p.hasPermission(Permissions.SELL)) {
                                     boolean worldGuardAllowed = true;
 
                                     if (plugin.hasWorldGuard()) {

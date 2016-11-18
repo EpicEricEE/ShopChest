@@ -9,6 +9,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.worldguard.ShopFlag;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -60,7 +61,7 @@ public class WorldGuardListener implements Listener {
                     }
 
                     if (!shop.getVendor().getUniqueId().equals(p.getUniqueId()) && p.isSneaking()) {
-                        return p.hasPermission("shopchest.openOther");
+                        return p.hasPermission(Permissions.OPEN_OTHER);
                     }
 
                     StateFlag flag = (shop.getShopType() == Shop.ShopType.NORMAL ? ShopFlag.USE_SHOP : ShopFlag.USE_ADMIN_SHOP);

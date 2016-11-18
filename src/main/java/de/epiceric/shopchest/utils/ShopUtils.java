@@ -125,7 +125,7 @@ public class ShopUtils {
 
         for (PermissionAttachmentInfo permInfo : p.getEffectivePermissions()) {
             if (permInfo.getPermission().startsWith("shopchest.limit.")) {
-                if (permInfo.getPermission().contains("shopchest.limit.*")) {
+                if (permInfo.getPermission().equalsIgnoreCase(Permissions.NO_LIMIT)) {
                     limit = -1;
                     break;
                 } else {

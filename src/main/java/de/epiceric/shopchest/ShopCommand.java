@@ -10,13 +10,9 @@ import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
-import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.*;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
-import de.epiceric.shopchest.utils.ShopUtils;
-import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
-import de.epiceric.shopchest.utils.Utils;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -33,13 +29,11 @@ import java.util.List;
 class ShopCommand extends BukkitCommand {
 
     private ShopChest plugin;
-    private Permission perm;
     private ShopUtils shopUtils;
 
     ShopCommand(ShopChest plugin, String name, String description, String usageMessage, List<String> aliases) {
         super(name, description, usageMessage, aliases);
         this.plugin = plugin;
-        this.perm = plugin.getPermission();
         this.shopUtils = plugin.getShopUtils();
     }
 
@@ -69,7 +63,7 @@ class ShopCommand extends BukkitCommand {
                 return true;
             } else {
                 if (args[0].equalsIgnoreCase("create")) {
-                    if (perm.has(p, "shopchest.create")) {
+                    if (p.hasPermission(Permissions.CREATE)) {
                         if (args.length == 4) {
                             create(args, ShopType.NORMAL, p);
                             return true;
@@ -78,7 +72,7 @@ class ShopCommand extends BukkitCommand {
                                 create(args, ShopType.NORMAL, p);
                                 return true;
                             } else if (args[4].equalsIgnoreCase("admin")) {
-                                if (perm.has(p, "shopchest.create.admin")) {
+                                if (p.hasPermission(Permissions.CREATE_ADMIN)) {
                                     create(args, ShopType.ADMIN, p);
                                     return true;
                                 } else {
@@ -104,7 +98,7 @@ class ShopCommand extends BukkitCommand {
                     info(p);
                     return true;
                 } else if (args[0].equalsIgnoreCase("reload")) {
-                    if (perm.has(p, "shopchest.reload")) {
+                    if (p.hasPermission(Permissions.RELOAD)) {
                         reload(p);
                         return true;
                     } else {
@@ -112,7 +106,7 @@ class ShopCommand extends BukkitCommand {
                         return true;
                     }
                 } else if (args[0].equalsIgnoreCase("update")) {
-                    if (perm.has(p, "shopchest.update")) {
+                    if (p.hasPermission(Permissions.UPDATE)) {
                         checkUpdates(p);
                         return true;
                     } else {
@@ -128,7 +122,7 @@ class ShopCommand extends BukkitCommand {
 
                     return true;
                 } else if (args[0].equalsIgnoreCase("config")) {
-                    if (perm.has(p, "shopchest.config")) {
+                    if (p.hasPermission(Permissions.CONFIG)) {
                         if (args.length >= 4) {
                             plugin.debug(p.getName() + " is changing the configuration");
 
@@ -427,7 +421,7 @@ class ShopCommand extends BukkitCommand {
     private void sendBasicHelpMessage(Player player) {
         plugin.debug("Sending basic help message to " + player.getName());
 
-        if (player.hasPermission("shopchest.create.admin")) {
+        if (player.hasPermission(Permissions.CREATE_ADMIN)) {
             player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
         } else {
             player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
@@ -436,17 +430,17 @@ class ShopCommand extends BukkitCommand {
         player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " remove - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE));
         player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " info - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO));
 
-        if (player.hasPermission("shopchest.reload")) {
+        if (player.hasPermission(Permissions.RELOAD)) {
             player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " reload - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD));
         }
 
-        if (player.hasPermission("shopchest.update")) {
+        if (player.hasPermission(Permissions.UPDATE)) {
             player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " update - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE));
         }
 
         player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " limits - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS));
 
-        if (player.hasPermission("shopchest.config")) {
+        if (player.hasPermission(Permissions.CONFIG)) {
             player.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " config <set|add|remove> <property> <value> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG));
         }
     }

@@ -13,16 +13,12 @@ import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.sql.MySQL;
 import de.epiceric.shopchest.sql.SQLite;
-import de.epiceric.shopchest.utils.Metrics;
+import de.epiceric.shopchest.utils.*;
 import de.epiceric.shopchest.utils.Metrics.Graph;
 import de.epiceric.shopchest.utils.Metrics.Plotter;
-import de.epiceric.shopchest.utils.ShopUtils;
-import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
-import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.worldguard.ShopFlag;
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -41,7 +37,6 @@ public class ShopChest extends JavaPlugin {
 
     private Config config = null;
     private Economy econ = null;
-    private Permission perm = null;
     private Database database;
     private boolean isUpdateNeeded = false;
     private String latestVersion = "";
@@ -70,17 +65,6 @@ public class ShopChest extends JavaPlugin {
         econ = rsp.getProvider();
         return econ != null;
     }
-
-    /**
-     * Sets up the permissions of Vault
-     * @return Whether a permissions plugin has been registered
-     */
-    private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        perm = rsp.getProvider();
-        return perm != null;
-    }
-
 
     @Override
     public void onEnable() {
@@ -117,13 +101,6 @@ public class ShopChest extends JavaPlugin {
         if (!setupEconomy()) {
             debug("Could not find any Vault economy dependency!");
             getLogger().severe("Could not find any Vault economy dependency!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
-        if (!setupPermissions()) {
-            debug("Could not find any Vault permission dependency!");
-            getLogger().severe("Could not find any Vault permission dependency!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -282,7 +259,7 @@ public class ShopChest extends JavaPlugin {
                     Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)));
 
                     for (Player p : getServer().getOnlinePlayers()) {
-                        if (perm.has(p, "shopchest.notification.update")) {
+                        if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
                             JsonBuilder jb = new JsonBuilder(ShopChest.this, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
                             jb.sendJson(p);
                         }
@@ -421,13 +398,6 @@ public class ShopChest extends JavaPlugin {
      */
     public Economy getEconomy() {
         return econ;
-    }
-
-    /**
-     * @return Registered Permission of Vault
-     */
-    public Permission getPermission() {
-        return perm;
     }
 
     /**
