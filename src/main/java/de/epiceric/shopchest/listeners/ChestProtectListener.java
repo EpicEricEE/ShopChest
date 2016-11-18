@@ -43,7 +43,7 @@ public class ChestProtectListener implements Listener {
             Player p = e.getPlayer();
 
             if (p.isSneaking()) {
-                if (shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+                if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("shopchest.removeOther")) {
                     shopUtils.removeShop(shop, true);
 
                     if (shop.getInventoryHolder() instanceof DoubleChest) {
@@ -67,7 +67,7 @@ public class ChestProtectListener implements Listener {
                         return;
                     }
 
-                    plugin.debug(p.getName() + " broke his shop (#" + shop.getID() + ")");
+                    plugin.debug(String.format("%s broke %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
                     return;
                 }
