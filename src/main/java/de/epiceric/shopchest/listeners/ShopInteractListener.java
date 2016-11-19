@@ -223,6 +223,7 @@ public class ShopInteractListener implements Listener {
                                                     buy(p, shop);
                                                 } else {
                                                     plugin.debug(p.getName() + " doesn't have worldguard permission");
+                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
                                                 }
                                             } else {
                                                 if (plugin.hasWorldGuard()) {
@@ -245,6 +246,7 @@ public class ShopInteractListener implements Listener {
                                                     }
                                                 } else {
                                                     plugin.debug(p.getName() + " doesn't have worldguard permission");
+                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
                                                 }
                                             }
                                         } else {
@@ -302,6 +304,7 @@ public class ShopInteractListener implements Listener {
                                         }
                                     } else {
                                         plugin.debug(p.getName() + " doesn't have worldguard permission");
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_SELL));
                                     }
                                 } else {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL));

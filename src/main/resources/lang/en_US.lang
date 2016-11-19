@@ -226,6 +226,12 @@ message.noPermission.buy=&cYou don't have permission to buy something.
 # Set the message when a not permitted player tries to sell something.
 message.noPermission.sell=&cYou don't have permission to sell something.
 
+# Set the message when a player tries to buy something in a WorldGuard region that denied shop use.
+message.noPermission.worldguard-buy=&cYou don't have permission to buy something here.
+
+# Set the message when a player tries to sell something in a WorldGuard region that denied shop use.
+message.noPermission.worldguard-sell=&cYou don't have permission to sell something here.
+
 # Set the message when a not permitted player tries to remove another player's shop.
 message.noPermission.remove-others=&cYou don't have permission to remove this shop.
 
