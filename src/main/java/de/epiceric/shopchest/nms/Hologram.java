@@ -64,7 +64,7 @@ public class Hologram {
             } else {
                 if (plugin.getShopChestConfig().enable_hologram_interaction) {
                     loc = location.clone();
-                    loc.add(0, 1, 0);
+                    loc.add(0, 0.4, 0);
                 } else {
                     continue;
                 }
@@ -90,10 +90,10 @@ public class Hologram {
                     entityArmorStandClass.getMethod("setNoGravity", boolean.class).invoke(entityArmorStand, true);
                 }
 
-                // Probably like an addEntity() method...
-                Method b = nmsWorldServer.getClass().getDeclaredMethod("b", entityClass);
-                b.setAccessible(true);
-                b.invoke(nmsWorldServer, entityArmorStand);
+                // Adds the entity to some lists so it can call interact events
+                Method addEntityMethod = nmsWorldServer.getClass().getDeclaredMethod((Utils.getMajorVersion() == 8 ? "a" : "b"), entityClass);
+                addEntityMethod.setAccessible(true);
+                addEntityMethod.invoke(nmsWorldServer, entityArmorStand);
 
                 Object uuid = entityClass.getMethod("getUniqueID").invoke(entityArmorStand);
 

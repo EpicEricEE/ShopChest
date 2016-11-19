@@ -341,7 +341,7 @@ public class ShopInteractListener implements Listener {
         Entity entity = e.getRightClicked();
         Player p = e.getPlayer();
 
-        if (e.getHand() == EquipmentSlot.HAND) {
+        if (Utils.getMajorVersion() == 8 || e.getHand() == EquipmentSlot.HAND) {
             if (entity instanceof ArmorStand) {
                 ArmorStand armorStand = (ArmorStand) entity;
                 if (Hologram.isPartOfHologram(armorStand)) {
@@ -355,7 +355,7 @@ public class ShopInteractListener implements Listener {
                         }
 
                         if (b != null) {
-                            PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null, EquipmentSlot.HAND);
+                            PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null);
                             handleInteractEvent(interactEvent, false);
                         }
 
@@ -388,8 +388,9 @@ public class ShopInteractListener implements Listener {
                     }
 
                     if (b != null) {
-                        PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.LEFT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null, EquipmentSlot.HAND);
+                        PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.LEFT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null);
                         handleInteractEvent(interactEvent, false);
+                        e.setCancelled(true);
                     }
 
                 }
