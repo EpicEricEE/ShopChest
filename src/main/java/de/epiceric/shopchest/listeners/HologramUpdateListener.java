@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class HologramUpdateListener implements Listener {
@@ -19,9 +20,17 @@ public class HologramUpdateListener implements Listener {
         this.plugin = plugin;
     }
 
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        updateHolograms(e.getPlayer());
+    }
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent e) {
-        Player p = e.getPlayer();
+        updateHolograms(e.getPlayer());
+    }
+
+    private void updateHolograms(Player p) {
         Location playerLocation = p.getLocation();
         double hologramDistanceSquared = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
 
@@ -50,8 +59,6 @@ public class HologramUpdateListener implements Listener {
             }
 
         }
-
-
     }
 
 }
