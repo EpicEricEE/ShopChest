@@ -62,7 +62,7 @@ public class Hologram {
                 text = this.text[i];
                 if (text == null) continue;
             } else {
-                if (!plugin.getShopChestConfig().enable_hologram_interaction) {
+                if (plugin.getShopChestConfig().enable_hologram_interaction) {
                     loc = location.clone();
                     loc.add(0, 1, 0);
                 } else {
