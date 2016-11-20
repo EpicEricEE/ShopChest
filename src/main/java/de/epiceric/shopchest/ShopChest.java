@@ -42,7 +42,6 @@ public class ShopChest extends JavaPlugin {
     private String latestVersion = "";
     private String downloadLink = "";
     private ShopUtils shopUtils;
-    private File debugLogFile;
     private FileWriter fw;
     private WorldGuardPlugin worldGuard;
 
@@ -73,7 +72,7 @@ public class ShopChest extends JavaPlugin {
         config = new Config(this);
 
         if (config.enable_debug_log) {
-            debugLogFile = new File(getDataFolder(), "debug.txt");
+            File debugLogFile = new File(getDataFolder(), "debug.txt");
 
             try {
                 if (!debugLogFile.exists()) {
@@ -308,18 +307,20 @@ public class ShopChest extends JavaPlugin {
     public void onDisable() {
         debug("Disabling ShopChest...");
 
-        int highestId = database.getHighestID();
+        if (database != null) {
+            int highestId = database.getHighestID();
 
-        for (int i = 1; i <= highestId; i++) {
-            for (Shop shop : shopUtils.getShops()) {
-                if (shop.getID() == i) {
-                    shopUtils.removeShop(shop, false);
-                    debug("Removed shop (#" + shop.getID() + ")");
+            for (int i = 1; i <= highestId; i++) {
+                for (Shop shop : shopUtils.getShops()) {
+                    if (shop.getID() == i) {
+                        shopUtils.removeShop(shop, false);
+                        debug("Removed shop (#" + shop.getID() + ")");
+                    }
                 }
             }
-        }
 
-        database.disconnect();
+            database.disconnect();
+        }
 
         if (fw != null && config.enable_debug_log) {
             try {
@@ -336,7 +337,7 @@ public class ShopChest extends JavaPlugin {
      * @param message Message to print
      */
     public void debug(String message) {
-        if (config.enable_debug_log) {
+        if (config.enable_debug_log && fw != null) {
             try {
                 Calendar c = Calendar.getInstance();
                 String timestamp = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(c.getTime());
@@ -354,7 +355,7 @@ public class ShopChest extends JavaPlugin {
      * @param throwable {@link Throwable} whose stacktrace will be printed
      */
     public void debug(Throwable throwable) {
-        if (config.enable_debug_log) {
+        if (config.enable_debug_log && fw != null) {
             PrintWriter pw = new PrintWriter(fw);
             throwable.printStackTrace(pw);
             pw.flush();
