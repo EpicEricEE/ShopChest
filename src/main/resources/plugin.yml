@@ -5,7 +5,7 @@ main: de.epiceric.shopchest.ShopChest
 version: ${project.version}
 author: EpicEric
 website: ${project.url}
-softdepend: [WorldGuard]
+softdepend: [WorldGuard, Towny]
 depend: [Vault]
 
 permissions:
@@ -13,6 +13,8 @@ permissions:
     description: Gives access to all ShopChest permissions.
     children:
       shopchest.create: true
+      shopchest.create.admin: true
+      shopchest.create.protected: true
       shopchest.removeOther: true
       shopchest.buy: true
       shopchest.openOther: true
@@ -21,6 +23,8 @@ permissions:
       shopchest.update: true
       shopchest.limit.*: true
       shopchest.config: true
+      shopchest.extend.other: true
+      shopchest.extend.protected: true
   shopchest.create:
     description: Allows you to create a shop.
     default: true
@@ -30,7 +34,7 @@ permissions:
       shopchest.create: true
     default: op
   shopchest.create.protected:
-    description: Allows you to create a shop on a protected chest.
+    description: Allows you to create a shop on a protected chest or in a protected region.
     children:
       shopchest.create: true
     default: op
@@ -60,6 +64,9 @@ permissions:
   shopchest.config:
     description: Allows you to change configuration values per command.
     default: op
-  shopchest.extendOther:
+  shopchest.extend.other:
     description: Allows you to extend other players' shops.
+    default: op
+  shopchest.extend.protected:
+    description: Allows you to extend shops into a protected region.
     default: op

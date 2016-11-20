@@ -247,6 +247,9 @@ message.noPermission.config=&cYou don't have permission to change configuration 
 # Set the message when a not permitted player tries to extend another player's shop's chest.
 message.noPermission.extend-others=&cYou don't have permission to extend this chest.
 
+# Set the message when a not permitted player tries to extend a chest into a protected region (e.g. WorldGuard/Towny).
+message.noPermission.extend-protected=&cYou don't have permission to extend this chest to here.
+
 # Set the command description message for '/shop create' when you type '/shop'.
 message.commandDescription.create=Create a shop.
 

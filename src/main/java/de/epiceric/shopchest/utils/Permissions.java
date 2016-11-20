@@ -14,6 +14,7 @@ public class Permissions {
     public static final String UPDATE = "shopchest.update";
     public static final String NO_LIMIT = "shopchest.limit.*";
     public static final String CONFIG = "shopchest.config";
-    public static final String EXTEND_OTHER = "shopchest.extendOther";
+    public static final String EXTEND_OTHER = "shopchest.extend.other";
+    public static final String EXTEND_PROTECTED = "shopchest.extend.protected";
 
 }

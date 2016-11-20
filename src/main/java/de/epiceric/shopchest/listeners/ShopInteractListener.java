@@ -1,5 +1,8 @@
 package de.epiceric.shopchest.listeners;
 
+import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.TownBlockType;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -30,6 +33,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -41,10 +45,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
@@ -82,15 +83,38 @@ public class ShopInteractListener implements Listener {
                         if (ClickType.getPlayerClickType(p).getClickType() == ClickType.EnumClickType.CREATE) {
                             if (!shopUtils.isShop(b.getLocation())) {
 
-                                boolean worldGuardAllowed = true;
+                                boolean externalPluginsAllowed = true;
+
+                                Location[] chestLocations = {b.getLocation(), null};
+
+                                InventoryHolder ih = ((Chest) b.getState()).getInventory().getHolder();
+                                if (ih instanceof DoubleChest) {
+                                    DoubleChest dc = (DoubleChest) ih;
+                                    chestLocations[0] = ((Chest) dc.getLeftSide()).getLocation();
+                                    chestLocations[1] = ((Chest) dc.getRightSide()).getLocation();
+                                }
 
                                 if (plugin.hasWorldGuard()) {
                                     RegionContainer container = worldGuard.getRegionContainer();
                                     RegionQuery query = container.createQuery();
-                                    worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.CREATE_SHOP);
+
+                                    for (Location loc : chestLocations) {
+                                        if (loc != null) {
+                                            externalPluginsAllowed &= query.testState(loc, p, ShopFlag.CREATE_SHOP);
+                                        }
+                                    }
                                 }
 
-                                if ((e.isCancelled() || !worldGuardAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
+                                if (plugin.hasTowny()) {
+                                    for (Location loc : chestLocations) {
+                                        if (loc != null) {
+                                            TownBlock townBlock = TownyUniverse.getTownBlock(loc);
+                                            externalPluginsAllowed &= (townBlock != null && townBlock.getType() == TownBlockType.COMMERCIAL);
+                                        }
+                                    }
+                                }
+
+                                if ((e.isCancelled() || !externalPluginsAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
                                     ClickType.removePlayerClickType(p);
                                     plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest");

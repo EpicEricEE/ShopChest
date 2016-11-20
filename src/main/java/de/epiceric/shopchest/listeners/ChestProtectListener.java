@@ -1,11 +1,18 @@
 package de.epiceric.shopchest.listeners;
 
+import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.TownBlockType;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.RegionQuery;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.worldguard.ShopFlag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,10 +36,12 @@ public class ChestProtectListener implements Listener {
 
     private ShopChest plugin;
     private ShopUtils shopUtils;
+    private WorldGuardPlugin worldGuard;
 
-    public ChestProtectListener(ShopChest plugin) {
+    public ChestProtectListener(ShopChest plugin, WorldGuardPlugin worldGuard) {
         this.plugin = plugin;
         this.shopUtils = plugin.getShopUtils();
+        this.worldGuard = worldGuard;
     }
 
     @EventHandler
@@ -124,20 +133,40 @@ public class ChestProtectListener implements Listener {
 
                     plugin.debug(String.format("%s tries to extend %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
 
-                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.EXTEND_OTHER)) {
-                        if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
-                            shopUtils.removeShop(shop, true);
-                            Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-                            shopUtils.addShop(newShop, true);
-                            plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+                    boolean externalPluginsAllowed = true;
+
+                    if (plugin.hasWorldGuard()) {
+                        RegionContainer container = worldGuard.getRegionContainer();
+                        RegionQuery query = container.createQuery();
+                        externalPluginsAllowed = query.testState(b.getLocation(), p, ShopFlag.CREATE_SHOP);
+                    }
+
+                    if (plugin.hasTowny()) {
+                        TownBlock townBlock = TownyUniverse.getTownBlock(b.getLocation());
+                        externalPluginsAllowed &= (townBlock != null && townBlock.getType() == TownBlockType.COMMERCIAL);
+                    }
+
+                    if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {
+                        if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.EXTEND_OTHER)) {
+
+                            if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                                shopUtils.removeShop(shop, true);
+                                Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+                                shopUtils.addShop(newShop, true);
+                                plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+                            } else {
+                                e.setCancelled(true);
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
+                            }
                         } else {
                             e.setCancelled(true);
-                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
+                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_OTHERS));
                         }
                     } else {
                         e.setCancelled(true);
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_OTHERS));
+                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_PROTECTED));
                     }
+
                 }
 
             }

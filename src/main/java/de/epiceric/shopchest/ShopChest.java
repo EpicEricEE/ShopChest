@@ -1,5 +1,6 @@
 package de.epiceric.shopchest;
 
+import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
@@ -44,6 +45,7 @@ public class ShopChest extends JavaPlugin {
     private ShopUtils shopUtils;
     private FileWriter fw;
     private WorldGuardPlugin worldGuard;
+    private Towny towny;
 
     /**
      * @return An instance of ShopChest
@@ -135,6 +137,11 @@ public class ShopChest extends JavaPlugin {
                 debug("Failed to load WorldGuard region manager");
                 debug(e);
             }
+        }
+
+        Plugin townyPlugin = Bukkit.getServer().getPluginManager().getPlugin("Towny");
+        if (townyPlugin instanceof Towny) {
+            towny = (Towny) townyPlugin;
         }
 
         debug("Loading utils and extras...");
@@ -292,7 +299,7 @@ public class ShopChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopItemListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyUpdateOnJoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new ChestProtectListener(this), this);
+        getServer().getPluginManager().registerEvents(new ChestProtectListener(this, worldGuard), this);
 
         if (!Utils.getServerVersion().equals("v1_8_R1"))
             getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);
@@ -371,6 +378,20 @@ public class ShopChest extends JavaPlugin {
         int count = shopUtils.reloadShops(false, false);
         getLogger().info("Initialized " + count + " Shops");
         debug("Initialized " + count + " Shops");
+    }
+
+    /**
+     * @return Whether the plugin 'Towny' is enabled
+     */
+    public boolean hasTowny() {
+        return towny != null;
+    }
+
+    /**
+     * @return An instance of {@link Towny} or {@code null} if Towny is not enabled
+     */
+    public Towny getTowny() {
+        return towny;
     }
 
     /**
