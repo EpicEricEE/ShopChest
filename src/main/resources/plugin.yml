@@ -60,7 +60,7 @@ permissions:
     description: Allows you to check for updates.
     default: op
   shopchest.limit.*:
-    default: true
+    default: op
   shopchest.config:
     description: Allows you to change configuration values per command.
     default: op
