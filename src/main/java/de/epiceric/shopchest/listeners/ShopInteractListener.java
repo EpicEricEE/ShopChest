@@ -445,7 +445,7 @@ public class ShopInteractListener implements Listener {
             plugin.debug("Create event cancelled (#" + id + ")");
             return;
         }
-        EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, creationPrice);
+        EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
         if (!r.transactionSuccess()) {
             plugin.debug("Economy transaction failed: " + r.errorMessage);
             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
@@ -645,10 +645,12 @@ public class ShopInteractListener implements Listener {
                 ItemStack newProduct = new ItemStack(product);
                 newProduct.setAmount(newAmount);
 
-                EconomyResponse r = econ.withdrawPlayer(executor, newPrice);
+                String worldName = shop.getLocation().getWorld().getName();
+
+                EconomyResponse r = econ.withdrawPlayer(executor, worldName, newPrice);
 
                 if (r.transactionSuccess()) {
-                    EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), newPrice) : null;
+                    EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), worldName, newPrice) : null;
 
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
@@ -776,10 +778,12 @@ public class ShopInteractListener implements Listener {
                 ItemStack newProduct = new ItemStack(product);
                 newProduct.setAmount(newAmount);
 
-                EconomyResponse r = econ.depositPlayer(executor, newPrice);
+                String worldName = shop.getLocation().getWorld().getName();
+
+                EconomyResponse r = econ.depositPlayer(executor, worldName, newPrice);
 
                 if (r.transactionSuccess()) {
-                    EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.withdrawPlayer(shop.getVendor(), newPrice) : null;
+                    EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.withdrawPlayer(shop.getVendor(), worldName, newPrice) : null;
 
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
