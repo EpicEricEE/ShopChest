@@ -68,6 +68,9 @@ public class Config {
     /** Whether shops should be protected by explosions **/
     public boolean explosion_protection;
 
+    /** Whether quality mode should be enabled **/
+    public boolean enable_quality_mode;
+
     /** Whether hologram interaction should be enabled **/
     public boolean enable_hologram_interaction;
 
@@ -286,6 +289,7 @@ public class Config {
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
         two_line_prices = plugin.getConfig().getBoolean("two-line-prices");
+        enable_quality_mode = plugin.getConfig().getBoolean("enable-quality-mode");
         enable_hologram_interaction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
         enable_worldguard_integration = plugin.getConfig().getBoolean("enable-worldguard-integration");

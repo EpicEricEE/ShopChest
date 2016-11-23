@@ -14,6 +14,13 @@ language-file: "en_US"
 # Set whether the floating shop items on top of the chest should be shown
 show-shop-items: true
 
+# Set whether quality-mode should be enabled.
+# Showing and hiding holograms will look better,
+# but TPS will probably decrease.
+# Not recommended on servers with low performance
+# or on servers with a lot of shops!
+enable-quality-mode: false
+
 # Set whether interaction with the hologram should be enabled.
 # If set to true, a player can do the exact same thing with the
 # hologram, as with the chest. You can even open the chest if you

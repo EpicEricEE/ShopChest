@@ -27,6 +27,13 @@ public class HologramUpdateListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent e) {
+        if (!plugin.getShopChestConfig().enable_quality_mode &&
+                e.getFrom().getBlockX() == e.getTo().getBlockX() &&
+                e.getFrom().getBlockY() == e.getTo().getBlockY() &&
+                e.getFrom().getBlockZ() == e.getTo().getBlockZ()) {
+            return;
+        }
+
         updateHolograms(e.getPlayer());
     }
 
