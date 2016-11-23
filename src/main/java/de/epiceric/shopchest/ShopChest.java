@@ -68,9 +68,7 @@ public class ShopChest extends JavaPlugin {
     }
 
     @Override
-    public void onEnable() {
-        instance = this;
-
+    public void onLoad() {
         config = new Config(this);
 
         if (config.enable_debug_log) {
@@ -89,6 +87,19 @@ public class ShopChest extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+
+        debug("Loading ShopChest version " + getDescription().getVersion());
+
+        Plugin worldGuardPlugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+        if (worldGuardPlugin instanceof WorldGuardPlugin) {
+            worldGuard = (WorldGuardPlugin) worldGuardPlugin;
+            ShopFlag.init(this, true);
+        }
+    }
+
+    @Override
+    public void onEnable() {
+        instance = this;
 
         debug("Enabling ShopChest version " + getDescription().getVersion());
 
@@ -122,10 +133,8 @@ public class ShopChest extends JavaPlugin {
                 getLogger().warning("Plugin may still work, but more errors are expected!");
         }
 
-        Plugin worldGuardPlugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-        if (worldGuardPlugin instanceof WorldGuardPlugin) {
-            worldGuard = (WorldGuardPlugin) worldGuardPlugin;
-            ShopFlag.init();
+        if (worldGuard != null && !ShopFlag.isLoaded()) {
+            ShopFlag.init(this, false);
 
             try {
                 // Reload WorldGuard regions, so that custom flags are applied
