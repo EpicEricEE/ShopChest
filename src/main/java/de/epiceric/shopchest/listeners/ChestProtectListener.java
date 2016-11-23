@@ -44,7 +44,7 @@ public class ChestProtectListener implements Listener {
         this.worldGuard = worldGuard;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
         final Block b = e.getBlock();
 
@@ -94,7 +94,7 @@ public class ChestProtectListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent e) {
         if (plugin.getShopChestConfig().explosion_protection) {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
@@ -106,7 +106,7 @@ public class ChestProtectListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent e) {
         Player p = e.getPlayer();
         Block b = e.getBlockPlaced();
@@ -174,7 +174,7 @@ public class ChestProtectListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onItemMove(InventoryMoveItemEvent e) {
         if (plugin.getShopChestConfig().hopper_protection) {
             if ((e.getSource().getType().equals(InventoryType.CHEST)) && (!e.getInitiator().getType().equals(InventoryType.PLAYER))) {
