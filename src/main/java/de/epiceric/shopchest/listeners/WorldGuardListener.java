@@ -84,27 +84,29 @@ public class WorldGuardListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onUseBlock(UseBlockEvent event) {
-        if (event.getCause().getFirstPlayer() == null) return;
+        if (plugin.getShopChestConfig().enable_worldguard_integration) {
+            if (event.getCause().getFirstPlayer() == null) return;
 
-        if (event.getOriginalEvent() instanceof PlayerInteractEvent) {
-            PlayerInteractEvent orig = (PlayerInteractEvent) event.getOriginalEvent();
+            if (event.getOriginalEvent() instanceof PlayerInteractEvent) {
+                PlayerInteractEvent orig = (PlayerInteractEvent) event.getOriginalEvent();
 
-            if (orig.hasBlock()) {
-                Material type = orig.getClickedBlock().getType();
-                if (type == Material.CHEST || type == Material.TRAPPED_CHEST) {
-                    if (isAllowed(event, orig.getClickedBlock().getLocation(), orig.getAction())) {
+                if (orig.hasBlock()) {
+                    Material type = orig.getClickedBlock().getType();
+                    if (type == Material.CHEST || type == Material.TRAPPED_CHEST) {
+                        if (isAllowed(event, orig.getClickedBlock().getLocation(), orig.getAction())) {
+                            event.setAllowed(true);
+                            orig.setCancelled(false);
+                        }
+                    }
+                }
+            } else if (event.getOriginalEvent() instanceof InventoryOpenEvent) {
+                InventoryOpenEvent orig = (InventoryOpenEvent) event.getOriginalEvent();
+
+                if (orig.getInventory().getType() == InventoryType.CHEST) {
+                    if (isAllowed(event, orig.getInventory().getLocation(), Action.RIGHT_CLICK_BLOCK)) {
                         event.setAllowed(true);
                         orig.setCancelled(false);
                     }
-                }
-            }
-        } else if (event.getOriginalEvent() instanceof InventoryOpenEvent) {
-            InventoryOpenEvent orig = (InventoryOpenEvent) event.getOriginalEvent();
-
-            if (orig.getInventory().getType() == InventoryType.CHEST) {
-                if (isAllowed(event, orig.getInventory().getLocation(), Action.RIGHT_CLICK_BLOCK)) {
-                    event.setAllowed(true);
-                    orig.setCancelled(false);
                 }
             }
         }

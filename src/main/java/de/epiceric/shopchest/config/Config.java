@@ -74,6 +74,12 @@ public class Config {
     /** Whether the debug log file should be created **/
     public boolean enable_debug_log;
 
+    /** Whether WorldGuard integration should be enabled **/
+    public boolean enable_worldguard_integration;
+
+    /** Whether Towny integration should be enabled **/
+    public boolean enable_towny_integration;
+
     /** Whether admin shops should be excluded of the shop limits **/
     public boolean exclude_admin_shops;
 
@@ -282,6 +288,8 @@ public class Config {
         two_line_prices = plugin.getConfig().getBoolean("two-line-prices");
         enable_hologram_interaction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
+        enable_worldguard_integration = plugin.getConfig().getBoolean("enable-worldguard-integration");
+        enable_towny_integration = plugin.getConfig().getBoolean("enable-towny-integration");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
         append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");

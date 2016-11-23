@@ -135,13 +135,13 @@ public class ChestProtectListener implements Listener {
 
                     boolean externalPluginsAllowed = true;
 
-                    if (plugin.hasWorldGuard()) {
+                    if (plugin.hasWorldGuard() && plugin.getShopChestConfig().enable_worldguard_integration) {
                         RegionContainer container = worldGuard.getRegionContainer();
                         RegionQuery query = container.createQuery();
                         externalPluginsAllowed = query.testState(b.getLocation(), p, ShopFlag.CREATE_SHOP);
                     }
 
-                    if (plugin.hasTowny()) {
+                    if (plugin.hasTowny() && plugin.getShopChestConfig().enable_towny_integration) {
                         TownBlock townBlock = TownyUniverse.getTownBlock(b.getLocation());
                         externalPluginsAllowed &= (townBlock != null && townBlock.getType() == TownBlockType.COMMERCIAL);
                     }

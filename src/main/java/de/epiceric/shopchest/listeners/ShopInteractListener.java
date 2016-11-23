@@ -94,7 +94,7 @@ public class ShopInteractListener implements Listener {
                                     chestLocations[1] = ((Chest) dc.getRightSide()).getLocation();
                                 }
 
-                                if (plugin.hasWorldGuard()) {
+                                if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                                     RegionContainer container = worldGuard.getRegionContainer();
                                     RegionQuery query = container.createQuery();
 
@@ -105,7 +105,7 @@ public class ShopInteractListener implements Listener {
                                     }
                                 }
 
-                                if (plugin.hasTowny()) {
+                                if (plugin.hasTowny() && config.enable_towny_integration) {
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             TownBlock townBlock = TownyUniverse.getTownBlock(loc);
@@ -237,26 +237,26 @@ public class ShopInteractListener implements Listener {
                                             boolean worldGuardAllowed = true;
 
                                             if (shop.getShopType() == ShopType.ADMIN) {
-                                                if (plugin.hasWorldGuard()) {
+                                                if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                                                     RegionContainer container = worldGuard.getRegionContainer();
                                                     RegionQuery query = container.createQuery();
                                                     worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.USE_ADMIN_SHOP);
                                                 }
 
-                                                if (worldGuardAllowed) {
+                                                if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
                                                     buy(p, shop);
                                                 } else {
                                                     plugin.debug(p.getName() + " doesn't have worldguard permission");
                                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
                                                 }
                                             } else {
-                                                if (plugin.hasWorldGuard()) {
+                                                if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                                                     RegionContainer container = worldGuard.getRegionContainer();
                                                     RegionQuery query = container.createQuery();
                                                     worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.USE_SHOP);
                                                 }
 
-                                                if (worldGuardAllowed) {
+                                                if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
                                                     Chest c = (Chest) b.getState();
                                                     if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                                         buy(p, shop);
@@ -307,7 +307,7 @@ public class ShopInteractListener implements Listener {
                                 if (p.hasPermission(Permissions.SELL)) {
                                     boolean worldGuardAllowed = true;
 
-                                    if (plugin.hasWorldGuard()) {
+                                    if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                                         RegionContainer container = worldGuard.getRegionContainer();
                                         RegionQuery query = container.createQuery();
 
@@ -315,7 +315,7 @@ public class ShopInteractListener implements Listener {
                                         worldGuardAllowed = query.testState(b.getLocation(), p, flag);
                                     }
 
-                                    if (worldGuardAllowed) {
+                                    if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
                                         if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                             sell(p, shop);
                                         } else {

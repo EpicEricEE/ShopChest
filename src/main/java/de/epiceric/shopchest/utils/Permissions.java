@@ -16,5 +16,6 @@ public class Permissions {
     public static final String CONFIG = "shopchest.config";
     public static final String EXTEND_OTHER = "shopchest.extend.other";
     public static final String EXTEND_PROTECTED = "shopchest.extend.protected";
+    public static final String WORLDGUARD_BYPASS = "shopchest.worldguard.bypass";
 
 }

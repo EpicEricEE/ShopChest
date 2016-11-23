@@ -25,6 +25,7 @@ permissions:
       shopchest.config: true
       shopchest.extend.other: true
       shopchest.extend.protected: true
+      shopchest.worldguard.bypass: true
   shopchest.create:
     description: Allows you to create a shop.
     default: true
@@ -69,4 +70,7 @@ permissions:
     default: op
   shopchest.extend.protected:
     description: Allows you to extend shops into a protected region.
+    default: op
+  shopchest.worlguard.bypass:
+    description: Allows you to to use shops in WorldGuard regions that deny shop use.
     default: op

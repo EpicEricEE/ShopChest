@@ -24,6 +24,14 @@ enable-hologram-interaction: true
 # The file may get large! Please enable this setting when reporting bugs.
 enable-debug-log: false
 
+# Set whether WorldGuard integration should be enabled
+# Of course, this only worls if WorldGuard is installed
+enable-worldguard-integration: true
+
+# Set whether Towny integration should be enabled
+# Of course, this only worls if Towny is installed
+enable-towny-integration: true
+
 # Set whether the buy- and sell price should be arranged below each other.
 # The first line will be the buy price with the message "message.hologram.only-buy",
 # the second line will be the sell price with the message "message.hologram.only-sell".
