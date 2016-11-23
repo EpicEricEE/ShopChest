@@ -13,6 +13,7 @@ import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.worldguard.ShopFlag;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -103,7 +104,7 @@ public class WorldGuardListener implements Listener {
                 InventoryOpenEvent orig = (InventoryOpenEvent) event.getOriginalEvent();
 
                 if (orig.getInventory().getType() == InventoryType.CHEST) {
-                    if (isAllowed(event, orig.getInventory().getLocation(), Action.RIGHT_CLICK_BLOCK)) {
+                    if (isAllowed(event, ((Chest)orig.getInventory().getHolder()).getLocation(), Action.RIGHT_CLICK_BLOCK)) {
                         event.setAllowed(true);
                         orig.setCancelled(false);
                     }
