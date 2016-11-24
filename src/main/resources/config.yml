@@ -32,11 +32,11 @@ enable-hologram-interaction: true
 enable-debug-log: false
 
 # Set whether WorldGuard integration should be enabled
-# Of course, this only worls if WorldGuard is installed
+# Of course, this only works if WorldGuard is installed
 enable-worldguard-integration: true
 
 # Set whether Towny integration should be enabled
-# Of course, this only worls if Towny is installed
+# Of course, this only works if Towny is installed
 enable-towny-integration: true
 
 # Set whether the buy- and sell price should be arranged below each other.
