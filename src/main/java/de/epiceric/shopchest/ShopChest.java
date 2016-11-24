@@ -324,15 +324,9 @@ public class ShopChest extends JavaPlugin {
         debug("Disabling ShopChest...");
 
         if (database != null) {
-            int highestId = database.getHighestID();
-
-            for (int i = 1; i <= highestId; i++) {
-                for (Shop shop : shopUtils.getShops()) {
-                    if (shop.getID() == i) {
-                        shopUtils.removeShop(shop, false);
-                        debug("Removed shop (#" + shop.getID() + ")");
-                    }
-                }
+            for (Shop shop : shopUtils.getShops()) {
+                shopUtils.removeShop(shop, false);
+                debug("Removed shop (#" + shop.getID() + ")");
             }
 
             database.disconnect();

@@ -4,14 +4,16 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.sql.Database;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ShopUtils {
 
@@ -184,16 +186,12 @@ public class ShopUtils {
 
         if (reloadConfig) plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
 
-        int highestId = plugin.getShopDatabase().getHighestID();
-
-        for (int i = 1; i <= highestId; i++) {
-            for (Shop shop : getShops()) {
-                if (shop.getID() == i) {
-                    removeShop(shop, false);
-                    plugin.debug("Removed shop (#" + shop.getID() + ")");
-                }
-            }
+        for (Shop shop : getShops()) {
+            removeShop(shop, false);
+            plugin.debug("Removed shop (#" + shop.getID() + ")");
         }
+
+        int highestId = plugin.getShopDatabase().getHighestID();
 
         int count = 0;
         for (int id = 1; id <= highestId; id++) {
