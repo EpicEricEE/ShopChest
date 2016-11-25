@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class ShopUtils {
@@ -51,12 +51,7 @@ public class ShopUtils {
      * @return Array of all Shops
      */
     public Shop[] getShops() {
-        ArrayList<Shop> shops = new ArrayList<>();
-
-        for (Shop shop : shopLocation.values()) {
-            shops.add(shop);
-        }
-
+        Collection<Shop> shops = shopLocation.values();
         return shops.toArray(new Shop[shops.size()]);
     }
 
