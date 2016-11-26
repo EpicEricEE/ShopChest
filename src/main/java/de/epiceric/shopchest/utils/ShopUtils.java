@@ -118,12 +118,14 @@ public class ShopUtils {
      * @return The shop limits of the given player
      */
     public int getShopLimit(Player p) {
-        int limit = plugin.getShopChestConfig().default_limit;
+        int limit = 0;
+        boolean useDefault = true;
 
         for (PermissionAttachmentInfo permInfo : p.getEffectivePermissions()) {
             if (permInfo.getPermission().startsWith("shopchest.limit.")) {
                 if (permInfo.getPermission().equalsIgnoreCase(Permissions.NO_LIMIT)) {
                     limit = -1;
+                    useDefault = false;
                     break;
                 } else {
                     String[] spl = permInfo.getPermission().split("shopchest.limit.");
@@ -131,7 +133,14 @@ public class ShopUtils {
                     if (spl.length > 1) {
                         try {
                             int newLimit = Integer.valueOf(spl[1]);
+
+                            if (newLimit < 0) {
+                                limit = -1;
+                                break;
+                            }
+
                             limit = Math.max(limit, newLimit);
+                            useDefault = false;
                         } catch (NumberFormatException ignored) {
                             /* Ignore and continue */
                         }
@@ -141,7 +150,7 @@ public class ShopUtils {
         }
 
         if (limit < -1) limit = -1;
-        return limit;
+        return (useDefault ? plugin.getShopChestConfig().default_limit : limit);
     }
 
     /**
