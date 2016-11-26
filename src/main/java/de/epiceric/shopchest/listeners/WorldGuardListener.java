@@ -20,7 +20,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class WorldGuardListener implements Listener {
@@ -103,7 +102,7 @@ public class WorldGuardListener implements Listener {
             } else if (event.getOriginalEvent() instanceof InventoryOpenEvent) {
                 InventoryOpenEvent orig = (InventoryOpenEvent) event.getOriginalEvent();
 
-                if (orig.getInventory().getType() == InventoryType.CHEST) {
+                if (orig.getInventory().getHolder() instanceof Chest) {
                     if (isAllowed(event, ((Chest)orig.getInventory().getHolder()).getLocation(), Action.RIGHT_CLICK_BLOCK)) {
                         event.setAllowed(true);
                         orig.setCancelled(false);
