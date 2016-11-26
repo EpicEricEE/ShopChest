@@ -39,6 +39,10 @@ enable-worldguard-integration: true
 # Of course, this only works if Towny is installed
 enable-towny-integration: true
 
+# Set whether the vendor of a shop should get messages when players
+# buy or sell something from/to his shop
+enable-vendor-messages: true
+
 # Set whether the buy- and sell price should be arranged below each other.
 # The first line will be the buy price with the message "message.hologram.only-buy",
 # the second line will be the sell price with the message "message.hologram.only-sell".

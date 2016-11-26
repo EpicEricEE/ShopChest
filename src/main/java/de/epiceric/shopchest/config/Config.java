@@ -83,6 +83,9 @@ public class Config {
     /** Whether Towny integration should be enabled **/
     public boolean enable_towny_integration;
 
+    /** Whether the vendor of the shop should get messages about buys and sells **/
+    public boolean enable_vendor_messages;
+
     /** Whether admin shops should be excluded of the shop limits **/
     public boolean exclude_admin_shops;
 
@@ -294,6 +297,7 @@ public class Config {
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
         enable_worldguard_integration = plugin.getConfig().getBoolean("enable-worldguard-integration");
         enable_towny_integration = plugin.getConfig().getBoolean("enable-towny-integration");
+        enable_vendor_messages = plugin.getConfig().getBoolean("enable-vendor-messages");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
         append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");

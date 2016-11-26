@@ -677,7 +677,7 @@ public class ShopInteractListener implements Listener {
 
                             plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
 
-                            if (shop.getVendor().isOnline()) {
+                            if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
                                         new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(newPrice)),
                                         new LocalizedMessage.ReplacedRegex(Regex.PLAYER, executor.getName())));
@@ -810,7 +810,7 @@ public class ShopInteractListener implements Listener {
 
                             plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
 
-                            if (shop.getVendor().isOnline()) {
+                            if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_SOLD, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(newAmount)),
                                         new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(newPrice)),
                                         new LocalizedMessage.ReplacedRegex(Regex.PLAYER, executor.getName())));
