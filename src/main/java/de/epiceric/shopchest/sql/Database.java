@@ -108,7 +108,7 @@ public abstract class Database {
     public int getNextFreeID() {
         int highestId = getHighestID();
         for (int i = 1; i <= highestId + 1; i++) {
-            if (get(i, ShopInfo.X) == null) {
+            if (!isShop(i)) {
                 plugin.debug("Next free id: " + i);
                 return i;
             }
@@ -173,10 +173,9 @@ public abstract class Database {
 
     /**
      * @param id ID of the shop
-     * @param shopInfo What to get
-     * @return Value you wanted to get. This needs to be casted to the right type!
+     * @return Whether a shop with the given ID exists
      */
-    public Object get(int id, ShopInfo shopInfo) {
+    public boolean isShop(int id) {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -186,88 +185,65 @@ public abstract class Database {
 
             while (rs.next()) {
                 if (rs.getInt("id") == id) {
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            plugin.getLogger().severe("Failed to access database");
+            plugin.debug("Failed to check if shop with ID exists (#" + id + ")");
+            plugin.debug(ex);
+        } finally {
+            close(ps, rs);
+        }
 
-                    switch (shopInfo) {
-                        case SHOP:
-                            plugin.debug("Getting Shop... (#" + id + ")");
+        return false;
+    }
 
-                            Shop shop = plugin.getShopUtils().getShop((Location) get(id, ShopInfo.LOCATION));
-                            if (shop != null) {
-                                plugin.debug("Shop already exists, returning existing one (#" + id + ").");
-                                return shop;
-                            } else {
-                                plugin.debug("Creating new shop... (#" + id + ")");
-                                return new Shop(id, plugin,
-                                        (OfflinePlayer) get(id, ShopInfo.VENDOR),
-                                        (ItemStack) get(id, ShopInfo.PRODUCT),
-                                        (Location) get(id, ShopInfo.LOCATION),
-                                        (double) get(id, ShopInfo.BUYPRICE),
-                                        (double) get(id, ShopInfo.SELLPRICE),
-                                        (ShopType) get(id, ShopInfo.SHOPTYPE));
-                            }
-                        case VENDOR:
-                            String vendor = rs.getString("vendor");
-                            plugin.debug("Getting vendor: " + vendor + " (#" + id + ")");
-                            return Bukkit.getOfflinePlayer(UUID.fromString(vendor));
-                        case PRODUCT:
-                            String product = rs.getString("product");
-                            plugin.debug("Getting product: " + product + " (#" + id + ")");
-                            return Utils.decode(product);
-                        case WORLD:
-                            String world = rs.getString("world");
-                            plugin.debug("Getting world: " + world + " (#" + id + ")");
-                            return Bukkit.getWorld(world);
-                        case X:
-                            int x = rs.getInt("x");
-                            plugin.debug("Getting x: " + x + " (#" + id + ")");
-                            return x;
-                        case Y:
-                            int y = rs.getInt("y");
-                            plugin.debug("Getting y: " + y + " (#" + id + ")");
-                            return y;
-                        case Z:
-                            int z = rs.getInt("z");
-                            plugin.debug("Getting z: " + z + " (#" + id + ")");
-                            return z;
-                        case LOCATION:
-                            plugin.debug("Getting location... (#" + id + ")");
-                            return new Location((World) get(id, ShopInfo.WORLD), (int) get(id, ShopInfo.X), (int) get(id, ShopInfo.Y), (int) get(id, ShopInfo.Z));
-                        case BUYPRICE:
-                            double buyprice = rs.getDouble("buyprice");
-                            plugin.debug("Getting buyprice: " + buyprice + " (#" + id + ")");
-                            return buyprice;
-                        case SELLPRICE:
-                            double sellprice = rs.getDouble("sellprice");
-                            plugin.debug("Getting sellprice: " + sellprice + " (#" + id + ")");
-                            return sellprice;
-                        case SHOPTYPE:
-                            String shoptype = rs.getString("shoptype");
-                            plugin.debug("Getting shoptype: " + shoptype + " (#" + id + ")");
+    /**
+     * @param id ID of the shop
+     * @return Shop with the given ID
+     */
+    public Shop getShop(int id) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-                            if (shoptype.equals("INFINITE")) {
+        try {
+            ps = connection.prepareStatement("SELECT * FROM shop_list WHERE id = " + id + ";");
+            rs = ps.executeQuery();
 
-                                Shop newShop = new Shop(id, plugin,
-                                        (OfflinePlayer) get(id, ShopInfo.VENDOR),
-                                        (ItemStack) get(id, ShopInfo.PRODUCT),
-                                        (Location) get(id, ShopInfo.LOCATION),
-                                        (double) get(id, ShopInfo.BUYPRICE),
-                                        (double) get(id, ShopInfo.SELLPRICE),
-                                        ShopType.ADMIN);
+            while (rs.next()) {
+                if (rs.getInt("id") == id) {
+                    plugin.debug("Getting Shop... (#" + id + ")");
 
-                                addShop(newShop);
+                    World world = Bukkit.getWorld(rs.getString("world"));
+                    int x = rs.getInt("x");
+                    int y = rs.getInt("y");
+                    int z = rs.getInt("z");
 
-                                return ShopType.ADMIN;
-                            }
-                            return ShopType.valueOf(shoptype);
+                    Location location = new Location(world, x, y, z);
+
+                    Shop shop = plugin.getShopUtils().getShop(location);
+                    if (shop != null) {
+                        plugin.debug("Shop already exists, returning existing one (#" + id + ").");
+                        return shop;
+                    } else {
+                        plugin.debug("Creating new shop... (#" + id + ")");
+
+                        OfflinePlayer vendor = Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
+                        ItemStack product = Utils.decode(rs.getString("product"));
+                        double buyPrice = rs.getDouble("buyprice");
+                        double sellPrice = rs.getDouble("sellprice");
+                        ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
+
+                        return new Shop(id, plugin, vendor, product, location, buyPrice, sellPrice, shopType);
                     }
                 }
             }
 
             plugin.debug("Shop with ID not found, returning null. (#" + id + ")");
-
         } catch (SQLException ex) {
             plugin.getLogger().severe("Failed to access database");
-            plugin.debug("Failed to get shop info " + shopInfo.toString() + "(#" + id + ")");
+            plugin.debug("Failed to get shop (#" + id + ")");
             plugin.debug(ex);
         } finally {
             close(ps, rs);
@@ -400,20 +376,6 @@ public abstract class Database {
             plugin.debug("Failed to disconnect from database");
             plugin.debug(e);
         }
-    }
-
-    public enum ShopInfo {
-        SHOP,
-        VENDOR,
-        PRODUCT,
-        WORLD,
-        X,
-        Y,
-        Z,
-        LOCATION,
-        BUYPRICE,
-        SELLPRICE,
-        SHOPTYPE
     }
 
     public enum DatabaseType {

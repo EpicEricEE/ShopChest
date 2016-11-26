@@ -193,7 +193,7 @@ public class ShopUtils {
 
             try {
                 plugin.debug("Trying to add shop. (#" + id + ")");
-                Shop shop = (Shop) plugin.getShopDatabase().get(id, Database.ShopInfo.SHOP);
+                Shop shop = plugin.getShopDatabase().getShop(id);
                 addShop(shop, false);
             } catch (Exception e) {
                 plugin.debug("Error while adding shop (#" + id + "):");
