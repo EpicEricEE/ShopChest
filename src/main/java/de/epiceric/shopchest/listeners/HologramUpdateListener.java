@@ -52,8 +52,8 @@ public class HologramUpdateListener implements Listener {
             if (shop.getHologram() == null) continue;
 
             Location shopLocation = shop.getLocation();
-
-            if (playerLocation.getWorld().equals(shopLocation.getWorld())) {
+            
+            if (playerLocation.getWorld().getName().equals(shopLocation.getWorld().getName())) {
                 if (playerLocation.distanceSquared(shop.getHologram().getLocation()) <= hologramDistanceSquared) {
                     if (!shop.getHologram().isVisible(p)) {
                         shop.getHologram().showPlayer(p);
