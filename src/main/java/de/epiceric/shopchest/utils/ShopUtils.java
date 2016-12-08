@@ -122,7 +122,7 @@ public class ShopUtils {
         boolean useDefault = true;
 
         for (PermissionAttachmentInfo permInfo : p.getEffectivePermissions()) {
-            if (permInfo.getPermission().startsWith("shopchest.limit.")) {
+            if (permInfo.getPermission().startsWith("shopchest.limit.") && p.hasPermission(permInfo.getPermission())) {
                 if (permInfo.getPermission().equalsIgnoreCase(Permissions.NO_LIMIT)) {
                     limit = -1;
                     useDefault = false;
