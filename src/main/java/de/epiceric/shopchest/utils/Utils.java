@@ -122,7 +122,7 @@ public class Utils {
             FireworkMeta fireworkMeta1 = (FireworkMeta) itemMeta1;
             FireworkMeta fireworkMeta2 = (FireworkMeta) itemMeta2;
 
-            if (fireworkMeta1.hasEffects()) similar = (fireworkMeta1.getEffects().equals(fireworkMeta2.getEnchants()));
+            if (fireworkMeta1.hasEffects()) similar = (fireworkMeta1.getEffects().equals(fireworkMeta2.getEffects()));
             similar &= (fireworkMeta1.getPower() == fireworkMeta2.getPower());
 
         } else if (itemMeta1 instanceof LeatherArmorMeta) {
