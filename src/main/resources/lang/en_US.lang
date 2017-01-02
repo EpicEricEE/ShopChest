@@ -432,6 +432,7 @@ enchantment.thorns=Thorns
 enchantment.mending=Mending
 enchantment.binding_curse=Curse of Binding
 enchantment.vanishing_curse=Curse of Vanishing
+enchantment.sweeping=Sweeping Edge
 enchantment.level.1=I
 enchantment.level.2=II
 enchantment.level.3=III
@@ -783,6 +784,7 @@ item.banner.orange.name=Orange Banner
 item.banner.white.name=White Banner
 item.totem.name=Totem of Undying
 item.shulkerShell.name=Shulker Shell
+item.ironNugget.name=Iron Nugget
 
 # Block names that will be displayed in the hologram
 tile.barrier.name=Barrier

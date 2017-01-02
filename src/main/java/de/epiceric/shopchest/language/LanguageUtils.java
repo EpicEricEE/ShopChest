@@ -247,6 +247,7 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.COBBLE_WALL, langConfig.getString("tile.cobbleWall.normal.name", "Cobblestone Wall")));
         itemNames.add(new ItemName(Material.COBBLE_WALL, 1, langConfig.getString("tile.cobbleWall.mossy.name", "Mossy Cobblestone Wall")));
         itemNames.add(new ItemName(Material.WOOD_BUTTON, langConfig.getString("tile.button.name", "Button")));
+        itemNames.add(new ItemName(Material.NETHER_STALK, langConfig.getString("tile.netherStalk.name", "Nether Wart")));
         itemNames.add(new ItemName(Material.ANVIL, langConfig.getString("tile.anvil.intact.name", "Anvil")));
         itemNames.add(new ItemName(Material.ANVIL, 1, langConfig.getString("tile.anvil.slightlyDamaged.name", "Slightly Damaged Anvil")));
         itemNames.add(new ItemName(Material.ANVIL, 2, langConfig.getString("tile.anvil.veryDamaged.name", "Very Damaged Anvil")));
@@ -650,6 +651,10 @@ public class LanguageUtils {
             // Add Item Names of 1.11
             itemNames.add(new ItemName(Material.TOTEM, langConfig.getString("item.totem.name", "Totem of Undying")));
             itemNames.add(new ItemName(Material.SHULKER_SHELL, langConfig.getString("item.shulkerShell.name", "Shulker Shell")));
+
+            if (Utils.getRevision() >= 2 || Utils.getMajorVersion() > 11) {
+                itemNames.add(new ItemName(Material.IRON_NUGGET, langConfig.getString("item.ironNugget.name", "Iron Nugget")));
+            }
         }
 
         // Add Enchantment Names
@@ -689,6 +694,10 @@ public class LanguageUtils {
             // Add Enchantment Names of 1.11
             enchantmentNames.add(new EnchantmentName(Enchantment.BINDING_CURSE, langConfig.getString("enchantment.binding_curse", "Curse of Binding")));
             enchantmentNames.add(new EnchantmentName(Enchantment.VANISHING_CURSE, langConfig.getString("enchantment.vanishing_curse", "Curse of Vanishing")));
+
+            if (Utils.getRevision() >= 2 || Utils.getMajorVersion() > 11) {
+                enchantmentNames.add(new EnchantmentName(Enchantment.SWEEPING_EDGE, langConfig.getString("enchantment.sweeping", "Sweeping Edge")));
+            }
         }
 
         // Add Enchantment Level Names
