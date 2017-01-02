@@ -1,7 +1,9 @@
 package de.epiceric.shopchest.utils;
 
+import com.google.common.collect.ImmutableList;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.nms.CustomBookMeta;
+import de.epiceric.shopchest.nms.ShulkerBoxMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -19,8 +21,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Utils {
+
+    private static final ImmutableList<Material> SHULKER_BOX_MATERIALS = new ImmutableList.Builder<Material>()
+            .add(Material.BLACK_SHULKER_BOX)
+            .add(Material.BLUE_SHULKER_BOX)
+            .add(Material.BROWN_SHULKER_BOX)
+            .add(Material.CYAN_SHULKER_BOX)
+            .add(Material.GRAY_SHULKER_BOX)
+            .add(Material.GREEN_SHULKER_BOX)
+            .add(Material.LIGHT_BLUE_SHULKER_BOX)
+            .add(Material.LIME_SHULKER_BOX)
+            .add(Material.MAGENTA_SHULKER_BOX)
+            .add(Material.ORANGE_SHULKER_BOX)
+            .add(Material.PINK_SHULKER_BOX)
+            .add(Material.PURPLE_SHULKER_BOX)
+            .add(Material.RED_SHULKER_BOX)
+            .add(Material.SILVER_SHULKER_BOX)
+            .add(Material.WHITE_SHULKER_BOX)
+            .add(Material.YELLOW_SHULKER_BOX)
+            .build();
 
     /**
      * Check if two items are similar to each other
@@ -81,6 +103,13 @@ public class Utils {
             similar = (bsMeta1.hasBlockState() == bsMeta2.hasBlockState());
 
             if (bsMeta1.hasBlockState()) similar &= (bsMeta1.getBlockState().equals(bsMeta2.getBlockState()));
+
+            if (getMajorVersion() >= 11 && SHULKER_BOX_MATERIALS.contains(itemStack1.getType())) {
+                Map<Integer, ItemStack> contents1 = ShulkerBoxMeta.getContents(itemStack1);
+                Map<Integer, ItemStack> contents2 = ShulkerBoxMeta.getContents(itemStack2);
+
+                if (contents1 != null) similar &= contents1.equals(contents2);
+            }
 
         } else if (itemMeta1 instanceof BookMeta) {
             BookMeta bookMeta1 = (BookMeta) itemMeta1;
