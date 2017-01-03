@@ -5,8 +5,11 @@ import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.bukkit.event.block.UseBlockEvent;
+import com.sk89q.worldguard.bukkit.event.entity.DamageEntityEvent;
+import com.sk89q.worldguard.bukkit.event.entity.UseEntityEvent;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.Permissions;
@@ -14,12 +17,17 @@ import de.epiceric.shopchest.worldguard.ShopFlag;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class WorldGuardListener implements Listener {
@@ -33,18 +41,16 @@ public class WorldGuardListener implements Listener {
     }
 
 
-    private boolean isAllowed(UseBlockEvent event, Location location, Action action) {
-        Player p = event.getCause().getFirstPlayer();
-
-        LocalPlayer localPlayer = worldGuard.wrapPlayer(p);
+    private boolean isAllowed(Player player, Location location, Action action) {
+        LocalPlayer localPlayer = worldGuard.wrapPlayer(player);
         RegionContainer container = worldGuard.getRegionContainer();
         RegionQuery query = container.createQuery();
 
         if (action == Action.RIGHT_CLICK_BLOCK) {
 
-            if (ClickType.getPlayerClickType(p) != null) {
+            if (ClickType.getPlayerClickType(player) != null) {
 
-                switch (ClickType.getPlayerClickType(p).getClickType()) {
+                switch (ClickType.getPlayerClickType(player).getClickType()) {
 
                     case CREATE:
                         return query.testState(location, localPlayer, ShopFlag.CREATE_SHOP);
@@ -56,12 +62,12 @@ public class WorldGuardListener implements Listener {
                 if (plugin.getShopUtils().isShop(location)) {
                     Shop shop = plugin.getShopUtils().getShop(location);
 
-                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) && shop.getShopType() != Shop.ShopType.ADMIN) {
+                    if (shop.getVendor().getUniqueId().equals(player.getUniqueId()) && shop.getShopType() != Shop.ShopType.ADMIN) {
                         return true;
                     }
 
-                    if (!shop.getVendor().getUniqueId().equals(p.getUniqueId()) && p.isSneaking()) {
-                        return p.hasPermission(Permissions.OPEN_OTHER);
+                    if (!shop.getVendor().getUniqueId().equals(player.getUniqueId()) && player.isSneaking()) {
+                        return player.hasPermission(Permissions.OPEN_OTHER);
                     }
 
                     StateFlag flag = (shop.getShopType() == Shop.ShopType.NORMAL ? ShopFlag.USE_SHOP : ShopFlag.USE_ADMIN_SHOP);
@@ -83,9 +89,66 @@ public class WorldGuardListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOW)
+    public void onUseEntity(UseEntityEvent event) {
+        if (plugin.getShopChestConfig().enable_worldguard_integration) {
+            Player player = event.getCause().getFirstPlayer();
+            if (player == null) return;
+
+            if (event.getOriginalEvent() instanceof PlayerInteractAtEntityEvent) {
+                PlayerInteractAtEntityEvent orig = (PlayerInteractAtEntityEvent) event.getOriginalEvent();
+
+                Entity e = orig.getRightClicked();
+                if (!Hologram.isPartOfHologram((ArmorStand) e)) return;
+
+                if (e.getType() == EntityType.ARMOR_STAND) {
+                    for (Shop shop : plugin.getShopUtils().getShops()) {
+                        if (shop.getHologram().contains((ArmorStand) e)) {
+                            if (isAllowed(player, shop.getLocation(), Action.RIGHT_CLICK_BLOCK)) {
+                                event.setAllowed(true);
+                                orig.setCancelled(false);
+                            }
+
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onDamageEntity(DamageEntityEvent event) {
+        if (plugin.getShopChestConfig().enable_worldguard_integration) {
+            Player player = event.getCause().getFirstPlayer();
+            if (player == null) return;
+
+            if (event.getOriginalEvent() instanceof EntityDamageByEntityEvent) {
+                EntityDamageByEntityEvent orig = (EntityDamageByEntityEvent) event.getOriginalEvent();
+
+                Entity e = orig.getEntity();
+                if (!Hologram.isPartOfHologram((ArmorStand) e)) return;
+
+                if (e.getType() == EntityType.ARMOR_STAND) {
+                    for (Shop shop : plugin.getShopUtils().getShops()) {
+                        if (shop.getHologram().contains((ArmorStand) e)) {
+                            if (isAllowed(player, shop.getLocation(), Action.RIGHT_CLICK_BLOCK)) {
+                                event.setAllowed(true);
+                                orig.setCancelled(false);
+                            }
+
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
     public void onUseBlock(UseBlockEvent event) {
         if (plugin.getShopChestConfig().enable_worldguard_integration) {
-            if (event.getCause().getFirstPlayer() == null) return;
+            Player player = event.getCause().getFirstPlayer();
+            if (player == null) return;
 
             if (event.getOriginalEvent() instanceof PlayerInteractEvent) {
                 PlayerInteractEvent orig = (PlayerInteractEvent) event.getOriginalEvent();
@@ -93,7 +156,7 @@ public class WorldGuardListener implements Listener {
                 if (orig.hasBlock()) {
                     Material type = orig.getClickedBlock().getType();
                     if (type == Material.CHEST || type == Material.TRAPPED_CHEST) {
-                        if (isAllowed(event, orig.getClickedBlock().getLocation(), orig.getAction())) {
+                        if (isAllowed(player, orig.getClickedBlock().getLocation(), orig.getAction())) {
                             event.setAllowed(true);
                             orig.setCancelled(false);
                         }
@@ -103,7 +166,7 @@ public class WorldGuardListener implements Listener {
                 InventoryOpenEvent orig = (InventoryOpenEvent) event.getOriginalEvent();
 
                 if (orig.getInventory().getHolder() instanceof Chest) {
-                    if (isAllowed(event, ((Chest)orig.getInventory().getHolder()).getLocation(), Action.RIGHT_CLICK_BLOCK)) {
+                    if (isAllowed(player, ((Chest)orig.getInventory().getHolder()).getLocation(), Action.RIGHT_CLICK_BLOCK)) {
                         event.setAllowed(true);
                         orig.setCancelled(false);
                     }
