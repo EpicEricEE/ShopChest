@@ -45,40 +45,28 @@ public class WorldGuardListener implements Listener {
         LocalPlayer localPlayer = worldGuard.wrapPlayer(player);
         RegionContainer container = worldGuard.getRegionContainer();
         RegionQuery query = container.createQuery();
+        Shop shop = plugin.getShopUtils().getShop(location);
 
-        if (action == Action.RIGHT_CLICK_BLOCK) {
-
-            if (ClickType.getPlayerClickType(player) != null) {
-
-                switch (ClickType.getPlayerClickType(player).getClickType()) {
-
-                    case CREATE:
-                        return query.testState(location, localPlayer, ShopFlag.CREATE_SHOP);
-                    case REMOVE:
-                    case INFO:
-                        return true;
-                }
-            } else {
-                if (plugin.getShopUtils().isShop(location)) {
-                    Shop shop = plugin.getShopUtils().getShop(location);
-
-                    if (shop.getVendor().getUniqueId().equals(player.getUniqueId()) && shop.getShopType() != Shop.ShopType.ADMIN) {
-                        return true;
-                    }
-
-                    if (!shop.getVendor().getUniqueId().equals(player.getUniqueId()) && player.isSneaking()) {
-                        return player.hasPermission(Permissions.OPEN_OTHER);
-                    }
-
-                    StateFlag flag = (shop.getShopType() == Shop.ShopType.NORMAL ? ShopFlag.USE_SHOP : ShopFlag.USE_ADMIN_SHOP);
-
-                    return query.testState(location, localPlayer, flag);
-                }
+        if (action == Action.RIGHT_CLICK_BLOCK && shop != null) {
+            if (shop.getVendor().getUniqueId().equals(player.getUniqueId()) && shop.getShopType() != Shop.ShopType.ADMIN) {
+                return true;
             }
-        } else if (action == Action.LEFT_CLICK_BLOCK) {
-            if (plugin.getShopUtils().isShop(location)) {
-                Shop shop = plugin.getShopUtils().getShop(location);
 
+            if (!shop.getVendor().getUniqueId().equals(player.getUniqueId()) && player.isSneaking()) {
+                return player.hasPermission(Permissions.OPEN_OTHER);
+            }
+        }
+
+        if (ClickType.getPlayerClickType(player) != null) {
+            switch (ClickType.getPlayerClickType(player).getClickType()) {
+                case CREATE:
+                    return query.testState(location, localPlayer, ShopFlag.CREATE_SHOP);
+                case REMOVE:
+                case INFO:
+                    return true;
+            }
+        } else {
+            if (shop != null) {
                 StateFlag flag = (shop.getShopType() == Shop.ShopType.NORMAL ? ShopFlag.USE_SHOP : ShopFlag.USE_ADMIN_SHOP);
 
                 return query.testState(location, localPlayer, flag);
@@ -131,7 +119,7 @@ public class WorldGuardListener implements Listener {
                 if (e.getType() == EntityType.ARMOR_STAND) {
                     for (Shop shop : plugin.getShopUtils().getShops()) {
                         if (shop.getHologram().contains((ArmorStand) e)) {
-                            if (isAllowed(player, shop.getLocation(), Action.RIGHT_CLICK_BLOCK)) {
+                            if (isAllowed(player, shop.getLocation(), Action.LEFT_CLICK_BLOCK)) {
                                 event.setAllowed(true);
                                 orig.setCancelled(false);
                             }
