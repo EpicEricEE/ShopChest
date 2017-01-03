@@ -153,14 +153,12 @@ public class ShopInteractListener implements Listener {
     private void handleInteractEvent(PlayerInteractEvent e, boolean calledFromInteractEvent) {
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
+        boolean inverted = config.invert_mouse_buttons;
 
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-
             if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-
-                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-                    if (ClickType.getPlayerClickType(p) != null) {
+                if (ClickType.getPlayerClickType(p) != null) {
+                    if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
                         switch (ClickType.getPlayerClickType(p).getClickType()) {
                             case INFO:
@@ -199,13 +197,19 @@ public class ShopInteractListener implements Listener {
                                 break;
 
                         }
+                    }
+                } else {
+                    if (shopUtils.isShop(b.getLocation())) {
+                        Shop shop = shopUtils.getShop(b.getLocation());
 
-                    } else {
-
-                        if (shopUtils.isShop(b.getLocation())) {
-                            Shop shop = shopUtils.getShop(b.getLocation());
-
+                        if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
                             if (p.isSneaking()) {
+                                return;
+                            }
+                        }
+
+                        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                            if (p.isSneaking() || (shop.getShopType() != ShopType.ADMIN && shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
                                 if (Utils.getPreferredItemInHand(p) == null) {
                                     e.setCancelled(true);
                                     if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
@@ -228,127 +232,116 @@ public class ShopInteractListener implements Listener {
                                         }
                                     }
                                 }
-                            } else {
-                                e.setCancelled(true);
-                                if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-                                    plugin.debug(p.getName() + " wants to buy");
-                                    if (shop.getBuyPrice() > 0) {
-                                        if (p.hasPermission(Permissions.BUY)) {
-                                            boolean worldGuardAllowed = true;
 
-                                            if (shop.getShopType() == ShopType.ADMIN) {
-                                                if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
-                                                    RegionContainer container = worldGuard.getRegionContainer();
-                                                    RegionQuery query = container.createQuery();
-                                                    worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.USE_ADMIN_SHOP);
-                                                }
+                                return;
+                            }
+                        }
 
-                                                if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
+                        if ((e.getAction() == Action.RIGHT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.LEFT_CLICK_BLOCK && inverted)) {
+                            e.setCancelled(true);
+
+                            if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+                                plugin.debug(p.getName() + " wants to buy");
+
+                                if (shop.getBuyPrice() > 0) {
+                                    if (p.hasPermission(Permissions.BUY)) {
+                                        boolean worldGuardAllowed = true;
+
+                                        if (shop.getShopType() == ShopType.ADMIN) {
+                                            if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                                RegionContainer container = worldGuard.getRegionContainer();
+                                                RegionQuery query = container.createQuery();
+                                                worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.USE_ADMIN_SHOP);
+                                            }
+
+                                            if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
+                                                buy(p, shop);
+                                            } else {
+                                                plugin.debug(p.getName() + " doesn't have worldguard permission");
+                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
+                                            }
+                                        } else {
+                                            if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                                RegionContainer container = worldGuard.getRegionContainer();
+                                                RegionQuery query = container.createQuery();
+                                                worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.USE_SHOP);
+                                            }
+
+                                            if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
+                                                Chest c = (Chest) b.getState();
+                                                if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                                     buy(p, shop);
                                                 } else {
-                                                    plugin.debug(p.getName() + " doesn't have worldguard permission");
-                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
-                                                }
-                                            } else {
-                                                if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
-                                                    RegionContainer container = worldGuard.getRegionContainer();
-                                                    RegionQuery query = container.createQuery();
-                                                    worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.USE_SHOP);
-                                                }
-
-                                                if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
-                                                    Chest c = (Chest) b.getState();
-                                                    if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
+                                                    if (config.auto_calculate_item_amount && Utils.getAmount(c.getInventory(), shop.getProduct()) > 0) {
                                                         buy(p, shop);
                                                     } else {
-                                                        if (config.auto_calculate_item_amount && Utils.getAmount(c.getInventory(), shop.getProduct()) > 0) {
-                                                            buy(p, shop);
-                                                        } else {
-                                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
-                                                            plugin.debug("Shop is out of stock");
-                                                        }
+                                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
+                                                        plugin.debug("Shop is out of stock");
                                                     }
+                                                }
+                                            } else {
+                                                plugin.debug(p.getName() + " doesn't have worldguard permission");
+                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
+                                            }
+                                        }
+                                    } else {
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY));
+                                        plugin.debug(p.getName() + " is not permitted to buy");
+                                    }
+                                } else {
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUYING_DISABLED));
+                                    plugin.debug("Buying is disabled");
+                                }
+                            }
+
+                        } else if ((e.getAction() == Action.LEFT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.RIGHT_CLICK_BLOCK && inverted)) {
+                            e.setCancelled(true);
+
+                            if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
+                                plugin.debug(p.getName() + " wants to sell");
+
+                                if (shop.getSellPrice() > 0) {
+                                    if (p.hasPermission(Permissions.SELL)) {
+                                        boolean worldGuardAllowed = true;
+
+                                        if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                            RegionContainer container = worldGuard.getRegionContainer();
+                                            RegionQuery query = container.createQuery();
+
+                                            StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? ShopFlag.USE_ADMIN_SHOP : ShopFlag.USE_SHOP);
+                                            worldGuardAllowed = query.testState(b.getLocation(), p, flag);
+                                        }
+
+                                        if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
+                                            if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
+                                                sell(p, shop);
+                                            } else {
+                                                if (config.auto_calculate_item_amount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
+                                                    sell(p, shop);
                                                 } else {
-                                                    plugin.debug(p.getName() + " doesn't have worldguard permission");
-                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
+                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
+                                                    plugin.debug(p.getName() + " doesn't have enough items");
                                                 }
                                             }
                                         } else {
-                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY));
-                                            plugin.debug(p.getName() + " is not permitted to buy");
+                                            plugin.debug(p.getName() + " doesn't have worldguard permission");
+                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_SELL));
                                         }
                                     } else {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUYING_DISABLED));
-                                        plugin.debug("Buying is disabled");
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL));
+                                        plugin.debug(p.getName() + " is not permitted to sell");
                                     }
                                 } else {
-                                    e.setCancelled(false);
-                                    if (!calledFromInteractEvent) {
-                                        p.openInventory(shop.getInventoryHolder().getInventory());
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-
-                } else if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
-
-                    if (shopUtils.isShop(b.getLocation())) {
-                        if (p.isSneaking())
-                            return;
-
-                        e.setCancelled(true);
-                        Shop shop = shopUtils.getShop(b.getLocation());
-
-                        if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
-                            plugin.debug(p.getName() + " wants to sell");
-                            if (shop.getSellPrice() > 0) {
-                                if (p.hasPermission(Permissions.SELL)) {
-                                    boolean worldGuardAllowed = true;
-
-                                    if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
-                                        RegionContainer container = worldGuard.getRegionContainer();
-                                        RegionQuery query = container.createQuery();
-
-                                        StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? ShopFlag.USE_ADMIN_SHOP : ShopFlag.USE_SHOP);
-                                        worldGuardAllowed = query.testState(b.getLocation(), p, flag);
-                                    }
-
-                                    if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
-                                        if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
-                                            sell(p, shop);
-                                        } else {
-                                            if (config.auto_calculate_item_amount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
-                                                sell(p, shop);
-                                            } else {
-                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
-                                                plugin.debug(p.getName() + " doesn't have enough items");
-                                            }
-                                        }
-                                    } else {
-                                        plugin.debug(p.getName() + " doesn't have worldguard permission");
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_SELL));
-                                    }
-                                } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL));
-                                    plugin.debug(p.getName() + " is not permitted to sell");
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELLING_DISABLED));
+                                    plugin.debug("Selling is disabled");
                                 }
                             } else {
-                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELLING_DISABLED));
-                                plugin.debug("Selling is disabled");
+                                e.setCancelled(false);
                             }
-                        } else {
-                            e.setCancelled(false);
                         }
                     }
-
                 }
-
             }
-
-        } else {
-            ClickType.removePlayerClickType(p);
         }
     }
 

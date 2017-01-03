@@ -117,6 +117,15 @@ public class Config {
     /** Whether the item amount should be calculated to fit the available money or inventory space **/
     public boolean auto_calculate_item_amount;
 
+    /**
+     * <p>Whether the mouse buttons are inverted</p>
+     *
+     * <b>Default:</b><br>
+     * Right-Click: Buy<br>
+     * Left-Click: Sell
+     **/
+    public boolean invert_mouse_buttons;
+
     /** Amount the hologram should be lifted **/
     public double two_line_hologram_lift;
 
@@ -313,6 +322,7 @@ public class Config {
         append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
         show_shop_items = plugin.getConfig().getBoolean("show-shop-items");
         remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
+        invert_mouse_buttons = plugin.getConfig().getBoolean("invert-mouse-buttons");
         two_line_hologram_lift = plugin.getConfig().getDouble("two-line-hologram-lift");
         maximal_distance = plugin.getConfig().getDouble("maximal-distance");
         maximal_item_distance = plugin.getConfig().getDouble("maximal-item-distance");

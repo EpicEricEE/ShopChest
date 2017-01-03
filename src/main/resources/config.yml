@@ -82,10 +82,16 @@ append-potion-level-to-item-name: false
 # This might be useful if you're removing shop chests with WorldEdit, resetting plots, or similar
 remove-shop-on-error: false
 
+# Set whether the mouse buttons should be inverted.
+# Default:
+# Right-Click -> Buy
+# Left-Click  -> Sell
+invert-mouse-buttons: false
+
 # Set the maximal distance (in blocks) to the shop where the player can see the hologram.
 maximal-distance: 2
 
-# Set the maximal distance (in blocks) to the shop where the player can see the floatig shop item.
+# Set the maximal distance (in blocks) to the shop where the player can see the floating shop item.
 maximal-item-distance: 40
 
 # Set the time in seconds between automatic shop reloads.
