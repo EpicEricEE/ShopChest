@@ -19,9 +19,9 @@ public class ShopFlag {
     public static final StateFlag USE_ADMIN_SHOP;
 
     static {
-        CREATE_SHOP = new StateFlag("create-shop", false);
-        USE_SHOP = new StateFlag("use-shop", false);
-        USE_ADMIN_SHOP = new StateFlag("use-admin-shop", false);
+        CREATE_SHOP = new StateFlag("create-shop", ShopChest.getInstance().getShopChestConfig().wg_allow_create_shop_default);
+        USE_SHOP = new StateFlag("use-shop", ShopChest.getInstance().getShopChestConfig().wg_allow_use_shop_default);
+        USE_ADMIN_SHOP = new StateFlag("use-admin-shop", ShopChest.getInstance().getShopChestConfig().wg_allow_use_admin_shop_default);
 
         customFlagList = new Flag[] {CREATE_SHOP, USE_SHOP, USE_ADMIN_SHOP};
     }

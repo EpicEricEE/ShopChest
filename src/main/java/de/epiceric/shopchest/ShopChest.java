@@ -69,6 +69,8 @@ public class ShopChest extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        instance = this;
+
         config = new Config(this);
 
         if (config.enable_debug_log) {
@@ -99,8 +101,6 @@ public class ShopChest extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
-
         debug("Enabling ShopChest version " + getDescription().getVersion());
 
         if (!getServer().getPluginManager().isPluginEnabled("Vault")) {

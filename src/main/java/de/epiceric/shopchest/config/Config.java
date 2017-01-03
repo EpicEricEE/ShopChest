@@ -20,9 +20,16 @@ public class Config {
 
     private LanguageConfiguration langConfig;
 
-    /**
-     * The hostname used in ShopChest's MySQL database
-     **/
+    /** The default value for the custom WorldGuard flag 'create-shop' **/
+    public boolean wg_allow_create_shop_default;
+
+    /** The default value for the custom WorldGuard flag 'use-admin-shop' **/
+    public boolean wg_allow_use_admin_shop_default;
+
+    /** The default value for the custom WorldGuard flag 'use-shop' **/
+    public boolean wg_allow_use_shop_default;
+
+    /** The hostname used in ShopChest's MySQL database **/
     public String database_mysql_host;
 
     /** The port used for ShopChest's MySQL database **/
@@ -277,6 +284,9 @@ public class Config {
      * Reload the configuration values from config.yml
      */
     public void reload(boolean firstLoad, boolean langReload, boolean showMessages) {
+        wg_allow_create_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.create-shop");
+        wg_allow_use_admin_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-admin-shop");
+        wg_allow_use_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-shop");
         database_mysql_ping_interval = plugin.getConfig().getInt("database.mysql.ping-interval");
         database_mysql_host = plugin.getConfig().getString("database.mysql.hostname");
         database_mysql_port = plugin.getConfig().getInt("database.mysql.port");

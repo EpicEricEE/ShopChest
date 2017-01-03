@@ -128,6 +128,19 @@ blacklist: []
 #  - "STONE:1"
 #  - "DIAMOND_BLOCK"
 
+# Set whether the custom WorldGuard flags should be allowed by default
+# (true = Allowed by default, false = Denied by default)
+# This can, of course, be overridden in specific regions and is only
+# enabled if WorldGuard is installed and WorldGuard integration is enabled
+worldguard-default-flag-values:
+
+  create-shop: false
+  use-shop: false
+  use-admin-shop: false
+
+# Configuration of the database, where everything is stored.
+# Shops are found in the table 'shop_list', and logged economy
+# transactions are found in the table 'shop_log'
 database:
 
   # Select the type of database which should be used
