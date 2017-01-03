@@ -1,9 +1,7 @@
 package de.epiceric.shopchest.utils;
 
-import com.google.common.collect.ImmutableList;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.nms.CustomBookMeta;
-import de.epiceric.shopchest.nms.ShulkerBoxMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -13,182 +11,66 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
-import org.bukkit.material.MaterialData;
-import org.bukkit.potion.Potion;
 
 import javax.xml.bind.DatatypeConverter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Utils {
-
-    private static final ImmutableList<Material> SHULKER_BOX_MATERIALS = new ImmutableList.Builder<Material>()
-            .add(Material.BLACK_SHULKER_BOX)
-            .add(Material.BLUE_SHULKER_BOX)
-            .add(Material.BROWN_SHULKER_BOX)
-            .add(Material.CYAN_SHULKER_BOX)
-            .add(Material.GRAY_SHULKER_BOX)
-            .add(Material.GREEN_SHULKER_BOX)
-            .add(Material.LIGHT_BLUE_SHULKER_BOX)
-            .add(Material.LIME_SHULKER_BOX)
-            .add(Material.MAGENTA_SHULKER_BOX)
-            .add(Material.ORANGE_SHULKER_BOX)
-            .add(Material.PINK_SHULKER_BOX)
-            .add(Material.PURPLE_SHULKER_BOX)
-            .add(Material.RED_SHULKER_BOX)
-            .add(Material.SILVER_SHULKER_BOX)
-            .add(Material.WHITE_SHULKER_BOX)
-            .add(Material.YELLOW_SHULKER_BOX)
-            .build();
 
     /**
      * Check if two items are similar to each other
      * @param itemStack1 The first item
      * @param itemStack2 The second item
-     * @param checkAmount Whether the amount should be checked or ignored
      * @return {@code true} if the given items are similar or {@code false} if not
      */
-    public static boolean isItemSimilar(ItemStack itemStack1, ItemStack itemStack2, boolean checkAmount) {
+    public static boolean isItemSimilar(ItemStack itemStack1, ItemStack itemStack2) {
         if (itemStack1 == null || itemStack2 == null) {
             return false;
         }
 
-        boolean similar;
-
-        similar = (!checkAmount || (itemStack1.getAmount() == itemStack2.getAmount()));
-        similar &= (itemStack1.getType() == itemStack2.getType());
+        boolean similar = (itemStack1.getType() == itemStack2.getType());
         similar &= (itemStack1.getDurability() == itemStack2.getDurability());
         similar &= (itemStack1.getEnchantments().equals(itemStack2.getEnchantments()));
         similar &= (itemStack1.getMaxStackSize() == itemStack2.getMaxStackSize());
+        similar &= (itemStack1.getData().equals(itemStack2.getData()));
 
-        if (!similar) {
-            return false;
-        }
-
-        MaterialData itemData1 = itemStack1.getData();
-        MaterialData itemData2 = itemStack2.getData();
-
-        if (itemData1 != null && itemData2 != null) {
-            similar = itemData1.getItemType() == itemData2.getItemType();
-        }
+        if (!similar) return false;
 
         ItemMeta itemMeta1 = itemStack1.getItemMeta();
         ItemMeta itemMeta2 = itemStack2.getItemMeta();
 
-        if (itemMeta1.hasDisplayName()) similar  = (itemMeta1.getDisplayName().equals(itemMeta2.getDisplayName()));
-        if (itemMeta1.hasEnchants())    similar &= (itemMeta1.getEnchants().equals(itemMeta2.getEnchants()));
-        if (itemMeta1.hasLore())        similar &= (itemMeta1.getLore().equals(itemMeta2.getLore()));
-
-        similar &= (itemMeta1.getItemFlags().equals(itemMeta2.getItemFlags()));
-        similar &= (itemMeta1.getClass().equals(itemMeta2.getClass()));
-
-        if (!similar) {
-            return false;
-        }
-
-        if (itemMeta1 instanceof BannerMeta) {
-            BannerMeta bannerMeta1 = (BannerMeta) itemMeta1;
-            BannerMeta bannerMeta2 = (BannerMeta) itemMeta2;
-
-            similar = (bannerMeta1.getBaseColor() == bannerMeta2.getBaseColor());
-            similar &= (bannerMeta1.getPatterns().equals(bannerMeta2.getPatterns()));
-
-        } else if (!getServerVersion().equals("v1_8_R1") && itemMeta1 instanceof BlockStateMeta) {
-            BlockStateMeta bsMeta1 = (BlockStateMeta) itemMeta1;
-            BlockStateMeta bsMeta2 = (BlockStateMeta) itemMeta2;
-
-            similar = (bsMeta1.hasBlockState() == bsMeta2.hasBlockState());
-
-            if (bsMeta1.hasBlockState()) similar &= (bsMeta1.getBlockState().equals(bsMeta2.getBlockState()));
-
-            if (getMajorVersion() >= 11 && SHULKER_BOX_MATERIALS.contains(itemStack1.getType())) {
-                Map<Integer, ItemStack> contents1 = ShulkerBoxMeta.getContents(itemStack1);
-                Map<Integer, ItemStack> contents2 = ShulkerBoxMeta.getContents(itemStack2);
-
-                if (contents1 != null) similar &= contents1.equals(contents2);
-            }
-
-        } else if (itemMeta1 instanceof BookMeta) {
-            BookMeta bookMeta1 = (BookMeta) itemMeta1;
-            BookMeta bookMeta2 = (BookMeta) itemMeta2;
-
-            if (bookMeta1.hasAuthor())     similar  = (bookMeta1.getAuthor().equals(bookMeta2.getAuthor()));
-            if (bookMeta1.hasTitle())      similar &= (bookMeta1.getTitle().equals(bookMeta2.getTitle()));
-            if (bookMeta1.hasPages())      similar &= (bookMeta1.getPages().equals(bookMeta2.getPages()));
+        if (itemMeta1 instanceof BookMeta && itemMeta2 instanceof BookMeta) {
+            BookMeta bookMeta1 = (BookMeta) itemStack1.getItemMeta();
+            BookMeta bookMeta2 = (BookMeta) itemStack2.getItemMeta();
 
             if ((getMajorVersion() == 9 && getRevision() == 1) || getMajorVersion() == 8) {
                 CustomBookMeta.Generation generation1 = CustomBookMeta.getGeneration(itemStack1);
                 CustomBookMeta.Generation generation2 = CustomBookMeta.getGeneration(itemStack2);
 
-                if (generation1 == null) generation1 = CustomBookMeta.Generation.ORIGINAL;
-                if (generation2 == null) generation2 = CustomBookMeta.Generation.ORIGINAL;
-
-                similar &= (generation1 == generation2);
+                if (generation1 == null) CustomBookMeta.setGeneration(itemStack1, CustomBookMeta.Generation.ORIGINAL);
+                if (generation2 == null) CustomBookMeta.setGeneration(itemStack2, CustomBookMeta.Generation.ORIGINAL);
 
             } else if (getMajorVersion() >= 10) {
                 if (bookMeta1.getGeneration() == null) bookMeta1.setGeneration(BookMeta.Generation.ORIGINAL);
                 if (bookMeta2.getGeneration() == null) bookMeta2.setGeneration(BookMeta.Generation.ORIGINAL);
-
-                similar &= (bookMeta1.getGeneration() == bookMeta2.getGeneration());
             }
 
-        } else if (itemMeta1 instanceof EnchantmentStorageMeta) {
-            EnchantmentStorageMeta esMeta1 = (EnchantmentStorageMeta) itemMeta1;
-            EnchantmentStorageMeta esMeta2 = (EnchantmentStorageMeta) itemMeta2;
-
-            if (esMeta1.hasStoredEnchants()) similar = (esMeta1.getStoredEnchants().equals(esMeta2.getStoredEnchants()));
-
-        } else if (itemMeta1 instanceof FireworkEffectMeta) {
-            FireworkEffectMeta feMeta1 = (FireworkEffectMeta) itemMeta1;
-            FireworkEffectMeta feMeta2 = (FireworkEffectMeta) itemMeta2;
-
-            if (feMeta1.hasEffect()) similar = (feMeta1.getEffect().equals(feMeta2.getEffect()));
-
-        } else if (itemMeta1 instanceof FireworkMeta) {
-            FireworkMeta fireworkMeta1 = (FireworkMeta) itemMeta1;
-            FireworkMeta fireworkMeta2 = (FireworkMeta) itemMeta2;
-
-            if (fireworkMeta1.hasEffects()) similar = (fireworkMeta1.getEffects().equals(fireworkMeta2.getEffects()));
-            similar &= (fireworkMeta1.getPower() == fireworkMeta2.getPower());
-
-        } else if (itemMeta1 instanceof LeatherArmorMeta) {
-            LeatherArmorMeta laMeta1 = (LeatherArmorMeta) itemMeta1;
-            LeatherArmorMeta laMeta2 = (LeatherArmorMeta) itemMeta2;
-
-            similar = (laMeta1.getColor() == laMeta2.getColor());
-        } else if (itemMeta1 instanceof MapMeta) {
-            MapMeta mapMeta1 = (MapMeta) itemMeta1;
-            MapMeta mapMeta2 = (MapMeta) itemMeta2;
-
-            similar = (mapMeta1.isScaling() == mapMeta2.isScaling());
-        } else if (itemMeta1 instanceof PotionMeta) {
-            PotionMeta potionMeta1 = (PotionMeta) itemMeta1;
-            PotionMeta potionMeta2 = (PotionMeta) itemMeta2;
-
-            if (potionMeta1.hasCustomEffects()) similar = (potionMeta1.getCustomEffects().equals(potionMeta2.getCustomEffects()));
-
-            if (getMajorVersion() >= 9)  {
-                similar &= (potionMeta1.getBasePotionData().equals(potionMeta2.getBasePotionData()));
-            } else {
-                Potion potion1 = Potion.fromItemStack(itemStack1);
-                Potion potion2 = Potion.fromItemStack(itemStack2);
-
-                similar &= (potion1.getType() == potion2.getType());
-                similar &= (potion1.getEffects().equals(potion2.getEffects()));
-                similar &= (potion1.getLevel() == potion2.getLevel());
-            }
-
-        } else if (itemMeta1 instanceof SkullMeta) {
-            SkullMeta skullMeta1 = (SkullMeta) itemMeta1;
-            SkullMeta skullMeta2 = (SkullMeta) itemMeta2;
-
-            if (skullMeta1.hasOwner()) similar = skullMeta1.getOwner().equals(skullMeta2.getOwner());
+            itemStack1.setItemMeta(bookMeta1);
+            itemStack2.setItemMeta(bookMeta2);
         }
 
-        return similar;
+        YamlConfiguration yml1 = new YamlConfiguration();
+        YamlConfiguration yml2 = new YamlConfiguration();
+        yml1.set("itemMeta", itemMeta1);
+        yml2.set("itemMeta", itemMeta2);
+
+        String sYml1 = yml1.saveToString();
+        String sYml2 = yml2.saveToString();
+
+        return sYml1.equals(sYml2);
     }
 
     /**
@@ -219,7 +101,7 @@ public class Utils {
         }
 
         for (ItemStack item : inventoryItems) {
-            if (isItemSimilar(item, itemStack, false)) {
+            if (isItemSimilar(item, itemStack)) {
                 amount += item.getAmount();
             }
         }
@@ -243,7 +125,7 @@ public class Utils {
                 if (item == null || item.getType() == Material.AIR) {
                     slotFree.put(i, itemStack.getMaxStackSize());
                 } else {
-                    if (isItemSimilar(item, itemStack, false)) {
+                    if (isItemSimilar(item, itemStack)) {
                         int amountInSlot = item.getAmount();
                         int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
                         slotFree.put(i, amountToFullStack);
@@ -256,7 +138,7 @@ public class Utils {
                 if (item == null || item.getType() == Material.AIR) {
                     slotFree.put(40, itemStack.getMaxStackSize());
                 } else {
-                    if (isItemSimilar(item, itemStack, false)) {
+                    if (isItemSimilar(item, itemStack)) {
                         int amountInSlot = item.getAmount();
                         int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
                         slotFree.put(40, amountToFullStack);
@@ -269,7 +151,7 @@ public class Utils {
                 if (item == null || item.getType() == Material.AIR) {
                     slotFree.put(i, itemStack.getMaxStackSize());
                 } else {
-                    if (isItemSimilar(item, itemStack, false)) {
+                    if (isItemSimilar(item, itemStack)) {
                         int amountInSlot = item.getAmount();
                         int amountToFullStack = itemStack.getMaxStackSize() - amountInSlot;
                         slotFree.put(i, amountToFullStack);

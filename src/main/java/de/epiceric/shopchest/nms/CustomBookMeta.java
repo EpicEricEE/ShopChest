@@ -58,4 +58,33 @@ public class CustomBookMeta {
         return null;
     }
 
+    public static void setGeneration(ItemStack book, Generation generation) {
+        try {
+            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");
+
+            if (craftItemStackClass == null) {
+                ShopChest.getInstance().debug("Failed to get NBTGeneration: Could not find CraftItemStack class");
+                return;
+            }
+
+            Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, book);
+
+            Object nbtTagCompound = nmsStack.getClass().getMethod("getTag").invoke(nmsStack);
+            if (nbtTagCompound == null) {
+                ShopChest.getInstance().debug("Failed to get NBTGeneration: getTag returned null");
+                return;
+            }
+
+            nbtTagCompound.getClass().getMethod("setInt", String.class, int.class)
+                    .invoke(nbtTagCompound, "generation", generation.ordinal());
+
+            nmsStack.getClass().getMethod("setTag", nbtTagCompound.getClass()).invoke(nmsStack, nbtTagCompound);
+
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            ShopChest.getInstance().getLogger().severe("Failed to get NBTEntityID with reflection");
+            ShopChest.getInstance().debug("Failed to get NBTEntityID with reflection");
+            ShopChest.getInstance().debug(e);
+        }
+    }
+
 }
