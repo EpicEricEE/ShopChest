@@ -284,6 +284,11 @@ public class ShopInteractListener implements Listener {
                                                         buy(p, shop);
                                                     } else {
                                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
+                                                        if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
+                                                            shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.VENDOR_OUT_OF_STOCK,
+                                                                    new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                                                                            new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct()))));
+                                                        }
                                                         plugin.debug("Shop is out of stock");
                                                     }
                                                 }

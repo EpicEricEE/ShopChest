@@ -74,6 +74,7 @@ public class LocalizedMessage {
         NOT_ENOUGH_ITEMS,
         VENDOR_NOT_ENOUGH_MONEY,
         OUT_OF_STOCK,
+        VENDOR_OUT_OF_STOCK,
         ERROR_OCCURRED,
         AMOUNT_PRICE_NOT_NUMBER,
         AMOUNT_IS_ZERO,

@@ -939,6 +939,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS, langConfig.getString("message.not-enough-items", "&cNot enough items.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.VENDOR_NOT_ENOUGH_MONEY, langConfig.getString("message.vendor-not-enough-money", "&cVendor has not enough money.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.OUT_OF_STOCK, langConfig.getString("message.out-of-stock", "&cShop out of stock.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.VENDOR_OUT_OF_STOCK, langConfig.getString("message.vendor-out-of-stock", "&cYour shop that sells &6%AMOUNT% x %ITEMNAME% &cis out of stock."), Regex.AMOUNT, Regex.ITEM_NAME));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.ERROR_OCCURRED, langConfig.getString("message.error-occurred", "&cAn error occurred: %ERROR%"), Regex.ERROR));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER, langConfig.getString("message.amount-and-price-not-number", "&cAmount and price must be a number.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO, langConfig.getString("message.amount-is-zero", "&cAmount must be greater than 0.")));

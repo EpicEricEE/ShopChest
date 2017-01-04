@@ -40,7 +40,7 @@ enable-worldguard-integration: true
 enable-towny-integration: true
 
 # Set whether the vendor of a shop should get messages when players
-# buy or sell something from/to his shop
+# buy or sell something from/to his shop or if his shop is out of stock
 enable-vendor-messages: true
 
 # Set whether the buy- and sell price should be arranged below each other.

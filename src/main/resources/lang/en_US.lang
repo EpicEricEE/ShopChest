@@ -111,6 +111,9 @@ message.vendor-not-enough-money=&cVendor has not enough money.
 # Set the message when the shop is out of stock.
 message.out-of-stock=&cShop out of stock.
 
+# Set the message the vendor gets when his shop is out of stock
+message.vendor-out-of-stock=&cYour shop that sells &6%AMOUNT% x %ITEMNAME% &cis out of stock.
+
 # Set the message when an error occurred.
 # Usable regex: %ERROR%
 message.error-occurred=&cAn error occurred: %ERROR%

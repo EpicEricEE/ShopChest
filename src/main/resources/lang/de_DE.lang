@@ -30,6 +30,7 @@ message.not-enough-money=&cNicht genug Geld.
 message.not-enough-items=&cNicht genug Items.
 message.vendor-not-enough-money=&cVerkäufer hat nicht genug Geld.
 message.out-of-stock=&cShop ausverkauft.
+message.vendor-out-of-stock=&cDein Shop, der &6%AMOUNT% x %ITEMNAME% &cverkauft, ist ausverkauft.
 message.error-occurred=&cEin Fehler ist aufgetreten: %ERROR%
 message.amount-and-price-not-number=&cAnzahl und Preise müssen Zahlen sein.
 message.amount-is-zero=&cAnzahl muss größer als 0 sein.
