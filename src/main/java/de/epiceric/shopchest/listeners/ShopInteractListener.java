@@ -181,13 +181,21 @@ public class ShopInteractListener implements Listener {
                                 if (shopUtils.isShop(b.getLocation())) {
                                     Shop shop = shopUtils.getShop(b.getLocation());
 
-                                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.REMOVE_OTHER)) {
-                                        remove(p, shop);
+                                    if (shop.getShopType() == ShopType.ADMIN) {
+                                        if (p.hasPermission(Permissions.REMOVE_ADMIN)) {
+                                            remove(p, shop);
+                                        } else {
+                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_ADMIN));
+                                            plugin.debug(p.getName() + " is not permitted to remove an admin shop");
+                                        }
                                     } else {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS));
-                                        plugin.debug(p.getName() + " is not permitted to remove another player's shop");
+                                        if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.REMOVE_OTHER)) {
+                                            remove(p, shop);
+                                        } else {
+                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS));
+                                            plugin.debug(p.getName() + " is not permitted to remove another player's shop");
+                                        }
                                     }
-
                                 } else {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
                                     plugin.debug("Chest is not a shop");

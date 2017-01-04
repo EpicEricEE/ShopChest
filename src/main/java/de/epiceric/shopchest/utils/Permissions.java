@@ -5,7 +5,8 @@ public class Permissions {
     public static final String CREATE = "shopchest.create";
     public static final String CREATE_ADMIN = "shopchest.create.admin";
     public static final String CREATE_PROTECTED = "shopchest.create.protected";
-    public static final String REMOVE_OTHER = "shopchest.removeOther";
+    public static final String REMOVE_OTHER = "shopchest.remove.other";
+    public static final String REMOVE_ADMIN = "shopchest.remove.admin";
     public static final String BUY = "shopchest.buy";
     public static final String SELL = "shopchest.sell";
     public static final String OPEN_OTHER = "shopchest.openOther";

@@ -15,7 +15,8 @@ permissions:
       shopchest.create: true
       shopchest.create.admin: true
       shopchest.create.protected: true
-      shopchest.removeOther: true
+      shopchest.remove.other: true
+      shopchest.remove.admin: true
       shopchest.buy: true
       shopchest.openOther: true
       shopchest.notification.update: true
@@ -39,8 +40,11 @@ permissions:
     children:
       shopchest.create: true
     default: op
-  shopchest.removeOther:
+  shopchest.remove.other:
     description: Allows you to remove other players' shops.
+    default: op
+  shopchest.remove.admin:
+    description: Allows you to remove admin shops.
     default: op
   shopchest.buy:
     description: Allows you to buy something.

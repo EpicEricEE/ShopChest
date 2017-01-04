@@ -44,6 +44,34 @@ public class ChestProtectListener implements Listener {
         this.worldGuard = worldGuard;
     }
 
+    private void remove(final Shop shop, final Block b, Player p) {
+        shopUtils.removeShop(shop, true);
+
+        if (shop.getInventoryHolder() instanceof DoubleChest) {
+            DoubleChest dc = (DoubleChest) shop.getInventoryHolder();
+            final Chest l = (Chest) dc.getLeftSide();
+            final Chest r = (Chest) dc.getRightSide();
+
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    Shop newShop = null;
+
+                    if (b.getLocation().equals(l.getLocation()))
+                        newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), r.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+                    else if (b.getLocation().equals(r.getLocation()))
+                        newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), l.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+
+                    shopUtils.addShop(newShop, true);
+                }
+            }, 1L);
+            return;
+        }
+
+        plugin.debug(String.format("%s broke %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
         final Block b = e.getBlock();
@@ -55,33 +83,16 @@ public class ChestProtectListener implements Listener {
             if (p.isSneaking()) {
                 plugin.debug(String.format("%s tries to break %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
 
-                if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.REMOVE_OTHER)) {
-                    shopUtils.removeShop(shop, true);
-
-                    if (shop.getInventoryHolder() instanceof DoubleChest) {
-                        DoubleChest dc = (DoubleChest) shop.getInventoryHolder();
-                        final Chest l = (Chest) dc.getLeftSide();
-                        final Chest r = (Chest) dc.getRightSide();
-
-                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                Shop newShop = null;
-
-                                if (b.getLocation().equals(l.getLocation()))
-                                    newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), r.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-                                else if (b.getLocation().equals(r.getLocation()))
-                                    newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), l.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-
-                                shopUtils.addShop(newShop, true);
-                            }
-                        }, 1L);
+                if (shop.getShopType() == Shop.ShopType.ADMIN) {
+                    if (p.hasPermission(Permissions.REMOVE_ADMIN)) {
+                        remove(shop, b, p);
                         return;
                     }
-
-                    plugin.debug(String.format("%s broke %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
-                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
-                    return;
+                } else {
+                    if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.REMOVE_OTHER)) {
+                        remove(shop, b, p);
+                        return;
+                    }
                 }
             }
 

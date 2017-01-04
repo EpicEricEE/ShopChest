@@ -653,6 +653,7 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.SHULKER_SHELL, langConfig.getString("item.shulkerShell.name", "Shulker Shell")));
 
             if (Utils.getRevision() >= 2 || Utils.getMajorVersion() > 11) {
+                // Add Item Name of 1.11.2
                 itemNames.add(new ItemName(Material.IRON_NUGGET, langConfig.getString("item.ironNugget.name", "Iron Nugget")));
             }
         }
@@ -696,6 +697,7 @@ public class LanguageUtils {
             enchantmentNames.add(new EnchantmentName(Enchantment.VANISHING_CURSE, langConfig.getString("enchantment.vanishing_curse", "Curse of Vanishing")));
 
             if (Utils.getRevision() >= 2 || Utils.getMajorVersion() > 11) {
+                // Add Enchantment Name of 1.11.2
                 enchantmentNames.add(new EnchantmentName(Enchantment.SWEEPING_EDGE, langConfig.getString("enchantment.sweeping", "Sweeping Edge")));
             }
         }
@@ -974,6 +976,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY, langConfig.getString("message.noPermission.worldguard-buy", "&cYou don't have permission to buy something here.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_WG_SELL, langConfig.getString("message.noPermission.worldguard-sell", "&cYou don't have permission to sell something here.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS, langConfig.getString("message.noPermission.remove-others", "&cYou don't have permission to remove this shop.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_ADMIN, langConfig.getString("message.noPermission.remove-admin", "&cYou don't have permission to remove an admin shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_RELOAD, langConfig.getString("message.noPermission.reload", "&cYou don't have permission to reload the shops.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_UPDATE, langConfig.getString("message.noPermission.update", "&cYou don't have permission to check for updates.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG, langConfig.getString("message.noPermission.config", "&cYou don't have permission to change configuration values.")));
