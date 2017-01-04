@@ -190,8 +190,15 @@ public class Shop {
             }
         }
 
-        if (holoText.length == 3 && holoText[2] != null)
-            holoLocation.add(0, plugin.getShopChestConfig().two_line_hologram_lift, 0);
+        holoLocation.add(0, plugin.getShopChestConfig().hologram_lift, 0);
+
+        if (plugin.getShopChestConfig().two_line_prices) {
+            if (holoText.length == 3 && holoText[2] != null) {
+                holoLocation.add(0, plugin.getShopChestConfig().two_line_hologram_lift, 0);
+            } else {
+                holoLocation.add(0, plugin.getShopChestConfig().one_line_hologram_lift, 0);
+            }
+        }
 
         hologram = new Hologram(plugin, holoText, holoLocation);
     }

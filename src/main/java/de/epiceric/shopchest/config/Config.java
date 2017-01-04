@@ -126,8 +126,14 @@ public class Config {
      **/
     public boolean invert_mouse_buttons;
 
-    /** Amount the hologram should be lifted **/
+    /** Amount a hologram with two price-lines should be lifted **/
     public double two_line_hologram_lift;
+
+    /** Amount a hologram with one price-line should be lifted **/
+    public double one_line_hologram_lift;
+
+    /** Amount every hologram should be lifted **/
+    public double hologram_lift;
 
     /** The maximum distance between a player and a shop to see the hologram **/
     public double maximal_distance;
@@ -324,6 +330,8 @@ public class Config {
         remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
         invert_mouse_buttons = plugin.getConfig().getBoolean("invert-mouse-buttons");
         two_line_hologram_lift = plugin.getConfig().getDouble("two-line-hologram-lift");
+        one_line_hologram_lift = plugin.getConfig().getDouble("one-line-hologram-lift");
+        hologram_lift = plugin.getConfig().getDouble("hologram-lift");
         maximal_distance = plugin.getConfig().getDouble("maximal-distance");
         maximal_item_distance = plugin.getConfig().getDouble("maximal-item-distance");
         shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
