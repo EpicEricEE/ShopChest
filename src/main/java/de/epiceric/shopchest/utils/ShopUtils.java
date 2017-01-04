@@ -3,9 +3,11 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.sql.Database;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
@@ -188,7 +190,10 @@ public class ShopUtils {
 
         plugin.getShopDatabase().connect();
 
-        if (reloadConfig) plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
+        if (reloadConfig) {
+            plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
+            plugin.getUpdater().setMaxDelta(plugin.getShopChestConfig().update_quality.getTime());
+        }
 
         for (Shop shop : getShops()) {
             removeShop(shop, false);
@@ -214,5 +219,56 @@ public class ShopUtils {
         }
 
         return count;
+    }
+
+    /**
+     * Update hologram and item of all shops for a player
+     * @param player Player to show the updates
+     * @param location Location of the player
+     */
+    public void updateShops(Player player, Location location) {
+        for (Shop shop : getShops()) {
+            updateShop(shop, player, location);
+        }
+    }
+
+    /**
+     * Update hologram and item of the shop for a player
+     * @param shop Shop to update
+     * @param player Player to show the update
+     * @param location Location of the player
+     */
+    public void updateShop(Shop shop, Player player, Location location) {
+        double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
+        double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
+
+        if (location.getWorld().getName().equals(shop.getLocation().getWorld().getName())) {
+            double distSqr = shop.getLocation().distanceSquared(location);
+
+            if (distSqr <= holoDistSqr) {
+                if (shop.getHologram() != null) {
+                    Block b = shop.getLocation().getBlock();
+
+                    if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
+                        plugin.getShopUtils().removeShop(shop, plugin.getShopChestConfig().remove_shop_on_error);
+                        return;
+                    }
+
+                    if (!shop.getHologram().isVisible(player)) {
+                        shop.getHologram().showPlayer(player);
+                    }
+                }
+            } else {
+                if (shop.getHologram().isVisible(player)) shop.getHologram().hidePlayer(player);
+            }
+
+            if (distSqr <= itemDistSqr) {
+                if (shop.getItem() != null) {
+                    shop.getItem().setVisible(player, true);
+                }
+            } else {
+                if (shop.getItem() != null) shop.getItem().setVisible(player, false);
+            }
+        }
     }
 }

@@ -374,7 +374,7 @@ public class ShopInteractListener implements Listener {
                     if (hologram != null) {
                         Block b = null;
                         for (Shop shop : plugin.getShopUtils().getShops()) {
-                            if (shop.getHologram().equals(hologram)) {
+                            if (shop.getHologram() != null && shop.getHologram().equals(hologram)) {
                                 b = shop.getLocation().getBlock();
                             }
                         }
@@ -407,7 +407,7 @@ public class ShopInteractListener implements Listener {
                 if (hologram != null) {
                     Block b = null;
                     for (Shop shop : plugin.getShopUtils().getShops()) {
-                        if (shop.getHologram().equals(hologram)) {
+                        if (shop.getHologram() != null && shop.getHologram().equals(hologram)) {
                             b = shop.getLocation().getBlock();
                         }
                     }

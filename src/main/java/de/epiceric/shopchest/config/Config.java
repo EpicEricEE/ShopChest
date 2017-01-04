@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.config;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.event.ShopUpdateEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.sql.Database;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -19,6 +20,9 @@ public class Config {
     private ShopChest plugin;
 
     private LanguageConfiguration langConfig;
+
+    /** The quality of hologram and item updating (performance saving, or better quality) **/
+    public ShopUpdateEvent.UpdateQuality update_quality;
 
     /** The default value for the custom WorldGuard flag 'create-shop' **/
     public boolean wg_allow_create_shop_default;
@@ -299,6 +303,7 @@ public class Config {
      * Reload the configuration values from config.yml
      */
     public void reload(boolean firstLoad, boolean langReload, boolean showMessages) {
+        update_quality = ShopUpdateEvent.UpdateQuality.valueOf(plugin.getConfig().getString("update-quality"));
         wg_allow_create_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.create-shop");
         wg_allow_use_admin_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-admin-shop");
         wg_allow_use_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-shop");

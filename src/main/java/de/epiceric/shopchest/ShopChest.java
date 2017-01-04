@@ -5,6 +5,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopReloadEvent;
+import de.epiceric.shopchest.event.ShopUpdateEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.listeners.*;
@@ -26,6 +27,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -46,6 +49,7 @@ public class ShopChest extends JavaPlugin {
     private FileWriter fw;
     private WorldGuardPlugin worldGuard;
     private Towny towny;
+    private ShopUpdater updater;
 
     /**
      * @return An instance of ShopChest
@@ -304,7 +308,7 @@ public class ShopChest extends JavaPlugin {
         }
 
         debug("Registering listeners...");
-        getServer().getPluginManager().registerEvents(new HologramUpdateListener(this), this);
+        getServer().getPluginManager().registerEvents(new ShopUpdateListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopItemListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyUpdateOnJoinListener(this), this);
@@ -317,11 +321,19 @@ public class ShopChest extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new WorldGuardListener(this), this);
 
         initializeShops();
+
+        updater = new ShopUpdater(this);
+        updater.start();
     }
 
     @Override
     public void onDisable() {
         debug("Disabling ShopChest...");
+
+        if (updater != null) {
+            debug("Stopping updater");
+            updater.cancel();
+        }
 
         if (database != null) {
             for (Shop shop : shopUtils.getShops()) {
@@ -381,6 +393,13 @@ public class ShopChest extends JavaPlugin {
         int count = shopUtils.reloadShops(false, false);
         getLogger().info("Initialized " + count + " Shops");
         debug("Initialized " + count + " Shops");
+    }
+
+    /**
+     * @return The {@link ShopUpdater} that schedules hologram and item updates
+     */
+    public ShopUpdater getUpdater() {
+        return updater;
     }
 
     /**
