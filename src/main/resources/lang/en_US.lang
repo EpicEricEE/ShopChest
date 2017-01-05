@@ -248,7 +248,7 @@ message.noPermission.worldguard-sell=&cYou don't have permission to sell somethi
 message.noPermission.remove-others=&cYou don't have permission to remove this shop.
 
 # Set the message when a not permitted player tries to remove an admin shop.
-message.noPermission.remove-others=&cYou don't have permission to remove an admin shop.
+message.noPermission.remove-admin=&cYou don't have permission to remove an admin shop.
 
 # Set the message when a not permitted player tries to reload the shops.
 message.noPermission.reload=&cYou don't have permission to reload the shops.
