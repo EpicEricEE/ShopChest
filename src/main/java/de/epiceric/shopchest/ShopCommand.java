@@ -301,7 +301,7 @@ class ShopCommand extends BukkitCommand {
         for (String key : plugin.getShopChestConfig().minimum_prices) {
 
             ItemStack itemStack;
-            double price = plugin.getConfig().getDouble("minimum-prices." + key);
+            double minPrice = plugin.getConfig().getDouble("minimum-prices." + key);
 
             if (key.contains(":")) {
                 itemStack = new ItemStack(Material.getMaterial(key.split(":")[0]), 1, Short.parseShort(key.split(":")[1]));
@@ -311,15 +311,45 @@ class ShopCommand extends BukkitCommand {
 
             if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
                 if (buyEnabled) {
-                    if ((buyPrice <= amount * price) && (buyPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * price))));
+                    if ((buyPrice < amount * minPrice) && (buyPrice > 0)) {
+                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * minPrice))));
                         return;
                     }
                 }
 
                 if (sellEnabled) {
-                    if ((sellPrice <= amount * price) && (sellPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * price))));
+                    if ((sellPrice < amount * minPrice) && (sellPrice > 0)) {
+                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * minPrice))));
+                        return;
+                    }
+                }
+            }
+        }
+
+        plugin.debug(p.getName() + "'s prices are higher than the minimum");
+
+        for (String key : plugin.getShopChestConfig().maximum_prices) {
+
+            ItemStack itemStack;
+            double maxPrice = plugin.getConfig().getDouble("maximum-prices." + key);
+
+            if (key.contains(":")) {
+                itemStack = new ItemStack(Material.getMaterial(key.split(":")[0]), 1, Short.parseShort(key.split(":")[1]));
+            } else {
+                itemStack = new ItemStack(Material.getMaterial(key), 1);
+            }
+
+            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
+                if (buyEnabled) {
+                    if ((buyPrice > amount * maxPrice) && (buyPrice > 0)) {
+                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedRegex(Regex.MAX_PRICE, String.valueOf(amount * maxPrice))));
+                        return;
+                    }
+                }
+
+                if (sellEnabled) {
+                    if ((sellPrice > amount * maxPrice) && (sellPrice > 0)) {
+                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedRegex(Regex.MAX_PRICE, String.valueOf(amount * maxPrice))));
                         return;
                     }
                 }

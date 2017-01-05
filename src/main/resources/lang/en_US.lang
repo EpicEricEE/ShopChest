@@ -159,6 +159,14 @@ message.buy-price-too-low=&cThe buy price must be higher than %MIN-PRICE%.
 # Usable regex: %MIN-PRICE%
 message.sell-price-too-low=&cThe sell price must be higher than %MIN-PRICE%.
 
+# Set the message when the entered buy price is below the maximum price.
+# Usable regex: %MAX-PRICE%
+message.buy-price-too-high=&cThe buy price must be lower than %MAX-PRICE%.
+
+# Set the message when the entered sell price is below the maximum price.
+# Usable regex: %MAX-PRICE%
+message.sell-price-too-high=&cThe sell price must be lower than %MAX-PRICE%.
+
 # Set the message when buying is disabled at the shop.
 message.buying-disabled=&cBuying is disabled at this shop.
 

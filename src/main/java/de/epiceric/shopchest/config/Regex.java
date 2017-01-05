@@ -9,6 +9,7 @@ public enum Regex {
     ERROR("%ERROR%"),
     ENCHANTMENT("%ENCHANTMENT%"),
     MIN_PRICE("%MIN-PRICE%"),
+    MAX_PRICE("%MAX-PRICE%"),
     VERSION("%VERSION%"),
     BUY_PRICE("%BUY-PRICE%"),
     SELL_PRICE("%SELL-PRICE%"),

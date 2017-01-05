@@ -57,9 +57,16 @@ public class Config {
     /**
      * <p>The minimum prices for certain items</p>
      * This returns a key set, which contains e.g "STONE", "STONE:1", of the <i>minimum-prices</i> section in ShopChest's config.
-     * To actually retrieve the price for an item, you have to get the Double <i>minimum-prices.<b>key</b></i>.
+     * To actually retrieve the minimum price for an item, you have to get the double {@code minimum-prices.<key>}.
      **/
     public Set<String> minimum_prices;
+
+    /**
+     * <p>The maximum prices for certain items</p>
+     * This returns a key set, which contains e.g "STONE", "STONE:1", of the {@code maximum-prices} section in ShopChest's config.
+     * To actually retrieve the maximum price for an item, you have to get the double {@code maximum-prices.<key>}.
+     **/
+    public Set<String> maximum_prices;
 
     /**
      * <p>List containing items, of which players can't create a shop</p>
@@ -315,6 +322,7 @@ public class Config {
         database_mysql_password = plugin.getConfig().getString("database.mysql.password");
         database_type = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
         minimum_prices = (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);
+        maximum_prices = (plugin.getConfig().getConfigurationSection("maximum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("maximum-prices").getKeys(true);
         allow_decimals_in_price = plugin.getConfig().getBoolean("allow-decimals-in-price");
         allow_broken_items = plugin.getConfig().getBoolean("allow-broken-items");
         auto_calculate_item_amount = (allow_decimals_in_price && plugin.getConfig().getBoolean("auto-calculate-item-amount"));

@@ -88,6 +88,8 @@ public class LocalizedMessage {
         CANNOT_SELL_BROKEN_ITEM,
         BUY_PRICE_TOO_LOW,
         SELL_PRICE_TOO_LOW,
+        BUY_PRICE_TOO_HIGH,
+        SELL_PRICE_TOO_HIGH,
         BUYING_DISABLED,
         SELLING_DISABLED,
         RELOADED_SHOPS,

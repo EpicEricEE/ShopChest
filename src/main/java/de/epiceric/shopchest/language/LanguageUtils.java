@@ -953,6 +953,8 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM, langConfig.getString("message.cannot-sell-broken-item", "&cYou can't sell a broken item.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, langConfig.getString("message.buy-price-too-low", "&cThe buy price must be higher than %MIN-PRICE%."), Regex.MIN_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, langConfig.getString("message.sell-price-too-low", "&cThe sell price must be higher than %MIN-PRICE%."), Regex.MIN_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, langConfig.getString("message.buy-price-too-high", "&cThe buy price must be lower than %MAX-PRICE%."), Regex.MAX_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, langConfig.getString("message.sell-price-too-high", "&cThe sell price must be lower than %MAX-PRICE%."), Regex.MAX_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.BUYING_DISABLED, langConfig.getString("message.buying-disabled", "&cBuying is disabled at this shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SELLING_DISABLED, langConfig.getString("message.selling-disabled", "&cSelling is disabled at this shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.RELOADED_SHOPS, langConfig.getString("message.reloaded-shops", "&aSuccessfully reloaded %AMOUNT% shop/s."), Regex.AMOUNT));

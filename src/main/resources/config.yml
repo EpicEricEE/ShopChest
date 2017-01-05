@@ -128,18 +128,26 @@ explosion-protection: true
 buy-greater-or-equal-sell: true
 
 # Set the minimum prices for each individual Item. Not per Stack, per single Item!
-# To add an item DELETE THE '[]' after 'minimum-prices:' and follow the format below.
+# To add an item, follow the format below.
 # Important: You must have exactly 2 spaces between the text and the edge.
 # You can find the item names in the 'item_names.txt' file.
-minimum-prices: []
+minimum-prices:
 #  "STONE:1": 0.5
 #  "DIAMOND_SWORD": 100
 
+# Set the maximum prices for each individual Item. Not per Stack, per single Item!
+# To add an item, follow the format below.
+# Important: You must have exactly 2 spaces between the text and the edge.
+# You can find the item names in the 'item_names.txt' file.
+maximum-prices:
+#  "STONE:1": 19.9
+#  "DIAMOND_SWORD": 1000
+
 # Set the items of which a player can't create a shop.
-# To add an item DELETE THE '[]' after 'blacklist:' and follow format below.
+# To add an item, follow the format below.
 # Important: You must have exactly 2 spaces between the text and edge.
 # You can find the item names in the 'item_names.txt' file. 
-blacklist: []
+blacklist:
 #  - "STONE:1"
 #  - "DIAMOND_BLOCK"
 
@@ -188,7 +196,7 @@ database:
 
 # Shop limits are handled with permissions.
 # A player with permission "shopchest.limit.X" has a limit of X shops,
-# a player with permission "shopchest.limit.*" doesn't have a shop limit.
+# a player with permission "shopchest.limit.*" does not have a shop limit.
 shop-limits:
 
   # Set whether admin shops should be excluded of the shop limits.
