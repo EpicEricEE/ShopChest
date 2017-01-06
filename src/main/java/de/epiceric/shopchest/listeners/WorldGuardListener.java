@@ -84,11 +84,12 @@ public class WorldGuardListener implements Listener {
 
             if (event.getOriginalEvent() instanceof PlayerInteractAtEntityEvent) {
                 PlayerInteractAtEntityEvent orig = (PlayerInteractAtEntityEvent) event.getOriginalEvent();
-
                 Entity e = orig.getRightClicked();
-                if (!Hologram.isPartOfHologram((ArmorStand) e)) return;
 
                 if (e.getType() == EntityType.ARMOR_STAND) {
+                    if (!Hologram.isPartOfHologram((ArmorStand) e))
+                        return;
+
                     for (Shop shop : plugin.getShopUtils().getShops()) {
                         if (shop.getHologram().contains((ArmorStand) e)) {
                             if (isAllowed(player, shop.getLocation(), Action.RIGHT_CLICK_BLOCK)) {
@@ -112,11 +113,12 @@ public class WorldGuardListener implements Listener {
 
             if (event.getOriginalEvent() instanceof EntityDamageByEntityEvent) {
                 EntityDamageByEntityEvent orig = (EntityDamageByEntityEvent) event.getOriginalEvent();
-
                 Entity e = orig.getEntity();
-                if (!Hologram.isPartOfHologram((ArmorStand) e)) return;
 
                 if (e.getType() == EntityType.ARMOR_STAND) {
+                    if (!Hologram.isPartOfHologram((ArmorStand) e))
+                        return;
+
                     for (Shop shop : plugin.getShopUtils().getShops()) {
                         if (shop.getHologram().contains((ArmorStand) e)) {
                             if (isAllowed(player, shop.getLocation(), Action.LEFT_CLICK_BLOCK)) {
