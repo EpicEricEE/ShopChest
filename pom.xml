@@ -7,7 +7,7 @@
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest</artifactId>
     <packaging>jar</packaging>
-    <version>1.11.1</version>
+    <version>${version.final}</version>
     <name>ShopChest</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
     <description>Let your players create their own nice-looking shops to sell their stuff to other players!</description>
@@ -15,6 +15,9 @@
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+
+        <version.number>1.11.1</version.number>
+        <version.final>${version.number}-${git.commit.id.abbrev}</version.final>
 
         <github.global.server>github</github.global.server>
 
@@ -29,6 +32,12 @@
             </activation>
             <properties>
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <properties>
+                <version.final>${version.number}</version.final>
             </properties>
         </profile>
     </profiles>
@@ -83,7 +92,6 @@
     </distributionManagement>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -143,6 +151,23 @@ Timestamp: ${maven.build.timestamp}
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.1.5</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                </configuration>
             </plugin>
         </plugins>
     </build>
