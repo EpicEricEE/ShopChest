@@ -17,7 +17,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
 
         <version.number>1.11.1</version.number>
-        <version.final>${version.number}-${git.commit.id.abbrev}</version.final>
+        <version.final>${version.number}-${version.git}</version.final>
 
         <github.global.server>github</github.global.server>
 
@@ -25,6 +25,33 @@
     </properties>
 
     <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>net.md-5</groupId>
+                        <artifactId>scriptus</artifactId>
+                        <version>0.2</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>describe</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <descriptionProperty>version.git</descriptionProperty>
+                            <format>%s</format>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>doclint-java8</id>
             <activation>
@@ -112,14 +139,28 @@
     </distributionManagement>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <targetPath>.</targetPath>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <resources>
+                        <resource>
+                            <directory>src/main/resources</directory>
+                            <targetPath>.</targetPath>
+                            <filtering>true</filtering>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -155,23 +196,6 @@ Timestamp: ${maven.build.timestamp}
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.1.5</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
-                </configuration>
             </plugin>
         </plugins>
     </build>
