@@ -3,7 +3,7 @@
 
 ShopChest - Spigot/Bukkit Plugin
 
-Download the latest builds [here](https://drone.io/github.com/EpicEricEE/ShopChest/files).
+~~Download the latest builds [here](https://drone.io/github.com/EpicEricEE/ShopChest/files).~~ (currently not working)
 
 ## API
 To use the API, you need to add the following repository and dependency in your maven project:
