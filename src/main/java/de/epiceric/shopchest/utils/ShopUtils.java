@@ -259,7 +259,7 @@ public class ShopUtils {
                     }
                 }
             } else {
-                if (shop.getHologram() != null && shop.getHologram().isVisible(player)) shop.getHologram().hidePlayer(player);
+                if (shop.getHologram() != null) shop.getHologram().hidePlayer(player);
             }
 
             if (distSqr <= itemDistSqr) {
