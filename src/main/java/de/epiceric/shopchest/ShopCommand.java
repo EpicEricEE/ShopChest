@@ -281,13 +281,24 @@ class ShopCommand extends BukkitCommand {
         plugin.debug(p.getName() + " has an item in his hand");
 
         for (String item : plugin.getShopChestConfig().blacklist) {
-
             ItemStack itemStack;
 
             if (item.contains(":")) {
-                itemStack = new ItemStack(Material.getMaterial(item.split(":")[0]), 1, Short.parseShort(item.split(":")[1]));
+                Material mat = Material.getMaterial(item.split(":")[0]);
+                if (mat == null) {
+                    plugin.getLogger().warning("Invalid item found in blacklist: " + item);
+                    plugin.debug("Invalid item in blacklist: " + item);
+                    continue;
+                }
+                itemStack = new ItemStack(mat, 1, Short.parseShort(item.split(":")[1]));
             } else {
-                itemStack = new ItemStack(Material.getMaterial(item), 1);
+                Material mat = Material.getMaterial(item);
+                if (mat == null) {
+                    plugin.getLogger().warning("Invalid item found in blacklist: " + item);
+                    plugin.debug("Invalid item in blacklist: " + item);
+                    continue;
+                }
+                itemStack = new ItemStack(mat, 1);
             }
 
             if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
@@ -299,14 +310,25 @@ class ShopCommand extends BukkitCommand {
         plugin.debug(p.getName() + "'s item is not on the blacklist");
 
         for (String key : plugin.getShopChestConfig().minimum_prices) {
-
             ItemStack itemStack;
             double minPrice = plugin.getConfig().getDouble("minimum-prices." + key);
 
             if (key.contains(":")) {
-                itemStack = new ItemStack(Material.getMaterial(key.split(":")[0]), 1, Short.parseShort(key.split(":")[1]));
+                Material mat = Material.getMaterial(key.split(":")[0]);
+                if (mat == null) {
+                    plugin.getLogger().warning("Invalid item found in minimum-prices: " + key);
+                    plugin.debug("Invalid item in minimum-prices: " + key);
+                    continue;
+                }
+                itemStack = new ItemStack(mat, 1, Short.parseShort(key.split(":")[1]));
             } else {
-                itemStack = new ItemStack(Material.getMaterial(key), 1);
+                Material mat = Material.getMaterial(key);
+                if (mat == null) {
+                    plugin.getLogger().warning("Invalid item found in minimum-prices: " + key);
+                    plugin.debug("Invalid item in minimum-prices: " + key);
+                    continue;
+                }
+                itemStack = new ItemStack(mat, 1);
             }
 
             if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
@@ -329,14 +351,25 @@ class ShopCommand extends BukkitCommand {
         plugin.debug(p.getName() + "'s prices are higher than the minimum");
 
         for (String key : plugin.getShopChestConfig().maximum_prices) {
-
             ItemStack itemStack;
             double maxPrice = plugin.getConfig().getDouble("maximum-prices." + key);
 
             if (key.contains(":")) {
-                itemStack = new ItemStack(Material.getMaterial(key.split(":")[0]), 1, Short.parseShort(key.split(":")[1]));
+                Material mat = Material.getMaterial(key.split(":")[0]);
+                if (mat == null) {
+                    plugin.getLogger().warning("Invalid item found in maximum-prices: " + key);
+                    plugin.debug("Invalid item in maximum-prices: " + key);
+                    continue;
+                }
+                itemStack = new ItemStack(mat, 1, Short.parseShort(key.split(":")[1]));
             } else {
-                itemStack = new ItemStack(Material.getMaterial(key), 1);
+                Material mat = Material.getMaterial(key);
+                if (mat == null) {
+                    plugin.getLogger().warning("Invalid item found in maximum-prices: " + key);
+                    plugin.debug("Invalid item in maximum-prices: " + key);
+                    continue;
+                }
+                itemStack = new ItemStack(mat, 1);
             }
 
             if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
