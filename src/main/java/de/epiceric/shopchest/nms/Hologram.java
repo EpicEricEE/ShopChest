@@ -26,11 +26,12 @@ public class Hologram {
     private ShopChest plugin;
 
     private Class<?> entityArmorStandClass = Utils.getNMSClass("EntityArmorStand");
-    private Class<?> nmsWorldClass = Utils.getNMSClass("World");
+    private Class<?> worldClass = Utils.getNMSClass("World");
     private Class<?> packetPlayOutSpawnEntityLivingClass = Utils.getNMSClass("PacketPlayOutSpawnEntityLiving");
     private Class<?> packetPlayOutEntityDestroyClass = Utils.getNMSClass("PacketPlayOutEntityDestroy");
     private Class<?> entityClass = Utils.getNMSClass("Entity");
     private Class<?> entityLivingClass = Utils.getNMSClass("EntityLiving");
+    private Class<?> worldServerClass = Utils.getNMSClass("WorldServer");
 
     public Hologram(ShopChest plugin, String[] text, Location location) {
         this.plugin = plugin;
@@ -38,8 +39,9 @@ public class Hologram {
         this.location = location;
 
         Class[] requiredClasses = new Class[] {
-                nmsWorldClass, entityArmorStandClass, entityLivingClass, entityClass,
-                packetPlayOutSpawnEntityLivingClass, packetPlayOutEntityDestroyClass
+                worldClass, entityArmorStandClass, entityLivingClass, entityClass,
+                packetPlayOutSpawnEntityLivingClass, packetPlayOutEntityDestroyClass,
+                worldServerClass
         };
 
         for (Class c : requiredClasses) {
@@ -72,10 +74,10 @@ public class Hologram {
 
             try {
                 Object craftWorld = loc.getWorld().getClass().cast(loc.getWorld());
-                Object nmsWorldServer = craftWorld.getClass().getMethod("getHandle").invoke(craftWorld);
+                Object worldServer = craftWorld.getClass().getMethod("getHandle").invoke(craftWorld);
 
-                Constructor entityArmorStandConstructor = entityArmorStandClass.getConstructor(nmsWorldClass, double.class, double.class, double.class);
-                Object entityArmorStand = entityArmorStandConstructor.newInstance(nmsWorldServer, loc.getX(), loc.getY(),loc.getZ());
+                Constructor entityArmorStandConstructor = entityArmorStandClass.getConstructor(worldClass, double.class, double.class, double.class);
+                Object entityArmorStand = entityArmorStandConstructor.newInstance(worldServer, loc.getX(), loc.getY(),loc.getZ());
 
                 if (text != null) {
                     entityArmorStandClass.getMethod("setCustomName", String.class).invoke(entityArmorStand, text);
@@ -91,9 +93,9 @@ public class Hologram {
                 }
 
                 // Adds the entity to some lists so it can call interact events
-                Method addEntityMethod = nmsWorldServer.getClass().getDeclaredMethod((Utils.getMajorVersion() == 8 ? "a" : "b"), entityClass);
+                Method addEntityMethod = worldServerClass.getDeclaredMethod((Utils.getMajorVersion() == 8 ? "a" : "b"), entityClass);
                 addEntityMethod.setAccessible(true);
-                addEntityMethod.invoke(nmsWorldServer, entityArmorStand);
+                addEntityMethod.invoke(worldServerClass.cast(worldServer), entityArmorStand);
 
                 Object uuid = entityClass.getMethod("getUniqueID").invoke(entityArmorStand);
 
@@ -106,8 +108,6 @@ public class Hologram {
                 plugin.debug("Could not create Hologram with reflection");
                 plugin.debug(e);
             }
-
-
         }
 
         holograms.add(this);
