@@ -48,7 +48,7 @@ class ShopCommand extends BukkitCommand {
         plugin.debug("Registering command " + command.getName());
 
         Object commandMap = plugin.getServer().getClass().getMethod("getCommandMap").invoke(plugin.getServer());
-        commandMap.getClass().getMethod("register", String.class, Command.class).invoke(commandMap, "shop", command);
+        commandMap.getClass().getMethod("register", String.class, Command.class).invoke(commandMap, "shopchest", command);
     }
 
     @Override
