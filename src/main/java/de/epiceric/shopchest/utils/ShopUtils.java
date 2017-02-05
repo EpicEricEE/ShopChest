@@ -247,19 +247,20 @@ public class ShopUtils {
 
             if (distSqr <= holoDistSqr) {
                 if (shop.getHologram() != null) {
-                    Block b = shop.getLocation().getBlock();
+                    Material type = shop.getLocation().getBlock().getType();
 
-                    if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
+                    if (type != Material.CHEST && type != Material.TRAPPED_CHEST) {
                         plugin.getShopUtils().removeShop(shop, plugin.getShopChestConfig().remove_shop_on_error);
                         return;
                     }
-
                     if (!shop.getHologram().isVisible(player)) {
                         shop.getHologram().showPlayer(player);
                     }
                 }
             } else {
-                if (shop.getHologram() != null) shop.getHologram().hidePlayer(player);
+                if (shop.getHologram() != null) {
+                    shop.getHologram().hidePlayer(player);
+                }
             }
 
             if (distSqr <= itemDistSqr) {

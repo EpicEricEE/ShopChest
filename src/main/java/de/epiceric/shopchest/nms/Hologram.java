@@ -5,6 +5,7 @@ import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -124,39 +125,51 @@ public class Hologram {
     /**
      * @param p Player to which the hologram should be shown
      */
-    public void showPlayer(Player p) {
-        for (Object o : entityList) {
-            try {
-                Object entityLiving = entityLivingClass.cast(o);
-                Object packet = packetPlayOutSpawnEntityLivingClass.getConstructor(entityLivingClass).newInstance(entityLiving);
+    public void showPlayer(final Player p) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Object o : entityList) {
+                    try {
+                        Object entityLiving = entityLivingClass.cast(o);
+                        Object packet = packetPlayOutSpawnEntityLivingClass.getConstructor(entityLivingClass).newInstance(entityLiving);
 
-                Utils.sendPacket(plugin, packet, p);
-            } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
-                plugin.getLogger().severe("Could not show Hologram to player with reflection");
-                plugin.debug("Could not show Hologram to player with reflection");
-                plugin.debug(e);
+                        Utils.sendPacket(plugin, packet, p);
+                    } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                        plugin.getLogger().severe("Could not show Hologram to player with reflection");
+                        plugin.debug("Could not show Hologram to player with reflection");
+                        plugin.debug(e);
+                    }
+                }
             }
-        }
+        }.runTaskAsynchronously(plugin);
+
         visible.add(p);
     }
 
     /**
      * @param p Player from which the hologram should be hidden
      */
-    public void hidePlayer(Player p) {
-        for (Object o : entityList) {
-            try {
-                int id = (int) entityArmorStandClass.getMethod("getId").invoke(o);
+    public void hidePlayer(final Player p) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Object o : entityList) {
+                    try {
+                        int id = (int) entityArmorStandClass.getMethod("getId").invoke(o);
 
-                Object packet = packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[] {id});
+                        Object packet = packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[] {id});
 
-                Utils.sendPacket(plugin, packet, p);
-            } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
-                plugin.getLogger().severe("Could not hide Hologram from player with reflection");
-                plugin.debug("Could not hide Hologram from player with reflection");
-                plugin.debug(e);
+                        Utils.sendPacket(plugin, packet, p);
+                    } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                        plugin.getLogger().severe("Could not hide Hologram from player with reflection");
+                        plugin.debug("Could not hide Hologram from player with reflection");
+                        plugin.debug(e);
+                    }
+                }
             }
-        }
+        }.runTaskAsynchronously(plugin);
+
         visible.remove(p);
     }
 
@@ -185,7 +198,7 @@ public class Hologram {
 
     /**
      * Removes the hologram. <br>
-     * IHologram will be hidden from all players and will be killed
+     * Hologram will be hidden from all players and will be killed
      */
     public void remove() {
         for (Object o : entityList) {
