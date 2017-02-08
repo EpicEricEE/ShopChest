@@ -28,8 +28,8 @@ public class ShopUpdateListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e) {
         for (Shop shop : plugin.getShopUtils().getShops()) {
-            shop.getHologram().hidePlayer(e.getPlayer());
-            shop.getItem().setVisible(e.getPlayer(), false);
+            if (shop.getHologram() != null) shop.getHologram().hidePlayer(e.getPlayer());
+            if (shop.getItem() != null) shop.getItem().setVisible(e.getPlayer(), false);
         }
     }
 
