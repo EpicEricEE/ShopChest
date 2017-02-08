@@ -226,7 +226,7 @@ public class ShopChest extends JavaPlugin {
                     ShopReloadEvent event = new ShopReloadEvent(Bukkit.getConsoleSender());
                     Bukkit.getServer().getPluginManager().callEvent(event);
 
-                    if (!event.isCancelled()) shopUtils.reloadShops(true, false);
+                    if (!event.isCancelled()) shopUtils.reloadShops(true, false, null);
                 }
             }, config.auto_reload_time * 20, config.auto_reload_time * 20);
         }
@@ -288,17 +288,17 @@ public class ShopChest extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        debug("Disabling ShopChest...");
+        debug("Disabling ShopChest...", true);
 
         if (updater != null) {
-            debug("Stopping updater");
+            debug("Stopping updater", true);
             updater.cancel();
         }
 
         if (database != null) {
             for (Shop shop : shopUtils.getShops()) {
-                shopUtils.removeShop(shop, false);
-                debug("Removed shop (#" + shop.getID() + ")");
+                shopUtils.removeShop(shop, false, true);
+                debug("Removed shop (#" + shop.getID() + ")", true);
             }
 
             database.disconnect();
@@ -310,6 +310,26 @@ public class ShopChest extends JavaPlugin {
             } catch (IOException e) {
                 getLogger().severe("Failed to close FileWriter");
                 e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Print a message to the <i>/plugins/ShopChest/debug.txt</i> file
+     * @param message Message to print
+     * @param useCurrentThread Whether the current thread should be used. If set to false, a new synchronized task will be created.
+     */
+    public void debug(final String message, boolean useCurrentThread) {
+        if (config.enable_debug_log && fw != null) {
+            if (useCurrentThread) {
+                debug(message);
+            } else {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        debug(message);
+                    }
+                }.runTask(this);
             }
         }
     }
@@ -335,6 +355,28 @@ public class ShopChest extends JavaPlugin {
     /**
      * Print a {@link Throwable}'s stacktrace to the <i>/plugins/ShopChest/debug.txt</i> file
      * @param throwable {@link Throwable} whose stacktrace will be printed
+     * @param useCurrentThread Whether the current thread should be used. If set to false, a new synchronized task will be created.
+     */
+    public void debug(final Throwable throwable, boolean useCurrentThread) {
+        if (config.enable_debug_log && fw != null) {
+            if (useCurrentThread) {
+                debug(throwable);
+            } else {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        PrintWriter pw = new PrintWriter(fw);
+                        throwable.printStackTrace(pw);
+                        pw.flush();
+                    }
+                }.runTask(this);
+            }
+        }
+    }
+
+    /**
+     * Print a {@link Throwable}'s stacktrace to the <i>/plugins/ShopChest/debug.txt</i> file
+     * @param throwable {@link Throwable} whose stacktrace will be printed
      */
     public void debug(Throwable throwable) {
         if (config.enable_debug_log && fw != null) {
@@ -350,9 +392,17 @@ public class ShopChest extends JavaPlugin {
      */
     private void initializeShops() {
         debug("Initializing Shops...");
-        int count = shopUtils.reloadShops(false, false);
-        getLogger().info("Initialized " + count + " Shops");
-        debug("Initialized " + count + " Shops");
+        shopUtils.reloadShops(false, false, new Callback(this) {
+            @Override
+            public void onResult(Object result) {
+                if (result instanceof Integer) {
+                    int count = (int) result;
+                    getLogger().info("Initialized " + count + " Shops");
+                    debug("Initialized " + count + " Shops");
+                }
+            }
+        });
+
     }
 
     /**

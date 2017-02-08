@@ -241,7 +241,7 @@ class ShopCommand implements CommandExecutor {
      * A given player reloads the shops
      * @param sender The command executor
      */
-    private void reload(CommandSender sender) {
+    private void reload(final CommandSender sender) {
         plugin.debug(sender.getName() + " is reloading the shops");
 
         ShopReloadEvent event = new ShopReloadEvent(sender);
@@ -251,9 +251,17 @@ class ShopCommand implements CommandExecutor {
             return;
         }
 
-        int count = shopUtils.reloadShops(true, true);
-        plugin.debug(sender.getName() + " has reloaded " + count + " shops");
-        sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(count))));
+        shopUtils.reloadShops(true, true, new Callback(plugin) {
+            @Override
+            public void onResult(Object result) {
+                if (result instanceof Integer) {
+                    int count = (int) result;
+                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(count))));
+                    plugin.debug(sender.getName() + " has reloaded " + count + " shops");
+                }
+            }
+        });
+
     }
 
     /**

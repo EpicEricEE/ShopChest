@@ -86,7 +86,7 @@ public class ShopUtils {
         }
 
         if (addToDatabase)
-            plugin.getShopDatabase().addShop(shop);
+            plugin.getShopDatabase().addShop(shop, null);
 
     }
 
@@ -95,7 +95,7 @@ public class ShopUtils {
      * @param shop Shop to remove
      * @param removeFromDatabase Whether the shop should also be removed from the database
      */
-    public void removeShop(Shop shop, boolean removeFromDatabase) {
+    public void removeShop(Shop shop, boolean removeFromDatabase, boolean useCurrentThread) {
         plugin.debug("Removing shop (#" + shop.getID() + ")");
 
         InventoryHolder ih = shop.getInventoryHolder();
@@ -112,10 +112,14 @@ public class ShopUtils {
         }
 
         shop.removeItem();
-        shop.removeHologram();
+        shop.removeHologram(useCurrentThread);
 
         if (removeFromDatabase)
-            plugin.getShopDatabase().removeShop(shop);
+            plugin.getShopDatabase().removeShop(shop, null);
+    }
+
+    public void removeShop(Shop shop, boolean removeFromDatabase) {
+        removeShop(shop, removeFromDatabase, false);
     }
 
     /**
@@ -189,40 +193,61 @@ public class ShopUtils {
      * @param showConsoleMessages Whether messages about the language file should be shown in the console
      * @return Amount of shops, which were reloaded
      */
-    public int reloadShops(boolean reloadConfig, boolean showConsoleMessages) {
+    public void reloadShops(boolean reloadConfig, boolean showConsoleMessages, final Callback callback) {
         plugin.debug("Reloading shops...");
-
-        plugin.getShopDatabase().connect();
 
         if (reloadConfig) {
             plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
             plugin.getUpdater().setMaxDelta(plugin.getShopChestConfig().update_quality.getTime());
         }
 
-        for (Shop shop : getShops()) {
-            removeShop(shop, false);
-            plugin.debug("Removed shop (#" + shop.getID() + ")");
-        }
+        plugin.getShopDatabase().connect(new Callback(plugin) {
+            @Override
+            public void onResult(Object result) {
 
-        int highestId = plugin.getShopDatabase().getHighestID();
+                for (Shop shop : getShops()) {
+                    removeShop(shop, false);
+                    plugin.debug("Removed shop (#" + shop.getID() + ")");
+                }
 
-        int count = 0;
-        for (int id = 1; id <= highestId; id++) {
+                plugin.getShopDatabase().getHighestID(new Callback(plugin) {
+                    @Override
+                    public void onResult(Object result) {
+                        if (result instanceof Integer) {
+                            int highestId = (int) result;
 
-            try {
-                plugin.debug("Trying to add shop. (#" + id + ")");
-                Shop shop = plugin.getShopDatabase().getShop(id);
-                addShop(shop, false);
-            } catch (Exception e) {
-                plugin.debug("Error while adding shop (#" + id + "):");
-                plugin.debug(e);
-                continue;
+                            int count = 0;
+                            for (int i = 1; i <= highestId; i++) {
+                                final int id = i;
+
+                                plugin.debug("Trying to add shop. (#" + id + ")");
+                                plugin.getShopDatabase().getShop(id, new Callback(plugin) {
+                                    @Override
+                                    public void onResult(Object result) {
+                                        if (result instanceof Shop) {
+                                            Shop shop = (Shop) result;
+                                            shop.create();
+                                            addShop(shop, false);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable throwable) {
+                                        plugin.debug("Error while adding shop (#" + id + "):");
+                                        plugin.debug(throwable);
+                                    }
+                                });
+
+                                count++;
+                            }
+
+                            if (callback != null) callback.callSyncResult(count);
+                        }
+                    }
+                });
+
             }
-
-            count++;
-        }
-
-        return count;
+        });
     }
 
     /**

@@ -150,27 +150,42 @@ public class Hologram {
     /**
      * @param p Player from which the hologram should be hidden
      */
-    public void hidePlayer(final Player p) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Object o : entityList) {
-                    try {
-                        int id = (int) entityArmorStandClass.getMethod("getId").invoke(o);
-
-                        Object packet = packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[] {id});
-
-                        Utils.sendPacket(plugin, packet, p);
-                    } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
-                        plugin.getLogger().severe("Could not hide Hologram from player with reflection");
-                        plugin.debug("Could not hide Hologram from player with reflection");
-                        plugin.debug(e);
-                    }
+    public void hidePlayer(final Player p, boolean useCurrentThread) {
+        if (useCurrentThread) {
+            sendDestroyPackets(p);
+        } else {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    sendDestroyPackets(p);
                 }
-            }
-        }.runTaskAsynchronously(plugin);
+            }.runTaskAsynchronously(plugin);
+        }
 
         visible.remove(p);
+    }
+
+    private void sendDestroyPackets(Player p) {
+        for (Object o : entityList) {
+            try {
+                int id = (int) entityArmorStandClass.getMethod("getId").invoke(o);
+
+                Object packet = packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[] {id});
+
+                Utils.sendPacket(plugin, packet, p);
+            } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                plugin.getLogger().severe("Could not hide Hologram from player with reflection");
+                plugin.debug("Could not hide Hologram from player with reflection");
+                plugin.debug(e);
+            }
+        }
+    }
+
+    /**
+     * @param p Player from which the hologram should be hidden
+     */
+    public void hidePlayer(final Player p) {
+        hidePlayer(p, false);
     }
 
     /**

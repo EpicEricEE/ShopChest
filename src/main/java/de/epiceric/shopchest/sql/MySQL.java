@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.sql;
 
 import de.epiceric.shopchest.ShopChest;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -38,13 +39,18 @@ public class MySQL extends Database {
     }
 
     public void ping() {
-        try (PreparedStatement ps = connection.prepareStatement("/* ping */ SELECT 1")) {
-            plugin.debug("Pinging to MySQL server...");
-            ps.executeQuery();
-        } catch (SQLException ex) {
-            plugin.getLogger().severe("Failed to ping to MySQL server. Trying to reconnect...");
-            plugin.debug("Failed to ping to MySQL server. Trying to reconnect...");
-            connect();
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try (PreparedStatement ps = connection.prepareStatement("/* ping */ SELECT 1")) {
+                    plugin.debug("Pinging to MySQL server...");
+                    ps.executeQuery();
+                } catch (SQLException ex) {
+                    plugin.getLogger().severe("Failed to ping to MySQL server. Trying to reconnect...");
+                    plugin.debug("Failed to ping to MySQL server. Trying to reconnect...");
+                    connect(null);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 }

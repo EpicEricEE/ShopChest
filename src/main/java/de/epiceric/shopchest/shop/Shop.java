@@ -2,6 +2,8 @@ package de.epiceric.shopchest.shop;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.exceptions.ChestNotFoundException;
+import de.epiceric.shopchest.exceptions.NotEnoughSpaceException;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.Hologram;
@@ -19,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Shop {
 
+    private boolean created;
     private int id;
     private ShopChest plugin;
     private OfflinePlayer vendor;
@@ -39,22 +42,6 @@ public class Shop {
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.shopType = shopType;
-
-        Block b = location.getBlock();
-        if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
-            plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
-            plugin.getLogger().severe("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
-            plugin.debug("No Chest found at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
-            return;
-        } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
-            plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
-            plugin.getLogger().severe("No space above chest at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
-            plugin.debug("No space above chest at specified Location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
-            return;
-        }
-
-        if (hologram == null || !hologram.exists()) createHologram();
-        if (item == null) createItem();
     }
 
     private Shop(OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
@@ -67,19 +54,52 @@ public class Shop {
         this.shopType = shopType;
     }
 
+    public void create() {
+        if (created) return;
+
+        Block b = location.getBlock();
+        if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
+            ChestNotFoundException ex = new ChestNotFoundException("No Chest found at location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
+            plugin.getLogger().severe(ex.getMessage());
+            plugin.debug("Failed to create shop (#" + id + ")");
+            plugin.debug(ex);
+            return;
+        } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
+            NotEnoughSpaceException ex = new NotEnoughSpaceException("No space above chest at location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
+            plugin.getLogger().severe(ex.getMessage());
+            plugin.debug("Failed to create shop (#" + id + ")");
+            plugin.debug(ex);
+            return;
+        }
+
+        if (hologram == null || !hologram.exists()) createHologram();
+        if (item == null) createItem();
+
+        created = true;
+    }
+
     /**
-     * Creates the hologram of the shop if it doesn't exist
+     * Removes the hologram of the shop
      */
-    public void removeHologram() {
+    public void removeHologram(boolean useCurrentThread) {
         if (hologram != null && hologram.exists()) {
             plugin.debug("Removing hologram (#" + id + ")");
 
             for (Player p : Bukkit.getOnlinePlayers()) {
-                hologram.hidePlayer(p);
+                hologram.hidePlayer(p, useCurrentThread);
             }
 
             hologram.remove();
         }
+    }
+
+    /**
+     * Removes the hologram of the shop
+     */
+    public void removeHologram() {
+        removeHologram(false);
     }
 
     /**
@@ -201,6 +221,13 @@ public class Shop {
         }
 
         hologram = new Hologram(plugin, holoText, holoLocation);
+    }
+
+    /**
+     * @return Whether the shop has already been created
+     */
+    public boolean isCreated() {
+        return created;
     }
 
     /**
