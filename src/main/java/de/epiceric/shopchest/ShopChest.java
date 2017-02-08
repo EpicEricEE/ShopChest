@@ -403,6 +403,13 @@ public class ShopChest extends JavaPlugin {
     }
 
     /**
+     * Set the {@link ShopUpdater} that schedules hologram and item updates
+     */
+    public void setUpdater(ShopUpdater updater) {
+        this.updater = updater;
+    }
+
+    /**
      * @return Whether the plugin 'Towny' is enabled
      */
     public boolean hasTowny() {

@@ -34,9 +34,17 @@ public class ShopUpdater extends Thread {
         super.interrupt();
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
     @Override
     public void run() {
         while(running) {
+            if (Bukkit.getOnlinePlayers().isEmpty()) {
+                cancel();
+            }
+
             long timeNow = System.currentTimeMillis();
             long timeElapsed = timeNow - lastTime;
 
