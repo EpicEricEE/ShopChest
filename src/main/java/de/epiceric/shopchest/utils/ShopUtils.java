@@ -210,42 +210,27 @@ public class ShopUtils {
                     plugin.debug("Removed shop (#" + shop.getID() + ")");
                 }
 
-                plugin.getShopDatabase().getHighestID(new Callback(plugin) {
+                plugin.getShopDatabase().getShops(new Callback(plugin) {
                     @Override
                     public void onResult(Object result) {
-                        if (result instanceof Integer) {
-                            int highestId = (int) result;
-
-                            int count = 0;
-                            for (int i = 1; i <= highestId; i++) {
-                                final int id = i;
-
-                                plugin.debug("Trying to add shop. (#" + id + ")");
-                                plugin.getShopDatabase().getShop(id, new Callback(plugin) {
-                                    @Override
-                                    public void onResult(Object result) {
-                                        if (result instanceof Shop) {
-                                            Shop shop = (Shop) result;
-                                            shop.create();
-                                            addShop(shop, false);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable throwable) {
-                                        plugin.debug("Error while adding shop (#" + id + "):");
-                                        plugin.debug(throwable);
-                                    }
-                                });
-
-                                count++;
+                        if (result instanceof Shop[]) {
+                            Shop[] shops = (Shop[]) result;
+                            for (Shop shop : shops) {
+                                if (shop.create()) {
+                                    addShop(shop, false);
+                                }
                             }
-
-                            if (callback != null) callback.callSyncResult(count);
+                            if (callback != null) callback.callSyncResult(shops.length);
                         }
                     }
-                });
 
+                    @Override
+                    public void onError(Throwable throwable) {
+                        callback.callSyncError(throwable);
+                        plugin.debug("Error while adding shops");
+                        plugin.debug(throwable);
+                    }
+                });
             }
         });
     }

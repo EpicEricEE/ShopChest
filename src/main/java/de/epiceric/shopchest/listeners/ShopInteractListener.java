@@ -17,7 +17,10 @@ import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
-import de.epiceric.shopchest.utils.*;
+import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.Permissions;
+import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.worldguard.ShopFlag;
 import fr.xephi.authme.AuthMe;
 import net.milkbowl.vault.economy.Economy;
@@ -447,53 +450,43 @@ public class ShopInteractListener implements Listener {
     private void create(final Player executor, final Location location, final ItemStack product, final double buyPrice, final double sellPrice, final ShopType shopType) {
         plugin.debug(executor.getName() + " is creating new shop...");
 
-        database.getNextFreeID(new Callback(plugin) {
-            @Override
-            public void onResult(Object result) {
-                if (result instanceof Integer) {
-                    int id = (int) result;
-                    double creationPrice = (shopType == ShopType.NORMAL) ? config.shop_creation_price_normal : config.shop_creation_price_admin;
-                    Shop shop = new Shop(id, plugin, executor, product, location, buyPrice, sellPrice, shopType);
+        double creationPrice = (shopType == ShopType.NORMAL) ? config.shop_creation_price_normal : config.shop_creation_price_admin;
+        Shop shop = new Shop(plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
-                    ShopCreateEvent event = new ShopCreateEvent(executor, shop, creationPrice);
-                    Bukkit.getPluginManager().callEvent(event);
+        ShopCreateEvent event = new ShopCreateEvent(executor, shop, creationPrice);
+        Bukkit.getPluginManager().callEvent(event);
 
-                    if (event.isCancelled()) {
-                        plugin.debug("Create event cancelled (#" + id + ")");
-                        return;
-                    }
+        if (event.isCancelled()) {
+            plugin.debug("Create event cancelled");
+            return;
+        }
 
-                    EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
-                    if (!r.transactionSuccess()) {
-                        plugin.debug("Economy transaction failed: " + r.errorMessage);
-                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
-                        return;
-                    }
+        EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
+        if (!r.transactionSuccess()) {
+            plugin.debug("Economy transaction failed: " + r.errorMessage);
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Regex.ERROR, r.errorMessage)));
+            return;
+        }
 
-                    shop.create();
+        shop.create();
 
-                    plugin.debug("Shop created (#" + id + ")");
-                    shopUtils.addShop(shop, true);
-                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED));
+        plugin.debug("Shop created");
+        shopUtils.addShop(shop, true);
 
-                    for (Player p : location.getWorld().getPlayers()) {
-                        if (p.getLocation().distanceSquared(location) <= Math.pow(config.maximal_distance, 2)) {
-                            if (shop.getHologram() != null) {
-                                shop.getHologram().showPlayer(p);
-                            }
-                        }
-                        if (p.getLocation().distanceSquared(location) <= Math.pow(config.maximal_item_distance, 2)) {
-                            if (shop.getItem() != null) {
-                                shop.getItem().setVisible(p, true);
-                            }
-                        }
-                    }
+        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED));
+
+        for (Player p : location.getWorld().getPlayers()) {
+            if (p.getLocation().distanceSquared(location) <= Math.pow(config.maximal_distance, 2)) {
+                if (shop.getHologram() != null) {
+                    shop.getHologram().showPlayer(p);
                 }
             }
-
-            @Override
-            public void onError(Throwable throwable) {}
-        });
+            if (p.getLocation().distanceSquared(location) <= Math.pow(config.maximal_item_distance, 2)) {
+                if (shop.getItem() != null) {
+                    shop.getItem().setVisible(p, true);
+                }
+            }
+        }
     }
 
     /**

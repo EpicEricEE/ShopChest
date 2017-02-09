@@ -473,7 +473,7 @@ class ShopCommand implements CommandExecutor {
 
         plugin.debug(p.getName() + " can pay the creation price");
 
-        ShopPreCreateEvent event = new ShopPreCreateEvent(p, Shop.createImaginaryShop(p, itemStack, null, buyPrice, sellPrice, shopType));
+        ShopPreCreateEvent event = new ShopPreCreateEvent(p, new Shop(plugin, p, itemStack, null, buyPrice, sellPrice, shopType));
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {

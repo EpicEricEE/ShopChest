@@ -44,18 +44,14 @@ public class Shop {
         this.shopType = shopType;
     }
 
-    private Shop(OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
-        this.id = 0;
-        this.vendor = vendor;
-        this.product = product;
-        this.location = location;
-        this.buyPrice = buyPrice;
-        this.sellPrice = sellPrice;
-        this.shopType = shopType;
+    public Shop(ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
+        this(-1, plugin, vendor, product, location, buyPrice, sellPrice, shopType);
     }
 
-    public void create() {
-        if (created) return;
+    public boolean create() {
+        if (created) return false;
+
+        plugin.debug("Creating shop (#" + id + ")");
 
         Block b = location.getBlock();
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
@@ -64,20 +60,21 @@ public class Shop {
             plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
-            return;
+            return false;
         } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
             NotEnoughSpaceException ex = new NotEnoughSpaceException("No space above chest at location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
             plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
             plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
-            return;
+            return false;
         }
 
         if (hologram == null || !hologram.exists()) createHologram();
         if (item == null) createItem();
 
         created = true;
+        return true;
     }
 
     /**
@@ -224,6 +221,23 @@ public class Shop {
     }
 
     /**
+     * @return Whether an ID has been assigned to the shop
+     */
+    public boolean hasId() {
+        return id != -1;
+    }
+
+    /**
+     * Assign an ID to the shop. <br/>
+     * Only works for the first time!
+     */
+    public void setId(int id) {
+        if (this.id == -1) {
+            this.id = id;
+        }
+    }
+
+    /**
      * @return Whether the shop has already been created
      */
     public boolean isCreated() {
@@ -305,13 +319,6 @@ public class Shop {
         }
 
         return null;
-    }
-
-    /**
-     * @return A shop, which is not really a shop. It's just for "storing" the data (used in some events).
-     */
-    public static Shop createImaginaryShop(OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
-        return new Shop(vendor, product, location, buyPrice, sellPrice, shopType);
     }
 
     public enum ShopType {

@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -50,18 +51,17 @@ public abstract class Database {
                     connection = getConnection();
 
                     String queryCreateTableShopList =
-                            "CREATE TABLE IF NOT EXISTS shop_list (" +
-                                    "`id` int(11) NOT NULL," +
-                                    "`vendor` tinytext NOT NULL," +
-                                    "`product` text NOT NULL," +
-                                    "`world` tinytext NOT NULL," +
-                                    "`x` int(11) NOT NULL," +
-                                    "`y` int(11) NOT NULL," +
-                                    "`z` int(11) NOT NULL," +
-                                    "`buyprice` float(32) NOT NULL," +
-                                    "`sellprice` float(32) NOT NULL," +
-                                    "`shoptype` tinytext NOT NULL," +
-                                    "PRIMARY KEY (`id`)" +
+                            "CREATE TABLE IF NOT EXISTS shops (" +
+                                    "`id` INTEGER PRIMARY KEY " + (Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT") + "," +
+                                    "`vendor` TINYTEXT NOT NULL," +
+                                    "`product` TEXT NOT NULL," +
+                                    "`world` TINYTEXT NOT NULL," +
+                                    "`x` INTEGER NOT NULL," +
+                                    "`y` INTEGER NOT NULL," +
+                                    "`z` INTEGER NOT NULL," +
+                                    "`buyprice` FLOAT NOT NULL," +
+                                    "`sellprice` FLOAT NOT NULL," +
+                                    "`shoptype` TINYTEXT NOT NULL" +
                                     ");";
 
                     String queryCreateTableShopLog =
@@ -79,108 +79,63 @@ public abstract class Database {
                                     "`type` TINYTEXT NOT NULL" +
                                     ");";
 
-                    // Create table "shop_list"
+                    String queryCheckIfTableExists =
+                            (Database.this instanceof SQLite ?
+                                    "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'shop_list'" :
+                                    "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'shop_list'");
+
+                    String queryCopyTableShopList = "INSERT INTO shops (vendor,product,world,x,y,z,buyprice,sellprice,shoptype) SELECT vendor,product,world,x,y,z,buyprice,sellprice,shoptype FROM shop_list";
+                    String queryRenameTableShopList = "ALTER TABLE shop_list RENAME TO shop_list_old";
+
+                    // Create table "shops"
                     Statement s = connection.createStatement();
                     s.executeUpdate(queryCreateTableShopList);
                     s.close();
 
-                    // Create table "shop_log"
+                    // Check if old table "shop_list" exists
                     Statement s2 = connection.createStatement();
-                    s2.executeUpdate(queryCreateTableShopLog);
-                    s2.close();
+                    ResultSet rs = s2.executeQuery(queryCheckIfTableExists);
 
-                    // Count entries in table "shop_list"
-                    PreparedStatement ps = connection.prepareStatement("SELECT * FROM shop_list");
-                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        plugin.debug("Table 'shop_list' exists: Copying contents...");
+                        // Table exists: Copy contents to new table
+                        PreparedStatement ps = connection.prepareStatement(queryCopyTableShopList);
+                        ps.executeUpdate();
+                        ps.close();
+
+                        plugin.debug("Renaming table...");
+                        // Rename/Backup old table
+                        PreparedStatement ps2 = connection.prepareStatement(queryRenameTableShopList);
+                        ps2.executeUpdate();
+                        ps2.close();
+                    }
+
+                    s2.close();
+                    rs.close();
+
+                    // Create table "shop_log"
+                    Statement s3 = connection.createStatement();
+                    s3.executeUpdate(queryCreateTableShopLog);
+                    s3.close();
+
+                    // Count entries in table "shops"
+                    PreparedStatement ps = connection.prepareStatement("SELECT * FROM shops");
+                    ResultSet rs2 = ps.executeQuery();
 
                     int count = 0;
-                    while (rs.next()) {
-                        if (rs.getString("vendor") != null) count++;
+                    while (rs2.next()) {
+                        if (rs2.getString("vendor") != null) count++;
                     }
                     plugin.debug("Initialized database with " + count + " entries");
 
-                    close(ps, rs);
+                    close(ps, rs2);
 
                     if (callback != null) callback.callSyncResult(count);
                 } catch (SQLException ex) {
                     if (callback != null) callback.callSyncError(ex);
-                    plugin.getLogger().severe("Failed to connect to database");
-                    plugin.debug("Failed to connect to database");
+                    plugin.getLogger().severe("Failed to initialize database");
+                    plugin.debug("Failed to initialize database");
                     plugin.debug(ex);
-                }
-            }
-        }.runTaskAsynchronously(plugin);
-    }
-
-    /**
-     * @return Lowest possible ID which is not used (> 0)
-     */
-    public void getNextFreeID(final Callback callback) {
-        getHighestID(new Callback(plugin) {
-            @Override
-            public void onResult(Object result) {
-                if (result instanceof Integer) {
-                    int highestId = (int) result;
-
-                    for (int i = 1; i <= highestId + 1; i++) {
-                        final int id = i;
-                        isShop(i, new Callback(plugin) {
-                            @Override
-                            public void onResult(Object result) {
-                                if (result instanceof Boolean) {
-                                    boolean isShop = (boolean) result;
-                                    if (!isShop) {
-                                        if (callback != null) callback.callSyncResult(id);
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable throwable) {
-                                if (callback != null) callback.callSyncError(throwable);
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                if (callback != null) callback.callSyncError(throwable);
-            }
-        });
-    }
-
-    /**
-     * @return Highest ID which is used
-     */
-    public void getHighestID(final Callback callback) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                PreparedStatement ps = null;
-                ResultSet rs = null;
-
-                int highestID = 0;
-
-                try {
-                    ps = connection.prepareStatement("SELECT * FROM shop_list;");
-                    rs = ps.executeQuery();
-
-                    while (rs.next()) {
-                        if (rs.getInt("id") > highestID) {
-                            highestID = rs.getInt("id");
-                        }
-                    }
-
-                    plugin.debug("Highest used ID: " + highestID);
-                    if (callback != null) callback.callSyncResult(highestID);
-                } catch (SQLException ex) {
-                    if (callback != null) callback.callSyncError(ex);
-                    plugin.debug("Failed to get highest used ID");
-                    plugin.getLogger().severe("Failed to access database");
-                } finally {
-                    close(ps, rs);
                 }
             }
         }.runTaskAsynchronously(plugin);
@@ -198,7 +153,7 @@ public abstract class Database {
                 PreparedStatement ps = null;
 
                 try {
-                    ps = connection.prepareStatement("DELETE FROM shop_list WHERE id = " + shop.getID() + ";");
+                    ps = connection.prepareStatement("DELETE FROM shops WHERE id = " + shop.getID() + ";");
                     plugin.debug("Removing shop from database (#" + shop.getID() + ")");
                     ps.executeUpdate();
                     if (callback != null) callback.callSyncResult(null);
@@ -226,7 +181,7 @@ public abstract class Database {
                 ResultSet rs = null;
 
                 try {
-                    ps = connection.prepareStatement("SELECT * FROM shop_list WHERE id = " + id + ";");
+                    ps = connection.prepareStatement("SELECT * FROM shops WHERE id = " + id + ";");
                     rs = ps.executeQuery();
 
                     while (rs.next()) {
@@ -250,72 +205,71 @@ public abstract class Database {
     }
 
     /**
-     * @param id ID of the shop
-     * @return Shop with the given ID
+     * Get all shops from the database
      */
-    public void getShop(final int id, final Callback callback) {
+    public void getShops(final Callback callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
                 PreparedStatement ps = null;
                 ResultSet rs = null;
 
+                ArrayList<Shop> shops = new ArrayList<>();
+
                 try {
-                    ps = connection.prepareStatement("SELECT * FROM shop_list WHERE id = " + id + ";");
+                    ps = connection.prepareStatement("SELECT * FROM shops");
                     rs = ps.executeQuery();
 
                     while (rs.next()) {
-                        if (rs.getInt("id") == id) {
-                            plugin.debug("Getting Shop... (#" + id + ")");
+                        int id = rs.getInt("id");
 
-                            String worldName = rs.getString("world");
-                            World world = Bukkit.getWorld(worldName);
-                            int x = rs.getInt("x");
-                            int y = rs.getInt("y");
-                            int z = rs.getInt("z");
+                        plugin.debug("Getting Shop... (#" + id + ")");
 
-                            if (world == null) {
-                                WorldNotFoundException ex = new WorldNotFoundException("Could not find world with name \"" + worldName + "\"");
-                                callback.callSyncError(ex);
-                                plugin.getLogger().warning(ex.getMessage());
-                                plugin.debug("Failed to get shop (#" + id + ")");
-                                plugin.debug(ex);
-                                return;
-                            }
+                        String worldName = rs.getString("world");
+                        World world = Bukkit.getWorld(worldName);
+                        int x = rs.getInt("x");
+                        int y = rs.getInt("y");
+                        int z = rs.getInt("z");
 
-                            Location location = new Location(world, x, y, z);
+                        if (world == null) {
+                            WorldNotFoundException ex = new WorldNotFoundException("Could not find world with name \"" + worldName + "\"");
+                            if (callback != null) callback.callSyncError(ex);
+                            plugin.getLogger().warning(ex.getMessage());
+                            plugin.debug("Failed to get shop (#" + id + ")");
+                            plugin.debug(ex);
+                            continue;
+                        }
 
-                            Shop shop = plugin.getShopUtils().getShop(location);
-                            if (shop != null) {
-                                plugin.debug("Shop already exists, returning existing one (#" + id + ").");
-                                if (callback != null) callback.callSyncResult(shop);
-                            } else {
-                                plugin.debug("Creating new shop... (#" + id + ")");
+                        Location location = new Location(world, x, y, z);
 
-                                OfflinePlayer vendor = Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
-                                ItemStack product = Utils.decode(rs.getString("product"));
-                                double buyPrice = rs.getDouble("buyprice");
-                                double sellPrice = rs.getDouble("sellprice");
-                                ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
+                        Shop shop = plugin.getShopUtils().getShop(location);
+                        if (shop != null) {
+                            plugin.debug("Shop already exists, returning existing one (#" + id + ").");
+                            if (callback != null) callback.callSyncResult(shop);
+                        } else {
+                            plugin.debug("Initializing new shop... (#" + id + ")");
 
-                                if (callback != null) callback.callSyncResult(new Shop(id, plugin, vendor, product, location, buyPrice, sellPrice, shopType));
-                            }
+                            OfflinePlayer vendor = Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
+                            ItemStack product = Utils.decode(rs.getString("product"));
+                            double buyPrice = rs.getDouble("buyprice");
+                            double sellPrice = rs.getDouble("sellprice");
+                            ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
 
-                            return;
+                            shops.add(new Shop(id, plugin, vendor, product, location, buyPrice, sellPrice, shopType));
                         }
                     }
 
-                    plugin.debug("Shop with ID not found, returning null. (#" + id + ")");
+                    if (callback != null) callback.callSyncResult(shops.toArray(new Shop[shops.size()]));
                 } catch (SQLException ex) {
                     if (callback != null) callback.callSyncError(ex);
                     plugin.getLogger().severe("Failed to access database");
-                    plugin.debug("Failed to get shop (#" + id + ")");
+                    plugin.debug("Failed to get shops");
                     plugin.debug(ex);
                 } finally {
                     close(ps, rs);
                 }
 
-                if (callback != null) callback.callSyncResult(null);
+
             }
         }.runTaskAsynchronously(plugin);
     }
@@ -329,23 +283,31 @@ public abstract class Database {
             @Override
             public void run() {
                 PreparedStatement ps = null;
+                ResultSet rs = null;
 
                 try {
-                    ps = connection.prepareStatement("REPLACE INTO shop_list (id,vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    ps = connection.prepareStatement("REPLACE INTO shops (vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
-                    ps.setInt(1, shop.getID());
-                    ps.setString(2, shop.getVendor().getUniqueId().toString());
-                    ps.setString(3, Utils.encode(shop.getProduct()));
-                    ps.setString(4, shop.getLocation().getWorld().getName());
-                    ps.setInt(5, shop.getLocation().getBlockX());
-                    ps.setInt(6, shop.getLocation().getBlockY());
-                    ps.setInt(7, shop.getLocation().getBlockZ());
-                    ps.setDouble(8, shop.getBuyPrice());
-                    ps.setDouble(9, shop.getSellPrice());
-                    ps.setString(10, shop.getShopType().toString());
+                    ps.setString(1, shop.getVendor().getUniqueId().toString());
+                    ps.setString(2, Utils.encode(shop.getProduct()));
+                    ps.setString(3, shop.getLocation().getWorld().getName());
+                    ps.setInt(4, shop.getLocation().getBlockX());
+                    ps.setInt(5, shop.getLocation().getBlockY());
+                    ps.setInt(6, shop.getLocation().getBlockZ());
+                    ps.setDouble(7, shop.getBuyPrice());
+                    ps.setDouble(8, shop.getSellPrice());
+                    ps.setString(9, shop.getShopType().toString());
                     ps.executeUpdate();
 
-                    if (callback != null) callback.callSyncResult(null);
+                    int shopId = -1;
+                    rs = ps.getGeneratedKeys();
+                    if (rs.next()) {
+                        shopId = rs.getInt(1);
+                    }
+
+                    shop.setId(shopId);
+
+                    if (callback != null) callback.callSyncResult(shopId);
                     plugin.debug("Adding shop to database (#" + shop.getID() + ")");
                 } catch (SQLException ex) {
                     if (callback != null) callback.callSyncError(ex);
@@ -353,7 +315,7 @@ public abstract class Database {
                     plugin.debug("Failed to add shop to database (#" + shop.getID() + ")");
                     plugin.debug(ex);
                 } finally {
-                    close(ps, null);
+                    close(ps, rs);
                 }
             }
         }.runTaskAsynchronously(plugin);
