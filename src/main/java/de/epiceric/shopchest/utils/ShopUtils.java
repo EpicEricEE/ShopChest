@@ -226,7 +226,7 @@ public class ShopUtils {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        callback.callSyncError(throwable);
+                        if (callback != null) callback.callSyncError(throwable);
                         plugin.debug("Error while adding shops");
                         plugin.debug(throwable);
                     }
