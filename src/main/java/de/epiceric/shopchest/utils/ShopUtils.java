@@ -3,19 +3,22 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 public class ShopUtils {
 
@@ -227,13 +230,62 @@ public class ShopUtils {
      * @param location Location of the player
      */
     public void updateShops(Player player, Location location) {
-        for (Shop shop : getShops()) {
-            updateShop(shop, player, location);
+        if (plugin.getShopChestConfig().only_show_shops_in_sight) {
+            HashSet<Material> transparent = new HashSet<>();
+            transparent.add(Material.AIR);
+            List<Block> sight = player.getLineOfSight(transparent, (int) plugin.getShopChestConfig().maximal_distance);
+
+            ArrayList<Shop> shopsInSight = new ArrayList<>();
+
+            for (Block block : sight) {
+                if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
+                    if (isShop(block.getLocation())) {
+                        Shop shop = getShop(block.getLocation());
+                        shopsInSight.add(shop);
+
+                        if (shop.getHologram() != null && !shop.getHologram().isVisible(player)) {
+                            shop.getHologram().showPlayer(player);
+                        }
+                    }
+                } else {
+                    Block below = block.getRelative(BlockFace.DOWN);
+                    if (isShop(below.getLocation())) {
+                        Shop shop = getShop(below.getLocation());
+                        shopsInSight.add(shop);
+
+                        if (shop.getHologram() != null && !shop.getHologram().isVisible(player)) {
+                            shop.getHologram().showPlayer(player);
+                        }
+                    }
+                }
+            }
+
+            double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
+
+            for (Shop shop : getShops()) {
+                if (shop.getItem() != null && shop.getLocation().getWorld().getName().equals(player.getWorld().getName())) {
+                    if (shop.getLocation().distanceSquared(player.getEyeLocation()) <= itemDistSqr) {
+                        shop.getItem().setVisible(player, true);
+                    } else {
+                        shop.getItem().setVisible(player, false);
+                    }
+                }
+
+                if (!shopsInSight.contains(shop)) {
+                    if (shop.getHologram() != null) {
+                        shop.getHologram().hidePlayer(player);
+                    }
+                }
+            }
+        } else {
+            for (Shop shop : getShops()) {
+                updateShop(shop, player, location);
+            }
         }
     }
 
     /**
-     * Update hologram and item of the shop for a player
+     * Update hologram and item of the shop for a player based on their distance to each other
      * @param shop Shop to update
      * @param player Player to show the update
      * @param location Location of the player

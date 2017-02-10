@@ -119,6 +119,9 @@ public class Config {
     /** Whether players are allowed to sell/buy broken items **/
     public boolean allow_broken_items;
 
+    /** Whether only the shops a player points on should be shown to him **/
+    public boolean only_show_shops_in_sight;
+
     /**
      * <p>Whether shops should automatically be removed from the database if an error occurred while loading</p>
      * (e.g. when no chest is found at a shop's location)
@@ -337,6 +340,7 @@ public class Config {
         enable_towny_integration = plugin.getConfig().getBoolean("enable-towny-integration");
         enable_vendor_messages = plugin.getConfig().getBoolean("enable-vendor-messages");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
+        only_show_shops_in_sight = plugin.getConfig().getBoolean("only-show-shops-in-sight");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
         append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
         show_shop_items = plugin.getConfig().getBoolean("show-shop-items");

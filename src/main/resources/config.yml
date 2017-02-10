@@ -45,6 +45,11 @@ enable-towny-integration: true
 # buy or sell something from/to his shop or if his shop is out of stock
 enable-vendor-messages: true
 
+# Set whether only the shops a player points on should be shown to him.
+# If set to false, every shop near the player (with the specified
+# distance) will be shown to him.
+only-show-shops-in-sight: true
+
 # Set whether the buy- and sell price should be arranged below each other.
 # The first line will be the buy price with the message
 # "message.hologram.only-buy", the second line will be the sell price
