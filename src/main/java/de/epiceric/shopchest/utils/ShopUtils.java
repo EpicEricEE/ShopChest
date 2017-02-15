@@ -233,7 +233,16 @@ public class ShopUtils {
         if (plugin.getShopChestConfig().only_show_shops_in_sight) {
             HashSet<Material> transparent = new HashSet<>();
             transparent.add(Material.AIR);
-            List<Block> sight = player.getLineOfSight(transparent, (int) plugin.getShopChestConfig().maximal_distance);
+
+            List<Block> sight;
+
+            try {
+                sight = player.getLineOfSight(transparent, (int) plugin.getShopChestConfig().maximal_distance);
+            } catch (IllegalStateException e) {
+                // This method is occasionally throwing this exception but the exact reason is unknown...
+                plugin.debug("Failed to get line of sight: " + e.getMessage());
+                return;
+            }
 
             ArrayList<Shop> shopsInSight = new ArrayList<>();
 
