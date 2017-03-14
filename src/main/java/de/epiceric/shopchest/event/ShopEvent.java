@@ -19,6 +19,10 @@ public abstract class ShopEvent extends Event {
      */
     public abstract Player getPlayer();
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public HandlerList getHandlers() {
         return handlers;

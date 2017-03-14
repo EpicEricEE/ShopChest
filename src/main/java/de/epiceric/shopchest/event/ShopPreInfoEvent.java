@@ -35,6 +35,10 @@ public class ShopPreInfoEvent extends Event implements Cancellable {
         this.cancelled = cancel;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public HandlerList getHandlers() {
         return handlers;

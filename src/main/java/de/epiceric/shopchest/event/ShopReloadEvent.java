@@ -35,6 +35,10 @@ public class ShopReloadEvent extends Event implements Cancellable {
         return cancelled;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public void setCancelled(boolean cancel) {
         cancelled = cancel;
