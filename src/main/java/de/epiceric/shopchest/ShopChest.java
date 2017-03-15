@@ -5,7 +5,6 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopReloadEvent;
-import de.epiceric.shopchest.event.ShopUpdateEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.listeners.*;
@@ -16,24 +15,22 @@ import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.sql.MySQL;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.*;
-import de.epiceric.shopchest.utils.Metrics.Graph;
-import de.epiceric.shopchest.utils.Metrics.Plotter;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import de.epiceric.shopchest.worldguard.ShopFlag;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class ShopChest extends JavaPlugin {
 
@@ -164,71 +161,33 @@ public class ShopChest extends JavaPlugin {
 
         shopUtils = new ShopUtils(this);
 
-        try {
-            debug("Initializing Metrics...");
+        debug("Initializing Metrics...");
+        Metrics metrics = new Metrics(this);
 
-            Metrics metrics = new Metrics(this);
-            Graph shopType = metrics.createGraph("Shop Type");
-            shopType.addPlotter(new Plotter("Normal") {
+        metrics.addCustomChart(new Metrics.AdvancedPie("shop_type") {
+            @Override
+            public HashMap<String, Integer> getValues(HashMap<String, Integer> hashMap) {
+                int normal = 0;
+                int admin = 0;
 
-                @Override
-                public int getValue() {
-                    int value = 0;
-
-                    for (Shop shop : shopUtils.getShops()) {
-                        if (shop.getShopType() == ShopType.NORMAL) value++;
-                    }
-
-                    return value;
+                for (Shop shop : shopUtils.getShops()) {
+                    if (shop.getShopType() == ShopType.NORMAL) normal++;
+                    else if (shop.getShopType() == ShopType.ADMIN) admin++;
                 }
 
-            });
+                hashMap.put("Admin", admin);
+                hashMap.put("Normal", normal);
 
-            shopType.addPlotter(new Plotter("Admin") {
+                return hashMap;
+            }
+        });
 
-                @Override
-                public int getValue() {
-                    int value = 0;
-
-                    for (Shop shop : shopUtils.getShops()) {
-                        if (shop.getShopType() == ShopType.ADMIN) value++;
-                    }
-
-                    return value;
-                }
-
-            });
-
-            Graph databaseType = metrics.createGraph("Database Type");
-            databaseType.addPlotter(new Plotter("SQLite") {
-
-                @Override
-                public int getValue() {
-                    if (config.database_type == Database.DatabaseType.SQLite)
-                        return 1;
-
-                    return 0;
-                }
-
-            });
-
-            databaseType.addPlotter(new Plotter("MySQL") {
-
-                @Override
-                public int getValue() {
-                    if (config.database_type == Database.DatabaseType.MySQL)
-                        return 1;
-
-                    return 0;
-                }
-
-            });
-
-            metrics.start();
-        } catch (IOException e) {
-            debug("Metrics: Failed to submit stats");
-            getLogger().severe("Could not submit stats.");
-        }
+        metrics.addCustomChart(new Metrics.SimplePie("database_type") {
+            @Override
+            public String getValue() {
+                return config.database_type.toString();
+            }
+        });
 
         if (config.database_type == Database.DatabaseType.SQLite) {
             debug("Using database type: SQLite");
