@@ -127,7 +127,7 @@ maximal-item-distance: 40
 
 # Set the time in seconds between automatic shop reloads.
 # You can set this to 0 to disable automatic shop reloads.
-auto-reload-time: 1200
+auto-reload-time: 0
 
 # Set the price a player has to pay in order to create...
 # You can set this to 0 to disable costs.
