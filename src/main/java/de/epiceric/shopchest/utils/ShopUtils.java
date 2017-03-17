@@ -23,6 +23,7 @@ import java.util.List;
 public class ShopUtils {
 
     private HashMap<Location, Shop> shopLocation = new HashMap<>();
+    private HashMap<Player, Location> playerLocation = new HashMap<>();
     private ShopChest plugin;
 
     public ShopUtils(ShopChest plugin) {
@@ -227,9 +228,13 @@ public class ShopUtils {
     /**
      * Update hologram and item of all shops for a player
      * @param player Player to show the updates
-     * @param location Location of the player
      */
-    public void updateShops(Player player, Location location) {
+    public void updateShops(Player player) {
+        if (player.getLocation().equals(playerLocation.get(player))) {
+            // Player has not moved, so don't calculate shops again.
+            return;
+        }
+
         if (plugin.getShopChestConfig().only_show_shops_in_sight) {
             HashSet<Material> transparent = new HashSet<>();
             transparent.add(Material.AIR);
@@ -288,23 +293,24 @@ public class ShopUtils {
             }
         } else {
             for (Shop shop : getShops()) {
-                updateShop(shop, player, location);
+                updateShop(shop, player);
             }
         }
+
+        playerLocation.put(player, player.getLocation());
     }
 
     /**
      * Update hologram and item of the shop for a player based on their distance to each other
      * @param shop Shop to update
      * @param player Player to show the update
-     * @param location Location of the player
      */
-    public void updateShop(Shop shop, Player player, Location location) {
+    public void updateShop(Shop shop, Player player) {
         double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
         double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
 
-        if (location.getWorld().getName().equals(shop.getLocation().getWorld().getName())) {
-            double distSqr = shop.getLocation().distanceSquared(location);
+        if (player.getLocation().getWorld().getName().equals(shop.getLocation().getWorld().getName())) {
+            double distSqr = shop.getLocation().distanceSquared(player.getLocation());
 
             if (distSqr <= holoDistSqr) {
                 if (shop.getHologram() != null) {

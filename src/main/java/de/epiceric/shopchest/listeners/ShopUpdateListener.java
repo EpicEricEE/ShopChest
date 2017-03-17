@@ -22,7 +22,7 @@ public class ShopUpdateListener implements Listener {
     @EventHandler
     public void onShopUpdate(ShopUpdateEvent e) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            plugin.getShopUtils().updateShops(p, p.getLocation());
+            plugin.getShopUtils().updateShops(p);
         }
     }
 
