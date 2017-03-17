@@ -101,6 +101,9 @@ public class Config {
     /** Whether Towny integration should be enabled **/
     public boolean enable_towny_integration;
 
+    /** Whether AuthMe integration should be enabled **/
+    public boolean enable_authme_integration;
+
     /** Whether the vendor of the shop should get messages about buys and sells **/
     public boolean enable_vendor_messages;
 
@@ -338,6 +341,7 @@ public class Config {
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
         enable_worldguard_integration = plugin.getConfig().getBoolean("enable-worldguard-integration");
         enable_towny_integration = plugin.getConfig().getBoolean("enable-towny-integration");
+        enable_authme_integration = plugin.getConfig().getBoolean("enable-authme-integration");
         enable_vendor_messages = plugin.getConfig().getBoolean("enable-vendor-messages");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         only_show_shops_in_sight = plugin.getConfig().getBoolean("only-show-shops-in-sight");

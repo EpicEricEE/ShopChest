@@ -17,6 +17,7 @@ import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.*;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import de.epiceric.shopchest.worldguard.ShopFlag;
+import fr.xephi.authme.AuthMe;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.Metrics;
 import org.bukkit.Bukkit;
@@ -46,6 +47,7 @@ public class ShopChest extends JavaPlugin {
     private FileWriter fw;
     private WorldGuardPlugin worldGuard;
     private Towny towny;
+    private AuthMe authMe;
     private ShopUpdater updater;
 
     /**
@@ -152,6 +154,11 @@ public class ShopChest extends JavaPlugin {
         Plugin townyPlugin = Bukkit.getServer().getPluginManager().getPlugin("Towny");
         if (townyPlugin instanceof Towny) {
             towny = (Towny) townyPlugin;
+        }
+
+        Plugin authMePlugin = Bukkit.getServer().getPluginManager().getPlugin("AuthMe");
+        if (authMePlugin instanceof AuthMe) {
+            authMe = (AuthMe) authMePlugin;
         }
 
         debug("Loading utils and extras...");
@@ -366,6 +373,20 @@ public class ShopChest extends JavaPlugin {
      */
     public void setUpdater(ShopUpdater updater) {
         this.updater = updater;
+    }
+
+    /**
+     * @return Whether the plugin 'AuthMe' is enabled
+     */
+    public boolean hasAuthMe() {
+        return authMe != null;
+    }
+
+    /**
+     * @return An instance of {@link AuthMe} or {@code null} if AuthMe is not enabled
+     */
+    public AuthMe getAuthMe() {
+        return authMe;
     }
 
     /**

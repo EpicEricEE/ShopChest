@@ -25,6 +25,7 @@ import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.worldguard.ShopFlag;
+import fr.xephi.authme.AuthMe;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -75,6 +76,8 @@ public class ShopInteractListener implements Listener {
     public void onPlayerInteractCreate(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         Block b = e.getClickedBlock();
+
+        if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
 
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -361,6 +364,7 @@ public class ShopInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
+        if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(e.getPlayer())) return;
         handleInteractEvent(e, true);
     }
 
@@ -370,6 +374,7 @@ public class ShopInteractListener implements Listener {
 
         Entity entity = e.getRightClicked();
         Player p = e.getPlayer();
+        if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
 
         if (Utils.getMajorVersion() == 8 || e.getHand() == EquipmentSlot.HAND) {
             if (entity instanceof ArmorStand) {
@@ -404,6 +409,7 @@ public class ShopInteractListener implements Listener {
 
         if (!(damager instanceof Player)) return;
         Player p = (Player) damager;
+        if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
 
         if (entity instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) entity;
