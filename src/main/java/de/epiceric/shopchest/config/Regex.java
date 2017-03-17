@@ -19,7 +19,8 @@ public enum Regex {
     MUSIC_TITLE("%MUSIC-TITLE%"),
     PROPERTY("%PROPERTY%"),
     VALUE("%VALUE%"),
-    EXTENDED("%EXTENDED%");
+    EXTENDED("%EXTENDED%"),
+    REVENUE("%REVENUE%");
 
     private String name;
 

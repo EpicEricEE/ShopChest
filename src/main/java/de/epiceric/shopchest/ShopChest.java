@@ -272,7 +272,7 @@ public class ShopChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopUpdateListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopItemListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
-        getServer().getPluginManager().registerEvents(new NotifyUpdateOnJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new NotifyPlayerOnJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new ChestProtectListener(this, worldGuard), this);
 
         if (!Utils.getServerVersion().equals("v1_8_R1"))

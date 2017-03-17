@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,6 +80,12 @@ public abstract class Database {
                                     "`type` TINYTEXT NOT NULL" +
                                     ");";
 
+                    String queryCreateTablePlayerLogout =
+                            "CREATE TABLE IF NOT EXISTS player_logout (" +
+                                    "`player` VARCHAR(36) PRIMARY KEY NOT NULL," +
+                                    "`time` LONG NOT NULL" +
+                                    ");";
+
                     String queryCheckIfTableExists =
                             (Database.this instanceof SQLite ?
                                     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'shop_list'" :
@@ -117,6 +124,11 @@ public abstract class Database {
                     Statement s3 = connection.createStatement();
                     s3.executeUpdate(queryCreateTableShopLog);
                     s3.close();
+
+                    // Create table "player_logout"
+                    Statement s4 = connection.createStatement();
+                    s4.executeUpdate(queryCreateTablePlayerLogout);
+                    s4.close();
 
                     // Count entries in table "shops"
                     PreparedStatement ps = connection.prepareStatement("SELECT * FROM shops");
@@ -360,6 +372,133 @@ public abstract class Database {
                     plugin.debug(ex);
                 } finally {
                     close(ps, null);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    /**
+     * Get the revenue a player got while he was offline
+     * @param player Player whose revenue to get
+     * @param logoutTime Time in milliseconds when he logged out the last time
+     */
+    public void getRevenue(final Player player, final long logoutTime, final Callback callback) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+
+                String vendor = String.format("%s (%s)", player.getUniqueId().toString(), player.getName());
+
+                double revenue = 0;
+
+                try {
+                    ps = connection.prepareStatement("SELECT * FROM shop_log WHERE vendor = ?;");
+                    ps.setString(1, vendor);
+                    rs = ps.executeQuery();
+
+                    while (rs.next()) {
+                        if (rs.getString("vendor").equals(vendor)) {
+                            double singleRevenue = rs.getDouble("price");
+                            ShopBuySellEvent.Type type = ShopBuySellEvent.Type.valueOf(rs.getString("type"));
+
+                            if (type == ShopBuySellEvent.Type.SELL) singleRevenue = -singleRevenue;
+
+                            long timestamp;
+
+                            try {
+                                timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("timestamp")).getTime();
+                            } catch (ParseException ex) {
+                                plugin.debug("Failed to get revenue from player \"" + player.getUniqueId().toString() + "\"");
+                                plugin.debug(ex);
+                                continue;
+                            }
+
+                            if (timestamp > logoutTime) {
+                                revenue += singleRevenue;
+                            }
+                        }
+                    }
+
+                    if (callback != null) callback.callSyncResult(revenue);
+                } catch (SQLException ex) {
+                    if (callback != null) callback.callSyncError(ex);
+                    plugin.getLogger().severe("Failed to access database");
+                    plugin.debug("Failed to get revenue from player \"" + player.getUniqueId().toString() + "\"");
+                    plugin.debug(ex);
+                } finally {
+                    close(ps, rs);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    /**
+     * Log a logout to the database
+     * @param player Player who logged out
+     * @param timestamp Time in milliseconds when the player logged out
+     */
+    public void logLogout(final Player player, final long timestamp, final Callback callback) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PreparedStatement ps = null;
+
+                try {
+                    ps = connection.prepareStatement("REPLACE INTO player_logout (player,time) VALUES(?,?)");
+
+                    ps.setString(1, player.getUniqueId().toString());
+                    ps.setLong(2, timestamp);
+                    ps.executeUpdate();
+
+                    if (callback != null) callback.callSyncResult(null);
+                    plugin.debug("Logged logout to database");
+                } catch (final SQLException ex) {
+                    if (callback != null) callback.callSyncError(ex);
+                    plugin.getLogger().severe("Failed to access database");
+                    plugin.debug("Failed to log logout to database");
+                    plugin.debug(ex);
+                } finally {
+                    close(ps, null);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    /**
+     * Get the last logout of a player
+     * @param player Player who logged out
+     */
+    public void getLastLogout(final Player player, final Callback callback) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+
+                String playerUuid = player.getUniqueId().toString();
+
+                try {
+                    ps = connection.prepareStatement("SELECT * FROM player_logout WHERE player = ?;");
+                    ps.setString(1, playerUuid);
+                    rs = ps.executeQuery();
+
+                    while (rs.next()) {
+                        if (rs.getString("player").equals(playerUuid)) {
+                            if (callback != null) callback.callSyncResult(rs.getLong("time"));
+                            return;
+                        }
+                    }
+
+                    if (callback != null) callback.callSyncResult(-1);
+                } catch (SQLException ex) {
+                    if (callback != null) callback.callSyncError(ex);
+                    plugin.getLogger().severe("Failed to access database");
+                    plugin.debug("Failed to get last logout from player \"" + playerUuid + "\"");
+                    plugin.debug(ex);
+                } finally {
+                    close(ps, rs);
                 }
             }
         }.runTaskAsynchronously(plugin);

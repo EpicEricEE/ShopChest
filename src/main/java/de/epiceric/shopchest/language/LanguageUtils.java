@@ -933,6 +933,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, langConfig.getString("message.sell-success-admin", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.SELL_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, langConfig.getString("message.someone-bought", "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop."), Regex.PLAYER, Regex.AMOUNT, Regex.ITEM_NAME, Regex.BUY_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_SOLD, langConfig.getString("message.someone-sold", "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop."), Regex.PLAYER, Regex.AMOUNT, Regex.ITEM_NAME, Regex.SELL_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE, langConfig.getString("message.revenue-while-offline", "&6While you were offline, your shops have made a revenue of &c%REVENUE%&6."), Regex.REVENUE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE, langConfig.getString("message.not-enough-inventory-space", "&cNot enough space in inventory.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE, langConfig.getString("message.chest-not-enough-inventory-space", "&cShop is full.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_MONEY, langConfig.getString("message.not-enough-money", "&cNot enough money.")));
@@ -1180,7 +1181,7 @@ public class LanguageUtils {
                         if (localizedMessage.getRegexes()[i] == replacedRegex.getRegex()) {
                             Regex regex = replacedRegex.getRegex();
                             String toReplace = replacedRegex.getReplace();
-                            if (regex == Regex.BUY_PRICE || regex == Regex.SELL_PRICE || regex == Regex.MIN_PRICE || regex == Regex.CREATION_PRICE) {
+                            if (regex == Regex.BUY_PRICE || regex == Regex.SELL_PRICE || regex == Regex.MIN_PRICE || regex == Regex.CREATION_PRICE || regex == Regex.REVENUE) {
                                 if (!toReplace.equals(getMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED))) {
                                     double price = Double.parseDouble(toReplace);
                                     toReplace = plugin.getEconomy().format(price);

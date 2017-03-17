@@ -93,6 +93,10 @@ message.someone-bought=&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-
 # Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %PLAYER%
 message.someone-sold=&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop.
 
+# Set the message when a player joins and made a revenue while he was offline.
+# Usable regex: %REVENUE%
+message.revenue-while-offline=&6While you were offline, your shops have made a revenue of &c%REVENUE%&6.
+
 # Set the message when the inventory is full when the player is buying something.
 message.not-enough-inventory-space=&cNot enough space in inventory.
 

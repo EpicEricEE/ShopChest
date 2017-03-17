@@ -68,6 +68,7 @@ public class LocalizedMessage {
         SELL_SUCESS_ADMIN,
         SOMEONE_BOUGHT,
         SOMEONE_SOLD,
+        REVENUE_WHILE_OFFLINE,
         NOT_ENOUGH_INVENTORY_SPACE,
         CHEST_NOT_ENOUGH_INVENTORY_SPACE,
         NOT_ENOUGH_MONEY,

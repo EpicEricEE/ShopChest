@@ -24,6 +24,7 @@ message.sell-success=&aDu hast &6%AMOUNT% x %ITEMNAME%&a für &6%SELL-PRICE%&a a
 message.sell-success-admin=&aDu hast &6%AMOUNT% x %ITEMNAME%&a für &6%SELL-PRICE% &averkauft.
 message.someone-bought=&6%PLAYER% &ahat &6%AMOUNT% x %ITEMNAME%&a für &6%BUY-PRICE%&a von deinem Shop gekauft.
 message.someone-sold=&6%PLAYER% &ahat &6%AMOUNT% x %ITEMNAME%&a für &6%SELL-PRICE%&a an deinen Shop verkauft.
+message.revenue-while-offline=&6Während du offline warst, haben deine Shops einen Umsatz von &c%REVENUE%&6 gemacht.
 message.not-enough-inventory-space=&cNicht genug Platz im Inventar.
 message.chest-not-enough-inventory-space=&cShop ist voll.
 message.not-enough-money=&cNicht genug Geld.

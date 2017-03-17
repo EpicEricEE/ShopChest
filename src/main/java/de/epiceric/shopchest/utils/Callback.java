@@ -14,7 +14,7 @@ public abstract class Callback {
 
     public void onError(Throwable throwable) {}
 
-    public void callSyncResult(final Object result) {
+    public final void callSyncResult(final Object result) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -23,7 +23,7 @@ public abstract class Callback {
         }.runTask(plugin);
     }
 
-    public void callSyncError(final Throwable throwable) {
+    public final void callSyncError(final Throwable throwable) {
         new BukkitRunnable() {
             @Override
             public void run() {
