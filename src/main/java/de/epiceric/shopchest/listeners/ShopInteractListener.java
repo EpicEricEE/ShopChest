@@ -44,6 +44,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
@@ -70,6 +71,16 @@ public class ShopInteractListener implements Listener {
         this.shopUtils = plugin.getShopUtils();
         this.config = plugin.getShopChestConfig();
         this.worldGuard = plugin.getWorldGuard();
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerManipulateArmorStand(PlayerArmorStandManipulateEvent e) {
+        // When clicking an armor stand with an armor item, the armor stand will take it.
+        // As a hologram consists of armor stands, they would also take the item.
+        ArmorStand armorStand = e.getRightClicked();
+        if (Hologram.isPartOfHologram(armorStand)) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
