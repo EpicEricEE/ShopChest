@@ -91,7 +91,7 @@ public class WorldGuardListener implements Listener {
                         return;
 
                     for (Shop shop : plugin.getShopUtils().getShops()) {
-                        if (shop.getHologram().contains((ArmorStand) e)) {
+                        if (shop.getHologram() != null && shop.getHologram().contains((ArmorStand) e)) {
                             if (isAllowed(player, shop.getLocation(), Action.RIGHT_CLICK_BLOCK)) {
                                 event.setAllowed(true);
                                 orig.setCancelled(false);
@@ -120,7 +120,7 @@ public class WorldGuardListener implements Listener {
                         return;
 
                     for (Shop shop : plugin.getShopUtils().getShops()) {
-                        if (shop.getHologram().contains((ArmorStand) e)) {
+                        if (shop.getHologram() != null && shop.getHologram().contains((ArmorStand) e)) {
                             if (isAllowed(player, shop.getLocation(), Action.LEFT_CLICK_BLOCK)) {
                                 event.setAllowed(true);
                                 orig.setCancelled(false);
