@@ -94,6 +94,7 @@ public class ShopUtils {
      * Remove a shop
      * @param shop Shop to remove
      * @param removeFromDatabase Whether the shop should also be removed from the database
+     * @param useCurrentThread Whether the current thread should be used instead of a new async task
      */
     public void removeShop(Shop shop, boolean removeFromDatabase, boolean useCurrentThread) {
         plugin.debug("Removing shop (#" + shop.getID() + ")");
@@ -118,6 +119,11 @@ public class ShopUtils {
             plugin.getShopDatabase().removeShop(shop, null);
     }
 
+    /**
+     * Remove a shop
+     * @param shop Shop to remove
+     * @param removeFromDatabase Whether the shop should also be removed from the database
+     */
     public void removeShop(Shop shop, boolean removeFromDatabase) {
         removeShop(shop, removeFromDatabase, false);
     }
@@ -191,7 +197,7 @@ public class ShopUtils {
      * Reload the shops
      * @param reloadConfig Whether the configuration should also be reloaded
      * @param showConsoleMessages Whether messages about the language file should be shown in the console
-     * @return Amount of shops, which were reloaded
+     * @param callback Callback that - if succeeded - returns the amount of shops that were reloaded (as {@code int})
      */
     public void reloadShops(boolean reloadConfig, boolean showConsoleMessages, final Callback callback) {
         plugin.debug("Reloading shops...");

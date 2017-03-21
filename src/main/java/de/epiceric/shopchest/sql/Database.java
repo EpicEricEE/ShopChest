@@ -40,6 +40,7 @@ public abstract class Database {
     /**
      * (Re-)Connects to the the database and initializes it. <br>
      * Creates the table (if doesn't exist) and tests the connection
+     * @param callback Callback that - if succeeded - returns the amount of shops that were found (as {@code int})
      */
     public void connect(final Callback callback) {
         new BukkitRunnable() {
@@ -157,6 +158,7 @@ public abstract class Database {
      * Remove a shop from the database
      *
      * @param shop Shop to remove
+     * @param callback Callback that - if succeeded - returns {@code null}
      */
     public void removeShop(final Shop shop, final Callback callback) {
         new BukkitRunnable() {
@@ -183,7 +185,7 @@ public abstract class Database {
 
     /**
      * @param id ID of the shop
-     * @return Whether a shop with the given ID exists
+     * @param callback Callback that - if succeeded - returns whether a shop with the given ID exists (as {@code boolean})
      */
     public void isShop(final int id, final Callback callback) {
         new BukkitRunnable() {
@@ -218,6 +220,7 @@ public abstract class Database {
 
     /**
      * Get all shops from the database
+     * @param callback Callback that - if succeeded - returns an array of all shops (as {@code Shop[]})
      */
     public void getShops(final Callback callback) {
         new BukkitRunnable() {
@@ -254,21 +257,15 @@ public abstract class Database {
 
                         Location location = new Location(world, x, y, z);
 
-                        Shop shop = plugin.getShopUtils().getShop(location);
-                        if (shop != null) {
-                            plugin.debug("Shop already exists, returning existing one (#" + id + ").");
-                            if (callback != null) callback.callSyncResult(shop);
-                        } else {
-                            plugin.debug("Initializing new shop... (#" + id + ")");
+                        plugin.debug("Initializing new shop... (#" + id + ")");
 
-                            OfflinePlayer vendor = Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
-                            ItemStack product = Utils.decode(rs.getString("product"));
-                            double buyPrice = rs.getDouble("buyprice");
-                            double sellPrice = rs.getDouble("sellprice");
-                            ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
+                        OfflinePlayer vendor = Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
+                        ItemStack product = Utils.decode(rs.getString("product"));
+                        double buyPrice = rs.getDouble("buyprice");
+                        double sellPrice = rs.getDouble("sellprice");
+                        ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
 
-                            shops.add(new Shop(id, plugin, vendor, product, location, buyPrice, sellPrice, shopType));
-                        }
+                        shops.add(new Shop(id, plugin, vendor, product, location, buyPrice, sellPrice, shopType));
                     }
 
                     if (callback != null) callback.callSyncResult(shops.toArray(new Shop[shops.size()]));
@@ -289,6 +286,7 @@ public abstract class Database {
     /**
      * Adds a shop to the database
      * @param shop Shop to add
+     * @param callback Callback that - if succeeded - returns the ID the shop was given (as {@code int})
      */
     public void addShop(final Shop shop, final Callback callback) {
         new BukkitRunnable() {
@@ -341,6 +339,7 @@ public abstract class Database {
      * @param location Location of the shop
      * @param price Price (buyprice or sellprice, depends on {@code type})
      * @param type Whether the player bought or sold something
+     * @param callback Callback that - if succeeded - returns {@code null}
      */
     public void logEconomy(final Player executor, final ItemStack product, final OfflinePlayer vendor, final ShopType shopType, final Location location, final double price, final ShopBuySellEvent.Type type, final Callback callback) {
         new BukkitRunnable() {
@@ -381,6 +380,7 @@ public abstract class Database {
      * Get the revenue a player got while he was offline
      * @param player Player whose revenue to get
      * @param logoutTime Time in milliseconds when he logged out the last time
+     * @param callback Callback that - if succeeded - returns the revenue the player made while offline (as {@code double})
      */
     public void getRevenue(final Player player, final long logoutTime, final Callback callback) {
         new BukkitRunnable() {
@@ -438,6 +438,7 @@ public abstract class Database {
      * Log a logout to the database
      * @param player Player who logged out
      * @param timestamp Time in milliseconds when the player logged out
+     * @param callback Callback that - if succeeded - returns {@code null}
      */
     public void logLogout(final Player player, final long timestamp, final Callback callback) {
         new BukkitRunnable() {
@@ -469,6 +470,7 @@ public abstract class Database {
     /**
      * Get the last logout of a player
      * @param player Player who logged out
+     * @param callback Callback that - if succeeded - returns the time in milliseconds the player logged out (as {@code long})
      */
     public void getLastLogout(final Player player, final Callback callback) {
         new BukkitRunnable() {
