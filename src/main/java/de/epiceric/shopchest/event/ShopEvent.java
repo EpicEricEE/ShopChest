@@ -8,16 +8,27 @@ import org.bukkit.event.HandlerList;
 public abstract class ShopEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
+    private Shop shop;
+    private Player player;
+
+    public ShopEvent(Player player, Shop shop) {
+        this.player = player;
+        this.shop = shop;
+    }
 
     /**
      * @return Shop which is involved in this event
      */
-    public abstract Shop getShop();
+    public Shop getShop() {
+        return shop;
+    }
 
     /**
      * @return Player who is involved in this event
      */
-    public abstract Player getPlayer();
+    public Player getPlayer() {
+        return player;
+    }
 
     public static HandlerList getHandlerList() {
         return handlers;

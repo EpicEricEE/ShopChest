@@ -8,23 +8,10 @@ import org.bukkit.event.Cancellable;
  * Called when a player removes a shop (clicks on a chest)
  */
 public class ShopRemoveEvent extends ShopEvent implements Cancellable {
-    private Player player;
-    private Shop shop;
     private boolean cancelled;
 
     public ShopRemoveEvent(Player player, Shop shop) {
-        this.player = player;
-        this.shop = shop;
-    }
-
-    @Override
-    public Shop getShop() {
-        return shop;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
+        super(player, shop);
     }
 
     @Override

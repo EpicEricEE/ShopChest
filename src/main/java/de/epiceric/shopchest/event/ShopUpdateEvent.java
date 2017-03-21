@@ -3,6 +3,10 @@ package de.epiceric.shopchest.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when the shop updater runs <br/>
+ * It's not recommended to listen to this event!
+ */
 public class ShopUpdateEvent extends Event {
 
     public enum UpdateQuality {

@@ -1,10 +1,7 @@
 package de.epiceric.shopchest;
 
 import de.epiceric.shopchest.config.Regex;
-import de.epiceric.shopchest.event.ShopPreCreateEvent;
-import de.epiceric.shopchest.event.ShopPreInfoEvent;
-import de.epiceric.shopchest.event.ShopPreRemoveEvent;
-import de.epiceric.shopchest.event.ShopReloadEvent;
+import de.epiceric.shopchest.event.*;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.JsonBuilder;
@@ -62,6 +59,7 @@ class ShopCommand extends BukkitCommand {
                     case "REMOVE":
                     case "INFO":
                     case "LIMITS":
+                    case "OPEN":
                         sender.sendMessage(ChatColor.RED + "Only players can use this command.");
                         return true;
                 }
@@ -104,6 +102,9 @@ class ShopCommand extends BukkitCommand {
                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS,
                             new LocalizedMessage.ReplacedRegex(Regex.LIMIT, (limit < 0 ? "∞" : String.valueOf(limit))),
                             new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
+                } else if (args[0].equalsIgnoreCase("open")) {
+                    needsHelp = false;
+                    open(p);
                 }
             }
 
@@ -475,6 +476,25 @@ class ShopCommand extends BukkitCommand {
     }
 
     /**
+     * A given player opens a shop
+     * @param p The command executor
+     */
+    private void open(Player p) {
+        plugin.debug(p.getName() + " wants to open a shop");
+
+        ShopPreOpenEvent event = new ShopPreOpenEvent(p);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            plugin.debug("Shop pre open event cancelled");
+            return;
+        }
+
+        plugin.debug(p.getName() + " can now click a chest");
+        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_OPEN));
+        ClickType.setPlayerClickType(p, new ClickType(EnumClickType.OPEN));
+    }
+
+    /**
      * Sends the basic help message
      * @param sender {@link CommandSender} who will receive the message
      */
@@ -491,6 +511,7 @@ class ShopCommand extends BukkitCommand {
             sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " remove - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE));
             sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " info - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO));
             sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " limits - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS));
+            sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " open - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_OPEN));
         }
 
         if (sender.hasPermission(Permissions.RELOAD)) {

@@ -218,6 +218,27 @@ public class ShopInteractListener implements Listener {
                                 ClickType.removePlayerClickType(p);
                                 break;
 
+                            case OPEN:
+                                e.setCancelled(true);
+
+                                if (shopUtils.isShop(b.getLocation())) {
+                                    Shop shop = shopUtils.getShop(b.getLocation());
+                                    if (p.getUniqueId().equals(shop.getVendor().getUniqueId()) || p.hasPermission(Permissions.OPEN_OTHER)) {
+                                        e.setCancelled(false);
+                                        if (!calledFromInteractEvent) {
+                                            p.openInventory(shop.getInventoryHolder().getInventory());
+                                        }
+                                    } else {
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
+                                        plugin.debug(p.getName() + " is not permitted to open another player's shop");
+                                    }
+                                } else {
+                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
+                                    plugin.debug("Chest is not a shop");
+                                }
+
+                                ClickType.removePlayerClickType(p);
+                                break;
                         }
                     }
                 } else {
@@ -226,35 +247,6 @@ public class ShopInteractListener implements Listener {
 
                         if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
                             if (p.isSneaking()) {
-                                return;
-                            }
-                        }
-
-                        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                            if (p.isSneaking() || (shop.getShopType() != ShopType.ADMIN && shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
-                                if (Utils.getPreferredItemInHand(p) == null) {
-                                    e.setCancelled(true);
-                                    if (!shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-                                        if (p.hasPermission(Permissions.OPEN_OTHER)) {
-                                            String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
-                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName)));
-                                            plugin.debug(p.getName() + " is opening " + vendorName + "'s shop (#" + shop.getID() + ")");
-                                            e.setCancelled(false);
-                                            if (!calledFromInteractEvent) {
-                                                p.openInventory(shop.getInventoryHolder().getInventory());
-                                            }
-                                        } else {
-                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
-                                            plugin.debug(p.getName() + " is not permitted to open another player's shop");
-                                        }
-                                    } else {
-                                        e.setCancelled(false);
-                                        if (!calledFromInteractEvent) {
-                                            p.openInventory(shop.getInventoryHolder().getInventory());
-                                        }
-                                    }
-                                }
-
                                 return;
                             }
                         }

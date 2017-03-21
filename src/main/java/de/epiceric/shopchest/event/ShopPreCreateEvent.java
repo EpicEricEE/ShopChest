@@ -8,23 +8,10 @@ import org.bukkit.event.Cancellable;
  * Called when a player wants to create a shop (enters the command)
  */
 public class ShopPreCreateEvent extends ShopEvent implements Cancellable {
-    private Player player;
-    private Shop shop;
     private boolean cancelled;
 
     public ShopPreCreateEvent(Player player, Shop shop) {
-        this.player = player;
-        this.shop = shop;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
-    }
-
-    @Override
-    public Shop getShop() {
-        return shop;
+        super(player, shop);
     }
 
     @Override

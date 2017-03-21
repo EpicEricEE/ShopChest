@@ -8,24 +8,16 @@ import org.bukkit.event.Cancellable;
  * Called when a player buys or sells something from or to a shop
  */
 public class ShopBuySellEvent extends ShopEvent implements Cancellable {
-    private Player player;
-    private Shop shop;
     private Type type;
     private int newAmount;
     private double newPrice;
     private boolean cancelled;
 
     public ShopBuySellEvent(Player player, Shop shop, Type type, int newAmount, double newPrice) {
-        this.player = player;
-        this.shop = shop;
+        super(player, shop);
         this.type = type;
         this.newAmount = newAmount;
         this.newPrice = newPrice;
-    }
-
-    @Override
-    public Shop getShop() {
-        return shop;
     }
 
     /**
@@ -47,11 +39,6 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
      */
     public double getNewPrice() {
         return newPrice;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
     }
 
     @Override
