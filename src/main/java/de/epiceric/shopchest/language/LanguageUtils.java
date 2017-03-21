@@ -638,7 +638,7 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.DRAGONS_BREATH, langConfig.getString("item.dragon_breath.name", "Dragon's Breath")));
             itemNames.add(new ItemName(Material.SPECTRAL_ARROW, langConfig.getString("item.spectral_arrow.name", "Spectral Arrow")));
             itemNames.add(new ItemName(Material.TIPPED_ARROW, langConfig.getString("item.tipped_arrow.name", "Tipped Arrow")));
-            itemNames.add(new ItemName(Material.SHIELD, langConfig.getString("item.shield.name", "Shield"))); //TODO ADD SHIELD DESCRIPTIONS
+            itemNames.add(new ItemName(Material.SHIELD, langConfig.getString("item.shield.name", "Shield")));
             itemNames.add(new ItemName(Material.ELYTRA, langConfig.getString("item.elytra.name", "Elytra")));
             itemNames.add(new ItemName(Material.BOAT_SPRUCE, langConfig.getString("item.boat.spruce.name", "Spruce Boat")));
             itemNames.add(new ItemName(Material.BOAT_BIRCH, langConfig.getString("item.boat.birch.name", "Birch Boat")));
@@ -946,8 +946,9 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS, langConfig.getString("message.prices-contain-decimals", "&cPrices must not contain decimals.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND, langConfig.getString("message.no-item-in-hand", "&cNo item in hand")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE, langConfig.getString("message.click-chest-to-create-shop", "&aClick a chest to create a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE, langConfig.getString("message.click-chest-to-remove-shop", "&aClick a shop-chest to remove the shop.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE, langConfig.getString("message.click-chest-to-remove-shop", "&aClick a shop to remove it.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_INFO, langConfig.getString("message.click-chest-for-info", "&aClick a shop to retrieve information.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_OPEN, langConfig.getString("message.click-chest-to-open-shop", "&aClick a shop to open it.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.OPENED_SHOP, langConfig.getString("message.opened-shop", "&aYou opened %VENDOR%'s shop."), Regex.VENDOR));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_BREAK_SHOP, langConfig.getString("message.cannot-break-shop", "&cYou can't break a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM, langConfig.getString("message.cannot-sell-broken-item", "&cYou can't sell a broken item.")));
@@ -991,6 +992,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD, langConfig.getString("message.commandDescription.reload", "Reload shops.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE, langConfig.getString("message.commandDescription.update", "Check for Updates.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "View shop limits.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_OPEN, langConfig.getString("message.commandDescription.open", "Open a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "Change configuration values.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6."), Regex.PROPERTY, Regex.VALUE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6."), Regex.PROPERTY, Regex.VALUE));

@@ -10,10 +10,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
-import de.epiceric.shopchest.event.ShopBuySellEvent;
-import de.epiceric.shopchest.event.ShopCreateEvent;
-import de.epiceric.shopchest.event.ShopInfoEvent;
-import de.epiceric.shopchest.event.ShopRemoveEvent;
+import de.epiceric.shopchest.event.*;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.Hologram;
@@ -164,7 +161,7 @@ public class ShopInteractListener implements Listener {
         }
     }
 
-    private void handleInteractEvent(PlayerInteractEvent e, boolean calledFromInteractEvent) {
+    private void handleInteractEvent(PlayerInteractEvent e) {
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
         boolean inverted = config.invert_mouse_buttons;
@@ -224,10 +221,7 @@ public class ShopInteractListener implements Listener {
                                 if (shopUtils.isShop(b.getLocation())) {
                                     Shop shop = shopUtils.getShop(b.getLocation());
                                     if (p.getUniqueId().equals(shop.getVendor().getUniqueId()) || p.hasPermission(Permissions.OPEN_OTHER)) {
-                                        e.setCancelled(false);
-                                        if (!calledFromInteractEvent) {
-                                            p.openInventory(shop.getInventoryHolder().getInventory());
-                                        }
+                                        open(p, shop, true);
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
                                         plugin.debug(p.getName() + " is not permitted to open another player's shop");
@@ -249,6 +243,10 @@ public class ShopInteractListener implements Listener {
                             if (p.isSneaking()) {
                                 return;
                             }
+                        }
+
+                        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && p.getUniqueId().equals(shop.getVendor().getUniqueId()) && shop.getShopType() != ShopType.ADMIN) {
+                            return;
                         }
 
                         if ((e.getAction() == Action.RIGHT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.LEFT_CLICK_BLOCK && inverted)) {
@@ -368,7 +366,7 @@ public class ShopInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(e.getPlayer())) return;
-        handleInteractEvent(e, true);
+        handleInteractEvent(e);
     }
 
     @EventHandler
@@ -394,7 +392,7 @@ public class ShopInteractListener implements Listener {
 
                         if (b != null) {
                             PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null);
-                            handleInteractEvent(interactEvent, false);
+                            handleInteractEvent(interactEvent);
                         }
 
                     }
@@ -428,7 +426,7 @@ public class ShopInteractListener implements Listener {
 
                     if (b != null) {
                         PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.LEFT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null);
-                        handleInteractEvent(interactEvent, false);
+                        handleInteractEvent(interactEvent);
                         e.setCancelled(true);
                     }
 
@@ -494,7 +492,7 @@ public class ShopInteractListener implements Listener {
      * @param shop Shop to be removed
      */
     private void remove(Player executor, Shop shop) {
-        plugin.debug(executor.getName() + " is removing shop (#" + shop.getID() + ")");
+        plugin.debug(executor.getName() + " is removing " + shop.getVendor().getPlayer().getName() + "'s shop (#" + shop.getID() + ")");
         ShopRemoveEvent event = new ShopRemoveEvent(executor, shop);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -505,6 +503,25 @@ public class ShopInteractListener implements Listener {
         shopUtils.removeShop(shop, true);
         plugin.debug("Removed shop (#" + shop.getID() + ")");
         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
+    }
+
+    /**
+     * Open a shop
+     * @param executor Player, who executed the command and will receive the message
+     * @param shop Shop to be opened
+     */
+    private void open(Player executor, Shop shop, boolean message) {
+        plugin.debug(executor.getName() + " is opening " + shop.getVendor().getName() + "'s shop (#" + shop.getID() + ")");
+        ShopOpenEvent event = new ShopOpenEvent(executor, shop);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            plugin.debug("Open event cancelled (#" + shop.getID() + ")");
+            return;
+        }
+
+        executor.openInventory(shop.getInventoryHolder().getInventory());
+        plugin.debug("Opened shop (#" + shop.getID() + ")");
+        if (message) executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, shop.getVendor().getName())));
     }
 
     /**

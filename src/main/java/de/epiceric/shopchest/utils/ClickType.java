@@ -94,7 +94,7 @@ public class ClickType {
     }
 
     public enum EnumClickType {
-        CREATE, REMOVE, INFO
+        CREATE, REMOVE, INFO, OPEN
     }
 
 }

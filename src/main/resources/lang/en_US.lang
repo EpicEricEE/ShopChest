@@ -136,10 +136,13 @@ message.no-item-in-hand=&cNo item in hand
 message.click-chest-to-create-shop=&aClick a chest to create a shop.
 
 # Set the message when the player must click a shop to remove it.
-message.click-chest-to-remove-shop=&aClick a shop-chest to remove the shop.
+message.click-chest-to-remove-shop=&aClick a shop to remove it.
 
 # Set the message when the player must click a shop to retrieve information.
 message.click-chest-for-info=&aClick a shop to retrieve information.
+
+# Set the message when the player must click a shop to open it.
+message.click-chest-to-open-shop=&aClick a shop to open it.
 
 # Set the message when the player opened a shop.
 # Usable regex: %VENDOR%
@@ -282,6 +285,9 @@ message.commandDescription.update=Check for Updates.
 
 # Set the command description message for '/shop limits' when you type '/shop'.
 message.commandDescription.limits=View shop limits.
+
+# Set the command description message for '/shop open' when you type '/shop'.
+message.commandDescription.open=Open a shop.
 
 # Set the command description message for '/shop config' when you type '/shop'.
 message.commandDescription.config=Change configuration values.
