@@ -38,6 +38,7 @@ public class ShopChest extends JavaPlugin {
     private static ShopChest instance;
 
     private Config config = null;
+    private ShopCommand shopCommand;
     private Economy econ = null;
     private Database database;
     private boolean isUpdateNeeded = false;
@@ -264,14 +265,7 @@ public class ShopChest extends JavaPlugin {
             }
         });
 
-        try {
-            debug("Trying to register command \"/" + config.main_command_name + "\"");
-            ShopCommand.registerCommand(new ShopCommand(this, config.main_command_name, "Manage Shops.", "", new ArrayList<String>()), this);
-        } catch (Exception e) {
-            getLogger().info("Failed to register command");
-            debug("Failed to register command");
-            debug(e);
-        }
+        shopCommand = new ShopCommand(this);
 
         debug("Registering listeners...");
         getServer().getPluginManager().registerEvents(new ShopUpdateListener(this), this);
@@ -359,6 +353,13 @@ public class ShopChest extends JavaPlugin {
         int count = shopUtils.reloadShops(false, false);
         getLogger().info("Initialized " + count + " Shops");
         debug("Initialized " + count + " Shops");
+    }
+
+    /**
+     * @return The {@link ShopCommand}
+     */
+    public ShopCommand getShopCommand() {
+        return shopCommand;
     }
 
     /**

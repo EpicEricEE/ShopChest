@@ -13,43 +13,83 @@ import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
-import java.util.List;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
-class ShopCommand extends BukkitCommand {
+class ShopCommand implements CommandExecutor {
 
     private ShopChest plugin;
+    private String name;
     private ShopUtils shopUtils;
+    private PluginCommand pluginCommand;
 
-    ShopCommand(ShopChest plugin, String name, String description, String usageMessage, List<String> aliases) {
-        super(name, description, usageMessage, aliases);
+    ShopCommand(ShopChest plugin) {
         this.plugin = plugin;
+        this.name = plugin.getShopChestConfig().main_command_name;
         this.shopUtils = plugin.getShopUtils();
+        this.pluginCommand = createPluginCommand();
+
+        register();
     }
 
-    /**
-     * Register a command to ShopChest
-     *
-     * @param command Command to register
-     * @param plugin  Instance of ShopChest
-     * @throws ReflectiveOperationException
-     */
-    static void registerCommand(Command command, ShopChest plugin) throws ReflectiveOperationException {
-        plugin.debug("Registering command " + command.getName());
+    public PluginCommand getCommand() {
+        return pluginCommand;
+    }
 
-        Object commandMap = plugin.getServer().getClass().getMethod("getCommandMap").invoke(plugin.getServer());
-        commandMap.getClass().getMethod("register", String.class, Command.class).invoke(commandMap, "shopchest", command);
+    private PluginCommand createPluginCommand() {
+        plugin.debug("Creating plugin command");
+        try {
+            Constructor<PluginCommand> c = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
+            c.setAccessible(true);
+
+            PluginCommand cmd = c.newInstance(name, plugin);
+            cmd.setDescription("Manage players' shops or this plugin.");
+            cmd.setUsage("/" + name);
+            cmd.setExecutor(this);
+            cmd.setPermission(Permissions.BUY);
+            cmd.setTabCompleter(new ShopTabCompleter(plugin));
+
+            return cmd;
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            plugin.getLogger().severe("Failed to create command");
+            plugin.debug("Failed to create plugin command");
+            plugin.debug(e);
+        }
+
+        return null;
+    }
+
+    private void register() {
+        if (pluginCommand == null) return;
+
+        plugin.debug("Registering command " + name);
+
+        try {
+            Field f = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
+            f.setAccessible(true);
+
+            Object commandMapObject = f.get(Bukkit.getPluginManager());
+            if (commandMapObject instanceof CommandMap) {
+                CommandMap commandMap = (CommandMap) commandMapObject;
+                commandMap.register(plugin.getName(), pluginCommand);
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            plugin.getLogger().severe("Failed to register command");
+            plugin.debug("Failed to register plugin command");
+            plugin.debug(e);
+        }
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         boolean needsHelp = true;
 
         if (args.length > 0) {
