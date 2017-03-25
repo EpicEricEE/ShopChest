@@ -12,6 +12,7 @@ import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.worldguard.ShopFlag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,8 +30,11 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChestProtectListener implements Listener {
 
@@ -80,7 +84,10 @@ public class ChestProtectListener implements Listener {
             final Shop shop = shopUtils.getShop(e.getBlock().getLocation());
             Player p = e.getPlayer();
 
-            if (p.isSneaking()) {
+            ItemStack item = Utils.getPreferredItemInHand(p);
+            List<Material> axes = Arrays.asList(Material.WOOD_AXE, Material.STONE_AXE, Material.IRON_AXE, Material.GOLD_AXE, Material.DIAMOND_AXE);
+
+            if (p.isSneaking() && item != null && axes.contains(item.getType())) {
                 plugin.debug(String.format("%s tries to break %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
 
                 if (shop.getShopType() == Shop.ShopType.ADMIN) {
