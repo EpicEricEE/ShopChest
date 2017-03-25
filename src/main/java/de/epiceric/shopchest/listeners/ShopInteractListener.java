@@ -243,10 +243,8 @@ public class ShopInteractListener implements Listener {
                     if (shopUtils.isShop(b.getLocation())) {
                         Shop shop = shopUtils.getShop(b.getLocation());
 
-                        if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                            if (p.isSneaking()) {
-                                return;
-                            }
+                        if (e.getAction() == Action.LEFT_CLICK_BLOCK && p.isSneaking() && Utils.hasAxeInHand(p)) {
+                            return;
                         }
 
                         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && p.getUniqueId().equals(shop.getVendor().getUniqueId()) && shop.getShopType() != ShopType.ADMIN) {
@@ -335,10 +333,10 @@ public class ShopInteractListener implements Listener {
 
                                         if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
                                             if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
-                                                sell(p, shop);
+                                                sell(p, shop, p.isSneaking() && !Utils.hasAxeInHand(p));
                                             } else {
                                                 if (config.auto_calculate_item_amount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
-                                                    sell(p, shop);
+                                                    sell(p, shop, p.isSneaking() && !Utils.hasAxeInHand(p));
                                                 } else {
                                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
                                                     plugin.debug(p.getName() + " doesn't have enough items");
@@ -770,11 +768,17 @@ public class ShopInteractListener implements Listener {
      * @param executor Player, who executed the command and will sell the product
      * @param shop Shop, to which the player sells
      */
-    private void sell(Player executor, Shop shop) {
+    private void sell(Player executor, Shop shop, boolean stack) {
         plugin.debug(executor.getName() + " is selling (#" + shop.getID() + ")");
 
-        if (econ.getBalance(shop.getVendor()) >= shop.getSellPrice() || shop.getShopType() == ShopType.ADMIN || config.auto_calculate_item_amount) {
-            int amountForMoney = (int) (shop.getProduct().getAmount() / shop.getSellPrice() * econ.getBalance(shop.getVendor()));
+        int amount = shop.getProduct().getAmount();
+        if (stack) amount = shop.getProduct().getMaxStackSize();
+
+        double price = shop.getSellPrice();
+        if (stack) price = (price / shop.getProduct().getAmount()) * amount;
+
+        if (econ.getBalance(shop.getVendor()) >= price || shop.getShopType() == ShopType.ADMIN || config.auto_calculate_item_amount) {
+            int amountForMoney = (int) (amount / price * econ.getBalance(shop.getVendor()));
 
             plugin.debug("Vendor has enough money for " + amountForMoney + " item(s) (#" + shop.getID() + ")");
 
@@ -788,37 +792,37 @@ public class ShopInteractListener implements Listener {
 
             int amountForItemCount = Utils.getAmount(executor.getInventory(), shop.getProduct());
 
-            if (amountForItemCount == 0 && config.auto_calculate_item_amount) {
+            if (amountForItemCount == 0) {
                 executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
                 return;
             }
 
             ItemStack product = new ItemStack(shop.getProduct());
+            if (stack) product.setAmount(amount);
+
             Inventory inventory = chest.getInventory();
 
             int freeSpace = Utils.getFreeSpaceForItem(inventory, product);
 
-            int amountForChestSpace = (freeSpace >= product.getAmount() ? product.getAmount() : freeSpace);
-
-            if (amountForChestSpace == 0 && config.auto_calculate_item_amount && shop.getShopType() != ShopType.ADMIN) {
+            if (freeSpace == 0 && shop.getShopType() != ShopType.ADMIN) {
                 executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE));
                 return;
             }
 
-            int newAmount = product.getAmount();
+            int newAmount = amount;
 
             if (config.auto_calculate_item_amount) {
                 if (shop.getShopType() == ShopType.ADMIN)
                     newAmount = amountForItemCount;
                 else
-                    newAmount = Math.min(Math.min(amountForMoney, amountForItemCount), amountForChestSpace);
+                    newAmount = Math.min(Math.min(amountForMoney, amountForItemCount), freeSpace);
             }
 
-            if (newAmount > product.getAmount()) newAmount = product.getAmount();
+            if (newAmount > amount) newAmount = amount;
 
-            double newPrice = (shop.getSellPrice() / product.getAmount()) * newAmount;
+            double newPrice = (price / amount) * newAmount;
 
-            if (freeSpace >= product.getAmount() || (config.auto_calculate_item_amount && freeSpace >= newAmount) || shop.getShopType() == ShopType.ADMIN) {
+            if (freeSpace >= newAmount || shop.getShopType() == ShopType.ADMIN) {
                 plugin.debug("Chest has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
 
                 ItemStack newProduct = new ItemStack(product);

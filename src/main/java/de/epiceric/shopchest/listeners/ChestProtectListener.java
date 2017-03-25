@@ -87,10 +87,7 @@ public class ChestProtectListener implements Listener {
             final Shop shop = shopUtils.getShop(e.getBlock().getLocation());
             Player p = e.getPlayer();
 
-            ItemStack item = Utils.getPreferredItemInHand(p);
-            List<Material> axes = Arrays.asList(Material.WOOD_AXE, Material.STONE_AXE, Material.IRON_AXE, Material.GOLD_AXE, Material.DIAMOND_AXE);
-
-            if (p.isSneaking() && item != null && axes.contains(item.getType())) {
+            if (p.isSneaking() && Utils.hasAxeInHand(p)) {
                 plugin.debug(String.format("%s tries to break %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
 
                 if (shop.getShopType() == Shop.ShopType.ADMIN) {

@@ -16,7 +16,9 @@ import javax.xml.bind.DatatypeConverter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class Utils {
 
@@ -215,6 +217,21 @@ public class Utils {
             else
                 return getItemInOffHand(p);
         }
+    }
+
+    /**
+     * @param p Player to check if he has an axe in one of his hands
+     * @return Whether a player has an axe in one of his hands
+     */
+    public static boolean hasAxeInHand(Player p) {
+        List<Material> axes = Arrays.asList(Material.WOOD_AXE, Material.STONE_AXE, Material.IRON_AXE, Material.GOLD_AXE, Material.DIAMOND_AXE);
+
+        ItemStack item = getItemInMainHand(p);
+        if (item == null || !axes.contains(item.getType())) {
+            item = getItemInOffHand(p);
+        }
+
+        return item != null && axes.contains(item.getType());
     }
 
     /**
