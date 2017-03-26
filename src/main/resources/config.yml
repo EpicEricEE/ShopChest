@@ -153,12 +153,6 @@ explosion-protection: true
 # Set whether the buy price must be greater than or equal sell price.
 buy-greater-or-equal-sell: true
 
-# If buying has maximum prices.
-maximum-buy-prices: true
-
-# If selling has maximum prices.
-maximum-sell-prices: true
-
 # Set the minimum prices for each individual Item. Not per Stack, per single Item!
 # To add an item, follow the format below.
 # Important: You must have exactly 2 spaces between the text and the edge.

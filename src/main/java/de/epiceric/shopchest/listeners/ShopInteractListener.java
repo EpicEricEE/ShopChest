@@ -1,5 +1,6 @@
 package de.epiceric.shopchest.listeners;
 
+import com.intellectualcrafters.plot.object.PlotPlayer;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
@@ -122,6 +123,14 @@ public class ShopInteractListener implements Listener {
                                             TownBlock townBlock = TownyUniverse.getTownBlock(loc);
                                             externalPluginsAllowed &= (townBlock != null && townBlock.getType() == TownBlockType.COMMERCIAL);
                                         }
+                                    }
+                                }
+
+                                if (plugin.hasPlotSquared()) {
+                                    PlotPlayer plotPlayer = PlotPlayer.wrap(p);
+                                    if (!plotPlayer.getCurrentPlot().getOwners().contains(p.getUniqueId())) {
+                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_OWNER_OF_CURRENT_PLOT));
+                                        return;
                                     }
                                 }
 

@@ -20,6 +20,8 @@
         <version.final>${version.number}-${version.git}</version.final>
 
         <github.global.server>github</github.global.server>
+        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <javadoc.opts><!-- Only jdk 1.8 and later --></javadoc.opts>
     </properties>
