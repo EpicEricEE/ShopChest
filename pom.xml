@@ -20,6 +20,8 @@
         <version.final>${version.number}-${version.git}</version.final>
 
         <github.global.server>github</github.global.server>
+        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <javadoc.opts><!-- Only jdk 1.8 and later --></javadoc.opts>
     </properties>
@@ -91,6 +93,10 @@
 
     <repositories>
         <repository>
+            <id>sk89q-repo</id>
+            <url>http://maven.sk89q.com/artifactory/repo/</url>
+        </repository>
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -109,6 +115,10 @@
         <repository>
             <id>xephi-repo</id>
             <url>http://ci.xephi.fr/plugin/repository/everything/</url>
+        </repository>
+        <repository>
+            <id>athion-reop</id>
+            <url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
         </repository>
     </repositories>
 
@@ -132,6 +142,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.palmergames</groupId>
             <artifactId>Towny</artifactId>
             <version>0.91.1.0</version>
@@ -147,6 +163,11 @@
             <artifactId>authme</artifactId>
             <version>5.2</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.plotsquared</groupId>
+            <artifactId>plotsquared-api</artifactId>
+            <version>latest</version>
         </dependency>
     </dependencies>
 

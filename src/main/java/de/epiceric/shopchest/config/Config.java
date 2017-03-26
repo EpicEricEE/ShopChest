@@ -134,6 +134,7 @@ public class Config {
     /** Whether the item amount should be calculated to fit the available money or inventory space **/
     public boolean auto_calculate_item_amount;
 
+
     /**
      * <p>Whether the mouse buttons are inverted</p>
      *

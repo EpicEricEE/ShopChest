@@ -132,7 +132,8 @@ public class LocalizedMessage {
         COMMAND_DESC_CONFIG,
         CHANGED_CONFIG_SET,
         CHANGED_CONFIG_REMOVED,
-        CHANGED_CONFIG_ADDED
+        CHANGED_CONFIG_ADDED,
+        NOT_OWNER_OF_CURRENT_PLOT
     }
 
     public static class ReplacedRegex {

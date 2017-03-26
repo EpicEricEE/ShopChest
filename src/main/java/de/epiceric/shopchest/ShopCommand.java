@@ -1,5 +1,6 @@
 package de.epiceric.shopchest;
 
+import com.intellectualcrafters.plot.object.PlotPlayer;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.*;
 import de.epiceric.shopchest.language.LanguageUtils;
@@ -202,6 +203,7 @@ class ShopCommand implements CommandExecutor {
 
     /**
      * A given player checks for updates
+     *
      * @param sender The command executor
      */
     private void checkUpdates(CommandSender sender) {
@@ -239,6 +241,7 @@ class ShopCommand implements CommandExecutor {
 
     /**
      * A given player reloads the shops
+     *
      * @param sender The command executor
      */
     private void reload(final CommandSender sender) {
@@ -246,7 +249,7 @@ class ShopCommand implements CommandExecutor {
 
         ShopReloadEvent event = new ShopReloadEvent(sender);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()){
+        if (event.isCancelled()) {
             plugin.debug("Reload event cancelled");
             return;
         }
@@ -266,9 +269,10 @@ class ShopCommand implements CommandExecutor {
 
     /**
      * A given player creates a shop
-     * @param args Arguments of the entered command
+     *
+     * @param args     Arguments of the entered command
      * @param shopType The {@link ShopType}, the shop will have
-     * @param p The command executor
+     * @param p   The command executor
      */
     private void create(String[] args, ShopType shopType, Player p) {
         plugin.debug(p.getName() + " wants to create a shop");
@@ -487,6 +491,7 @@ class ShopCommand implements CommandExecutor {
 
     /**
      * A given player removes a shop
+     *
      * @param p The command executor
      */
     private void remove(Player p) {
@@ -506,6 +511,7 @@ class ShopCommand implements CommandExecutor {
 
     /**
      * A given player retrieves information about a shop
+     *
      * @param p The command executor
      */
     private void info(Player p) {
@@ -525,6 +531,7 @@ class ShopCommand implements CommandExecutor {
 
     /**
      * A given player opens a shop
+     *
      * @param p The command executor
      */
     private void open(Player p) {
@@ -544,6 +551,7 @@ class ShopCommand implements CommandExecutor {
 
     /**
      * Sends the basic help message
+     *
      * @param sender {@link CommandSender} who will receive the message
      */
     private void sendBasicHelpMessage(CommandSender sender) {

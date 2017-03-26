@@ -1,5 +1,6 @@
 package de.epiceric.shopchest;
 
+import com.intellectualcrafters.plot.IPlotMain;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.config.Config;
@@ -432,6 +433,13 @@ public class ShopChest extends JavaPlugin {
      */
     public boolean hasAuthMe() {
         return authMe != null;
+    }
+
+    /**
+     * @return Whether the plugin 'PlotSquared' is enabled
+     */
+    public boolean hasPlotSquared() {
+        return getServer().getPluginManager().getPlugin("PlotSquared") != null;
     }
 
     /**
