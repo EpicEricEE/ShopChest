@@ -128,7 +128,7 @@ public class ShopInteractListener implements Listener {
 
                                 if (plugin.hasPlotSquared()) {
                                     PlotPlayer plotPlayer = PlotPlayer.wrap(p);
-                                    if (!plotPlayer.getCurrentPlot().getOwners().contains(p.getUniqueId())) {
+                                    if (!plotPlayer.getCurrentPlot().getArea().contains(e.getClickedBlock().getX(), e.getClickedBlock().getZ())) {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_OWNER_OF_CURRENT_PLOT));
                                         return;
                                     }
