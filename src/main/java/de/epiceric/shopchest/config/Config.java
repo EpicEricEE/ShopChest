@@ -134,6 +134,13 @@ public class Config {
     /** Whether the item amount should be calculated to fit the available money or inventory space **/
     public boolean auto_calculate_item_amount;
 
+    /** If maximum prices take effect on buying. **/
+    public boolean maximum_buy_prices;
+
+    /** If maximum prices take effect on buying. **/
+    public boolean maximum_sell_prices;
+
+
     /**
      * <p>Whether the mouse buttons are inverted</p>
      *
@@ -361,6 +368,8 @@ public class Config {
         auto_reload_time = plugin.getConfig().getInt("auto-reload-time");
         main_command_name = plugin.getConfig().getString("main-command-name");
         language_file = plugin.getConfig().getString("language-file");
+        maximum_buy_prices = plugin.getConfig().getBoolean("maximum-buy-prices");
+        maximum_sell_prices = plugin.getConfig().getBoolean("maximum-sell-prices");
 
         if (firstLoad || langReload) loadLanguageConfig(showMessages);
         if (!firstLoad && langReload) LanguageUtils.load();

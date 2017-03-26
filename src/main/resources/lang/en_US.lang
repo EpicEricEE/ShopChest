@@ -308,6 +308,9 @@ message.config.added=&6Added &a%VALUE% &6to &a%PROPERTY%&6.
 # Usable regex: %PROPERTY%, %VALUE%
 message.config.removed=&6Removed &a%VALUE% &6from &a%PROPERTY%&6.
 
+#Set the message a player gets after attempting to create a shop in a plot they do not own
+messages.wrongplotowner=&cYou cannot create a shop in a plot you do not own.
+
 # Effect names that will be displayed in the place of %POTION-EFFECT%
 effect.none=No Effects
 effect.moveSpeed=Speed

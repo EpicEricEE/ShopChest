@@ -998,6 +998,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6."), Regex.PROPERTY, Regex.VALUE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6."), Regex.PROPERTY, Regex.VALUE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, langConfig.getString("message.config.added", "&6Added &a%VALUE% &6to &a%PROPERTY%&6."), Regex.PROPERTY, Regex.VALUE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_OWNER_OF_CURRENT_PLOT, langConfig.getString("messages.wrongplotowner", "&cYou are not the owner of this plot!")));
     }
 
     /**

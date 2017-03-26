@@ -1,5 +1,7 @@
 package de.epiceric.shopchest;
 
+import com.intellectualcrafters.plot.object.PlotPlayer;
+import com.sk89q.worldguard.bukkit.BukkitUtil;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.*;
 import de.epiceric.shopchest.language.LanguageUtils;
@@ -268,66 +270,66 @@ class ShopCommand implements CommandExecutor {
      * A given player creates a shop
      * @param args Arguments of the entered command
      * @param shopType The {@link ShopType}, the shop will have
-     * @param p The command executor
+     * @param player The command executor
      */
-    private void create(String[] args, ShopType shopType, Player p) {
-        plugin.debug(p.getName() + " wants to create a shop");
+    private void create(String[] args, ShopType shopType, Player player) {
+        plugin.debug(player.getName() + " wants to create a shop");
 
         int amount;
         double buyPrice, sellPrice;
 
-        int limit = shopUtils.getShopLimit(p);
+        int limit = shopUtils.getShopLimit(player);
 
         if (limit != -1) {
-            if (shopUtils.getShopAmount(p) >= limit) {
+            if (shopUtils.getShopAmount(player) >= limit) {
                 if (shopType != ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
-                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(limit))));
+                    player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(limit))));
                     return;
                 }
             }
         }
 
-        plugin.debug(p.getName() + " has not reached the limit");
+        plugin.debug(player.getName() + " has not reached the limit");
 
         try {
             amount = Integer.parseInt(args[1]);
             buyPrice = Double.parseDouble(args[2]);
             sellPrice = Double.parseDouble(args[3]);
         } catch (NumberFormatException e) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER));
+            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER));
             return;
         }
 
         if (amount <= 0) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO));
+            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO));
             return;
         }
 
-        plugin.debug(p.getName() + " has entered numbers as prices and amount");
+        plugin.debug(player.getName() + " has entered numbers as prices and amount");
 
         if (!plugin.getShopChestConfig().allow_decimals_in_price && (buyPrice != (int) buyPrice || sellPrice != (int) sellPrice)) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS));
+            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS));
             return;
         }
 
-        plugin.debug(p.getName() + " has entered the numbers correctly (according to allow-decimals configuration)");
+        plugin.debug(player.getName() + " has entered the numbers correctly (according to allow-decimals configuration)");
 
         boolean buyEnabled = buyPrice > 0;
         boolean sellEnabled = sellPrice > 0;
 
         if (!buyEnabled && !sellEnabled) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SELL_DISABLED));
+            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SELL_DISABLED));
             return;
         }
 
-        plugin.debug(p.getName() + " has enabled buying, selling or both");
+        plugin.debug(player.getName() + " has enabled buying, selling or both");
 
-        if (Utils.getPreferredItemInHand(p) == null) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND));
+        if (Utils.getPreferredItemInHand(player) == null) {
+            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND));
             return;
         }
 
-        plugin.debug(p.getName() + " has an item in his hand");
+        plugin.debug(player.getName() + " has an item in his hand");
 
         for (String item : plugin.getShopChestConfig().blacklist) {
             ItemStack itemStack;
@@ -350,13 +352,13 @@ class ShopCommand implements CommandExecutor {
                 itemStack = new ItemStack(mat, 1);
             }
 
-            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
-                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_ITEM));
+            if (itemStack.getType().equals(Utils.getPreferredItemInHand(player).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(player).getDurability()) {
+                player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_ITEM));
                 return;
             }
         }
 
-        plugin.debug(p.getName() + "'s item is not on the blacklist");
+        plugin.debug(player.getName() + "'s item is not on the blacklist");
 
         for (String key : plugin.getShopChestConfig().minimum_prices) {
             ItemStack itemStack;
@@ -380,24 +382,24 @@ class ShopCommand implements CommandExecutor {
                 itemStack = new ItemStack(mat, 1);
             }
 
-            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
+            if (itemStack.getType().equals(Utils.getPreferredItemInHand(player).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(player).getDurability()) {
                 if (buyEnabled) {
                     if ((buyPrice < amount * minPrice) && (buyPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * minPrice))));
+                        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * minPrice))));
                         return;
                     }
                 }
 
                 if (sellEnabled) {
                     if ((sellPrice < amount * minPrice) && (sellPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * minPrice))));
+                        player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * minPrice))));
                         return;
                     }
                 }
             }
         }
 
-        plugin.debug(p.getName() + "'s prices are higher than the minimum");
+        plugin.debug(player.getName() + "'s prices are higher than the minimum");
 
         for (String key : plugin.getShopChestConfig().maximum_prices) {
             ItemStack itemStack;
@@ -421,65 +423,77 @@ class ShopCommand implements CommandExecutor {
                 itemStack = new ItemStack(mat, 1);
             }
 
-            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
-                if (buyEnabled) {
-                    if ((buyPrice > amount * maxPrice) && (buyPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedRegex(Regex.MAX_PRICE, String.valueOf(amount * maxPrice))));
-                        return;
+            if (itemStack.getType().equals(Utils.getPreferredItemInHand(player).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(player).getDurability()) {
+                if (plugin.getShopChestConfig().maximum_buy_prices) {
+                    if (buyEnabled) {
+                        if ((buyPrice > amount * maxPrice) && (buyPrice > 0)) {
+                            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedRegex(Regex.MAX_PRICE, String.valueOf(amount * maxPrice))));
+                            return;
+                        }
                     }
                 }
 
-                if (sellEnabled) {
-                    if ((sellPrice > amount * maxPrice) && (sellPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedRegex(Regex.MAX_PRICE, String.valueOf(amount * maxPrice))));
-                        return;
+                if (plugin.getShopChestConfig().maximum_sell_prices) {
+                    if (sellEnabled) {
+                        if ((sellPrice > amount * maxPrice) && (sellPrice > 0)) {
+                            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedRegex(Regex.MAX_PRICE, String.valueOf(amount * maxPrice))));
+                            return;
+                        }
                     }
                 }
             }
         }
 
-        plugin.debug(p.getName() + "'s prices are higher than the minimum");
+        plugin.debug(player.getName() + "'s prices are higher than the minimum");
 
         if (sellEnabled && buyEnabled) {
             if (plugin.getShopChestConfig().buy_greater_or_equal_sell) {
                 if (buyPrice < sellPrice) {
-                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(sellPrice))));
+                    player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(sellPrice))));
                     return;
                 }
             }
         }
 
-        plugin.debug(p.getName() + "'s buy price is high enough");
+        plugin.debug(player.getName() + "'s buy price is high enough");
 
-        ItemStack itemStack = new ItemStack(Utils.getPreferredItemInHand(p).getType(), amount, Utils.getPreferredItemInHand(p).getDurability());
-        itemStack.setItemMeta(Utils.getPreferredItemInHand(p).getItemMeta());
+        ItemStack itemStack = new ItemStack(Utils.getPreferredItemInHand(player).getType(), amount, Utils.getPreferredItemInHand(player).getDurability());
+        itemStack.setItemMeta(Utils.getPreferredItemInHand(player).getItemMeta());
 
         if (Enchantment.DURABILITY.canEnchantItem(itemStack)) {
             if (itemStack.getDurability() > 0 && !plugin.getShopChestConfig().allow_broken_items) {
-                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM));
+                player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM));
                 return;
             }
         }
 
-        plugin.debug(p.getName() + "'s item is not broken (or broken items are allowed through config)");
+        plugin.debug(player.getName() + "'s item is not broken (or broken items are allowed through config)");
 
         double creationPrice = (shopType == ShopType.NORMAL) ? plugin.getShopChestConfig().shop_creation_price_normal : plugin.getShopChestConfig().shop_creation_price_admin;
         if (creationPrice > 0) {
-            if (plugin.getEconomy().getBalance(p) < creationPrice) {
-                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, new LocalizedMessage.ReplacedRegex(Regex.CREATION_PRICE, String.valueOf(creationPrice))));
+            if (plugin.getEconomy().getBalance(player) < creationPrice) {
+                player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, new LocalizedMessage.ReplacedRegex(Regex.CREATION_PRICE, String.valueOf(creationPrice))));
                 return;
             }
         }
 
-        plugin.debug(p.getName() + " can pay the creation price");
+        plugin.debug(player.getName() + " can pay the creation price");
 
-        ShopPreCreateEvent event = new ShopPreCreateEvent(p, new Shop(plugin, p, itemStack, null, buyPrice, sellPrice, shopType));
+        if (plugin.hasPlotSquared()) {
+            PlotPlayer plotPlayer = PlotPlayer.wrap(player);
+            if (!plotPlayer.getCurrentPlot().getOwners().contains(player.getUniqueId())) {
+                player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_OWNER_OF_CURRENT_PLOT));
+                return;
+            }
+        }
+
+        ShopPreCreateEvent event = new ShopPreCreateEvent(player, new Shop(plugin, player, itemStack, null, buyPrice, sellPrice, shopType));
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            ClickType.setPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));
-            plugin.debug(p.getName() + " can now click a chest");
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
+            ClickType.setPlayerClickType(player, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));
+            plugin.debug(player.getName() + " can now click a chest");
+            player.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
         } else {
             plugin.debug("Shop pre create event cancelled");
         }
