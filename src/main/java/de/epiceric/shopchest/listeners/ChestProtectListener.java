@@ -7,6 +7,7 @@ import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.Hologram;
@@ -14,7 +15,7 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
-import de.epiceric.shopchest.worldguard.ShopFlag;
+import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,11 +35,8 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ChestProtectListener implements Listener {
 
@@ -153,12 +151,19 @@ public class ChestProtectListener implements Listener {
                     if (plugin.hasWorldGuard() && plugin.getShopChestConfig().enable_worldguard_integration) {
                         RegionContainer container = worldGuard.getRegionContainer();
                         RegionQuery query = container.createQuery();
-                        externalPluginsAllowed = query.testState(b.getLocation(), p, ShopFlag.CREATE_SHOP);
+                        externalPluginsAllowed = query.testState(b.getLocation(), p, WorldGuardShopFlag.CREATE_SHOP);
                     }
 
                     if (plugin.hasTowny() && plugin.getShopChestConfig().enable_towny_integration) {
                         TownBlock townBlock = TownyUniverse.getTownBlock(b.getLocation());
                         externalPluginsAllowed &= (townBlock != null && townBlock.getType() == TownBlockType.COMMERCIAL);
+                    }
+
+                    if (plugin.hasPlotSquared() && plugin.getShopChestConfig().enable_plotsquared_integration) {
+                        com.intellectualcrafters.plot.object.Location loc =
+                                new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+
+                        externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(loc.getOwnedPlot(), PlotSquaredShopFlag.CREATE_SHOP, p);
                     }
 
                     if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {

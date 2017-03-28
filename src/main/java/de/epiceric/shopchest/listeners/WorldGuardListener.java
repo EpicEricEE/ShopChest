@@ -13,7 +13,7 @@ import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.Permissions;
-import de.epiceric.shopchest.worldguard.ShopFlag;
+import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -60,14 +60,14 @@ public class WorldGuardListener implements Listener {
         if (ClickType.getPlayerClickType(player) != null) {
             switch (ClickType.getPlayerClickType(player).getClickType()) {
                 case CREATE:
-                    return query.testState(location, localPlayer, ShopFlag.CREATE_SHOP);
+                    return query.testState(location, localPlayer, WorldGuardShopFlag.CREATE_SHOP);
                 case REMOVE:
                 case INFO:
                     return true;
             }
         } else {
             if (shop != null) {
-                StateFlag flag = (shop.getShopType() == Shop.ShopType.NORMAL ? ShopFlag.USE_SHOP : ShopFlag.USE_ADMIN_SHOP);
+                StateFlag flag = (shop.getShopType() == Shop.ShopType.NORMAL ? WorldGuardShopFlag.USE_SHOP : WorldGuardShopFlag.USE_ADMIN_SHOP);
 
                 return query.testState(location, localPlayer, flag);
             }

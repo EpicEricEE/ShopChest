@@ -1,10 +1,12 @@
 package de.epiceric.shopchest;
 
+import com.intellectualcrafters.plot.PS;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopReloadEvent;
+import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.listeners.*;
@@ -16,7 +18,7 @@ import de.epiceric.shopchest.sql.MySQL;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.*;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
-import de.epiceric.shopchest.worldguard.ShopFlag;
+import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import fr.xephi.authme.AuthMe;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.Metrics;
@@ -30,7 +32,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -100,7 +101,7 @@ public class ShopChest extends JavaPlugin {
         Plugin worldGuardPlugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
         if (worldGuardPlugin instanceof WorldGuardPlugin) {
             worldGuard = (WorldGuardPlugin) worldGuardPlugin;
-            ShopFlag.init(this, true);
+            WorldGuardShopFlag.register(this, true);
         }
     }
 
@@ -138,8 +139,8 @@ public class ShopChest extends JavaPlugin {
                 getLogger().warning("Plugin may still work, but more errors are expected!");
         }
 
-        if (worldGuard != null && !ShopFlag.isLoaded()) {
-            ShopFlag.init(this, false);
+        if (worldGuard != null && !WorldGuardShopFlag.isLoaded()) {
+            WorldGuardShopFlag.register(this, false);
 
             try {
                 // Reload WorldGuard regions, so that custom flags are applied
@@ -161,6 +162,10 @@ public class ShopChest extends JavaPlugin {
         Plugin authMePlugin = Bukkit.getServer().getPluginManager().getPlugin("AuthMe");
         if (authMePlugin instanceof AuthMe) {
             authMe = (AuthMe) authMePlugin;
+        }
+
+        if (hasPlotSquared()) {
+            new PlotSquaredShopFlag().register(this);
         }
 
         debug("Loading utils and extras...");
@@ -425,6 +430,13 @@ public class ShopChest extends JavaPlugin {
      */
     public void setUpdater(ShopUpdater updater) {
         this.updater = updater;
+    }
+
+    /**
+     * @return Whether the plugin 'PlotSquared' is enabled
+     */
+    public boolean hasPlotSquared() {
+        return getServer().getPluginManager().getPlugin("PlotSquared") != null;
     }
 
     /**

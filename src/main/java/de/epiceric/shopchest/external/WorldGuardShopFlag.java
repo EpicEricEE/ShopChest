@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.worldguard;
+package de.epiceric.shopchest.external;
 
 import com.google.common.collect.Lists;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -9,7 +9,7 @@ import de.epiceric.shopchest.ShopChest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class ShopFlag {
+public class WorldGuardShopFlag {
 
     private static Flag<?>[] customFlagList;
     private static boolean loaded = false;
@@ -30,7 +30,7 @@ public class ShopFlag {
         return loaded;
     }
 
-    public static void init(final ShopChest plugin, boolean onLoad) {
+    public static void register(final ShopChest plugin, boolean onLoad) {
         String worldGuardVersion = plugin.getWorldGuard().getDescription().getVersion();
 
         int majorVersion = 0;

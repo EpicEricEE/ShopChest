@@ -978,8 +978,8 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS, langConfig.getString("message.noPermission.open-others", "&cYou don't have permission to open this chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_BUY, langConfig.getString("message.noPermission.buy", "&cYou don't have permission to buy something.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_SELL, langConfig.getString("message.noPermission.sell", "&cYou don't have permission to sell something.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY, langConfig.getString("message.noPermission.worldguard-buy", "&cYou don't have permission to buy something here.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_WG_SELL, langConfig.getString("message.noPermission.worldguard-sell", "&cYou don't have permission to sell something here.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_BUY_HERE, langConfig.getString("message.noPermission.buy-here", "&cYou don't have permission to buy something here.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_SELL_HERE, langConfig.getString("message.noPermission.sell-here", "&cYou don't have permission to sell something here.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS, langConfig.getString("message.noPermission.remove-others", "&cYou don't have permission to remove this shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_ADMIN, langConfig.getString("message.noPermission.remove-admin", "&cYou don't have permission to remove an admin shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_RELOAD, langConfig.getString("message.noPermission.reload", "&cYou don't have permission to reload the shops.")));

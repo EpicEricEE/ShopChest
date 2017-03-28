@@ -5,7 +5,7 @@ main: de.epiceric.shopchest.ShopChest
 version: ${project.version}
 author: EpicEric
 website: ${project.url}
-softdepend: [WorldGuard, Towny]
+softdepend: [WorldGuard, Towny, PlotSquared]
 depend: [Vault]
 
 permissions:
@@ -26,7 +26,7 @@ permissions:
       shopchest.config: true
       shopchest.extend.other: true
       shopchest.extend.protected: true
-      shopchest.worldguard.bypass: true
+      shopchest.external.bypass: true
   shopchest.create:
     description: Allows you to create a shop.
     default: true
@@ -75,6 +75,6 @@ permissions:
   shopchest.extend.protected:
     description: Allows you to extend shops into a protected region.
     default: op
-  shopchest.worlguard.bypass:
-    description: Allows you to to use shops in WorldGuard regions that deny shop use.
+  shopchest.external.bypass:
+    description: Allows you to to use shops regions/plots that deny shop use.
     default: op

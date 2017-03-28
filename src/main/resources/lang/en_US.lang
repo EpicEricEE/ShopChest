@@ -245,11 +245,11 @@ message.noPermission.buy=&cYou don't have permission to buy something.
 # Set the message when a not permitted player tries to sell something.
 message.noPermission.sell=&cYou don't have permission to sell something.
 
-# Set the message when a player tries to buy something in a WorldGuard region that denied shop use.
-message.noPermission.worldguard-buy=&cYou don't have permission to buy something here.
+# Set the message when a player tries to buy something in a region/plot that denied shop use.
+message.noPermission.buy-here=&cYou don't have permission to buy something here.
 
-# Set the message when a player tries to sell something in a WorldGuard region that denied shop use.
-message.noPermission.worldguard-sell=&cYou don't have permission to sell something here.
+# Set the message when a player tries to sell something in a region/plot region that denied shop use.
+message.noPermission.sell-here=&cYou don't have permission to sell something here.
 
 # Set the message when a not permitted player tries to remove another player's shop.
 message.noPermission.remove-others=&cYou don't have permission to remove this shop.
@@ -269,7 +269,7 @@ message.noPermission.config=&cYou don't have permission to change configuration 
 # Set the message when a not permitted player tries to extend another player's shop's chest.
 message.noPermission.extend-others=&cYou don't have permission to extend this chest.
 
-# Set the message when a not permitted player tries to extend a chest into a protected region (e.g. WorldGuard/Towny).
+# Set the message when a not permitted player tries to extend a chest into a protected region/plot (e.g. WorldGuard/Towny).
 message.noPermission.extend-protected=&cYou don't have permission to extend this chest to here.
 
 # Set the command description message for '/shop create' when you type '/shop'.

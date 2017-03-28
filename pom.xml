@@ -114,6 +114,10 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/artifactory/repo/</url>
         </repository>
+        <repository>
+            <id>athion-reop</id>
+            <url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -150,6 +154,12 @@
             <groupId>fr.xephi</groupId>
             <artifactId>authme</artifactId>
             <version>5.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.plotsquared</groupId>
+            <artifactId>plotsquared-api</artifactId>
+            <version>latest</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

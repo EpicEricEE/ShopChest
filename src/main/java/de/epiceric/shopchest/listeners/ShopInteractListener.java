@@ -1,5 +1,7 @@
 package de.epiceric.shopchest.listeners;
 
+import com.intellectualcrafters.plot.flag.Flag;
+import com.intellectualcrafters.plot.object.Plot;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
@@ -11,6 +13,8 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.*;
+import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.Hologram;
@@ -21,7 +25,6 @@ import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
-import de.epiceric.shopchest.worldguard.ShopFlag;
 import fr.xephi.authme.AuthMe;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -111,7 +114,7 @@ public class ShopInteractListener implements Listener {
 
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
-                                            externalPluginsAllowed &= query.testState(loc, p, ShopFlag.CREATE_SHOP);
+                                            externalPluginsAllowed &= query.testState(loc, p, WorldGuardShopFlag.CREATE_SHOP);
                                         }
                                     }
                                 }
@@ -123,6 +126,19 @@ public class ShopInteractListener implements Listener {
                                             externalPluginsAllowed &= (townBlock != null && townBlock.getType() == TownBlockType.COMMERCIAL);
                                         }
                                     }
+                                }
+
+                                if (plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                                    for (Location loc : chestLocations) {
+                                        if (loc != null) {
+                                            com.intellectualcrafters.plot.object.Location plotLocation = new com.intellectualcrafters.plot.object.Location(
+                                                    loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+
+                                            Plot plot = plotLocation.getOwnedPlot();
+                                            externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, p);
+                                        }
+                                    }
+
                                 }
 
                                 if ((e.isCancelled() || !externalPluginsAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
@@ -259,29 +275,34 @@ public class ShopInteractListener implements Listener {
 
                                 if (shop.getBuyPrice() > 0) {
                                     if (p.hasPermission(Permissions.BUY)) {
-                                        boolean worldGuardAllowed = true;
+                                        boolean externalPluginsAllowed = true;
+
+                                        if (plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                                            com.intellectualcrafters.plot.object.Location plotLocation =
+                                                    new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+
+                                            Plot plot = plotLocation.getOwnedPlot();
+                                            Flag flag = (shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP);
+
+                                            externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(plot, flag, p);
+                                        }
+
+                                        if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                            StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? WorldGuardShopFlag.USE_ADMIN_SHOP : WorldGuardShopFlag.USE_SHOP);
+                                            RegionContainer container = worldGuard.getRegionContainer();
+                                            RegionQuery query = container.createQuery();
+                                            externalPluginsAllowed &= query.testState(b.getLocation(), p, flag);
+                                        }
 
                                         if (shop.getShopType() == ShopType.ADMIN) {
-                                            if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
-                                                RegionContainer container = worldGuard.getRegionContainer();
-                                                RegionQuery query = container.createQuery();
-                                                worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.USE_ADMIN_SHOP);
-                                            }
-
-                                            if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
+                                            if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
                                                 buy(p, shop, p.isSneaking());
                                             } else {
-                                                plugin.debug(p.getName() + " doesn't have worldguard permission");
-                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
+                                                plugin.debug(p.getName() + " doesn't have external plugin's permission");
+                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY_HERE));
                                             }
                                         } else {
-                                            if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
-                                                RegionContainer container = worldGuard.getRegionContainer();
-                                                RegionQuery query = container.createQuery();
-                                                worldGuardAllowed = query.testState(b.getLocation(), p, ShopFlag.USE_SHOP);
-                                            }
-
-                                            if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
+                                            if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
                                                 Chest c = (Chest) b.getState();
                                                 if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                                     buy(p, shop, p.isSneaking());
@@ -299,8 +320,8 @@ public class ShopInteractListener implements Listener {
                                                     }
                                                 }
                                             } else {
-                                                plugin.debug(p.getName() + " doesn't have worldguard permission");
-                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_BUY));
+                                                plugin.debug(p.getName() + " doesn't have external plugin's permission");
+                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY_HERE));
                                             }
                                         }
                                     } else {
@@ -321,17 +342,27 @@ public class ShopInteractListener implements Listener {
 
                                 if (shop.getSellPrice() > 0) {
                                     if (p.hasPermission(Permissions.SELL)) {
-                                        boolean worldGuardAllowed = true;
+                                        boolean externalPluginsAllowed = true;
+
+                                        if (plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                                            com.intellectualcrafters.plot.object.Location plotLocation =
+                                                    new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+
+                                            Plot plot = plotLocation.getOwnedPlot();
+                                            Flag flag = (shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP);
+
+                                            externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(plot, flag, p);
+                                        }
 
                                         if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                                             RegionContainer container = worldGuard.getRegionContainer();
                                             RegionQuery query = container.createQuery();
 
-                                            StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? ShopFlag.USE_ADMIN_SHOP : ShopFlag.USE_SHOP);
-                                            worldGuardAllowed = query.testState(b.getLocation(), p, flag);
+                                            StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? WorldGuardShopFlag.USE_ADMIN_SHOP : WorldGuardShopFlag.USE_SHOP);
+                                            externalPluginsAllowed &= query.testState(b.getLocation(), p, flag);
                                         }
 
-                                        if (worldGuardAllowed || p.hasPermission(Permissions.WORLDGUARD_BYPASS)) {
+                                        if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
                                             if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
                                                 sell(p, shop, p.isSneaking() && !Utils.hasAxeInHand(p));
                                             } else {
@@ -343,8 +374,8 @@ public class ShopInteractListener implements Listener {
                                                 }
                                             }
                                         } else {
-                                            plugin.debug(p.getName() + " doesn't have worldguard permission");
-                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_WG_SELL));
+                                            plugin.debug(p.getName() + " doesn't have external plugin's permission");
+                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL_HERE));
                                         }
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL));
