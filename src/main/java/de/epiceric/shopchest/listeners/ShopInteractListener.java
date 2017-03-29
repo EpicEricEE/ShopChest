@@ -526,7 +526,7 @@ public class ShopInteractListener implements Listener {
      * @param shop Shop to be removed
      */
     private void remove(Player executor, Shop shop) {
-        plugin.debug(executor.getName() + " is removing " + shop.getVendor().getPlayer().getName() + "'s shop (#" + shop.getID() + ")");
+        plugin.debug(executor.getName() + " is removing " + shop.getVendor().getName() + "'s shop (#" + shop.getID() + ")");
         ShopRemoveEvent event = new ShopRemoveEvent(executor, shop);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -543,6 +543,7 @@ public class ShopInteractListener implements Listener {
      * Open a shop
      * @param executor Player, who executed the command and will receive the message
      * @param shop Shop to be opened
+     * @param message Whether the player should receive the {@link LocalizedMessage.Message#OPENED_SHOP} message
      */
     private void open(Player executor, Shop shop, boolean message) {
         plugin.debug(executor.getName() + " is opening " + shop.getVendor().getName() + "'s shop (#" + shop.getID() + ")");
