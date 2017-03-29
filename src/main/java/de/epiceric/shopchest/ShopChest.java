@@ -294,17 +294,17 @@ public class ShopChest extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        debug("Disabling ShopChest...", true);
+        debug("Disabling ShopChest...");
 
         if (updater != null) {
-            debug("Stopping updater", true);
+            debug("Stopping updater");
             updater.cancel();
         }
 
         if (database != null) {
             for (Shop shop : shopUtils.getShops()) {
                 shopUtils.removeShop(shop, false, true);
-                debug("Removed shop (#" + shop.getID() + ")", true);
+                debug("Removed shop (#" + shop.getID() + ")");
             }
 
             database.disconnect();
@@ -323,26 +323,6 @@ public class ShopChest extends JavaPlugin {
     /**
      * Print a message to the <i>/plugins/ShopChest/debug.txt</i> file
      * @param message Message to print
-     * @param useCurrentThread Whether the current thread should be used. If set to false, a new synchronized task will be created.
-     */
-    public void debug(final String message, boolean useCurrentThread) {
-        if (config.enable_debug_log && fw != null) {
-            if (useCurrentThread) {
-                debug(message);
-            } else {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        debug(message);
-                    }
-                }.runTask(this);
-            }
-        }
-    }
-
-    /**
-     * Print a message to the <i>/plugins/ShopChest/debug.txt</i> file
-     * @param message Message to print
      */
     public void debug(String message) {
         if (config.enable_debug_log && fw != null) {
@@ -354,28 +334,6 @@ public class ShopChest extends JavaPlugin {
             } catch (IOException e) {
                 getLogger().severe("Failed to print debug message.");
                 e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Print a {@link Throwable}'s stacktrace to the <i>/plugins/ShopChest/debug.txt</i> file
-     * @param throwable {@link Throwable} whose stacktrace will be printed
-     * @param useCurrentThread Whether the current thread should be used. If set to false, a new synchronized task will be created.
-     */
-    public void debug(final Throwable throwable, boolean useCurrentThread) {
-        if (config.enable_debug_log && fw != null) {
-            if (useCurrentThread) {
-                debug(throwable);
-            } else {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        PrintWriter pw = new PrintWriter(fw);
-                        throwable.printStackTrace(pw);
-                        pw.flush();
-                    }
-                }.runTask(this);
             }
         }
     }
