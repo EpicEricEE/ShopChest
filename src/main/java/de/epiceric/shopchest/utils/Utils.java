@@ -246,7 +246,7 @@ public class Utils {
      * @return Whether the flag is allowed for the player
      */
     public static boolean isFlagAllowedOnPlot(Plot plot, Flag flag, Player p) {
-        if (flag != null) {
+        if (plot != null && flag != null) {
             Object o = plot.getFlag(flag, PlotSquaredShopFlag.Group.NONE);
 
             if (o instanceof PlotSquaredShopFlag.Group) {
@@ -267,7 +267,7 @@ public class Utils {
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
