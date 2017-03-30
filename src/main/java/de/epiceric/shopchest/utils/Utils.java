@@ -351,15 +351,6 @@ public class Utils {
     }
 
     /**
-     * Checks if a given String is a UUID
-     * @param string String to check
-     * @return Whether the string is a UUID
-     */
-    public static boolean isUUID(String string) {
-        return string.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}");
-    }
-
-    /**
      * Encodes an {@link ItemStack} in a Base64 String
      * @param itemStack {@link ItemStack} to encode
      * @return Base64 encoded String
