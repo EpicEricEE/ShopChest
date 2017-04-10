@@ -55,14 +55,14 @@ public class Shop {
 
         Block b = location.getBlock();
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
-            ChestNotFoundException ex = new ChestNotFoundException("No Chest found at location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            ChestNotFoundException ex = new ChestNotFoundException(String.format("No Chest found in world '%s' at location: %d; %d; %d", b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
             plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
             if (showConsoleMessages) plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
             return false;
         } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
-            NotEnoughSpaceException ex = new NotEnoughSpaceException("No space above chest at location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
+            NotEnoughSpaceException ex = new NotEnoughSpaceException(String.format("No space above chest in world '%s' at location: %d; %d; %d", b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
             plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
             if (showConsoleMessages) plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
