@@ -3,6 +3,7 @@ package de.epiceric.shopchest.listeners;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.event.ShopUpdateEvent;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.ShopUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ShopUpdateListener implements Listener {
@@ -57,6 +59,23 @@ public class ShopUpdateListener implements Listener {
                 restartShopUpdater(e.getPlayer());
             }
         }.runTaskLater(plugin, 1L);
+    }
+
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent e) {
+        final String worldName = e.getWorld().getName();
+
+        plugin.getShopUtils().reloadShops(false, false, new Callback(plugin) {
+            @Override
+            public void onResult(Object result) {
+                int amount = -1;
+                if (result instanceof Integer) {
+                    amount = (int) result;
+                }
+                plugin.getLogger().info(String.format("Reloaded %d shops because a new world '%s' was loaded", amount, worldName));
+                plugin.debug(String.format("Reloaded %d shops because a new world '%s' was loaded", amount, worldName));
+            }
+        });
     }
 
     private void restartShopUpdater(Player p) {
