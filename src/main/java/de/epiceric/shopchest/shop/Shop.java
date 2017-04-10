@@ -48,7 +48,7 @@ public class Shop {
         this(-1, plugin, vendor, product, location, buyPrice, sellPrice, shopType);
     }
 
-    public boolean create() {
+    public boolean create(boolean showConsoleMessages) {
         if (created) return false;
 
         plugin.debug("Creating shop (#" + id + ")");
@@ -57,14 +57,14 @@ public class Shop {
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
             ChestNotFoundException ex = new ChestNotFoundException("No Chest found at location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
             plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
-            plugin.getLogger().severe(ex.getMessage());
+            if (showConsoleMessages) plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
             return false;
         } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
             NotEnoughSpaceException ex = new NotEnoughSpaceException("No space above chest at location: " + b.getX() + "; " + b.getY() + "; " + b.getZ());
             plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
-            plugin.getLogger().severe(ex.getMessage());
+            if (showConsoleMessages) plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
             return false;

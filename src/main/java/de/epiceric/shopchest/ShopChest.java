@@ -355,13 +355,12 @@ public class ShopChest extends JavaPlugin {
         }
     }
 
-
     /**
      * Initializes the shops
      */
     private void initializeShops() {
         debug("Initializing Shops...");
-        shopUtils.reloadShops(false, false, new Callback(this) {
+        shopUtils.reloadShops(false, true, new Callback(this) {
             @Override
             public void onResult(Object result) {
                 if (result instanceof Integer) {

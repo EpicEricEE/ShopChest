@@ -513,7 +513,7 @@ public class ShopInteractListener implements Listener {
             return;
         }
 
-        shop.create();
+        shop.create(true);
 
         plugin.debug("Shop created");
         shopUtils.addShop(shop, true);

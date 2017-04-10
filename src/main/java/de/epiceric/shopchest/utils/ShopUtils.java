@@ -199,7 +199,7 @@ public class ShopUtils {
      * @param showConsoleMessages Whether messages about the language file should be shown in the console
      * @param callback Callback that - if succeeded - returns the amount of shops that were reloaded (as {@code int})
      */
-    public void reloadShops(boolean reloadConfig, boolean showConsoleMessages, final Callback callback) {
+    public void reloadShops(boolean reloadConfig, final boolean showConsoleMessages, final Callback callback) {
         plugin.debug("Reloading shops...");
 
         if (reloadConfig) {
@@ -216,13 +216,13 @@ public class ShopUtils {
                     plugin.debug("Removed shop (#" + shop.getID() + ")");
                 }
 
-                plugin.getShopDatabase().getShops(new Callback(plugin) {
+                plugin.getShopDatabase().getShops(showConsoleMessages, new Callback(plugin) {
                     @Override
                     public void onResult(Object result) {
                         if (result instanceof Shop[]) {
                             Shop[] shops = (Shop[]) result;
                             for (Shop shop : shops) {
-                                if (shop.create()) {
+                                if (shop.create(showConsoleMessages)) {
                                     addShop(shop, false);
                                 }
                             }
