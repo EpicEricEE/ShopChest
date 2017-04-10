@@ -21,9 +21,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public abstract class Database {
+
+    private static Set<String> notFoundWorlds = new HashSet<>();
 
     ShopChest plugin;
     Connection connection;
@@ -221,8 +225,9 @@ public abstract class Database {
     /**
      * Get all shops from the database
      * @param callback Callback that - if succeeded - returns an array of all shops (as {@code Shop[]})
+     * @param showConsoleMessages Whether console messages (errors or warnings) should be shown
      */
-    public void getShops(final Callback callback) {
+    public void getShops(final boolean showConsoleMessages, final Callback callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -248,8 +253,8 @@ public abstract class Database {
 
                         if (world == null) {
                             WorldNotFoundException ex = new WorldNotFoundException("Could not find world with name \"" + worldName + "\"");
-                            if (callback != null) callback.callSyncError(ex);
-                            plugin.getLogger().warning(ex.getMessage());
+                            if (showConsoleMessages && !notFoundWorlds.contains(worldName)) plugin.getLogger().warning(ex.getMessage());
+                            notFoundWorlds.add(worldName);
                             plugin.debug("Failed to get shop (#" + id + ")");
                             plugin.debug(ex);
                             continue;
