@@ -58,43 +58,43 @@ public abstract class Database {
 
                     String queryCreateTableShopList =
                             "CREATE TABLE IF NOT EXISTS shops (" +
-                                    "`id` INTEGER PRIMARY KEY " + (Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT") + "," +
-                                    "`vendor` TINYTEXT NOT NULL," +
-                                    "`product` TEXT NOT NULL," +
-                                    "`world` TINYTEXT NOT NULL," +
-                                    "`x` INTEGER NOT NULL," +
-                                    "`y` INTEGER NOT NULL," +
-                                    "`z` INTEGER NOT NULL," +
-                                    "`buyprice` FLOAT NOT NULL," +
-                                    "`sellprice` FLOAT NOT NULL," +
-                                    "`shoptype` TINYTEXT NOT NULL" +
-                                    ");";
+                                    "id INTEGER PRIMARY KEY " + (Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT") + "," +
+                                    "vendor TINYTEXT NOT NULL," +
+                                    "product TEXT NOT NULL," +
+                                    "world TINYTEXT NOT NULL," +
+                                    "x INTEGER NOT NULL," +
+                                    "y INTEGER NOT NULL," +
+                                    "z INTEGER NOT NULL," +
+                                    "buyprice FLOAT NOT NULL," +
+                                    "sellprice FLOAT NOT NULL," +
+                                    "shoptype TINYTEXT NOT NULL" +
+                                    ")";
 
                     String queryCreateTableShopLog =
-                            "CREATE TABLE IF NOT EXISTS shop_log (" +
-                                    "`id` INTEGER PRIMARY KEY " + (Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT") + "," +
-                                    "`timestamp` TINYTEXT NOT NULL," +
-                                    "`executor` TINYTEXT NOT NULL," +
-                                    "`product` TINYTEXT NOT NULL," +
-                                    "`vendor` TINYTEXT NOT NULL," +
-                                    "`world` TINYTEXT NOT NULL," +
-                                    "`x` INTEGER NOT NULL," +
-                                    "`y` INTEGER NOT NULL," +
-                                    "`z` INTEGER NOT NULL," +
-                                    "`price` FLOAT NOT NULL," +
-                                    "`type` TINYTEXT NOT NULL" +
-                                    ");";
+                            "CREATE TABLE IF NOT EXISTS `shop_log` (" +
+                                    "id INTEGER PRIMARY KEY " + (Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT") + "," +
+                                    "timestamp TINYTEXT NOT NULL," +
+                                    "executor TINYTEXT NOT NULL," +
+                                    "product TINYTEXT NOT NULL," +
+                                    "vendor TINYTEXT NOT NULL," +
+                                    "world TINYTEXT NOT NULL," +
+                                    "x INTEGER NOT NULL," +
+                                    "y INTEGER NOT NULL," +
+                                    "z INTEGER NOT NULL," +
+                                    "price FLOAT NOT NULL," +
+                                    "type TINYTEXT NOT NULL" +
+                                    ")";
 
                     String queryCreateTablePlayerLogout =
                             "CREATE TABLE IF NOT EXISTS player_logout (" +
-                                    "`player` VARCHAR(36) PRIMARY KEY NOT NULL," +
-                                    "`time` LONG NOT NULL" +
-                                    ");";
+                                    "player VARCHAR(36) PRIMARY KEY NOT NULL," +
+                                    "time LONG NOT NULL" +
+                                    ")";
 
                     String queryCheckIfTableExists =
                             (Database.this instanceof SQLite ?
-                                    "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'shop_list'" :
-                                    "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'shop_list'");
+                                    "SELECT name FROM sqlite_master WHERE type='table' AND name='shop_list'" :
+                                    "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='shop_list'");
 
                     String queryCopyTableShopList = "INSERT INTO shops (vendor,product,world,x,y,z,buyprice,sellprice,shoptype) SELECT vendor,product,world,x,y,z,buyprice,sellprice,shoptype FROM shop_list";
                     String queryRenameTableShopList = "ALTER TABLE shop_list RENAME TO shop_list_old";
@@ -171,9 +171,11 @@ public abstract class Database {
                 PreparedStatement ps = null;
 
                 try {
-                    ps = connection.prepareStatement("DELETE FROM shops WHERE id = " + shop.getID() + ";");
-                    plugin.debug("Removing shop from database (#" + shop.getID() + ")");
+                    ps = connection.prepareStatement("DELETE FROM shops WHERE id = ?");
+                    ps.setInt(1, shop.getID());
                     ps.executeUpdate();
+
+                    plugin.debug("Removing shop from database (#" + shop.getID() + ")");
                     if (callback != null) callback.callSyncResult(null);
                 } catch (SQLException ex) {
                     if (callback != null) callback.callSyncError(ex);
@@ -199,7 +201,8 @@ public abstract class Database {
                 ResultSet rs = null;
 
                 try {
-                    ps = connection.prepareStatement("SELECT * FROM shops WHERE id = " + id + ";");
+                    ps = connection.prepareStatement("SELECT * FROM shops WHERE id = ?");
+                    ps.setInt(1, id);
                     rs = ps.executeQuery();
 
                     while (rs.next()) {
@@ -487,7 +490,7 @@ public abstract class Database {
                 String playerUuid = player.getUniqueId().toString();
 
                 try {
-                    ps = connection.prepareStatement("SELECT * FROM player_logout WHERE player = ?;");
+                    ps = connection.prepareStatement("SELECT * FROM player_logout WHERE player=?;");
                     ps.setString(1, playerUuid);
                     rs = ps.executeQuery();
 
