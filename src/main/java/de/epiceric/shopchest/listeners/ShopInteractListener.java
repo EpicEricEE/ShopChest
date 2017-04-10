@@ -313,7 +313,9 @@ public class ShopInteractListener implements Listener {
                                         } else {
                                             if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
                                                 Chest c = (Chest) b.getState();
-                                                if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
+                                                int amount = (p.isSneaking() ? shop.getProduct().getMaxStackSize() : shop.getProduct().getAmount());
+
+                                                if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= amount) {
                                                     buy(p, shop, p.isSneaking());
                                                 } else {
                                                     if (config.auto_calculate_item_amount && Utils.getAmount(c.getInventory(), shop.getProduct()) > 0) {
@@ -372,11 +374,14 @@ public class ShopInteractListener implements Listener {
                                         }
 
                                         if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
-                                            if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= shop.getProduct().getAmount()) {
-                                                sell(p, shop, p.isSneaking() && !Utils.hasAxeInHand(p));
+                                            boolean stack = p.isSneaking() && !Utils.hasAxeInHand(p);
+                                            int amount = stack ? shop.getProduct().getMaxStackSize() : shop.getProduct().getAmount();
+
+                                            if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= amount) {
+                                                sell(p, shop, stack);
                                             } else {
                                                 if (config.auto_calculate_item_amount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
-                                                    sell(p, shop, p.isSneaking() && !Utils.hasAxeInHand(p));
+                                                    sell(p, shop, stack);
                                                 } else {
                                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
                                                     plugin.debug(p.getName() + " doesn't have enough items");
