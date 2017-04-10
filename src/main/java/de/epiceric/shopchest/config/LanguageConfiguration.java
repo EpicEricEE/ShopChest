@@ -86,7 +86,7 @@ public class LanguageConfiguration extends FileConfiguration {
                                 sbValue.append(line.split("=")[i]);
                             }
 
-                            String value = Matcher.quoteReplacement(sbValue.toString());
+                            String value = sbValue.toString();
 
                             values.put(key, value);
                         }
