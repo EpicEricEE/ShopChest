@@ -1,6 +1,5 @@
 package de.epiceric.shopchest;
 
-import com.intellectualcrafters.plot.PS;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.config.Config;
@@ -28,7 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -51,6 +50,7 @@ public class ShopChest extends JavaPlugin {
     private WorldGuardPlugin worldGuard;
     private Towny towny;
     private AuthMe authMe;
+    private uSkyBlockAPI uSkyBlock;
     private ShopUpdater updater;
 
     /**
@@ -162,6 +162,11 @@ public class ShopChest extends JavaPlugin {
         Plugin authMePlugin = Bukkit.getServer().getPluginManager().getPlugin("AuthMe");
         if (authMePlugin instanceof AuthMe) {
             authMe = (AuthMe) authMePlugin;
+        }
+
+        Plugin uSkyBlockPlugin = Bukkit.getServer().getPluginManager().getPlugin("uSkyBlock");
+        if (uSkyBlockPlugin instanceof uSkyBlockAPI) {
+            uSkyBlock = (uSkyBlockAPI) uSkyBlockPlugin;
         }
 
         if (hasPlotSquared()) {
@@ -391,17 +396,32 @@ public class ShopChest extends JavaPlugin {
     }
 
     /**
+     * @return Whether the plugin 'uSkyBlock' is enabled
+     */
+    public boolean hasUSkyBlock() {
+        return uSkyBlock != null && uSkyBlock.isEnabled();
+    }
+
+    /**
+     * @return An instance of {@link uSkyBlockAPI} or {@code null} if uSkyBlock is not enabled
+     */
+    public uSkyBlockAPI getUSkyBlock() {
+        return uSkyBlock;
+    }
+
+    /**
      * @return Whether the plugin 'PlotSquared' is enabled
      */
     public boolean hasPlotSquared() {
-        return getServer().getPluginManager().getPlugin("PlotSquared") != null;
+        Plugin p = getServer().getPluginManager().getPlugin("PlotSquared");
+        return p != null && p.isEnabled();
     }
 
     /**
      * @return Whether the plugin 'AuthMe' is enabled
      */
     public boolean hasAuthMe() {
-        return authMe != null;
+        return authMe != null && authMe.isEnabled();
     }
 
     /**
@@ -415,7 +435,7 @@ public class ShopChest extends JavaPlugin {
      * @return Whether the plugin 'Towny' is enabled
      */
     public boolean hasTowny() {
-        return towny != null;
+        return towny != null && towny.isEnabled();
     }
 
     /**
@@ -429,7 +449,7 @@ public class ShopChest extends JavaPlugin {
      * @return Whether the plugin 'WorldGuard' is enabled
      */
     public boolean hasWorldGuard() {
-        return worldGuard != null;
+        return worldGuard != null && worldGuard.isEnabled();
     }
 
     /**

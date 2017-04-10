@@ -118,6 +118,10 @@
             <id>athion-reop</id>
             <url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
         </repository>
+        <repository>
+            <id>uskyblock-repo</id>
+            <url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -161,6 +165,11 @@
             <artifactId>plotsquared-api</artifactId>
             <version>latest</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.rlf</groupId>
+            <artifactId>uSkyBlock-API</artifactId>
+            <version>2.6.4</version>
         </dependency>
     </dependencies>
 

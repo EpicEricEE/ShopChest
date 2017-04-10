@@ -51,6 +51,7 @@ import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
+import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -138,7 +139,15 @@ public class ShopInteractListener implements Listener {
                                             externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, p);
                                         }
                                     }
+                                }
 
+                                if (plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
+                                    for (Location loc : chestLocations) {
+                                        if (loc != null) {
+                                            IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(loc);
+                                            externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
+                                        }
+                                    }
                                 }
 
                                 if ((e.isCancelled() || !externalPluginsAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {

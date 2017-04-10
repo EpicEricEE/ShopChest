@@ -8,6 +8,7 @@ import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.Hologram;
@@ -15,7 +16,6 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
-import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,6 +35,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
+import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 import java.util.ArrayList;
 
@@ -164,6 +165,11 @@ public class ChestProtectListener implements Listener {
                                 new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
                         externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(loc.getOwnedPlot(), PlotSquaredShopFlag.CREATE_SHOP, p);
+                    }
+
+                    if (plugin.hasUSkyBlock() && plugin.getShopChestConfig().enable_uskyblock_integration) {
+                        IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(b.getLocation());
+                        externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
                     }
 
                     if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {

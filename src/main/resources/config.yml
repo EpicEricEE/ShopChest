@@ -46,8 +46,12 @@ enable-towny-integration: true
 enable-authme-integration: true
 
 # Set whether PlotSquared integration should be enabled
-# Of course, this only works if AuthMe is installed
+# Of course, this only works if PlotSquared is installed
 enable-plotsquared-integration: true
+
+# Set whether uSkyBlock integration should be enabled
+# Of course, this only works if uSkyBlock is installed
+enable-uskyblock-integration: true
 
 # Set whether the vendor of a shop should get messages when players
 # buy or sell something from/to his shop or if his shop is out of stock
