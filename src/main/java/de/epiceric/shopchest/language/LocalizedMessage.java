@@ -55,6 +55,7 @@ public class LocalizedMessage {
         SHOP_INFO_ENCHANTMENTS,
         SHOP_INFO_POTION_EFFECT,
         SHOP_INFO_MUSIC_TITLE,
+        SHOP_INFO_BOOK_GENERATION,
         SHOP_INFO_NONE,
         SHOP_INFO_PRICE,
         SHOP_INFO_DISABLED,

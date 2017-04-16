@@ -17,6 +17,7 @@ import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
+import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
@@ -48,6 +49,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
@@ -582,45 +584,62 @@ public class ShopInteractListener implements Listener {
         plugin.debug(executor.getName() + " is retrieving shop info (#" + shop.getID() + ")");
         ShopInfoEvent event = new ShopInfoEvent(executor, shop);
         Bukkit.getPluginManager().callEvent(event);
+
         if (event.isCancelled()) {
             plugin.debug("Info event cancelled (#" + shop.getID() + ")");
             return;
         }
+
         Chest c = (Chest) shop.getLocation().getBlock().getState();
 
         int amount = Utils.getAmount(c.getInventory(), shop.getProduct());
         Material type = shop.getProduct().getType();
 
-        String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
-        String vendor = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR, new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName));
-        String product = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+        String vendorName = (shop.getVendor().getName() == null ?
+                shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
+
+        String vendorString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR,
+                new LocalizedMessage.ReplacedRegex(Regex.VENDOR, vendorName));
+
+        String productString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT,
+                new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
                 new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct())));
+
         String enchantmentString = "";
         String potionEffectString = "";
-        String musicDiscName = LanguageUtils.getMusicDiscName(type);
+        String bookGenerationString = "";
+        String musicDiscTitleString = "";
+
         String disabled = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED);
-        String price = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRICE, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, (shop.getBuyPrice() > 0 ? String.valueOf(shop.getBuyPrice()) : disabled)),
+
+        String priceString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRICE,
+                new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, (shop.getBuyPrice() > 0 ? String.valueOf(shop.getBuyPrice()) : disabled)),
                 new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, (shop.getSellPrice() > 0 ? String.valueOf(shop.getSellPrice()) : disabled)));
-        String shopType = LanguageUtils.getMessage(shop.getShopType() == ShopType.NORMAL ? LocalizedMessage.Message.SHOP_INFO_NORMAL : LocalizedMessage.Message.SHOP_INFO_ADMIN);
-        String stock = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_STOCK, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(amount)));
+
+        String shopType = LanguageUtils.getMessage(shop.getShopType() == ShopType.NORMAL ?
+                LocalizedMessage.Message.SHOP_INFO_NORMAL : LocalizedMessage.Message.SHOP_INFO_ADMIN);
+
+        String stock = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_STOCK,
+                new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(amount)));
 
         boolean potionExtended = false;
 
         Map<Enchantment, Integer> enchantmentMap;
 
+        String potionEffectName = "";
         if (Utils.getMajorVersion() >= 9) {
             if (type == Material.TIPPED_ARROW || type == Material.LINGERING_POTION || type == Material.SPLASH_POTION) {
-                potionEffectString = LanguageUtils.getPotionEffectName(shop.getProduct());
+                potionEffectName = LanguageUtils.getPotionEffectName(shop.getProduct());
                 PotionMeta potionMeta = (PotionMeta) shop.getProduct().getItemMeta();
                 potionExtended = potionMeta.getBasePotionData().isExtended();
 
-                if (potionEffectString == null)
-                    potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
+                if (potionEffectName.trim().isEmpty())
+                    potionEffectName = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
             }
         }
 
         if (type == Material.POTION) {
-            potionEffectString = LanguageUtils.getPotionEffectName(shop.getProduct());
+            potionEffectName = LanguageUtils.getPotionEffectName(shop.getProduct());
             if (Utils.getMajorVersion() < 9) {
                 Potion potion = Potion.fromItemStack(shop.getProduct());
                 potionExtended = potion.hasExtendedDuration();
@@ -629,11 +648,43 @@ public class ShopInteractListener implements Listener {
                 potionExtended = potionMeta.getBasePotionData().isExtended();
             }
 
-            if (potionEffectString == null)
-                potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
+            if (potionEffectName.trim().isEmpty())
+                potionEffectName = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
         }
 
+        if (potionEffectName.length() > 0) {
+            String extended = potionExtended ? LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED) : "";
+            potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT,
+                    new LocalizedMessage.ReplacedRegex(Regex.POTION_EFFECT, potionEffectName),
+                    new LocalizedMessage.ReplacedRegex(Regex.EXTENDED, extended));
+        }
 
+        if (type == Material.WRITTEN_BOOK) {
+            BookMeta meta = (BookMeta) shop.getProduct().getItemMeta();
+            CustomBookMeta.Generation generation = CustomBookMeta.Generation.TATTERED;
+
+            if ((Utils.getMajorVersion() == 9 && Utils.getRevision() == 1) || Utils.getMajorVersion() == 8) {
+                CustomBookMeta.Generation gen = CustomBookMeta.getGeneration(shop.getProduct());
+                generation = (gen == null ? CustomBookMeta.Generation.ORIGINAL : gen);
+            } else if (Utils.getMajorVersion() >= 10) {
+                if (meta.hasGeneration()) {
+                    generation = CustomBookMeta.Generation.valueOf(meta.getGeneration().toString());
+                } else {
+                    generation = CustomBookMeta.Generation.ORIGINAL;
+                }
+            }
+
+            bookGenerationString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_BOOK_GENERATION,
+                    new LocalizedMessage.ReplacedRegex(Regex.GENERATION, LanguageUtils.getBookGenerationName(generation)));
+        }
+
+        String musicDiscName = LanguageUtils.getMusicDiscName(type);
+        if (musicDiscName.length() > 0) {
+            musicDiscTitleString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE,
+                    new LocalizedMessage.ReplacedRegex(Regex.MUSIC_TITLE, musicDiscName));
+        }
+
+        String enchantmentList = "";
         if (shop.getProduct().getItemMeta() instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta esm = (EnchantmentStorageMeta) shop.getProduct().getItemMeta();
             enchantmentMap = esm.getStoredEnchants();
@@ -647,24 +698,26 @@ public class ShopInteractListener implements Listener {
             Enchantment enchantment = enchantments[i];
 
             if (i == enchantments.length - 1) {
-                enchantmentString += LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment));
+                enchantmentList += LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment));
             } else {
-                enchantmentString += LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)) + ", ";
+                enchantmentList += LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)) + ", ";
             }
         }
 
+        if (enchantmentList.length() > 0) {
+            enchantmentString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS,
+                    new LocalizedMessage.ReplacedRegex(Regex.ENCHANTMENT, enchantmentList));
+        }
+
         executor.sendMessage(" ");
-        if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(vendor);
-        executor.sendMessage(product);
+        if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(vendorString);
+        executor.sendMessage(productString);
         if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(stock);
-        if (enchantmentString.length() > 0)
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS, new LocalizedMessage.ReplacedRegex(Regex.ENCHANTMENT, enchantmentString)));
-        if (potionEffectString.length() > 0)
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT, new LocalizedMessage.ReplacedRegex(Regex.POTION_EFFECT, potionEffectString),
-                    new LocalizedMessage.ReplacedRegex(Regex.EXTENDED, (potionExtended ? LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED) : ""))));
-        if (musicDiscName.length() > 0)
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE, new LocalizedMessage.ReplacedRegex(Regex.MUSIC_TITLE, musicDiscName)));
-        executor.sendMessage(price);
+        if (enchantmentString.length() > 0) executor.sendMessage(enchantmentString);
+        if (potionEffectString.length() > 0) executor.sendMessage(potionEffectString);
+        if (musicDiscTitleString.length() > 0) executor.sendMessage(musicDiscTitleString);
+        if (bookGenerationString.length() > 0) executor.sendMessage(bookGenerationString);
+        executor.sendMessage(priceString);
         executor.sendMessage(shopType);
         executor.sendMessage(" ");
     }

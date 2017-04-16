@@ -3,6 +3,7 @@ package de.epiceric.shopchest.language;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.LanguageConfiguration;
 import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.SpawnEggMeta;
 import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.ChatColor;
@@ -31,6 +32,7 @@ public class LanguageUtils {
     private static ArrayList<EntityName> entityNames = new ArrayList<>();
     private static ArrayList<PotionName> potionNames = new ArrayList<>();
     private static ArrayList<MusicDiscName> musicDiscNames = new ArrayList<>();
+    private static ArrayList<BookGenerationName> generationNames = new ArrayList<>();
     private static ArrayList<LocalizedMessage> messages = new ArrayList<>();
 
 
@@ -44,6 +46,7 @@ public class LanguageUtils {
         entityNames.clear();
         potionNames.clear();
         musicDiscNames.clear();
+        generationNames.clear();
         messages.clear();
 
         // Add Block Names
@@ -906,6 +909,12 @@ public class LanguageUtils {
         musicDiscNames.add(new MusicDiscName(Material.RECORD_11, langConfig.getString("item.record.11.desc", "C418 - 11")));
         musicDiscNames.add(new MusicDiscName(Material.RECORD_12, langConfig.getString("item.record.wait.desc", "C418 - wait")));
 
+        // Add Book Generation Names
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.ORIGINAL, langConfig.getString("book.generation.0", "Original")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.COPY_OF_ORIGINAL, langConfig.getString("book.generation.1", "Copy of original")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.COPY_OF_COPY, langConfig.getString("book.generation.2", "Copy of a copy")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.TATTERED, langConfig.getString("book.generation.3", "Tattered")));
+
         // Add ShopChest Messages
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATED, langConfig.getString("message.shop-created", "&6Shop created.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP, langConfig.getString("message.chest-already-shop", "&cChest already shop.")));
@@ -920,6 +929,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS, langConfig.getString("message.shopInfo.enchantments", "&6Enchantments: &e%ENCHANTMENT%"), Regex.ENCHANTMENT));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT, langConfig.getString("message.shopInfo.potion-effect", "&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%"), Regex.POTION_EFFECT, Regex.EXTENDED));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE, langConfig.getString("message.shopInfo.music-disc-title", "&6Music Disc Title: &e%MUSIC-TITLE%"), Regex.MUSIC_TITLE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_BOOK_GENERATION, langConfig.getString("message.shopInfo.book-generation", "&6Generation: &e%GENERATION%"), Regex.GENERATION));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_NONE, langConfig.getString("message.shopInfo.none", "&7None")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_PRICE, langConfig.getString("message.shopInfo.price", "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%"), Regex.BUY_PRICE, Regex.SELL_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED, langConfig.getString("message.shopInfo.disabled", "&7Disabled")));
@@ -1159,6 +1169,20 @@ public class LanguageUtils {
         }
 
         return "";
+    }
+
+    /**
+     * @param generation Generation of the book
+     * @return Localized title of the generation
+     */
+    public static String getBookGenerationName(CustomBookMeta.Generation generation) {
+        for (BookGenerationName generationName : generationNames) {
+            if (generation == generationName.getGeneration()) {
+                return generationName.getLocalizedName();
+            }
+        }
+
+        return formatDefaultString(generation.toString());
     }
 
     /**

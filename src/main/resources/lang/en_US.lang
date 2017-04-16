@@ -45,6 +45,10 @@ message.shopInfo.potion-effect=&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%
 # Usable regex: %MUSIC-TITLE%
 message.shopInfo.music-disc-title=&6Music Disc Title: &e%MUSIC-TITLE%
 
+# Set the generation message the player gets after entering '/shop info' if the product is a written book
+# Usable regex: %GENERATION%
+message.shopInfo.book-generation=&6Generation: &e%GENERATION%
+
 # If the product is a tipped arrow but it doesn't have an effect, this gets displayed instead of the arrow effect
 message.shopInfo.none=&7None
 
@@ -468,6 +472,12 @@ enchantment.level.7=VII
 enchantment.level.8=VIII
 enchantment.level.9=IX
 enchantment.level.10=X
+
+# If the product is a written book, this will be displayed instead of %GENERATION%
+book.generation.0=Original
+book.generation.1=Copy of original
+book.generation.2=Copy of a copy
+book.generation.3=Tattered
 
 # If the product is a spawn egg, this will be displayed after 'item.monsterPlacer.name'
 entity.Creeper.name=Creeper

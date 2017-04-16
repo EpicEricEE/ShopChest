@@ -11,6 +11,7 @@ message.shopInfo.stock=&6Auf Lager: &e%AMOUNT%
 message.shopInfo.enchantments=&6Verzauberungen: &e%ENCHANTMENT%
 message.shopInfo.potion-effect=&6Trank-Effekte: &e%POTION-EFFECT% %EXTENDED%
 message.shopInfo.music-disc-title=&6Schallplattentitel: &e%MUSIC-TITLE%
+message.shopInfo.book-generation=&6Generation: &e%GENERATION%
 message.shopInfo.none=&7Keine
 message.shopInfo.price=&6Preis: Kauf: &e%BUY-PRICE%&6 Verkauf: &e%SELL-PRICE%
 message.shopInfo.disabled=&7Deaktiviert
@@ -89,6 +90,11 @@ message.commandDescription.config=Verändere Konfigurationswerte.
 message.config.set=&6Eigenschaft &a%PROPERTY% &6wurde auf &a%VALUE% &6gesetzt.
 message.config.added=&6Wert &a%VALUE% &6wurde zu &a%PROPERTY% &6hinzugefügt.
 message.config.removed=&6Wert &a%VALUE% &6wurde aus &a%PROPERTY% &6entfernt.
+
+book.generation.0=Original
+book.generation.1=Kopie des Originals
+book.generation.2=Kopie einer Kopie
+book.generation.3=Zerrissen
 
 effect.absorption=Absorption
 effect.blindness=Blindheit

@@ -20,7 +20,8 @@ public enum Regex {
     PROPERTY("%PROPERTY%"),
     VALUE("%VALUE%"),
     EXTENDED("%EXTENDED%"),
-    REVENUE("%REVENUE%");
+    REVENUE("%REVENUE%"),
+    GENERATION("%GENERATION%");
 
     private String name;
 
