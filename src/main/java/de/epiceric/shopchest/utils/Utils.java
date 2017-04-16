@@ -37,14 +37,6 @@ public class Utils {
             return false;
         }
 
-        boolean similar = (itemStack1.getType() == itemStack2.getType());
-        similar &= (itemStack1.getDurability() == itemStack2.getDurability());
-        similar &= (itemStack1.getEnchantments().equals(itemStack2.getEnchantments()));
-        similar &= (itemStack1.getMaxStackSize() == itemStack2.getMaxStackSize());
-        similar &= (itemStack1.getData().equals(itemStack2.getData()));
-
-        if (!similar) return false;
-
         ItemMeta itemMeta1 = itemStack1.getItemMeta();
         ItemMeta itemMeta2 = itemStack2.getItemMeta();
 
@@ -68,15 +60,7 @@ public class Utils {
             itemStack2.setItemMeta(bookMeta2);
         }
 
-        YamlConfiguration yml1 = new YamlConfiguration();
-        YamlConfiguration yml2 = new YamlConfiguration();
-        yml1.set("itemMeta", itemMeta1);
-        yml2.set("itemMeta", itemMeta2);
-
-        String sYml1 = yml1.saveToString();
-        String sYml2 = yml2.saveToString();
-
-        return sYml1.equals(sYml2);
+        return itemStack1.isSimilar(itemStack2);
     }
 
     /**
