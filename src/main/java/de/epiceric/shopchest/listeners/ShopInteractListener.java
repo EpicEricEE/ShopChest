@@ -168,7 +168,9 @@ public class ShopInteractListener implements Listener {
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(loc);
-                                            externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
+                                            if (islandInfo != null) {
+                                                externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
+                                            }
                                         }
                                     }
                                 }
@@ -177,7 +179,9 @@ public class ShopInteractListener implements Listener {
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             Island island = ASkyBlockAPI.getInstance().getIslandAt(loc);
-                                            externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                                            if (island != null) {
+                                                externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                                            }
                                         }
                                     }
                                 }

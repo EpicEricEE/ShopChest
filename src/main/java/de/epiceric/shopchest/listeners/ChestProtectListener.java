@@ -178,7 +178,8 @@ public class ChestProtectListener implements Listener {
                                         }
                                     }
                                 }
-                            } catch (Exception ignored) {
+                            } catch (Exception ex) {
+                                plugin.debug(ex);
                             }
                         }
                     }
@@ -192,12 +193,16 @@ public class ChestProtectListener implements Listener {
 
                     if (plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
                         IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(b.getLocation());
-                        externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
+                        if (islandInfo != null) {
+                            externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
+                        }
                     }
 
                     if (plugin.hasASkyBlock() && config.enable_askyblock_integration) {
                         Island island = ASkyBlockAPI.getInstance().getIslandAt(b.getLocation());
-                        externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                        if (island != null) {
+                            externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                        }
                     }
 
                     if (plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
@@ -211,7 +216,7 @@ public class ChestProtectListener implements Listener {
 
                             if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
                                 shopUtils.removeShop(shop, true);
-                                Shop newShop = new Shop(shop.getID(), ShopChest.getInstance(), shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+                                Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
                                 newShop.create(true);
                                 shopUtils.addShop(newShop, true);
                                 plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
