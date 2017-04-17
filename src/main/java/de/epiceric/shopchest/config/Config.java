@@ -122,6 +122,9 @@ public class Config {
     /** Whether ASkyBlock integration should be enabled **/
     public boolean enable_askyblock_integration;
 
+    /** Whether IslandWorld integration should be enabled **/
+    public boolean enable_islandworld_integration;
+
     /** Whether the vendor of the shop should get messages about buys and sells **/
     public boolean enable_vendor_messages;
 
@@ -366,6 +369,7 @@ public class Config {
         enable_plotsquared_integration = plugin.getConfig().getBoolean("enable-plotsquared-integration");
         enable_uskyblock_integration = plugin.getConfig().getBoolean("enable-uskyblock-integration");
         enable_askyblock_integration = plugin.getConfig().getBoolean("enable-askyblock-integration");
+        enable_islandworld_integration = plugin.getConfig().getBoolean("enable-islandworld-integration");
         enable_vendor_messages = plugin.getConfig().getBoolean("enable-vendor-messages");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         only_show_shops_in_sight = plugin.getConfig().getBoolean("only-show-shops-in-sight");

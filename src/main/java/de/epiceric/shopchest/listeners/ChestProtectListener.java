@@ -39,6 +39,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
+import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 import java.util.ArrayList;
@@ -197,6 +198,12 @@ public class ChestProtectListener implements Listener {
                     if (plugin.hasASkyBlock() && config.enable_askyblock_integration) {
                         Island island = ASkyBlockAPI.getInstance().getIslandAt(b.getLocation());
                         externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                    }
+
+                    if (plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
+                        if (b.getWorld().getName().equals(IslandWorldApi.getIslandWorld().getName())) {
+                            externalPluginsAllowed &= IslandWorldApi.canBuildOnLocation(p, b.getLocation(), true);
+                        }
                     }
 
                     if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {

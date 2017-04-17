@@ -56,6 +56,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
+import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 import java.util.HashMap;
@@ -177,6 +178,16 @@ public class ShopInteractListener implements Listener {
                                         if (loc != null) {
                                             Island island = ASkyBlockAPI.getInstance().getIslandAt(loc);
                                             externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                                        }
+                                    }
+                                }
+
+                                if (plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
+                                    for (Location loc : chestLocations) {
+                                        if (loc != null) {
+                                            if (loc.getWorld().getName().equals(IslandWorldApi.getIslandWorld().getName())) {
+                                                externalPluginsAllowed &= IslandWorldApi.canBuildOnLocation(p, loc, true);
+                                            }
                                         }
                                     }
                                 }

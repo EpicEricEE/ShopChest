@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.islandworld.IslandWorld;
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
 import java.io.*;
@@ -53,6 +54,7 @@ public class ShopChest extends JavaPlugin {
     private AuthMe authMe;
     private uSkyBlockAPI uSkyBlock;
     private ASkyBlock aSkyBlock;
+    private IslandWorld islandWorld;
     private ShopUpdater updater;
 
     /**
@@ -174,6 +176,11 @@ public class ShopChest extends JavaPlugin {
         Plugin aSkyBlockPlugin = Bukkit.getServer().getPluginManager().getPlugin("ASkyBlock");
         if (aSkyBlockPlugin instanceof ASkyBlock) {
             aSkyBlock = (ASkyBlock) aSkyBlockPlugin;
+        }
+
+        Plugin islandWorldPlugin = Bukkit.getServer().getPluginManager().getPlugin("IslandWorld");
+        if (islandWorldPlugin instanceof IslandWorld) {
+            islandWorld = (IslandWorld) islandWorldPlugin;
         }
 
         if (hasPlotSquared()) {
@@ -399,6 +406,20 @@ public class ShopChest extends JavaPlugin {
      */
     public void setUpdater(ShopUpdater updater) {
         this.updater = updater;
+    }
+
+    /**
+     * @return Whether the plugin 'IslandWorld' is enabled
+     */
+    public boolean hasIslandWorld() {
+        return islandWorld != null && islandWorld.isEnabled();
+    }
+
+    /**
+     * @return An instance of {@link IslandWorld} or {@code null} if IslandWorld is not enabled
+     */
+    public IslandWorld getIslandWorld() {
+        return islandWorld;
     }
 
     /**

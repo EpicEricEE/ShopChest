@@ -5,7 +5,7 @@ main: de.epiceric.shopchest.ShopChest
 version: ${project.version}
 author: EpicEric
 website: ${project.url}
-softdepend: [WorldGuard, Towny, AuthMe, PlotSquared, uSkyBlock, ASkyBlock]
+softdepend: [WorldGuard, Towny, AuthMe, PlotSquared, uSkyBlock, ASkyBlock, IslandWorld]
 depend: [Vault]
 
 permissions:
