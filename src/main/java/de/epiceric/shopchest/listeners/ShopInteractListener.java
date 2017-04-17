@@ -2,8 +2,9 @@ package de.epiceric.shopchest.listeners;
 
 import com.intellectualcrafters.plot.flag.Flag;
 import com.intellectualcrafters.plot.object.Plot;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
@@ -126,7 +127,24 @@ public class ShopInteractListener implements Listener {
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             TownBlock townBlock = TownyUniverse.getTownBlock(loc);
-                                            externalPluginsAllowed &= (townBlock != null && townBlock.getType() == TownBlockType.COMMERCIAL);
+                                            if (townBlock != null) {
+                                                try {
+                                                    Town town = townBlock.getTown();
+                                                    for (Resident resident : town.getResidents()) {
+                                                        if (resident.getName().equals(p.getName())) {
+                                                            if (resident.isMayor()) {
+                                                                externalPluginsAllowed &= (config.towny_shop_plots_mayor.contains(townBlock.getType().name()));
+                                                            } else if (resident.isKing()) {
+                                                                externalPluginsAllowed &= (config.towny_shop_plots_king.contains(townBlock.getType().name()));
+                                                            } else {
+                                                                externalPluginsAllowed &= (config.towny_shop_plots_residents.contains(townBlock.getType().name()));
+                                                            }
+                                                        }
+                                                    }
+                                                } catch (Exception ex) {
+                                                    plugin.debug(ex);
+                                                }
+                                            }
                                         }
                                     }
                                 }

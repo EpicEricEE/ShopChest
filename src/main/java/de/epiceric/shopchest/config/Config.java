@@ -33,6 +33,15 @@ public class Config {
     /** The default value for the custom WorldGuard flag 'use-shop' **/
     public boolean wg_allow_use_shop_default;
 
+    /** The types of town plots residents are allowed to create shops in **/
+    public List<String> towny_shop_plots_residents;
+
+    /** The types of town plots the mayor is allowed to create shops in **/
+    public List<String> towny_shop_plots_mayor;
+
+    /** The types of town plots the king is allowed to create shops in **/
+    public List<String> towny_shop_plots_king;
+
     /** The hostname used in ShopChest's MySQL database **/
     public String database_mysql_host;
 
@@ -326,6 +335,9 @@ public class Config {
         wg_allow_create_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.create-shop");
         wg_allow_use_admin_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-admin-shop");
         wg_allow_use_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-shop");
+        towny_shop_plots_residents = plugin.getConfig().getStringList("towny-shop-plots.residents");
+        towny_shop_plots_mayor = plugin.getConfig().getStringList("towny-shop-plots.mayor");
+        towny_shop_plots_king = plugin.getConfig().getStringList("towny-shop-plots.king");
         database_mysql_ping_interval = plugin.getConfig().getInt("database.mysql.ping-interval");
         database_mysql_host = plugin.getConfig().getString("database.mysql.hostname");
         database_mysql_port = plugin.getConfig().getInt("database.mysql.port");

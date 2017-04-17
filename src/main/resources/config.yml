@@ -163,7 +163,7 @@ buy-greater-or-equal-sell: true
 
 # Set the minimum prices for each individual Item. Not per Stack, per single Item!
 # To add an item, follow the format below.
-# Important: You must have exactly 2 spaces between the text and the edge.
+# Important: You must have exactly 2 leading spaces in each line
 # You can find the item names in the 'item_names.txt' file.
 minimum-prices:
 # "STONE:1": 0.5
@@ -171,7 +171,7 @@ minimum-prices:
 
 # Set the maximum prices for each individual Item. Not per Stack, per single Item!
 # To add an item, follow the format below.
-# Important: You must have exactly 2 spaces between the text and the edge.
+# Important: You must have exactly 2 leading spaces in each line
 # You can find the item names in the 'item_names.txt' file.
 maximum-prices:
 # "STONE:1": 19.9
@@ -179,7 +179,7 @@ maximum-prices:
 
 # Set the items of which a player can't create a shop.
 # To add an item, follow the format below.
-# Important: You must have exactly 2 spaces between the text and edge.
+# Important: You must have exactly 2 leading spaces in each line
 # You can find the item names in the 'item_names.txt' file.
 blacklist:
 # - "STONE:1"
@@ -194,6 +194,21 @@ worldguard-default-flag-values:
   create-shop: false
   use-shop: false
   use-admin-shop: false
+
+# Set the types of Towny plots where shop creation should be allowed for...
+# Important: You must have exactly 4 leading spaces in each line
+# Valid values are:
+# RESIDENTIAL, COMMERCIAL, ARENA, EMBASSY, WILDS, SPLEEF, INN, JAIL, FARM
+towny-shop-plots:
+
+  residents:
+    - "COMMERCIAL"
+
+  mayor:
+    - "COMMERCIAL"
+
+  king:
+    - "COMMERCIAL"
 
 # Configuration of the database, where everything is stored.
 # Shops are found in the table 'shop_list', and logged economy

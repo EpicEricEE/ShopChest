@@ -1,12 +1,14 @@
 package de.epiceric.shopchest.listeners;
 
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
@@ -43,11 +45,13 @@ public class ChestProtectListener implements Listener {
 
     private ShopChest plugin;
     private ShopUtils shopUtils;
+    private Config config;
     private WorldGuardPlugin worldGuard;
 
     public ChestProtectListener(ShopChest plugin, WorldGuardPlugin worldGuard) {
         this.plugin = plugin;
         this.shopUtils = plugin.getShopUtils();
+        this.config = plugin.getShopChestConfig();
         this.worldGuard = worldGuard;
     }
 
@@ -110,7 +114,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent e) {
-        if (plugin.getShopChestConfig().explosion_protection) {
+        if (config.explosion_protection) {
             ArrayList<Block> bl = new ArrayList<>(e.blockList());
             for (Block b : bl) {
                 if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -149,25 +153,41 @@ public class ChestProtectListener implements Listener {
 
                     boolean externalPluginsAllowed = true;
 
-                    if (plugin.hasWorldGuard() && plugin.getShopChestConfig().enable_worldguard_integration) {
+                    if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                         RegionContainer container = worldGuard.getRegionContainer();
                         RegionQuery query = container.createQuery();
                         externalPluginsAllowed = query.testState(b.getLocation(), p, WorldGuardShopFlag.CREATE_SHOP);
                     }
 
-                    if (plugin.hasTowny() && plugin.getShopChestConfig().enable_towny_integration) {
+                    if (plugin.hasTowny() && config.enable_towny_integration) {
                         TownBlock townBlock = TownyUniverse.getTownBlock(b.getLocation());
-                        externalPluginsAllowed &= (townBlock != null && townBlock.getType() == TownBlockType.COMMERCIAL);
+                        if (townBlock != null) {
+                            try {
+                                Town town = townBlock.getTown();
+                                for (Resident resident : town.getResidents()) {
+                                    if (resident.getName().equals(p.getName())) {
+                                        if (resident.isMayor()) {
+                                            externalPluginsAllowed &= (config.towny_shop_plots_mayor.contains(townBlock.getType().name()));
+                                        } else if (resident.isKing()) {
+                                            externalPluginsAllowed &= (config.towny_shop_plots_king.contains(townBlock.getType().name()));
+                                        } else {
+                                            externalPluginsAllowed &= (config.towny_shop_plots_residents.contains(townBlock.getType().name()));
+                                        }
+                                    }
+                                }
+                            } catch (Exception ignored) {
+                            }
+                        }
                     }
 
-                    if (plugin.hasPlotSquared() && plugin.getShopChestConfig().enable_plotsquared_integration) {
+                    if (plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
                         com.intellectualcrafters.plot.object.Location loc =
                                 new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
                         externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(loc.getOwnedPlot(), PlotSquaredShopFlag.CREATE_SHOP, p);
                     }
 
-                    if (plugin.hasUSkyBlock() && plugin.getShopChestConfig().enable_uskyblock_integration) {
+                    if (plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
                         IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(b.getLocation());
                         externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
                     }
@@ -212,7 +232,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onItemMove(InventoryMoveItemEvent e) {
-        if (plugin.getShopChestConfig().hopper_protection) {
+        if (config.hopper_protection) {
             if ((e.getSource().getType().equals(InventoryType.CHEST)) && (!e.getInitiator().getType().equals(InventoryType.PLAYER))) {
 
                 if (e.getSource().getHolder() instanceof DoubleChest) {
