@@ -2,6 +2,7 @@ package de.epiceric.shopchest;
 
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.wasteofplastic.askyblock.ASkyBlock;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.event.ShopReloadEvent;
@@ -51,6 +52,7 @@ public class ShopChest extends JavaPlugin {
     private Towny towny;
     private AuthMe authMe;
     private uSkyBlockAPI uSkyBlock;
+    private ASkyBlock aSkyBlock;
     private ShopUpdater updater;
 
     /**
@@ -167,6 +169,11 @@ public class ShopChest extends JavaPlugin {
         Plugin uSkyBlockPlugin = Bukkit.getServer().getPluginManager().getPlugin("uSkyBlock");
         if (uSkyBlockPlugin instanceof uSkyBlockAPI) {
             uSkyBlock = (uSkyBlockAPI) uSkyBlockPlugin;
+        }
+
+        Plugin aSkyBlockPlugin = Bukkit.getServer().getPluginManager().getPlugin("ASkyBlock");
+        if (aSkyBlockPlugin instanceof ASkyBlock) {
+            aSkyBlock = (ASkyBlock) aSkyBlockPlugin;
         }
 
         if (hasPlotSquared()) {
@@ -392,6 +399,20 @@ public class ShopChest extends JavaPlugin {
      */
     public void setUpdater(ShopUpdater updater) {
         this.updater = updater;
+    }
+
+    /**
+     * @return Whether the plugin 'ASkyBlock' is enabled
+     */
+    public boolean hasASkyBlock() {
+        return aSkyBlock != null && aSkyBlock.isEnabled();
+    }
+
+    /**
+     * @return An instance of {@link ASkyBlock} or {@code null} if ASkyBlock is not enabled
+     */
+    public ASkyBlock getASkyBlock() {
+        return aSkyBlock;
     }
 
     /**

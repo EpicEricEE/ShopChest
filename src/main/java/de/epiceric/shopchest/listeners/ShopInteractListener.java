@@ -10,6 +10,8 @@ import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
+import com.wasteofplastic.askyblock.Island;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
@@ -166,6 +168,15 @@ public class ShopInteractListener implements Listener {
                                         if (loc != null) {
                                             IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(loc);
                                             externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
+                                        }
+                                    }
+                                }
+
+                                if (plugin.hasASkyBlock() && config.enable_askyblock_integration) {
+                                    for (Location loc : chestLocations) {
+                                        if (loc != null) {
+                                            Island island = ASkyBlockAPI.getInstance().getIslandAt(loc);
+                                            externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
                                         }
                                     }
                                 }

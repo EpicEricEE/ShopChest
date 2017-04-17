@@ -7,6 +7,8 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
+import com.wasteofplastic.askyblock.Island;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
@@ -190,6 +192,11 @@ public class ChestProtectListener implements Listener {
                     if (plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
                         IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(b.getLocation());
                         externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
+                    }
+
+                    if (plugin.hasASkyBlock() && config.enable_askyblock_integration) {
+                        Island island = ASkyBlockAPI.getInstance().getIslandAt(b.getLocation());
+                        externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
                     }
 
                     if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {

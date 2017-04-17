@@ -122,6 +122,10 @@
             <id>uskyblock-repo</id>
             <url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
         </repository>
+        <repository>
+            <id>tastybento-repo</id>
+            <url>http://dl.bintray.com/tastybento/maven-repo</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -170,6 +174,13 @@
             <groupId>com.github.rlf</groupId>
             <artifactId>uSkyBlock-API</artifactId>
             <version>2.6.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wasteofplastic</groupId>
+            <artifactId>askyblock</artifactId>
+            <version>3.0.6.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

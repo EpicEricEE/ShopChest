@@ -53,6 +53,10 @@ enable-plotsquared-integration: true
 # Of course, this only works if uSkyBlock is installed
 enable-uskyblock-integration: true
 
+# Set whether ASkyBlock integration should be enabled
+# Of course, this only works if ASkyBlock is installed
+enable-askyblock-integration: true
+
 # Set whether the vendor of a shop should get messages when players
 # buy or sell something from/to his shop or if his shop is out of stock
 enable-vendor-messages: true
