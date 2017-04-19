@@ -5,7 +5,6 @@ import com.intellectualcrafters.plot.object.Plot;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.nms.CustomBookMeta;
-import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -236,6 +235,8 @@ public class Utils {
             if (o instanceof PlotSquaredShopFlag.Group) {
                 PlotSquaredShopFlag.Group group = (PlotSquaredShopFlag.Group) o;
 
+                ShopChest.getInstance().debug("Flag " + flag.getName() + " is set to " + group);
+
                 switch (group) {
                     case OWNERS:
                         return plot.getOwners().contains(p.getUniqueId());
@@ -250,6 +251,8 @@ public class Utils {
                 }
             }
         }
+
+        ShopChest.getInstance().debug("Flag or plot is null, or value of flag is not a group");
 
         return true;
     }

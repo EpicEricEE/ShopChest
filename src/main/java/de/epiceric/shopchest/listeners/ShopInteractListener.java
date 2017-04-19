@@ -115,7 +115,10 @@ public class ShopInteractListener implements Listener {
                                     chestLocations[1] = ((Chest) dc.getRightSide()).getLocation();
                                 }
 
+                                String denyReason = "Event Cancelled";
+
                                 if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                    plugin.debug("Checking if WorldGuard allows shop creation...");
                                     RegionContainer container = worldGuard.getRegionContainer();
                                     RegionQuery query = container.createQuery();
 
@@ -124,25 +127,38 @@ public class ShopInteractListener implements Listener {
                                             externalPluginsAllowed &= query.testState(loc, p, WorldGuardShopFlag.CREATE_SHOP);
                                         }
                                     }
+
+                                    if (!externalPluginsAllowed) denyReason = "WorldGuard";
                                 }
 
-                                if (plugin.hasTowny() && config.enable_towny_integration) {
+                                if (externalPluginsAllowed && plugin.hasTowny() && config.enable_towny_integration) {
+                                    plugin.debug("Checking if Towny allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             TownBlock townBlock = TownyUniverse.getTownBlock(loc);
                                             if (townBlock != null) {
+                                                plugin.debug("Plot Type is " + townBlock.getType().name());
                                                 try {
                                                     Town town = townBlock.getTown();
+                                                    boolean residentFound = false;
                                                     for (Resident resident : town.getResidents()) {
                                                         if (resident.getName().equals(p.getName())) {
+                                                            residentFound = true;
                                                             if (resident.isMayor()) {
+                                                                plugin.debug(p.getName() + " is mayor of town");
                                                                 externalPluginsAllowed &= (config.towny_shop_plots_mayor.contains(townBlock.getType().name()));
                                                             } else if (resident.isKing()) {
+                                                                plugin.debug(p.getName() + " is king of town");
                                                                 externalPluginsAllowed &= (config.towny_shop_plots_king.contains(townBlock.getType().name()));
                                                             } else {
+                                                                plugin.debug(p.getName() + " is resident in town");
                                                                 externalPluginsAllowed &= (config.towny_shop_plots_residents.contains(townBlock.getType().name()));
                                                             }
                                                         }
+                                                    }
+                                                    if (!residentFound) {
+                                                        plugin.debug(p.getName() + " is not resident in town");
+                                                        externalPluginsAllowed &= false;
                                                     }
                                                 } catch (Exception ex) {
                                                     plugin.debug(ex);
@@ -150,9 +166,12 @@ public class ShopInteractListener implements Listener {
                                             }
                                         }
                                     }
+
+                                    if (!externalPluginsAllowed) denyReason = "Towny";
                                 }
 
-                                if (plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                                if (externalPluginsAllowed && plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                                    plugin.debug("Checking if PlotSquared allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             com.intellectualcrafters.plot.object.Location plotLocation = new com.intellectualcrafters.plot.object.Location(
@@ -162,44 +181,58 @@ public class ShopInteractListener implements Listener {
                                             externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, p);
                                         }
                                     }
+
+                                    if (!externalPluginsAllowed) denyReason = "PlotSquared";
                                 }
 
-                                if (plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
+                                if (externalPluginsAllowed && plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
+                                    plugin.debug("Checking if uSkyBlock allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(loc);
                                             if (islandInfo != null) {
+                                                plugin.debug("Chest is on island of " + islandInfo.getLeader());
                                                 externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
                                             }
                                         }
                                     }
+
+                                    if (!externalPluginsAllowed) denyReason = "uSkyBlock";
                                 }
 
-                                if (plugin.hasASkyBlock() && config.enable_askyblock_integration) {
+                                if (externalPluginsAllowed && plugin.hasASkyBlock() && config.enable_askyblock_integration) {
+                                    plugin.debug("Checking if ASkyBlock allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             Island island = ASkyBlockAPI.getInstance().getIslandAt(loc);
                                             if (island != null) {
+                                                plugin.debug("Chest is on island of " + Bukkit.getOfflinePlayer(island.getOwner()).getName());
                                                 externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
                                             }
                                         }
                                     }
+
+                                    if (!externalPluginsAllowed) denyReason = "ASkyBlock";
                                 }
 
-                                if (plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
+                                if (externalPluginsAllowed && plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
+                                    plugin.debug("Checking if IslandWorld allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
                                             if (loc.getWorld().getName().equals(IslandWorldApi.getIslandWorld().getName())) {
+                                                plugin.debug("Chest is in island world");
                                                 externalPluginsAllowed &= IslandWorldApi.canBuildOnLocation(p, loc, true);
                                             }
                                         }
                                     }
+
+                                    if (!externalPluginsAllowed) denyReason = "IslandWorld";
                                 }
 
                                 if ((e.isCancelled() || !externalPluginsAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
                                     ClickType.removePlayerClickType(p);
-                                    plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest");
+                                    plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest because " + denyReason);
                                     e.setCancelled(true);
                                     return;
                                 }
