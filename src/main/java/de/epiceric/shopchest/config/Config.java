@@ -143,8 +143,11 @@ public class Config {
     /** Whether players are allowed to sell/buy broken items **/
     public boolean allow_broken_items;
 
-    /** Whether only the shops a player points on should be shown to him **/
+    /** Whether only the shops a player has in sight should be shown to him **/
     public boolean only_show_shops_in_sight;
+
+    /** Whether only the shop a player is looking at should be shown to him **/
+    public boolean only_show_first_shop_in_sight;
 
     /**
      * <p>Whether shops should automatically be removed from the database if an error occurred while loading</p>
@@ -373,6 +376,7 @@ public class Config {
         enable_vendor_messages = plugin.getConfig().getBoolean("enable-vendor-messages");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         only_show_shops_in_sight = plugin.getConfig().getBoolean("only-show-shops-in-sight");
+        only_show_first_shop_in_sight = plugin.getConfig().getBoolean("only-show-first-shop-in-sight");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
         append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
         show_shop_items = plugin.getConfig().getBoolean("show-shop-items");

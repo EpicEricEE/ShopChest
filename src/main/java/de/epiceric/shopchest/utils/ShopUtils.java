@@ -269,23 +269,27 @@ public class ShopUtils {
 
             for (Block block : sight) {
                 if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
-                    if (isShop(block.getLocation())) {
-                        Shop shop = getShop(block.getLocation());
+                    Shop shop = getShop(block.getLocation());
+                    if (shop != null) {
                         shopsInSight.add(shop);
 
                         if (shop.getHologram() != null && !shop.getHologram().isVisible(player)) {
                             shop.getHologram().showPlayer(player);
                         }
+
+                        if (plugin.getShopChestConfig().only_show_first_shop_in_sight) break;
                     }
                 } else {
                     Block below = block.getRelative(BlockFace.DOWN);
-                    if (isShop(below.getLocation())) {
-                        Shop shop = getShop(below.getLocation());
+                    Shop shop = getShop(below.getLocation());
+                    if (shop != null) {
                         shopsInSight.add(shop);
 
                         if (shop.getHologram() != null && !shop.getHologram().isVisible(player)) {
                             shop.getHologram().showPlayer(player);
                         }
+
+                        if (plugin.getShopChestConfig().only_show_first_shop_in_sight) break;
                     }
                 }
             }
@@ -322,6 +326,8 @@ public class ShopUtils {
      * @param player Player to show the update
      */
     public void updateShop(Shop shop, Player player) {
+        if (shop.getLocation().getChunk().isLoaded()) return;
+
         double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
         double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
 

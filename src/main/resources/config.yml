@@ -65,10 +65,14 @@ enable-islandworld-integration: true
 # buy or sell something from/to his shop or if his shop is out of stock
 enable-vendor-messages: true
 
-# Set whether only the shops a player points on should be shown to him.
+# Set whether only the shops a player has in sight should be shown to him.
 # If set to false, every shop near the player (with the specified
 # distance) will be shown to him.
 only-show-shops-in-sight: true
+
+# Set whether only the shop a player is looking at should be shown to him.
+# This only has effect if 'only-show-shops-in-sight' is enabled
+only-show-first-shop-in-sight: true
 
 # Set whether the buy- and sell price should be arranged below each other.
 # The first line will be the buy price with the message
