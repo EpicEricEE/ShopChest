@@ -20,6 +20,7 @@ import de.epiceric.shopchest.utils.*;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import fr.xephi.authme.AuthMe;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.Metrics;
 import org.bukkit.Bukkit;
@@ -55,6 +56,7 @@ public class ShopChest extends JavaPlugin {
     private uSkyBlockAPI uSkyBlock;
     private ASkyBlock aSkyBlock;
     private IslandWorld islandWorld;
+    private GriefPrevention griefPrevention;
     private ShopUpdater updater;
 
     /**
@@ -181,6 +183,11 @@ public class ShopChest extends JavaPlugin {
         Plugin islandWorldPlugin = Bukkit.getServer().getPluginManager().getPlugin("IslandWorld");
         if (islandWorldPlugin instanceof IslandWorld) {
             islandWorld = (IslandWorld) islandWorldPlugin;
+        }
+
+        Plugin griefPreventionPlugin = Bukkit.getServer().getPluginManager().getPlugin("GriefPrevention");
+        if (griefPreventionPlugin instanceof GriefPrevention) {
+            griefPrevention = (GriefPrevention) griefPreventionPlugin;
         }
 
         if (hasPlotSquared()) {
@@ -406,6 +413,20 @@ public class ShopChest extends JavaPlugin {
      */
     public void setUpdater(ShopUpdater updater) {
         this.updater = updater;
+    }
+
+    /**
+     * @return Whether the plugin 'GriefPrevention' is enabled
+     */
+    public boolean hasGriefPrevention() {
+        return griefPrevention != null && griefPrevention.isEnabled();
+    }
+
+    /**
+     * @return An instance of {@link GriefPrevention} or {@code null} if GriefPrevention is not enabled
+     */
+    public GriefPrevention getGriefPrevention() {
+        return griefPrevention;
     }
 
     /**

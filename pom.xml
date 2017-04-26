@@ -126,6 +126,10 @@
             <id>tastybento-repo</id>
             <url>http://dl.bintray.com/tastybento/maven-repo</url>
         </repository>
+        <repository>
+            <id>jitpack-repo</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -186,6 +190,12 @@
             <groupId>pl.gnacik</groupId>
             <artifactId>IslandWorld</artifactId>
             <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.TechFortress</groupId>
+            <artifactId>GriefPrevention</artifactId>
+            <version>16.6</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

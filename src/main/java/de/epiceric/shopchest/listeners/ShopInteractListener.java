@@ -229,6 +229,19 @@ public class ShopInteractListener implements Listener {
                                     if (!externalPluginsAllowed) denyReason = "IslandWorld";
                                 }
 
+                                if (externalPluginsAllowed && plugin.hasGriefPrevention() && config.enable_griefprevention_integration) {
+                                    plugin.debug("Checking if GriefPrevention allows shop creation...");
+                                    String gpDenyReason = "";
+                                    for (Location loc : chestLocations) {
+                                        if (loc != null) {
+                                            gpDenyReason = plugin.getGriefPrevention().allowBuild(p, loc);
+                                            externalPluginsAllowed &= gpDenyReason == null;
+                                        }
+                                    }
+
+                                    if (!externalPluginsAllowed) denyReason = "GriefPrevention (" + gpDenyReason + ")";
+                                }
+
                                 if ((e.isCancelled() || !externalPluginsAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
                                     ClickType.removePlayerClickType(p);

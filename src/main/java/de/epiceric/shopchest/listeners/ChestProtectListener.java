@@ -162,7 +162,7 @@ public class ChestProtectListener implements Listener {
                         externalPluginsAllowed = query.testState(b.getLocation(), p, WorldGuardShopFlag.CREATE_SHOP);
                     }
 
-                    if (plugin.hasTowny() && config.enable_towny_integration) {
+                    if (externalPluginsAllowed && plugin.hasTowny() && config.enable_towny_integration) {
                         TownBlock townBlock = TownyUniverse.getTownBlock(b.getLocation());
                         if (townBlock != null) {
                             try {
@@ -184,31 +184,35 @@ public class ChestProtectListener implements Listener {
                         }
                     }
 
-                    if (plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                    if (externalPluginsAllowed && plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
                         com.intellectualcrafters.plot.object.Location loc =
                                 new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
                         externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(loc.getOwnedPlot(), PlotSquaredShopFlag.CREATE_SHOP, p);
                     }
 
-                    if (plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
+                    if (externalPluginsAllowed && plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
                         IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(b.getLocation());
                         if (islandInfo != null) {
                             externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
                         }
                     }
 
-                    if (plugin.hasASkyBlock() && config.enable_askyblock_integration) {
+                    if (externalPluginsAllowed && plugin.hasASkyBlock() && config.enable_askyblock_integration) {
                         Island island = ASkyBlockAPI.getInstance().getIslandAt(b.getLocation());
                         if (island != null) {
                             externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
                         }
                     }
 
-                    if (plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
+                    if (externalPluginsAllowed && plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
                         if (b.getWorld().getName().equals(IslandWorldApi.getIslandWorld().getName())) {
                             externalPluginsAllowed &= IslandWorldApi.canBuildOnLocation(p, b.getLocation(), true);
                         }
+                    }
+
+                    if (externalPluginsAllowed && plugin.hasGriefPrevention() && config.enable_griefprevention_integration) {
+                        externalPluginsAllowed &= plugin.getGriefPrevention().allowBuild(p, b.getLocation()) == null;
                     }
 
                     if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {

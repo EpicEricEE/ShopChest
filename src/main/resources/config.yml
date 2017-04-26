@@ -61,6 +61,10 @@ enable-askyblock-integration: true
 # Of course, this only works if IslandWorld is installed
 enable-islandworld-integration: true
 
+# Set whether GriefPrevention integration should be enabled
+# Of course, this only works if GriefPrevention is installed
+enable-griefprevention-integration: true
+
 # Set whether the vendor of a shop should get messages when players
 # buy or sell something from/to his shop or if his shop is out of stock
 enable-vendor-messages: true
