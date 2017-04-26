@@ -258,6 +258,32 @@ public class Utils {
     }
 
     /**
+     * <p>Check if a player is allowed to create a shop that sells (or buys) the given item.</p>
+     * The player is allowed to create the shop if has either the permission {@code shopchest.create},
+     * {@code shopchest.create.[ITEM]} or {@code shopchest.create.[ITEM].[DURABILITY]}
+     * @param player Player to check
+     * @param item Item to be sold or bought
+     * @return Whether the player is allowed
+     */
+    public static boolean hasPermissionToCreateShop(Player player, ItemStack item) {
+        if (player.hasPermission(Permissions.CREATE)) {
+            return true;
+        }
+
+        if (item.getDurability() == 0) {
+            if (player.hasPermission(Permissions.CREATE + "." + item.getType().toString())) {
+                return true;
+            }
+        }
+
+        if (player.hasPermission(Permissions.CREATE + "." + item.getType().toString() + "." + item.getDurability())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param className Name of the class
      * @return Class in {@code net.minecraft.server.[VERSION]} package with the specified name or {@code null} if the class was not found
      */

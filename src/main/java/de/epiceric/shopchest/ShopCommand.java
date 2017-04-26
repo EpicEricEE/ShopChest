@@ -107,8 +107,7 @@ class ShopCommand implements CommandExecutor {
                 Player p = (Player) sender;
 
                 if (args[0].equalsIgnoreCase("create")) {
-
-                    if (p.hasPermission(Permissions.CREATE)) {
+                    if (Utils.hasPermissionToCreateShop(p, Utils.getPreferredItemInHand(p))) {
                         if (args.length == 4) {
                             needsHelp = false;
                             create(args, ShopType.NORMAL, p);
@@ -438,7 +437,7 @@ class ShopCommand implements CommandExecutor {
             }
         }
 
-        plugin.debug(p.getName() + "'s prices are higher than the minimum");
+        plugin.debug(p.getName() + "'s prices are lower than the maximum");
 
         if (sellEnabled && buyEnabled) {
             if (plugin.getShopChestConfig().buy_greater_or_equal_sell) {
@@ -552,7 +551,7 @@ class ShopCommand implements CommandExecutor {
         if (sender instanceof Player) {
             if (sender.hasPermission(Permissions.CREATE_ADMIN)) {
                 sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
-            } else {
+            } else if (sender.hasPermission(Permissions.CREATE)) {
                 sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
             }
 
