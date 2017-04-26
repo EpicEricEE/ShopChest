@@ -148,7 +148,13 @@ public class WorldGuardListener implements Listener {
                     if (type == Material.CHEST || type == Material.TRAPPED_CHEST) {
                         if (isAllowed(player, orig.getClickedBlock().getLocation(), orig.getAction())) {
                             event.setAllowed(true);
-                            orig.setCancelled(false);
+
+                            ClickType ct = ClickType.getPlayerClickType(player);
+                            if (!(ct != null && ct.getClickType() == ClickType.EnumClickType.CREATE)) {
+                                // Don't un-cancel original event when trying to create shop.
+                                // Flag "chest-access" has to be allowed too, so the original event won't be cancelled.
+                                orig.setCancelled(false);
+                            }
                         }
                     }
                 }
@@ -158,7 +164,13 @@ public class WorldGuardListener implements Listener {
                 if (orig.getInventory().getHolder() instanceof Chest) {
                     if (isAllowed(player, ((Chest)orig.getInventory().getHolder()).getLocation(), Action.RIGHT_CLICK_BLOCK)) {
                         event.setAllowed(true);
-                        orig.setCancelled(false);
+
+                        ClickType ct = ClickType.getPlayerClickType(player);
+                        if (!(ct != null && ct.getClickType() == ClickType.EnumClickType.CREATE)) {
+                            // Don't un-cancel original event when trying to create shop.
+                            // Flag "chest-access" has to be allowed too, so the original event won't be cancelled.
+                            orig.setCancelled(false);
+                        }
                     }
                 }
             }
