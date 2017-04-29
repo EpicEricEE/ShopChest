@@ -30,6 +30,7 @@ import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import fr.xephi.authme.AuthMe;
+import me.ryanhamshire.GriefPrevention.Claim;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -231,11 +232,15 @@ public class ShopInteractListener implements Listener {
 
                                 if (externalPluginsAllowed && plugin.hasGriefPrevention() && config.enable_griefprevention_integration) {
                                     plugin.debug("Checking if GriefPrevention allows shop creation...");
-                                    String gpDenyReason = "";
+                                    String gpDenyReason = null;
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
-                                            gpDenyReason = plugin.getGriefPrevention().allowBuild(p, loc);
-                                            externalPluginsAllowed &= gpDenyReason == null;
+                                            Claim claim = plugin.getGriefPrevention().dataStore.getClaimAt(loc, false, null);
+                                            if (claim != null) {
+                                                plugin.debug("Checking if claim allows container access");
+                                                gpDenyReason = claim.allowContainers(p);
+                                                externalPluginsAllowed &= gpDenyReason == null;
+                                            }
                                         }
                                     }
 

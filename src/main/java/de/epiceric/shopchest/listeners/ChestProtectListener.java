@@ -20,6 +20,7 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
+import me.ryanhamshire.GriefPrevention.Claim;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -212,7 +213,10 @@ public class ChestProtectListener implements Listener {
                     }
 
                     if (externalPluginsAllowed && plugin.hasGriefPrevention() && config.enable_griefprevention_integration) {
-                        externalPluginsAllowed &= plugin.getGriefPrevention().allowBuild(p, b.getLocation()) == null;
+                        Claim claim = plugin.getGriefPrevention().dataStore.getClaimAt(b.getLocation(), false, null);
+                        if (claim != null) {
+                            externalPluginsAllowed &= claim.allowContainers(p) == null;
+                        }
                     }
 
                     if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {
