@@ -99,10 +99,6 @@
             <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
         </repository>
         <repository>
-            <id>epiceric-repo</id>
-            <url>http://epicericee.github.io/ShopChest/maven/</url>
-        </repository>
-        <repository>
             <id>bstats-repo</id>
             <url>http://repo.bstats.org/content/repositories/releases/</url>
         </repository>
@@ -115,7 +111,7 @@
             <url>http://maven.sk89q.com/artifactory/repo/</url>
         </repository>
         <repository>
-            <id>athion-reop</id>
+            <id>athion-repo</id>
             <url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
         </repository>
         <repository>
@@ -152,12 +148,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.palmergames</groupId>
-            <artifactId>Towny</artifactId>
-            <version>0.91.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>1.1</version>
@@ -187,16 +177,24 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>pl.gnacik</groupId>
-            <artifactId>IslandWorld</artifactId>
-            <version>7.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.TechFortress</groupId>
             <artifactId>GriefPrevention</artifactId>
             <version>16.6</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.91.4.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Towny-0.91.4.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>pl.gnacik</groupId>
+            <artifactId>IslandWorld</artifactId>
+            <version>7.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/IslandWorld-7.0.jar</systemPath>
         </dependency>
     </dependencies>
 
