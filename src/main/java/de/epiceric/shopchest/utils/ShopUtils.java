@@ -13,12 +13,13 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 public class ShopUtils {
 
@@ -252,18 +253,7 @@ public class ShopUtils {
         }
 
         if (plugin.getShopChestConfig().only_show_shops_in_sight) {
-            HashSet<Material> transparent = new HashSet<>();
-            transparent.add(Material.AIR);
-
-            List<Block> sight;
-
-            try {
-                sight = player.getLineOfSight(transparent, (int) plugin.getShopChestConfig().maximal_distance);
-            } catch (IllegalStateException e) {
-                // This method is occasionally throwing this exception but the exact reason is unknown...
-                plugin.debug("Failed to get line of sight: " + e.getMessage());
-                return;
-            }
+            Set<Block> sight = getBlocksInSight(player);
 
             ArrayList<Shop> shopsInSight = new ArrayList<>();
 
@@ -318,6 +308,28 @@ public class ShopUtils {
         }
 
         playerLocation.put(player, player.getLocation());
+    }
+
+    private Set<Block> getBlocksInSight(Player player) {
+        double dist = plugin.getShopChestConfig().maximal_distance;
+
+        Location loc = player.getEyeLocation();
+        Vector direction =  loc.getDirection();
+
+        Set<Block> blocks = new HashSet<>();
+        blocks.add(loc.getBlock());
+
+        double i = 0;
+
+        do {
+            blocks.add(loc.add(direction).getBlock());
+            i++;
+        } while (i < dist - (dist%1));
+
+        direction.multiply(dist - (dist%1));
+        blocks.add(loc.add(direction).getBlock());
+
+        return blocks;
     }
 
     /**
