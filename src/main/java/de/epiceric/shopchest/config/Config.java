@@ -194,9 +194,6 @@ public class Config {
     /** The default shop limit for players whose limit is not set via a permission **/
     public int default_limit;
 
-    /** The time between automatic shop reloads (if set to 0, the timer will be disabled) **/
-    public int auto_reload_time;
-
     /** The main command of ShopChest <i>(default: shop)</i> **/
     public String main_command_name;
 
@@ -208,7 +205,6 @@ public class Config {
         this.plugin = plugin;
 
         plugin.saveDefaultConfig();
-        plugin.reloadConfig();
 
         reload(true, true, true);
     }
@@ -227,7 +223,6 @@ public class Config {
             plugin.getConfig().set(property, intValue);
 
             plugin.saveConfig();
-            plugin.reloadConfig();
             reload(false, langChange, false);
 
             return;
@@ -238,7 +233,6 @@ public class Config {
             plugin.getConfig().set(property, doubleValue);
 
             plugin.saveConfig();
-            plugin.reloadConfig();
             reload(false, langChange, false);
 
             return;
@@ -252,7 +246,6 @@ public class Config {
         }
 
         plugin.saveConfig();
-        plugin.reloadConfig();
 
         reload(false, langChange, false);
     }
@@ -271,7 +264,6 @@ public class Config {
             list.add(intValue);
 
             plugin.saveConfig();
-            plugin.reloadConfig();
             reload(false, false, false);
 
             return;
@@ -282,7 +274,6 @@ public class Config {
             list.add(doubleValue);
 
             plugin.saveConfig();
-            plugin.reloadConfig();
             reload(false, false, false);
 
             return;
@@ -296,7 +287,6 @@ public class Config {
         }
 
         plugin.saveConfig();
-        plugin.reloadConfig();
 
         reload(false, false, false);
     }
@@ -309,7 +299,6 @@ public class Config {
             list.remove(intValue);
 
             plugin.saveConfig();
-            plugin.reloadConfig();
             reload(false, false, false);
 
             return;
@@ -320,7 +309,6 @@ public class Config {
             list.remove(doubleValue);
 
             plugin.saveConfig();
-            plugin.reloadConfig();
             reload(false, false, false);
 
             return;
@@ -334,7 +322,6 @@ public class Config {
         }
 
         plugin.saveConfig();
-        plugin.reloadConfig();
 
         reload(false, false, false);
     }
@@ -343,6 +330,8 @@ public class Config {
      * Reload the configuration values from config.yml
      */
     public void reload(boolean firstLoad, boolean langReload, boolean showMessages) {
+        plugin.reloadConfig();
+
         update_quality = ShopUpdateEvent.UpdateQuality.valueOf(plugin.getConfig().getString("update-quality"));
         wg_allow_create_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.create-shop");
         wg_allow_use_admin_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-admin-shop");
@@ -394,7 +383,6 @@ public class Config {
         shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
         shop_creation_price_admin = plugin.getConfig().getDouble("shop-creation-price.admin");
         default_limit = plugin.getConfig().getInt("shop-limits.default");
-        auto_reload_time = plugin.getConfig().getInt("auto-reload-time");
         main_command_name = plugin.getConfig().getString("main-command-name");
         language_file = plugin.getConfig().getString("language-file");
 

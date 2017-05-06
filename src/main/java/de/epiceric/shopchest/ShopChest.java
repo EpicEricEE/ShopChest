@@ -249,20 +249,6 @@ public class ShopChest extends JavaPlugin {
             }
         }
 
-        if (config.auto_reload_time > 0) {
-           Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
-                @Override
-                public void run() {
-                    debug("Auto reloading shops...");
-
-                    ShopReloadEvent event = new ShopReloadEvent(Bukkit.getConsoleSender());
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-
-                    if (!event.isCancelled()) shopUtils.reloadShops(true, false, null);
-                }
-            }, config.auto_reload_time * 20, config.auto_reload_time * 20);
-        }
-
         Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
             @Override
             public void run() {
