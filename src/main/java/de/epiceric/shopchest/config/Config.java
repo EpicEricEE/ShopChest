@@ -42,6 +42,9 @@ public class Config {
     /** The types of town plots the king is allowed to create shops in **/
     public List<String> towny_shop_plots_king;
 
+    /** The events of AreaShop when shops in that region should be removed **/
+    public List<String> areashop_remove_shop_events;
+
     /** The hostname used in ShopChest's MySQL database **/
     public String database_mysql_host;
 
@@ -127,6 +130,9 @@ public class Config {
 
     /** Whether GriefPrevention integration should be enabled **/
     public boolean enable_griefprevention_integration;
+
+    /** Whether AreaShop integration should be enabled **/
+    public boolean enable_areashop_integration;
 
     /** Whether the vendor of the shop should get messages about buys and sells **/
     public boolean enable_vendor_messages;
@@ -339,6 +345,7 @@ public class Config {
         towny_shop_plots_residents = plugin.getConfig().getStringList("towny-shop-plots.residents");
         towny_shop_plots_mayor = plugin.getConfig().getStringList("towny-shop-plots.mayor");
         towny_shop_plots_king = plugin.getConfig().getStringList("towny-shop-plots.king");
+        areashop_remove_shop_events = plugin.getConfig().getStringList("areashop-remove-shops");
         database_mysql_ping_interval = plugin.getConfig().getInt("database.mysql.ping-interval");
         database_mysql_host = plugin.getConfig().getString("database.mysql.hostname");
         database_mysql_port = plugin.getConfig().getInt("database.mysql.port");
@@ -366,6 +373,7 @@ public class Config {
         enable_askyblock_integration = plugin.getConfig().getBoolean("enable-askyblock-integration");
         enable_islandworld_integration = plugin.getConfig().getBoolean("enable-islandworld-integration");
         enable_griefprevention_integration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
+        enable_areashop_integration = plugin.getConfig().getBoolean("enable-areashop-integration");
         enable_vendor_messages = plugin.getConfig().getBoolean("enable-vendor-messages");
         explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         only_show_shops_in_sight = plugin.getConfig().getBoolean("only-show-shops-in-sight");

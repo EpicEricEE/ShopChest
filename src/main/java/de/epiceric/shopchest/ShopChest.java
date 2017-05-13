@@ -21,6 +21,7 @@ import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import fr.xephi.authme.AuthMe;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import me.wiefferink.areashop.AreaShop;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.Metrics;
 import org.bukkit.Bukkit;
@@ -57,6 +58,7 @@ public class ShopChest extends JavaPlugin {
     private ASkyBlock aSkyBlock;
     private IslandWorld islandWorld;
     private GriefPrevention griefPrevention;
+    private AreaShop areaShop;
     private ShopUpdater updater;
 
     /**
@@ -190,6 +192,11 @@ public class ShopChest extends JavaPlugin {
             griefPrevention = (GriefPrevention) griefPreventionPlugin;
         }
 
+        Plugin areaShopPlugin = Bukkit.getServer().getPluginManager().getPlugin("AreaShop");
+        if (areaShopPlugin instanceof AreaShop) {
+            areaShop = (AreaShop) areaShopPlugin;
+        }
+
         if (hasPlotSquared()) {
             new PlotSquaredShopFlag().register(this);
         }
@@ -292,11 +299,17 @@ public class ShopChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new NotifyPlayerOnJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new ChestProtectListener(this, worldGuard), this);
 
-        if (!Utils.getServerVersion().equals("v1_8_R1"))
+        if (!Utils.getServerVersion().equals("v1_8_R1")) {
             getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);
+        }
 
-        if (hasWorldGuard())
+        if (hasWorldGuard()) {
             getServer().getPluginManager().registerEvents(new WorldGuardListener(this), this);
+
+            if (hasAreaShop()) {
+                getServer().getPluginManager().registerEvents(new AreaShopListener(this), this);
+            }
+        }
 
         initializeShops();
 
@@ -399,6 +412,20 @@ public class ShopChest extends JavaPlugin {
      */
     public void setUpdater(ShopUpdater updater) {
         this.updater = updater;
+    }
+
+    /**
+     * @return Whether the plugin 'AreaShop' is enabled
+     */
+    public boolean hasAreaShop() {
+        return areaShop != null && areaShop.isEnabled();
+    }
+
+    /**
+     * @return An instance of {@link AreaShop} or {@code null} if AreaShop is not enabled
+     */
+    public AreaShop getAreaShop() {
+        return areaShop;
     }
 
     /**

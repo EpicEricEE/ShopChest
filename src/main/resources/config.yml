@@ -65,6 +65,10 @@ enable-islandworld-integration: true
 # Of course, this only works if GriefPrevention is installed
 enable-griefprevention-integration: true
 
+# Set whether AreaShop integration should be enabled
+# Of course, this only works if AreaShop and WorldGuard is installed
+enable-areashop-integration: true
+
 # Set whether the vendor of a shop should get messages when players
 # buy or sell something from/to his shop or if his shop is out of stock
 enable-vendor-messages: true
@@ -196,6 +200,15 @@ maximum-prices:
 blacklist:
 # - "STONE:1"
 # - "DIAMOND_BLOCK"
+
+# Set the events of AreaShop when shops on that region should be removed.
+# Important: You must have exactly 2 leading spaces in each line
+# Valid values are: DELETE, UNRENT, RESELL, SELL
+areashop-remove-shops:
+  - "DELETE"
+  - "UNRENT"
+  - "RESELL"
+  - "SELL"
 
 # Set whether the custom WorldGuard flags should be allowed by default
 # (true = Allowed by default, false = Denied by default)
