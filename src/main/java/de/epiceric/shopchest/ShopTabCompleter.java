@@ -25,6 +25,8 @@ class ShopTabCompleter implements TabCompleter {
             List<String> subCommands = Arrays.asList("config", "create", "info", "limits", "open", "reload", "remove", "update");
             List<String> createSubCommands = Arrays.asList("admin", "normal");
             List<String> configSubCommands = Arrays.asList("add", "remove", "set");
+            List<String> areaShopRemoveEvents = Arrays.asList("DELETE", "RESELL", "SELL", "UNRENT");
+            List<String> townyShopPlots = Arrays.asList("ARENA", "COMMERCIAL", "EMBASSY", "FARM", "INN", "JAIL", "RESIDENTIAL", "SPLEEF", "WILDS");
 
             Set<String> configValues = plugin.getConfig().getKeys(true);
 
@@ -68,6 +70,34 @@ class ShopTabCompleter implements TabCompleter {
                         return returnCompletions;
                     } else {
                         return new ArrayList<>(configValues);
+                    }
+                }
+            } else if (args.length == 4) {
+                if (args[0].equals("config")) {
+                    if (args[2].equals("towny-shop-plots")) {
+                        if (!args[3].equals("")) {
+                            for (String s : townyShopPlots) {
+                                if (s.startsWith(args[3])) {
+                                    returnCompletions.add(s);
+                                }
+                            }
+
+                            return returnCompletions;
+                        } else {
+                            return townyShopPlots;
+                        }
+                    } else if (args[2].equals("areashop-remove-shops")) {
+                        if (!args[3].equals("")) {
+                            for (String s : areaShopRemoveEvents) {
+                                if (s.startsWith(args[3])) {
+                                    returnCompletions.add(s);
+                                }
+                            }
+
+                            return returnCompletions;
+                        } else {
+                            return areaShopRemoveEvents;
+                        }
                     }
                 }
             } else if (args.length == 5) {
