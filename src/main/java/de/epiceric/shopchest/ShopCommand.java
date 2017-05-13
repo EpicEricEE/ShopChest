@@ -17,6 +17,7 @@ import org.bukkit.command.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Constructor;
@@ -548,10 +549,21 @@ class ShopCommand implements CommandExecutor {
     private void sendBasicHelpMessage(CommandSender sender) {
         plugin.debug("Sending basic help message to " + sender.getName());
 
+        boolean receiveCreateMessage = sender.hasPermission(Permissions.CREATE);
+        if (!receiveCreateMessage) {
+            for (PermissionAttachmentInfo permInfo : sender.getEffectivePermissions()) {
+                String perm = permInfo.getPermission();
+                if (perm.startsWith(Permissions.CREATE) && sender.hasPermission(perm)) {
+                    receiveCreateMessage = true;
+                    break;
+                }
+            }
+        }
+
         if (sender instanceof Player) {
             if (sender.hasPermission(Permissions.CREATE_ADMIN)) {
                 sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> [normal|admin] - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
-            } else if (sender.hasPermission(Permissions.CREATE)) {
+            } else if (receiveCreateMessage) {
                 sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " create <amount> <buy-price> <sell-price> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE));
             }
 
