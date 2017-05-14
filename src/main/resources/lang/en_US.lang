@@ -18,42 +18,42 @@ message.shop-removed=&6Shop removed.
 message.chest-no-shop=&cChest is not a shop.
 
 # Set the message when the player doesn't have enough money to create a shop
-# Usable Regex: %CREATION-PRICE%
+# Usable Placeholders: %CREATION-PRICE%
 message.shop-create-not-enough-money=&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop.
 
 # Set the vendor message the player gets after entering '/shop info'.
-# Usable regex: %VENDOR%
+# Usable Placeholders: %VENDOR%
 message.shopInfo.vendor=&6Vendor: &e%VENDOR%
 
 # Set the product message the player gets after entering '/shop info'.
-# Usable regex: %AMOUNT%, %ITEMNAME%
+# Usable Placeholders: %AMOUNT%, %ITEMNAME%
 message.shopInfo.product=&6Product: &e%AMOUNT% x %ITEMNAME%
 
 # Set the in-stock message the player after entering '/shop info'.
-# Usable regex=%AMOUNT%
+# Usable Placeholders=%AMOUNT%
 message.shopInfo.stock=&6In Stock: &e%AMOUNT%
 
 # Set the enchantments message the player gets after entering '/shop info' if the product is enchanted
-# Usable regex: %ENCHANTMENT%
+# Usable Placeholders: %ENCHANTMENT%
 message.shopInfo.enchantments=&6Enchantments: &e%ENCHANTMENT%
 
 # Set the potion effect message the player gets after entering '/shop info' if the product has a potion effect
-# Usable regex: %POTION-EFFECT%, %EXTENDED%
+# Usable Placeholders: %POTION-EFFECT%, %EXTENDED%
 message.shopInfo.potion-effect=&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%
 
 # Set the music disc title message the player gets after entering '/shop info' if the product is a music disc
-# Usable regex: %MUSIC-TITLE%
+# Usable Placeholders: %MUSIC-TITLE%
 message.shopInfo.music-disc-title=&6Music Disc Title: &e%MUSIC-TITLE%
 
 # Set the generation message the player gets after entering '/shop info' if the product is a written book
-# Usable regex: %GENERATION%
+# Usable Placeholders: %GENERATION%
 message.shopInfo.book-generation=&6Generation: &e%GENERATION%
 
 # If the product is a tipped arrow but it doesn't have an effect, this gets displayed instead of the arrow effect
 message.shopInfo.none=&7None
 
 # Set the price message the player gets after entering '/shop info'.
-# Usable regex: %BUY-PRICE%, %SELL-PRICE%
+# Usable Placeholders: %BUY-PRICE%, %SELL-PRICE%
 message.shopInfo.price=&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%
 
 # If the sell price or buy price is disabled, this message will be displayed instead of the price in the message above.
@@ -74,31 +74,31 @@ message.shopInfo.extended=(Extended)
 message.buy-and-sell-disabled=&cYou can't create a shop with buying and selling disabled.
 
 # Set the message when the player successfully bought something.
-# Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %VENDOR%
+# Usable Placeholders: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %VENDOR%
 message.buy-success=&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a.
 
 # Set the message when the player successfully bought something from an admin shop.
-# Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%
+# Usable Placeholders: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%
 message.buy-success-admin=&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a.
 
 # Set the message when the player successfully sold something.
-# Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %VENDOR%
+# Usable Placeholders: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %VENDOR%
 message.sell-success=&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a.
 
 # Set the message when the player successfully sold something to an admin shop.
-# Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%
+# Usable Placeholders: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%
 message.sell-success-admin=&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a.
 
 # Set the message when a player bought something from the player's shop.
-# Usable regex: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %PLAYER%
+# Usable Placeholders: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %PLAYER%
 message.someone-bought=&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop.
 
 # Set the message when a player sold something to the player's shop.
-# Usable regex: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %PLAYER%
+# Usable Placeholders: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %PLAYER%
 message.someone-sold=&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop.
 
 # Set the message when a player joins and made a revenue while he was offline.
-# Usable regex: %REVENUE%
+# Usable Placeholders: %REVENUE%
 message.revenue-while-offline=&6While you were offline, your shops have made a revenue of &c%REVENUE%&6.
 
 # Set the message when the inventory is full when the player is buying something.
@@ -120,11 +120,11 @@ message.vendor-not-enough-money=&cVendor has not enough money.
 message.out-of-stock=&cShop out of stock.
 
 # Set the message the vendor gets when his shop is out of stock
-# Usable regex: %AMOUNT%, %ITEMNAME%
+# Usable Placeholders: %AMOUNT%, %ITEMNAME%
 message.vendor-out-of-stock=&cYour shop that sells &6%AMOUNT% x %ITEMNAME% &cis out of stock.
 
 # Set the message when an error occurred.
-# Usable regex: %ERROR%
+# Usable Placeholders: %ERROR%
 message.error-occurred=&cAn error occurred: %ERROR%
 
 # Set the message when the arguments <AMOUNT>, <BUY-PRICE> and/or <SELL-PRICE> of '/shop create' are not a number.
@@ -153,7 +153,7 @@ message.click-chest-for-info=&aClick a shop to retrieve information.
 message.click-chest-to-open-shop=&aClick a shop to open it.
 
 # Set the message when the player opened a shop.
-# Usable regex: %VENDOR%
+# Usable Placeholders: %VENDOR%
 message.opened-shop=&aYou opened %VENDOR%'s shop.
 
 # Set the message when the player tries to break a shop.
@@ -163,19 +163,19 @@ message.cannot-break-shop=&cYou can't break a shop.
 message.cannot-sell-broken-item=&cYou can't sell a broken item.
 
 # Set the message when the entered buy price is below the minimum price.
-# Usable regex: %MIN-PRICE%
+# Usable Placeholders: %MIN-PRICE%
 message.buy-price-too-low=&cThe buy price must be higher than %MIN-PRICE%.
 
 # Set the message when the entered sell price is below the minimum price.
-# Usable regex: %MIN-PRICE%
+# Usable Placeholders: %MIN-PRICE%
 message.sell-price-too-low=&cThe sell price must be higher than %MIN-PRICE%.
 
 # Set the message when the entered buy price is below the maximum price.
-# Usable regex: %MAX-PRICE%
+# Usable Placeholders: %MAX-PRICE%
 message.buy-price-too-high=&cThe buy price must be lower than %MAX-PRICE%.
 
 # Set the message when the entered sell price is below the maximum price.
-# Usable regex: %MAX-PRICE%
+# Usable Placeholders: %MAX-PRICE%
 message.sell-price-too-high=&cThe sell price must be lower than %MAX-PRICE%.
 
 # Set the message when buying is disabled at the shop.
@@ -185,22 +185,22 @@ message.buying-disabled=&cBuying is disabled at this shop.
 message.selling-disabled=&cSelling is disabled at this shop.
 
 # Set the message when reloading is done.
-# Usable regex: %AMOUNT% (Amount of shops)
+# Usable Placeholders: %AMOUNT% (Amount of shops)
 message.reloaded-shops=&aSuccessfully reloaded %AMOUNT% shop/s.
 
 # Set the message when the player's shop limit is reached.
-# Usable regex: %LIMIT%
+# Usable Placeholders: %LIMIT%
 message.shop-limit-reached=&cYou reached your limit of &6%LIMIT% &cshop/s.
 
 # Set the message that shows the player how many shop slots of his shop limit he has occupied.
-# Usable regex: %LIMIT%, %AMOUNT% (Amount of shops)
+# Usable Placeholders: %LIMIT%, %AMOUNT% (Amount of shops)
 message.occupied-shop-slots=&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied.
 
 # Set the message when the player tries to create a shop with an item which is listed in the blacklist.
 message.cannot-sell-item=&cYou cannot create a shop with this item.
 
 # Set the message when an update is available.
-# Usable regex: %VERSION%
+# Usable Placeholders: %VERSION%
 message.update.update-available=&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere.
 
 # Set the message you get when hovering over the available message.
@@ -216,19 +216,19 @@ message.update.checking=&6&lChecking for updates...
 message.update.error=&c&lError while checking for updates.
 
 # Set the text in the first row of the shop's hologram
-# Usable regex: %ITEMNAME%, %AMOUNT%
+# Usable Placeholders: %ITEMNAME%, %AMOUNT%
 message.hologram.format=%AMOUNT% * %ITEMNAME%
 
 # Set the text in the second row of the shop's hologram when the player can buy and sell an item.
-# Usable regex: %BUY-PRICE%, %SELL-PRICE%
+# Usable Placeholders: %BUY-PRICE%, %SELL-PRICE%
 message.hologram.buy-and-sell=Buy %BUY-PRICE% | %SELL-PRICE% Sell
 
 # Set the text in the second row of the shop's hologram when the player can only buy an item.
-# Usable regex: %BUY-PRICE%
+# Usable Placeholders: %BUY-PRICE%
 message.hologram.only-buy=Buy %BUY-PRICE%
 
 # Set the text in the second row of the shop's hologram when the player can only sell an item.
-# Usable regex: %SELL-PRICE%
+# Usable Placeholders: %SELL-PRICE%
 message.hologram.only-sell=Sell %SELL-PRICE%
 
 # Set the message when a not permitted player tries to create a shop.
@@ -301,15 +301,15 @@ message.commandDescription.open=Open a shop.
 message.commandDescription.config=Change configuration values.
 
 # Set the message a player gets after setting a configuration value per command
-# Usable regex: %PROPERTY%, %VALUE%
+# Usable Placeholders: %PROPERTY%, %VALUE%
 message.config.set=&6Changed &a%PROPERTY% &6to &a%VALUE%&6.
 
 # Set the message a player gets after adding a value to a list in the configuration per command
-# Usable regex: %PROPERTY%, %VALUE%
+# Usable Placeholders: %PROPERTY%, %VALUE%
 message.config.added=&6Added &a%VALUE% &6to &a%PROPERTY%&6.
 
 # Set the message a player gets after removing a value from a list in the configuration per command
-# Usable regex: %PROPERTY%, %VALUE%
+# Usable Placeholders: %PROPERTY%, %VALUE%
 message.config.removed=&6Removed &a%VALUE% &6from &a%PROPERTY%&6.
 
 # Effect names that will be displayed in the place of %POTION-EFFECT%
