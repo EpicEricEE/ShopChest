@@ -101,7 +101,6 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.SANDSTONE, 1, langConfig.getString("tile.sandStone.chiseled.name", "Chiseled Sandstone")));
         itemNames.add(new ItemName(Material.SANDSTONE, 2, langConfig.getString("tile.sandStone.smooth.name", "Smooth Sandstone")));
         itemNames.add(new ItemName(Material.NOTE_BLOCK, langConfig.getString("tile.musicBlock.name", "Note Block")));
-        itemNames.add(new ItemName(Material.BED, langConfig.getString("tile.bed.name", "Bed")));
         itemNames.add(new ItemName(Material.POWERED_RAIL, langConfig.getString("tile.goldenRail.name", "Powered Rail")));
         itemNames.add(new ItemName(Material.DETECTOR_RAIL, langConfig.getString("tile.detectorRail.name", "Detector Rail")));
         itemNames.add(new ItemName(Material.PISTON_STICKY_BASE, langConfig.getString("tile.pistonStickyBase.name", "Sticky Piston")));
@@ -267,22 +266,22 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.QUARTZ_STAIRS, langConfig.getString("tile.stairsQuartz.name", "Quartz Stairs")));
         itemNames.add(new ItemName(Material.ACTIVATOR_RAIL, langConfig.getString("tile.activatorRail.name", "Activator Rail")));
         itemNames.add(new ItemName(Material.DROPPER, langConfig.getString("tile.dropper.name", "Dropper")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, langConfig.getString("tile.clayHardenedStained.white.name", "White Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 1, langConfig.getString("tile.clayHardenedStained.orange.name", "Orange Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 2, langConfig.getString("tile.clayHardenedStained.magenta.name", "Magenta Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 3, langConfig.getString("tile.clayHardenedStained.lightBlue.name", "Light Blue Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 4, langConfig.getString("tile.clayHardenedStained.yellow.name", "Yellow Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 5, langConfig.getString("tile.clayHardenedStained.lime.name", "Lime Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 6, langConfig.getString("tile.clayHardenedStained.pink.name", "Pink Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 7, langConfig.getString("tile.clayHardenedStained.gray.name", "Gray Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 8, langConfig.getString("tile.clayHardenedStained.silver.name", "Light Gray Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 9, langConfig.getString("tile.clayHardenedStained.cyan.name", "Cyan Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 10, langConfig.getString("tile.clayHardenedStained.purple.name", "Purple Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 11, langConfig.getString("tile.clayHardenedStained.blue.name", "Blue Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 12, langConfig.getString("tile.clayHardenedStained.brown.name", "Brown Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 13, langConfig.getString("tile.clayHardenedStained.green.name", "Green Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 14, langConfig.getString("tile.clayHardenedStained.red.name", "Red Hardened Clay")));
-        itemNames.add(new ItemName(Material.STAINED_CLAY, 15, langConfig.getString("tile.clayHardenedStained.black.name", "Black Hardened Clay")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, langConfig.getString("tile.clayHardenedStained.white.name", "White Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 1, langConfig.getString("tile.clayHardenedStained.orange.name", "Orange Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 2, langConfig.getString("tile.clayHardenedStained.magenta.name", "Magenta Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 3, langConfig.getString("tile.clayHardenedStained.lightBlue.name", "Light Blue Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 4, langConfig.getString("tile.clayHardenedStained.yellow.name", "Yellow Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 5, langConfig.getString("tile.clayHardenedStained.lime.name", "Lime Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 6, langConfig.getString("tile.clayHardenedStained.pink.name", "Pink Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 7, langConfig.getString("tile.clayHardenedStained.gray.name", "Gray Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 8, langConfig.getString("tile.clayHardenedStained.silver.name", "Light Gray Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 9, langConfig.getString("tile.clayHardenedStained.cyan.name", "Cyan Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 10, langConfig.getString("tile.clayHardenedStained.purple.name", "Purple Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 11, langConfig.getString("tile.clayHardenedStained.blue.name", "Blue Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 12, langConfig.getString("tile.clayHardenedStained.brown.name", "Brown Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 13, langConfig.getString("tile.clayHardenedStained.green.name", "Green Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 14, langConfig.getString("tile.clayHardenedStained.red.name", "Red Terracotta")));
+        itemNames.add(new ItemName(Material.STAINED_CLAY, 15, langConfig.getString("tile.clayHardenedStained.black.name", "Black Terracotta")));
         itemNames.add(new ItemName(Material.STAINED_GLASS_PANE, langConfig.getString("tile.thinStainedGlass.white.name", "White Stained Glass Pane")));
         itemNames.add(new ItemName(Material.STAINED_GLASS_PANE, 1, langConfig.getString("tile.thinStainedGlass.orange.name", "Orange Stained Glass Pane")));
         itemNames.add(new ItemName(Material.STAINED_GLASS_PANE, 2, langConfig.getString("tile.thinStainedGlass.magenta.name", "Magenta Stained Glass Pane")));
@@ -398,6 +397,58 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.GREEN_SHULKER_BOX, langConfig.getString("tile.shulkerBoxGreen.name", "Green Shulker Box")));
             itemNames.add(new ItemName(Material.RED_SHULKER_BOX, langConfig.getString("tile.shulkerBoxRed.name", "Red Shulker Box")));
             itemNames.add(new ItemName(Material.BLACK_SHULKER_BOX, langConfig.getString("tile.shulkerBoxBlack.name", "Black Shulker Box")));
+        }
+
+        if (Utils.getMajorVersion() >= 12) {
+            // Add Block Names of 1.12
+            itemNames.add(new ItemName(Material.CONCRETE, langConfig.getString("tile.concrete.white.name", "White Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 1, langConfig.getString("tile.concrete.orange.name", "Orange Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 2, langConfig.getString("tile.concrete.magenta.name", "Magenta Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 3, langConfig.getString("tile.concrete.lightBlue.name", "Light Blue Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 4, langConfig.getString("tile.concrete.yellow.name", "Yellow Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 5, langConfig.getString("tile.concrete.lime.name", "Lime Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 6, langConfig.getString("tile.concrete.pink.name", "Pink Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 7, langConfig.getString("tile.concrete.gray.name", "Gray Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 8, langConfig.getString("tile.concrete.silver.name", "Light Gray Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 9, langConfig.getString("tile.concrete.cyan.name", "Cyan Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 10, langConfig.getString("tile.concrete.purple.name", "Purple Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 11, langConfig.getString("tile.concrete.blue.name", "Blue Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 12, langConfig.getString("tile.concrete.brown.name", "Brown Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 13, langConfig.getString("tile.concrete.green.name", "Green Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 14, langConfig.getString("tile.concrete.red.name", "Red Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE, 15, langConfig.getString("tile.concrete.black.name", "Black Concrete")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, langConfig.getString("tile.concretePowder.white.name", "White Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 1, langConfig.getString("tile.concretePowder.orange.name", "Orange Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 2, langConfig.getString("tile.concretePowder.magenta.name", "Magenta Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 3, langConfig.getString("tile.concretePowder.lightBlue.name", "Light Blue Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 4, langConfig.getString("tile.concretePowder.yellow.name", "Yellow Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 5, langConfig.getString("tile.concretePowder.lime.name", "Lime Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 6, langConfig.getString("tile.concretePowder.pink.name", "Pink Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 7, langConfig.getString("tile.concretePowder.gray.name", "Gray Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 8, langConfig.getString("tile.concretePowder.silver.name", "Light Gray Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 9, langConfig.getString("tile.concretePowder.cyan.name", "Cyan Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 10, langConfig.getString("tile.concretePowder.purple.name", "Purple Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 11, langConfig.getString("tile.concretePowder.blue.name", "Blue Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 12, langConfig.getString("tile.concretePowder.brown.name", "Brown Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 13, langConfig.getString("tile.concretePowder.green.name", "Green Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 14, langConfig.getString("tile.concretePowder.red.name", "Red Concrete Powder")));
+            itemNames.add(new ItemName(Material.CONCRETE_POWDER, 15, langConfig.getString("tile.concretePowder.black.name", "Black Concrete Powder")));
+            itemNames.add(new ItemName(Material.WHITE_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaWhite.name", "White Terracotta")));
+            itemNames.add(new ItemName(Material.ORANGE_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaOrange.name", "Orange Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.MAGENTA_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaMagenta.name", "Magenta Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaLightBlue.name", "Light Blue Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.YELLOW_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaYellow.name", "Yellow Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.LIME_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaLime.name", "Lime Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.PINK_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaPink.name", "Pink Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.GRAY_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaGray.name", "Gray Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.SILVER_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaSilver.name", "Light Gray Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.CYAN_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaCyan.name", "Cyan Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.PURPLE_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaPurple.name", "Purple Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.BLUE_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaBlue.name", "Blue Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.BROWN_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaBrown.name", "Brown Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.GREEN_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaGreen.name", "Green Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.RED_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaRed.name", "Red Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.BLACK_GLAZED_TERRACOTTA, langConfig.getString("tile.glazedTerracottaBlack.name", "Black Glazed Terracotta")));
         }
 
         // Add Item Names
@@ -521,7 +572,6 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.BONE, langConfig.getString("item.bone.name", "Bone")));
         itemNames.add(new ItemName(Material.SUGAR, langConfig.getString("item.sugar.name", "Sugar")));
         itemNames.add(new ItemName(Material.CAKE, langConfig.getString("item.cake.name", "Cake")));
-        itemNames.add(new ItemName(Material.BED, langConfig.getString("item.bed.name", "Bed")));
         itemNames.add(new ItemName(Material.DIODE, langConfig.getString("item.diode.name", "Redstone Repeater")));
         itemNames.add(new ItemName(Material.COOKIE, langConfig.getString("item.cookie.name", "Cookie")));
         itemNames.add(new ItemName(Material.MAP, langConfig.getString("item.map.name", "Map")));
@@ -661,6 +711,30 @@ public class LanguageUtils {
             }
         }
 
+        if (Utils.getMajorVersion() >= 12) {
+            // Add Item Name of 1.12
+            itemNames.add(new ItemName(Material.KNOWLEDGE_BOOK, langConfig.getString("item.knowledgeBook.name", "Knowledge Book")));
+            itemNames.add(new ItemName(Material.BED, langConfig.getString("item.bed.white.name", "White Bed")));
+            itemNames.add(new ItemName(Material.BED, 1, langConfig.getString("item.bed.orange.name", "Orange Bed")));
+            itemNames.add(new ItemName(Material.BED, 2, langConfig.getString("item.bed.magenta.name", "Magenta Bed")));
+            itemNames.add(new ItemName(Material.BED, 3, langConfig.getString("item.bed.lightBlue.name", "Light Blue Bed")));
+            itemNames.add(new ItemName(Material.BED, 4, langConfig.getString("item.bed.yellow.name", "Yellow Bed")));
+            itemNames.add(new ItemName(Material.BED, 5, langConfig.getString("item.bed.lime.name", "Lime Bed")));
+            itemNames.add(new ItemName(Material.BED, 6, langConfig.getString("item.bed.pink.name", "Pink Bed")));
+            itemNames.add(new ItemName(Material.BED, 7, langConfig.getString("item.bed.gray.name", "Gray Bed")));
+            itemNames.add(new ItemName(Material.BED, 8, langConfig.getString("item.bed.silver.name", "Light Gray Bed")));
+            itemNames.add(new ItemName(Material.BED, 9, langConfig.getString("item.bed.cyan.name", "Cyan Bed")));
+            itemNames.add(new ItemName(Material.BED, 10, langConfig.getString("item.bed.purple.name", "Purple Bed")));
+            itemNames.add(new ItemName(Material.BED, 11, langConfig.getString("item.bed.blue.name", "Blue Bed")));
+            itemNames.add(new ItemName(Material.BED, 12, langConfig.getString("item.bed.brown.name", "Brown Bed")));
+            itemNames.add(new ItemName(Material.BED, 13, langConfig.getString("item.bed.green.name", "Green Bed")));
+            itemNames.add(new ItemName(Material.BED, 14, langConfig.getString("item.bed.red.name", "Red Bed")));
+            itemNames.add(new ItemName(Material.BED, 15, langConfig.getString("item.bed.black.name", "Black Bed")));
+        } else {
+            // Before 1.12, bed is just called "Bed" without colors
+            itemNames.add(new ItemName(Material.BED, langConfig.getString("item.bed.name", "Bed")));
+        }
+
         // Add Enchantment Names
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_DAMAGE, langConfig.getString("enchantment.arrowDamage", "Power")));
         enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_FIRE, langConfig.getString("enchantment.arrowFire", "Flame")));
@@ -772,6 +846,12 @@ public class LanguageUtils {
             entityNames.add(new EntityName(EntityType.DONKEY, langConfig.getString("entity.Donkey.name", "Donkey")));
             entityNames.add(new EntityName(EntityType.MULE, langConfig.getString("entity.Mule.name", "Mule")));
             entityNames.add(new EntityName(EntityType.HUSK, langConfig.getString("entity.Husk.name", "Husk")));
+        }
+
+        if (Utils.getMajorVersion() >= 12) {
+            // Add Entity Names of 1.12
+            entityNames.add(new EntityName(EntityType.PARROT, langConfig.getString("entity.Parrot.name", "Parrot")));
+            entityNames.add(new EntityName(EntityType.ILLUSIONER, langConfig.getString("entity.IllusionIllager.name", "Illusioner")));
         }
 
         // Add Potion Effect Names
