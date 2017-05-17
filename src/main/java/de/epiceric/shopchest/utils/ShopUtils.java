@@ -338,7 +338,7 @@ public class ShopUtils {
      * @param player Player to show the update
      */
     public void updateShop(Shop shop, Player player) {
-        if (shop.getLocation().getChunk().isLoaded()) return;
+        if (!shop.getLocation().getChunk().isLoaded()) return;
 
         double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
         double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
