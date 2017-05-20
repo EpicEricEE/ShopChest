@@ -89,6 +89,9 @@ public class LanguageConfiguration extends FileConfiguration {
                             String value = sbValue.toString();
 
                             values.put(key, value);
+                        } else if (line.split("=").length == 1) {
+                            String key = line.split("=")[0];
+                            values.put(key, "");
                         }
                     }
                 }
