@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.shop;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.exceptions.ChestNotFoundException;
 import de.epiceric.shopchest.exceptions.NotEnoughSpaceException;
@@ -11,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
@@ -32,6 +34,7 @@ public class Shop {
     private double buyPrice;
     private double sellPrice;
     private ShopType shopType;
+    private Config config;
 
     public Shop(int id, ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
         this.id = id;
@@ -42,6 +45,7 @@ public class Shop {
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.shopType = shopType;
+        this.config = plugin.getShopChestConfig();
     }
 
     public Shop(ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
@@ -56,14 +60,14 @@ public class Shop {
         Block b = location.getBlock();
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
             ChestNotFoundException ex = new ChestNotFoundException(String.format("No Chest found in world '%s' at location: %d; %d; %d", b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
-            plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
+            plugin.getShopUtils().removeShop(this, config.remove_shop_on_error);
             if (showConsoleMessages) plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
             return false;
-        } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && plugin.getShopChestConfig().show_shop_items) {
+        } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && config.show_shop_items) {
             NotEnoughSpaceException ex = new NotEnoughSpaceException(String.format("No space above chest in world '%s' at location: %d; %d; %d", b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
-            plugin.getShopUtils().removeShop(this, plugin.getShopChestConfig().remove_shop_on_error);
+            plugin.getShopUtils().removeShop(this, config.remove_shop_on_error);
             if (showConsoleMessages) plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
@@ -114,7 +118,7 @@ public class Shop {
      * <b>Call this after {@link #createHologram()}, because it depends on the hologram's location</b>
      */
     private void createItem() {
-        if (plugin.getShopChestConfig().show_shop_items) {
+        if (config.show_shop_items) {
             plugin.debug("Creating item (#" + id + ")");
 
             Location itemLocation;
@@ -138,86 +142,108 @@ public class Shop {
     private void createHologram() {
         plugin.debug("Creating hologram (#" + id + ")");
 
-        boolean doubleChest;
-
-        Chest[] chests = new Chest[2];
-        Block b = location.getBlock();
         InventoryHolder ih = getInventoryHolder();
 
         if (ih == null) return;
 
+        Chest[] chests = new Chest[2];
+        boolean doubleChest;
+
         if (ih instanceof DoubleChest) {
             DoubleChest dc = (DoubleChest) ih;
-
             Chest r = (Chest) dc.getRightSide();
             Chest l = (Chest) dc.getLeftSide();
 
             chests[0] = r;
             chests[1] = l;
-
             doubleChest = true;
-
         } else {
-            doubleChest = false;
             chests[0] = (Chest) ih;
+            doubleChest = false;
         }
 
+        boolean twoLinePrices = config.two_line_prices;
+
+        String[] holoText = getHologramText(twoLinePrices ? 3 : 2);
+        Location holoLocation = getHologramLocation(doubleChest, chests, holoText);
+
+        hologram = new Hologram(plugin, holoText, holoLocation);
+    }
+
+    private String[] getHologramText(int length) {
+        String[] holoText = new String[length];
+
+        holoText[0] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_FORMAT,
+                new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
+                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)));
+
+        if ((buyPrice <= 0) && (sellPrice > 0)) {
+            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL,
+                    new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+        } else if ((buyPrice > 0) && (sellPrice <= 0)) {
+            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY,
+                    new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
+        } else {
+            if (length == 2) {
+                holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL,
+                        new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
+                        new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+            } else {
+                holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY,
+                        new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
+                holoText[2] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL,
+                        new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+            }
+        }
+
+        return holoText;
+    }
+
+    private Location getHologramLocation(boolean doubleChest, Chest[] chests, String[] holoText) {
+        Block b = location.getBlock();
         Location holoLocation;
-        String[] holoText = new String[plugin.getShopChestConfig().two_line_prices ? 3 : 2];
+
+        World w = b.getWorld();
+        int x = b.getX();
+        int y  = b.getY();
+        int z = b.getZ();
 
         if (doubleChest) {
-
             Chest r = chests[0];
             Chest l = chests[1];
 
             if (b.getLocation().equals(r.getLocation())) {
-
-                if (r.getX() != l.getX())
-                    holoLocation = new Location(b.getWorld(), b.getX(), b.getY() - 0.6, b.getZ() + 0.5);
-                else if (r.getZ() != l.getZ())
-                    holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ());
-                else holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
-
+                if (r.getX() != l.getX()) {
+                    holoLocation = new Location(w, x, y - 0.6, z + 0.5);
+                } else if (r.getZ() != l.getZ()) {
+                    holoLocation = new Location(w, x + 0.5, y - 0.6, z);
+                } else {
+                    holoLocation = new Location(w, x + 0.5, y - 0.6, z + 0.5);
+                }
             } else {
-
-                if (r.getX() != l.getX())
-                    holoLocation = new Location(b.getWorld(), b.getX() + 1, b.getY() - 0.6, b.getZ() + 0.5);
-                else if (r.getZ() != l.getZ())
-                    holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 1);
-                else holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
-
+                if (r.getX() != l.getX()) {
+                    holoLocation = new Location(w, x + 1, y - 0.6, z + 0.5);
+                } else if (r.getZ() != l.getZ()) {
+                    holoLocation = new Location(w, x + 0.5, y - 0.6, z + 1);
+                } else {
+                    holoLocation = new Location(w, x + 0.5, y - 0.6, z + 0.5);
+                }
             }
-
-        } else holoLocation = new Location(b.getWorld(), b.getX() + 0.5, b.getY() - 0.6, b.getZ() + 0.5);
-
-        holoText[0] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_FORMAT, new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
-                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)));
-
-        if ((buyPrice <= 0) && (sellPrice > 0)) {
-            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL, new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
-        } else if ((buyPrice > 0) && (sellPrice <= 0)) {
-            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
         } else {
-            if (holoText.length == 2) {
-                holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
-                        new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
-            } else {
-                holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY, new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
-                holoText[2] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL, new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
-            }
+            holoLocation = new Location(w, x + 0.5, y - 0.6, z + 0.5);
         }
 
-        holoLocation.add(0, plugin.getShopChestConfig().hologram_lift, 0);
+        holoLocation.add(0, config.hologram_lift, 0);
 
-        if (plugin.getShopChestConfig().two_line_prices) {
+        if (config.two_line_prices) {
             if (holoText.length == 3 && holoText[2] != null) {
-                holoLocation.add(0, plugin.getShopChestConfig().two_line_hologram_lift, 0);
+                holoLocation.add(0, config.two_line_hologram_lift, 0);
             } else {
-                holoLocation.add(0, plugin.getShopChestConfig().one_line_hologram_lift, 0);
+                holoLocation.add(0, config.one_line_hologram_lift, 0);
             }
         }
 
-        hologram = new Hologram(plugin, holoText, holoLocation);
+        return holoLocation;
     }
 
     /**

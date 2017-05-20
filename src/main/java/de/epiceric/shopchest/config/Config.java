@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -405,6 +406,18 @@ public class Config {
         return langConfig;
     }
 
+    private Reader getTextResource(String file, boolean showMessages) {
+        try {
+            return (Reader) plugin.getClass().getDeclaredMethod("getTextResource", String.class).invoke(plugin, file);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            if (showMessages) plugin.getLogger().severe("Failed to get file from jar: " + file);
+            plugin.debug("Failed to get file from jar: " + file);
+            plugin.debug(e);
+        }
+
+        return null;
+    }
+
     private void loadLanguageConfig(boolean showMessages) {
         langConfig = new LanguageConfiguration(plugin, showMessages);
         File langFolder = new File(plugin.getDataFolder(), "lang");
@@ -421,13 +434,18 @@ public class Config {
         if (!langConfigFile.exists()) {
             if (!langDefaultFile.exists()) {
                 try {
-                    Reader r = plugin._getTextResource("lang/" + langConfigFile.getName());
+                    Reader r = getTextResource("lang/" + langConfigFile.getName(), showMessages);
 
                     if (r == null) {
-                        r = plugin._getTextResource("lang/en_US.lang");
+                        r = getTextResource("lang/en_US.lang", showMessages);
                         if (showMessages) plugin.getLogger().info("Using locale \"en_US\" (Streamed from jar file)");
                     } else {
                         if (showMessages) plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\" (Streamed from jar file)");
+                    }
+
+                    if (r == null) {
+                        if (showMessages) plugin.getLogger().warning("Using default language values");
+                        plugin.debug("Using default language values (#1)");
                     }
 
                     BufferedReader br = new BufferedReader(r);
@@ -447,7 +465,7 @@ public class Config {
                         plugin.getLogger().warning("Using default language values");
                     }
 
-                    plugin.debug("Using default language values (#1)");
+                    plugin.debug("Using default language values (#2)");
                     plugin.debug(e);
                 }
             } else {
@@ -459,7 +477,7 @@ public class Config {
                         plugin.getLogger().warning("Using default language values");
                     }
 
-                    plugin.debug("Using default language values (#2)");
+                    plugin.debug("Using default language values (#3)");
                     plugin.debug(e);
                 }
             }
@@ -472,7 +490,7 @@ public class Config {
                     plugin.getLogger().warning("Using default language values");
                 }
 
-                plugin.debug("Using default language values (#3)");
+                plugin.debug("Using default language values (#4)");
                 plugin.debug(e);
             }
         }

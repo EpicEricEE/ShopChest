@@ -55,7 +55,6 @@ class ShopCommand implements CommandExecutor {
             cmd.setDescription("Manage players' shops or this plugin.");
             cmd.setUsage("/" + name);
             cmd.setExecutor(this);
-            cmd.setPermission(Permissions.BUY);
             cmd.setTabCompleter(new ShopTabCompleter(plugin));
 
             return cmd;

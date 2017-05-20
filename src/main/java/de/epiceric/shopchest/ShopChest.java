@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import pl.islandworld.IslandWorld;
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
@@ -148,6 +149,54 @@ public class ShopChest extends JavaPlugin {
                 getLogger().warning("Plugin may still work, but more errors are expected!");
         }
 
+        loadExternalPlugins();
+
+        debug("Loading utils and extras...");
+        LanguageUtils.load();
+        saveResource("item_names.txt", true);
+
+        loadMetrics();
+        checkForUpdates();
+
+        shopUtils = new ShopUtils(this);
+        shopCommand = new ShopCommand(this);
+
+        registerListeners();
+        initializeShops();
+
+        updater = new ShopUpdater(this);
+        updater.start();
+    }
+
+    @Override
+    public void onDisable() {
+        debug("Disabling ShopChest...");
+
+        if (updater != null) {
+            debug("Stopping updater");
+            updater.cancel();
+        }
+
+        if (database != null) {
+            for (Shop shop : shopUtils.getShops()) {
+                shopUtils.removeShop(shop, false, true);
+                debug("Removed shop (#" + shop.getID() + ")");
+            }
+
+            database.disconnect();
+        }
+
+        if (fw != null && config.enable_debug_log) {
+            try {
+                fw.close();
+            } catch (IOException e) {
+                getLogger().severe("Failed to close FileWriter");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void loadExternalPlugins() {
         if (worldGuard != null && !WorldGuardShopFlag.isLoaded()) {
             WorldGuardShopFlag.register(this, false);
 
@@ -201,14 +250,9 @@ public class ShopChest extends JavaPlugin {
         if (hasPlotSquared()) {
             new PlotSquaredShopFlag().register(this);
         }
+    }
 
-        debug("Loading utils and extras...");
-
-        LanguageUtils.load();
-        saveResource("item_names.txt", true);
-
-        shopUtils = new ShopUtils(this);
-
+    private void loadMetrics() {
         debug("Initializing Metrics...");
         Metrics metrics = new Metrics(this);
 
@@ -256,8 +300,10 @@ public class ShopChest extends JavaPlugin {
                 }, config.database_mysql_ping_interval * 20L, config.database_mysql_ping_interval * 20L);
             }
         }
+    }
 
-        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+    private void checkForUpdates() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 UpdateChecker uc = new UpdateChecker(ShopChest.this);
@@ -289,10 +335,10 @@ public class ShopChest extends JavaPlugin {
                     Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
                 }
             }
-        });
+        }.runTaskAsynchronously(this);
+    }
 
-        shopCommand = new ShopCommand(this);
-
+    private void registerListeners() {
         debug("Registering listeners...");
         getServer().getPluginManager().registerEvents(new ShopUpdateListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopItemListener(this), this);
@@ -311,39 +357,23 @@ public class ShopChest extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(new AreaShopListener(this), this);
             }
         }
-
-        initializeShops();
-
-        updater = new ShopUpdater(this);
-        updater.start();
     }
 
-    @Override
-    public void onDisable() {
-        debug("Disabling ShopChest...");
-
-        if (updater != null) {
-            debug("Stopping updater");
-            updater.cancel();
-        }
-
-        if (database != null) {
-            for (Shop shop : shopUtils.getShops()) {
-                shopUtils.removeShop(shop, false, true);
-                debug("Removed shop (#" + shop.getID() + ")");
+    /**
+     * Initializes the shops
+     */
+    private void initializeShops() {
+        debug("Initializing Shops...");
+        shopUtils.reloadShops(false, true, new Callback(this) {
+            @Override
+            public void onResult(Object result) {
+                if (result instanceof Integer) {
+                    int count = (int) result;
+                    getLogger().info("Initialized " + count + " Shops");
+                    debug("Initialized " + count + " Shops");
+                }
             }
-
-            database.disconnect();
-        }
-
-        if (fw != null && config.enable_debug_log) {
-            try {
-                fw.close();
-            } catch (IOException e) {
-                getLogger().severe("Failed to close FileWriter");
-                e.printStackTrace();
-            }
-        }
+        });
     }
 
     /**
@@ -377,24 +407,6 @@ public class ShopChest extends JavaPlugin {
     }
 
     /**
-     * Initializes the shops
-     */
-    private void initializeShops() {
-        debug("Initializing Shops...");
-        shopUtils.reloadShops(false, true, new Callback(this) {
-            @Override
-            public void onResult(Object result) {
-                if (result instanceof Integer) {
-                    int count = (int) result;
-                    getLogger().info("Initialized " + count + " Shops");
-                    debug("Initialized " + count + " Shops");
-                }
-            }
-        });
-
-    }
-
-    /**
      * @return The {@link ShopCommand}
      */
     public ShopCommand getShopCommand() {
@@ -423,13 +435,6 @@ public class ShopChest extends JavaPlugin {
     }
 
     /**
-     * @return An instance of {@link AreaShop} or {@code null} if AreaShop is not enabled
-     */
-    public AreaShop getAreaShop() {
-        return areaShop;
-    }
-
-    /**
      * @return Whether the plugin 'GriefPrevention' is enabled
      */
     public boolean hasGriefPrevention() {
@@ -449,26 +454,11 @@ public class ShopChest extends JavaPlugin {
     public boolean hasIslandWorld() {
         return islandWorld != null && islandWorld.isEnabled();
     }
-
-    /**
-     * @return An instance of {@link IslandWorld} or {@code null} if IslandWorld is not enabled
-     */
-    public IslandWorld getIslandWorld() {
-        return islandWorld;
-    }
-
     /**
      * @return Whether the plugin 'ASkyBlock' is enabled
      */
     public boolean hasASkyBlock() {
         return aSkyBlock != null && aSkyBlock.isEnabled();
-    }
-
-    /**
-     * @return An instance of {@link ASkyBlock} or {@code null} if ASkyBlock is not enabled
-     */
-    public ASkyBlock getASkyBlock() {
-        return aSkyBlock;
     }
 
     /**
@@ -499,26 +489,11 @@ public class ShopChest extends JavaPlugin {
     public boolean hasAuthMe() {
         return authMe != null && authMe.isEnabled();
     }
-
-    /**
-     * @return An instance of {@link AuthMe} or {@code null} if AuthMe is not enabled
-     */
-    public AuthMe getAuthMe() {
-        return authMe;
-    }
-
     /**
      * @return Whether the plugin 'Towny' is enabled
      */
     public boolean hasTowny() {
         return towny != null && towny.isEnabled();
-    }
-
-    /**
-     * @return An instance of {@link Towny} or {@code null} if Towny is not enabled
-     */
-    public Towny getTowny() {
-        return towny;
     }
 
     /**
@@ -602,20 +577,9 @@ public class ShopChest extends JavaPlugin {
     }
 
     /**
-     * @return The {@link Config} of ShopChset
+     * @return The {@link Config} of ShopChest
      */
     public Config getShopChestConfig() {
         return config;
-    }
-
-    /**
-     * <p>Provides a reader for a text file located inside the jar.</p>
-     * The returned reader will read text with the UTF-8 charset.
-     * @param file the filename of the resource to load
-     * @return null if {@link #getResource(String)} returns null
-     * @throws IllegalArgumentException if file is null
-     */
-    public Reader _getTextResource(String file) throws IllegalArgumentException {
-       return getTextResource(file);
     }
 }
