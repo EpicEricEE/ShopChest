@@ -141,9 +141,6 @@ public class Config {
     /** Whether admin shops should be excluded of the shop limits **/
     public boolean exclude_admin_shops;
 
-    /** Whether the buy- and sell price should be arranged below each other **/
-    public boolean two_line_prices;
-
     /** Whether the extension of a potion or tipped arrow (if available) should be appended to the item name. **/
     public boolean append_potion_level_to_item_name;
 
@@ -177,11 +174,8 @@ public class Config {
      **/
     public boolean invert_mouse_buttons;
 
-    /** Amount a hologram with two price-lines should be lifted **/
-    public double two_line_hologram_lift;
-
-    /** Amount a hologram with one price-line should be lifted **/
-    public double one_line_hologram_lift;
+    /** Whether the hologram's location should be fixed at the bottom **/
+    public boolean hologram_fixed_bottom;
 
     /** Amount every hologram should be lifted **/
     public double hologram_lift;
@@ -362,7 +356,6 @@ public class Config {
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
-        two_line_prices = plugin.getConfig().getBoolean("two-line-prices");
         enable_quality_mode = plugin.getConfig().getBoolean("enable-quality-mode");
         enable_hologram_interaction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
@@ -384,8 +377,7 @@ public class Config {
         show_shop_items = plugin.getConfig().getBoolean("show-shop-items");
         remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
         invert_mouse_buttons = plugin.getConfig().getBoolean("invert-mouse-buttons");
-        two_line_hologram_lift = plugin.getConfig().getDouble("two-line-hologram-lift");
-        one_line_hologram_lift = plugin.getConfig().getDouble("one-line-hologram-lift");
+        hologram_fixed_bottom = plugin.getConfig().getBoolean("hologram-fixed-bottom");
         hologram_lift = plugin.getConfig().getDouble("hologram-lift");
         maximal_distance = plugin.getConfig().getDouble("maximal-distance");
         maximal_item_distance = plugin.getConfig().getDouble("maximal-item-distance");

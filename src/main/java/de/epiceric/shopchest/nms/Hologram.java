@@ -2,47 +2,41 @@ package de.epiceric.shopchest.nms;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.utils.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Hologram {
 
     private static List<Hologram> holograms = new ArrayList<>();
 
     private boolean exists = false;
-    private List<Object> entityList = new ArrayList<>();
-    private List<UUID> entityUuidList = new ArrayList<>();
-    private String[] text;
+    private List<Object> nmsArmorStands = new ArrayList<>();
+    private List<ArmorStand> armorStands = new ArrayList<>();
+    private ArmorStand interactArmorStand;
     private Location location;
     private List<Player> visible = new ArrayList<>();
     private ShopChest plugin;
 
     private Class<?> entityArmorStandClass = Utils.getNMSClass("EntityArmorStand");
-    private Class<?> worldClass = Utils.getNMSClass("World");
     private Class<?> packetPlayOutSpawnEntityLivingClass = Utils.getNMSClass("PacketPlayOutSpawnEntityLiving");
     private Class<?> packetPlayOutEntityDestroyClass = Utils.getNMSClass("PacketPlayOutEntityDestroy");
-    private Class<?> entityClass = Utils.getNMSClass("Entity");
     private Class<?> entityLivingClass = Utils.getNMSClass("EntityLiving");
-    private Class<?> worldServerClass = Utils.getNMSClass("WorldServer");
 
-    public Hologram(ShopChest plugin, String[] text, Location location) {
+    public Hologram(ShopChest plugin, String[] lines, Location location) {
         this.plugin = plugin;
-        this.text = text;
         this.location = location;
 
         Class[] requiredClasses = new Class[] {
-                worldClass, entityArmorStandClass, entityLivingClass, entityClass,
-                packetPlayOutSpawnEntityLivingClass, packetPlayOutEntityDestroyClass,
-                worldServerClass
+                entityArmorStandClass, entityLivingClass, packetPlayOutSpawnEntityLivingClass,
+                packetPlayOutEntityDestroyClass,
         };
 
         for (Class c : requiredClasses) {
@@ -52,59 +46,101 @@ public class Hologram {
             }
         }
 
-        create();
+        create(lines);
     }
 
-    private void create() {
-        Location loc = location.clone();
+    public void addLine(int line, String text) {
+        if (text == null || text.isEmpty()) return;
 
-        for (int i = 0; i <= text.length; i++) {
-            String text = null;
+        text = ChatColor.translateAlternateColorCodes('&', text);
 
-            if (i != this.text.length) {
-                text = this.text[i];
-                if (text == null || text.isEmpty()) continue;
-            } else {
-                if (plugin.getShopChestConfig().enable_hologram_interaction) {
-                    loc = location.clone();
-                    loc.add(0, 0.4, 0);
-                } else {
-                    continue;
-                }
-            }
+        for (int i = line; i < armorStands.size(); i++) {
+            ArmorStand stand = armorStands.get(i);
+            stand.teleport(stand.getLocation().subtract(0, 0.25, 0));
+        }
+
+        if (line >= armorStands.size()) {
+            line = armorStands.size();
+        }
+
+        Location location = this.location.clone().subtract(0, line * 0.25, 0);
+
+        try {
+            ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+            armorStand.setGravity(false);
+            armorStand.setVisible(false);
+            armorStand.setCustomName(text);
+            armorStand.setCustomNameVisible(true);
+
+            Object craftArmorStand = armorStand.getClass().cast(armorStand);
+            Object nmsArmorStand = craftArmorStand.getClass().getMethod("getHandle").invoke(craftArmorStand);
+
+            nmsArmorStands.add(line, nmsArmorStand);
+            armorStands.add(line, armorStand);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            plugin.getLogger().severe("Could not create Hologram with reflection");
+            plugin.debug("Could not create Hologram with reflection");
+            plugin.debug(e);
+        }
+    }
+
+    public void setLine(int line, String text) {
+        if (text == null ||text.isEmpty()) {
+            removeLine(line);
+            return;
+        }
+
+        text = ChatColor.translateAlternateColorCodes('&', text);
+
+        if (armorStands.size() <= line) {
+            addLine(line, text);
+            return;
+        }
+
+        armorStands.get(line).setCustomName(text);
+    }
+
+    public void removeLine(int line) {
+        for (int i = line + 1; i < armorStands.size(); i++) {
+            ArmorStand stand = armorStands.get(i);
+            stand.teleport(stand.getLocation().add(0, 0.25, 0));
+        }
+
+        if (armorStands.size() > line) {
+            armorStands.get(line).remove();
+            armorStands.remove(line);
+            nmsArmorStands.remove(line);
+        }
+    }
+
+    public String[] getLines() {
+        List<String> lines = new ArrayList<>();
+        for (ArmorStand armorStand : armorStands) {
+            lines.add(armorStand.getCustomName());
+        }
+
+        return lines.toArray(new String[lines.size()]);
+    }
+
+    private void create(String[] lines) {
+        for (int i = 0; i < lines.length; i++) {
+            addLine(i, lines[i]);
+        }
+
+        if (plugin.getShopChestConfig().enable_hologram_interaction) {
+            Location loc = location.clone().add(0, 0.4, 0);
 
             try {
-                Object craftWorld = loc.getWorld().getClass().cast(loc.getWorld());
-                Object worldServer = craftWorld.getClass().getMethod("getHandle").invoke(craftWorld);
+                ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+                armorStand.setGravity(false);
+                armorStand.setVisible(false);
 
-                Constructor entityArmorStandConstructor = entityArmorStandClass.getConstructor(worldClass, double.class, double.class, double.class);
-                Object entityArmorStand = entityArmorStandConstructor.newInstance(worldServer, loc.getX(), loc.getY(),loc.getZ());
+                Object craftArmorStand = armorStand.getClass().cast(armorStand);
+                Object nmsArmorStand = craftArmorStand.getClass().getMethod("getHandle").invoke(craftArmorStand);
 
-                if (text != null) {
-                    entityArmorStandClass.getMethod("setCustomName", String.class).invoke(entityArmorStand, text);
-                    entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class).invoke(entityArmorStand, true);
-                }
-
-                entityArmorStandClass.getMethod("setInvisible", boolean.class).invoke(entityArmorStand, true);
-
-                if (Utils.getMajorVersion() < 10) {
-                    entityArmorStandClass.getMethod("setGravity", boolean.class).invoke(entityArmorStand, false);
-                } else {
-                    entityArmorStandClass.getMethod("setNoGravity", boolean.class).invoke(entityArmorStand, true);
-                }
-
-                // Adds the entity to some lists so it can call interact events
-                Method addEntityMethod = worldServerClass.getDeclaredMethod((Utils.getMajorVersion() == 8 ? "a" : "b"), entityClass);
-                addEntityMethod.setAccessible(true);
-                addEntityMethod.invoke(worldServerClass.cast(worldServer), entityArmorStand);
-
-                Object uuid = entityClass.getMethod("getUniqueID").invoke(entityArmorStand);
-
-                entityUuidList.add((UUID) uuid);
-                entityList.add(entityArmorStand);
-
-                loc.subtract(0, 0.25, 0);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                nmsArmorStands.add(nmsArmorStand);
+                interactArmorStand = armorStand;
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 plugin.getLogger().severe("Could not create Hologram with reflection");
                 plugin.debug("Could not create Hologram with reflection");
                 plugin.debug(e);
@@ -119,7 +155,7 @@ public class Hologram {
      * @return Location of the hologram
      */
     public Location getLocation() {
-        return location;
+        return location.clone();
     }
 
     /**
@@ -129,7 +165,7 @@ public class Hologram {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Object o : entityList) {
+                for (Object o : nmsArmorStands) {
                     try {
                         Object entityLiving = entityLivingClass.cast(o);
                         Object packet = packetPlayOutSpawnEntityLivingClass.getConstructor(entityLivingClass).newInstance(entityLiving);
@@ -166,7 +202,7 @@ public class Hologram {
     }
 
     private void sendDestroyPackets(Player p) {
-        for (Object o : entityList) {
+        for (Object o : nmsArmorStands) {
             try {
                 int id = (int) entityArmorStandClass.getMethod("getId").invoke(o);
 
@@ -208,7 +244,17 @@ public class Hologram {
      * @return Whether the given armor stand is part of the hologram
      */
     public boolean contains(ArmorStand armorStand) {
-        return entityUuidList.contains(armorStand.getUniqueId());
+        return armorStands.contains(armorStand);
+    }
+
+    /** Returns the ArmorStands of this hologram */
+    public List<ArmorStand> getArmorStands() {
+        return armorStands;
+    }
+
+    /** Returns the ArmorStand of this hologram that is responsible for interaction */
+    public ArmorStand getInteractArmorStand() {
+        return interactArmorStand;
     }
 
     /**
@@ -216,15 +262,10 @@ public class Hologram {
      * Hologram will be hidden from all players and will be killed
      */
     public void remove() {
-        for (Object o : entityList) {
-            try {
-                o.getClass().getMethod("die").invoke(o);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                plugin.getLogger().severe("Could not remove Hologram with reflection");
-                plugin.debug("Could not remove Hologram with reflection");
-                plugin.debug(e);
-            }
+        for (ArmorStand armorStand : armorStands) {
+            armorStand.remove();
         }
+
         exists = false;
         holograms.remove(this);
     }

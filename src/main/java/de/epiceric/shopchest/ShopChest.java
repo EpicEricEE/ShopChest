@@ -4,8 +4,8 @@ import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.wasteofplastic.askyblock.ASkyBlock;
 import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.config.Regex;
-import de.epiceric.shopchest.event.ShopReloadEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
@@ -43,7 +43,8 @@ public class ShopChest extends JavaPlugin {
 
     private static ShopChest instance;
 
-    private Config config = null;
+    private Config config;
+    private HologramFormat hologramFormat;
     private ShopCommand shopCommand;
     private Economy econ = null;
     private Database database;
@@ -153,7 +154,15 @@ public class ShopChest extends JavaPlugin {
 
         debug("Loading utils and extras...");
         LanguageUtils.load();
+
         saveResource("item_names.txt", true);
+
+        File hologramFormatFile = new File(getDataFolder(), "hologram-format.yml");
+        if (!hologramFormatFile.exists()) {
+            saveResource("hologram-format.yml", false);
+        }
+
+        hologramFormat = new HologramFormat(this);
 
         loadMetrics();
         checkForUpdates();
@@ -406,9 +415,10 @@ public class ShopChest extends JavaPlugin {
         }
     }
 
-    /**
-     * @return The {@link ShopCommand}
-     */
+    public HologramFormat getHologramFormat() {
+        return hologramFormat;
+    }
+
     public ShopCommand getShopCommand() {
         return shopCommand;
     }

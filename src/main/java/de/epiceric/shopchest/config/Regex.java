@@ -21,7 +21,9 @@ public enum Regex {
     VALUE("%VALUE%"),
     EXTENDED("%EXTENDED%"),
     REVENUE("%REVENUE%"),
-    GENERATION("%GENERATION%");
+    GENERATION("%GENERATION%"),
+    STOCK("%STOCK%"),
+    MAX_STACK("%MAX-STACK%");
 
     private String name;
 

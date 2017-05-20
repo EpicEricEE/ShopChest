@@ -30,8 +30,8 @@ message.shopInfo.vendor=&6Vendor: &e%VENDOR%
 message.shopInfo.product=&6Product: &e%AMOUNT% x %ITEMNAME%
 
 # Set the in-stock message the player after entering '/shop info'.
-# Usable Placeholders=%AMOUNT%
-message.shopInfo.stock=&6In Stock: &e%AMOUNT%
+# Usable Placeholders=%STOCK%
+message.shopInfo.stock=&6In Stock: &e%STOCK%
 
 # Set the enchantments message the player gets after entering '/shop info' if the product is enchanted
 # Usable Placeholders: %ENCHANTMENT%
@@ -214,22 +214,6 @@ message.update.checking=&6&lChecking for updates...
 
 # Set the message when an error occurs while checking for updates.
 message.update.error=&c&lError while checking for updates.
-
-# Set the text in the first row of the shop's hologram
-# Usable Placeholders: %ITEMNAME%, %AMOUNT%
-message.hologram.format=%AMOUNT% * %ITEMNAME%
-
-# Set the text in the second row of the shop's hologram when the player can buy and sell an item.
-# Usable Placeholders: %BUY-PRICE%, %SELL-PRICE%
-message.hologram.buy-and-sell=Buy %BUY-PRICE% | %SELL-PRICE% Sell
-
-# Set the text in the second row of the shop's hologram when the player can only buy an item.
-# Usable Placeholders: %BUY-PRICE%
-message.hologram.only-buy=Buy %BUY-PRICE%
-
-# Set the text in the second row of the shop's hologram when the player can only sell an item.
-# Usable Placeholders: %SELL-PRICE%
-message.hologram.only-sell=Sell %SELL-PRICE%
 
 # Set the message when a not permitted player tries to create a shop.
 message.noPermission.create=&cYou don't have permission to create a shop.

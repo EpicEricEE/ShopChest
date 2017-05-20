@@ -26,6 +26,7 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
@@ -49,14 +50,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
+import org.bukkit.scheduler.BukkitRunnable;
 import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
 
@@ -79,6 +79,29 @@ public class ShopInteractListener implements Listener {
         this.shopUtils = plugin.getShopUtils();
         this.config = plugin.getShopChestConfig();
         this.worldGuard = plugin.getWorldGuard();
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInventoryClick(InventoryClickEvent e) {
+        if (!plugin.getHologramFormat().isDynamic()) return;
+
+        Inventory chestInv = e.getInventory();
+
+        if (!(e.getInventory().getHolder() instanceof Chest || e.getInventory().getHolder() instanceof DoubleChest)) {
+            return;
+        }
+
+        Location loc = chestInv.getLocation();
+
+        final Shop shop = plugin.getShopUtils().getShop(loc);
+        if (shop == null) return;
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                shop.updateHologramText();
+            }
+        }.runTaskLater(plugin, 1L);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -715,39 +738,13 @@ public class ShopInteractListener implements Listener {
                 LocalizedMessage.Message.SHOP_INFO_NORMAL : LocalizedMessage.Message.SHOP_INFO_ADMIN);
 
         String stock = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_STOCK,
-                new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(amount)));
+                new LocalizedMessage.ReplacedRegex(Regex.STOCK, String.valueOf(amount)));
 
-        boolean potionExtended = false;
-
-        Map<Enchantment, Integer> enchantmentMap;
-
-        String potionEffectName = "";
-        if (Utils.getMajorVersion() >= 9) {
-            if (type == Material.TIPPED_ARROW || type == Material.LINGERING_POTION || type == Material.SPLASH_POTION) {
-                potionEffectName = LanguageUtils.getPotionEffectName(shop.getProduct());
-                PotionMeta potionMeta = (PotionMeta) shop.getProduct().getItemMeta();
-                potionExtended = potionMeta.getBasePotionData().isExtended();
-
-                if (potionEffectName.trim().isEmpty())
-                    potionEffectName = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
-            }
-        }
-
-        if (type == Material.POTION) {
-            potionEffectName = LanguageUtils.getPotionEffectName(shop.getProduct());
-            if (Utils.getMajorVersion() < 9) {
-                Potion potion = Potion.fromItemStack(shop.getProduct());
-                potionExtended = potion.hasExtendedDuration();
-            } else {
-                PotionMeta potionMeta = (PotionMeta) shop.getProduct().getItemMeta();
-                potionExtended = potionMeta.getBasePotionData().isExtended();
-            }
-
-            if (potionEffectName.trim().isEmpty())
-                potionEffectName = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_NONE);
-        }
+        String potionEffectName = LanguageUtils.getPotionEffectName(shop.getProduct());
 
         if (potionEffectName.length() > 0) {
+            boolean potionExtended = ItemUtils.isExtendedPotion(shop.getProduct());
+
             String extended = potionExtended ? LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED) : "";
             potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT,
                     new LocalizedMessage.ReplacedRegex(Regex.POTION_EFFECT, potionEffectName),
@@ -779,25 +776,8 @@ public class ShopInteractListener implements Listener {
                     new LocalizedMessage.ReplacedRegex(Regex.MUSIC_TITLE, musicDiscName));
         }
 
-        String enchantmentList = "";
-        if (shop.getProduct().getItemMeta() instanceof EnchantmentStorageMeta) {
-            EnchantmentStorageMeta esm = (EnchantmentStorageMeta) shop.getProduct().getItemMeta();
-            enchantmentMap = esm.getStoredEnchants();
-        } else {
-            enchantmentMap = shop.getProduct().getEnchantments();
-        }
-
-        Enchantment[] enchantments = enchantmentMap.keySet().toArray(new Enchantment[enchantmentMap.size()]);
-
-        for (int i = 0; i < enchantments.length; i++) {
-            Enchantment enchantment = enchantments[i];
-
-            if (i == enchantments.length - 1) {
-                enchantmentList += LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment));
-            } else {
-                enchantmentList += LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)) + ", ";
-            }
-        }
+        Map<Enchantment, Integer> enchantmentMap = ItemUtils.getEnchantments(shop.getProduct());
+        String enchantmentList = LanguageUtils.getEnchantmentString(enchantmentMap);
 
         if (enchantmentList.length() > 0) {
             enchantmentString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS,

@@ -19,6 +19,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class LanguageUtils {
 
@@ -1058,10 +1059,6 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE, langConfig.getString("message.update.no-update", "&6&lNo new update available.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_CHECKING, langConfig.getString("message.update.checking", "&6&lChecking for updates...")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_ERROR, langConfig.getString("message.update.error", "&c&lError while checking for updates.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.HOLOGRAM_FORMAT, langConfig.getString("message.hologram.format", "%AMOUNT% * %ITEMNAME%"), Regex.AMOUNT, Regex.ITEM_NAME));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL, langConfig.getString("message.hologram.buy-and-sell", "Buy %BUY-PRICE% | %SELL-PRICE% Sell"), Regex.BUY_PRICE, Regex.SELL_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.HOLOGRAM_BUY, langConfig.getString("message.hologram.only-buy", "Buy %BUY-PRICE%"), Regex.BUY_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.HOLOGRAM_SELL, langConfig.getString("message.hologram.only-sell", "Sell %SELL-PRICE%"), Regex.SELL_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE, langConfig.getString("message.noPermission.create", "&cYou don't have permission to create a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_ADMIN, langConfig.getString("message.noPermission.create-admin", "&cYou don't have permission to create an admin shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED, langConfig.getString("message.noPermission.create-protected", "&cYou don't have permission to create a shop on a protected chest.")));
@@ -1209,10 +1206,34 @@ public class LanguageUtils {
     }
 
     /**
+     * @param enchantmentMap Map of enchantments of an item
+     * @return Comma separated list of localized enchantments
+     */
+    public static String getEnchantmentString(Map<Enchantment, Integer> enchantmentMap) {
+        Enchantment[] enchantments = enchantmentMap.keySet().toArray(new Enchantment[enchantmentMap.size()]);
+        StringBuilder enchantmentList = new StringBuilder();
+
+        for (int i = 0; i < enchantments.length; i++) {
+            Enchantment enchantment = enchantments[i];
+
+            if (i == enchantments.length - 1) {
+                enchantmentList.append(LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)));
+            } else {
+                enchantmentList.append(LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)));
+                enchantmentList.append(", ");
+            }
+        }
+
+        return enchantmentList.toString();
+    }
+
+    /**
      * @param itemStack Potion Item whose base effect name should be looked up
      * @return Localized Name of the Base Potion Effect
      */
     public static String getPotionEffectName(ItemStack itemStack) {
+        if (!(itemStack.getItemMeta() instanceof PotionMeta)) return "";
+
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
         PotionType potionType;
         boolean upgraded;

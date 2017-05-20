@@ -2,12 +2,15 @@ package de.epiceric.shopchest.shop;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.config.Regex;
 import de.epiceric.shopchest.exceptions.ChestNotFoundException;
 import de.epiceric.shopchest.exceptions.NotEnoughSpaceException;
 import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.LocalizedMessage;
+import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.Hologram;
+import de.epiceric.shopchest.utils.ItemUtils;
+import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,6 +23,11 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Shop {
 
@@ -124,7 +132,7 @@ public class Shop {
             Location itemLocation;
             ItemStack itemStack;
 
-            itemLocation = new Location(location.getWorld(), hologram.getLocation().getX(), location.getY() + 1, hologram.getLocation().getZ());
+            itemLocation = new Location(location.getWorld(), hologram.getLocation().getX(), location.getY() + 0.9, hologram.getLocation().getZ());
             itemStack = product.clone();
             itemStack.setAmount(1);
 
@@ -162,44 +170,99 @@ public class Shop {
             doubleChest = false;
         }
 
-        boolean twoLinePrices = config.two_line_prices;
-
-        String[] holoText = getHologramText(twoLinePrices ? 3 : 2);
-        Location holoLocation = getHologramLocation(doubleChest, chests, holoText);
+        String[] holoText = getHologramText();
+        Location holoLocation = getHologramLocation(doubleChest, chests);
 
         hologram = new Hologram(plugin, holoText, holoLocation);
     }
 
-    private String[] getHologramText(int length) {
-        String[] holoText = new String[length];
+    public void updateHologramText() {
+        String[] lines = getHologramText();
+        String[] currentLines = hologram.getLines();
 
-        holoText[0] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_FORMAT,
-                new LocalizedMessage.ReplacedRegex(Regex.AMOUNT, String.valueOf(product.getAmount())),
-                new LocalizedMessage.ReplacedRegex(Regex.ITEM_NAME, LanguageUtils.getItemName(product)));
+        int max = Math.max(lines.length, currentLines.length);
 
-        if ((buyPrice <= 0) && (sellPrice > 0)) {
-            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL,
-                    new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
-        } else if ((buyPrice > 0) && (sellPrice <= 0)) {
-            holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY,
-                    new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
-        } else {
-            if (length == 2) {
-                holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY_SELL,
-                        new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)),
-                        new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+        for (int i = 0; i < max; i++) {
+            if (i < lines.length) {
+                hologram.setLine(i, lines[i]);
             } else {
-                holoText[1] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_BUY,
-                        new LocalizedMessage.ReplacedRegex(Regex.BUY_PRICE, String.valueOf(buyPrice)));
-                holoText[2] = LanguageUtils.getMessage(LocalizedMessage.Message.HOLOGRAM_SELL,
-                        new LocalizedMessage.ReplacedRegex(Regex.SELL_PRICE, String.valueOf(sellPrice)));
+                hologram.removeLine(i);
             }
         }
-
-        return holoText;
     }
 
-    private Location getHologramLocation(boolean doubleChest, Chest[] chests, String[] holoText) {
+    private String[] getHologramText() {
+        List<String> lines = new ArrayList<>();
+
+        Map<HologramFormat.Requirement, Object> requirements = new HashMap<>();
+
+        requirements.put(HologramFormat.Requirement.VENDOR, getVendor().getName());
+        requirements.put(HologramFormat.Requirement.AMOUNT, getProduct().getAmount());
+        requirements.put(HologramFormat.Requirement.ITEM_TYPE, getProduct().getType() + (getProduct().getDurability() > 0 ? ":" + getProduct().getDurability() : ""));
+        requirements.put(HologramFormat.Requirement.ITEM_NAME, getProduct().getItemMeta().getDisplayName());
+        requirements.put(HologramFormat.Requirement.HAS_ENCHANTMENT, !LanguageUtils.getEnchantmentString(ItemUtils.getEnchantments(getProduct())).isEmpty());
+        requirements.put(HologramFormat.Requirement.BUY_PRICE, getBuyPrice());
+        requirements.put(HologramFormat.Requirement.SELL_PRICE, getSellPrice());
+        requirements.put(HologramFormat.Requirement.HAS_POTION_EFFECT, ItemUtils.getPotionEffect(getProduct()) != null);
+        requirements.put(HologramFormat.Requirement.IS_MUSIC_DISC, ItemUtils.isMusicDisc(getProduct()));
+        requirements.put(HologramFormat.Requirement.IS_POTION_EXTENDED, ItemUtils.isExtendedPotion(getProduct()));
+        requirements.put(HologramFormat.Requirement.IS_BOOK, ItemUtils.getBookGeneration(getProduct()) != null);
+        requirements.put(HologramFormat.Requirement.ADMIN_SHOP, getShopType() == ShopType.ADMIN);
+        requirements.put(HologramFormat.Requirement.NORMAL_SHOP, getShopType() == ShopType.NORMAL);
+        requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
+        requirements.put(HologramFormat.Requirement.MAX_STACK, getProduct().getMaxStackSize());
+
+        int lineCount = plugin.getHologramFormat().getLineCount();
+
+        for (int i = 0; i < lineCount; i++) {
+            String format = plugin.getHologramFormat().getFormat(i, requirements);
+            for (Regex regex : Regex.values()) {
+                String replace = "";
+
+                switch (regex) {
+                    case VENDOR:
+                        replace = getVendor().getName();
+                        break;
+                    case AMOUNT:
+                        replace = String.valueOf(getProduct().getAmount());
+                        break;
+                    case ITEM_NAME:
+                        replace = LanguageUtils.getItemName(getProduct());
+                        break;
+                    case ENCHANTMENT:
+                        replace = LanguageUtils.getEnchantmentString(ItemUtils.getEnchantments(getProduct()));
+                        break;
+                    case BUY_PRICE:
+                        replace = plugin.getEconomy().format(getBuyPrice());
+                        break;
+                    case SELL_PRICE:
+                        replace = plugin.getEconomy().format(getSellPrice());
+                        break;
+                    case POTION_EFFECT:
+                        replace = LanguageUtils.getPotionEffectName(getProduct());
+                        break;
+                    case MUSIC_TITLE:
+                        replace = LanguageUtils.getMusicDiscName(getProduct().getType());
+                        break;
+                    case GENERATION:
+                        CustomBookMeta.Generation gen = ItemUtils.getBookGeneration(getProduct());
+                        if (gen != null) replace = LanguageUtils.getBookGenerationName(gen);
+                        break;
+                    case STOCK:
+                        replace = String.valueOf(Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
+                        break;
+                }
+
+                format = format.replace(regex.getName(), replace);
+            }
+
+            lines.add(format);
+        }
+
+        return lines.toArray(new String[lines.size()]);
+    }
+
+    private Location getHologramLocation(boolean doubleChest, Chest[] chests) {
         Block b = location.getBlock();
         Location holoLocation;
 
@@ -234,14 +297,6 @@ public class Shop {
         }
 
         holoLocation.add(0, config.hologram_lift, 0);
-
-        if (config.two_line_prices) {
-            if (holoText.length == 3 && holoText[2] != null) {
-                holoLocation.add(0, config.two_line_hologram_lift, 0);
-            } else {
-                holoLocation.add(0, config.one_line_hologram_lift, 0);
-            }
-        }
 
         return holoLocation;
     }

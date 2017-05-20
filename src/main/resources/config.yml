@@ -82,26 +82,10 @@ only-show-shops-in-sight: true
 # This only has effect if 'only-show-shops-in-sight' is enabled
 only-show-first-shop-in-sight: true
 
-# Set whether the buy- and sell price should be arranged below each other.
-# The first line will be the buy price with the message
-# "message.hologram.only-buy", the second line will be the sell price
-# with the message "message.hologram.only-sell".
-# If buying or selling is disabled, a line for that price will not be created.
-# (The messages can be found and modified in the specified language file)
-two-line-prices: false
-
-# Set the amount (may be negative) a hologram should be lifted in the y-axis,
-# when "two-line-prices" is set to true and buying and selling is enabled
-# at the shop.
-# The higher the number, the higher will the hologram be.
-# A value of '1' equals to one block, and a value of '0.25' is equal to the
-# height of one line.
-two-line-hologram-lift: 0.25
-
-# Set the amount (may be negative) a hologram should be lifted in the y-axis,
-# when "two-line-prices" is set to true and only buying or selling is
-# enabled at the shop.
-one-line-hologram-lift: 0
+# Set whether the hologram's location should be fixed at the bottom,
+# so when it gets more lines, it won't interfere with the item or chest,
+# but goes higher.
+hologram-fixed-bottom: true
 
 # Set the amount (may be negative) a hologram should be lifted in the y-axis.
 # If the hologram lift is already increased by the values above,
