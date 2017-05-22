@@ -271,29 +271,33 @@ public class Shop {
         int y  = b.getY();
         int z = b.getZ();
 
+        double subtractY = 0.6;
+
+        if (config.hologram_fixed_bottom) subtractY = 0.85;
+
         if (doubleChest) {
             Chest r = chests[0];
             Chest l = chests[1];
 
             if (b.getLocation().equals(r.getLocation())) {
                 if (r.getX() != l.getX()) {
-                    holoLocation = new Location(w, x, y - 0.6, z + 0.5);
+                    holoLocation = new Location(w, x, y - subtractY, z + 0.5);
                 } else if (r.getZ() != l.getZ()) {
-                    holoLocation = new Location(w, x + 0.5, y - 0.6, z);
+                    holoLocation = new Location(w, x + 0.5, y - subtractY, z);
                 } else {
-                    holoLocation = new Location(w, x + 0.5, y - 0.6, z + 0.5);
+                    holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
                 }
             } else {
                 if (r.getX() != l.getX()) {
-                    holoLocation = new Location(w, x + 1, y - 0.6, z + 0.5);
+                    holoLocation = new Location(w, x + 1, y - subtractY, z + 0.5);
                 } else if (r.getZ() != l.getZ()) {
-                    holoLocation = new Location(w, x + 0.5, y - 0.6, z + 1);
+                    holoLocation = new Location(w, x + 0.5, y - subtractY, z + 1);
                 } else {
-                    holoLocation = new Location(w, x + 0.5, y - 0.6, z + 0.5);
+                    holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
                 }
             }
         } else {
-            holoLocation = new Location(w, x + 0.5, y - 0.6, z + 0.5);
+            holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
         }
 
         holoLocation.add(0, config.hologram_lift, 0);

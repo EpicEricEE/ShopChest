@@ -20,10 +20,11 @@ public class HologramFormat {
     }
 
     private ShopChest plugin;
+    private File configFile;
     private YamlConfiguration config;
 
     public HologramFormat(ShopChest plugin) {
-        File configFile = new File(plugin.getDataFolder(), "hologram-format.yml");
+        this.configFile = new File(plugin.getDataFolder(), "hologram-format.yml");
         this.config = YamlConfiguration.loadConfiguration(configFile);
         this.plugin = plugin;
     }
@@ -48,10 +49,8 @@ public class HologramFormat {
             for (String sReq : requirements) {
                 for (Requirement req : values.keySet()) {
                     if (sReq.contains(req.toString())) {
-                        if (!sReq.replace(req.toString(), "").trim().isEmpty()) {
-                            if (!eval(sReq, values)) {
-                                continue optionLoop;
-                            }
+                        if (!eval(sReq, values)) {
+                            continue optionLoop;
                         }
                     }
                 }
@@ -63,6 +62,10 @@ public class HologramFormat {
         return "";
     }
 
+    public void reload() {
+        config = YamlConfiguration.loadConfiguration(configFile);
+    }
+
     /** Returns whether the hologram text has to change dynamically without reloading */
     public boolean isDynamic() {
         int count = getLineCount();
@@ -70,9 +73,17 @@ public class HologramFormat {
             ConfigurationSection options = config.getConfigurationSection("lines." + i + ".options");
 
             for (String key : options.getKeys(false)) {
-                String format = options.getConfigurationSection(key).getString("format");
+                ConfigurationSection option = options.getConfigurationSection(key);
+
+                String format = option.getString("format");
                 if (format.contains(Regex.STOCK.getName())) {
                     return true;
+                }
+
+                for (String req : option.getStringList("requirements")) {
+                    if (req.contains(Requirement.IN_STOCK.toString())) {
+                        return true;
+                    }
                 }
             }
         }

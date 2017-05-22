@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.nms;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,6 +25,7 @@ public class Hologram {
     private Location location;
     private List<Player> visible = new ArrayList<>();
     private ShopChest plugin;
+    private Config config;
 
     private Class<?> entityArmorStandClass = Utils.getNMSClass("EntityArmorStand");
     private Class<?> packetPlayOutSpawnEntityLivingClass = Utils.getNMSClass("PacketPlayOutSpawnEntityLiving");
@@ -32,6 +34,7 @@ public class Hologram {
 
     public Hologram(ShopChest plugin, String[] lines, Location location) {
         this.plugin = plugin;
+        this.config = plugin.getShopChestConfig();
         this.location = location;
 
         Class[] requiredClasses = new Class[] {
@@ -54,16 +57,27 @@ public class Hologram {
 
         text = ChatColor.translateAlternateColorCodes('&', text);
 
-        for (int i = line; i < armorStands.size(); i++) {
-            ArmorStand stand = armorStands.get(i);
-            stand.teleport(stand.getLocation().subtract(0, 0.25, 0));
+        if (config.hologram_fixed_bottom) {
+            for (int i = 0; i < line; i++) {
+                ArmorStand stand = armorStands.get(i);
+                stand.teleport(stand.getLocation().add(0, 0.25, 0));
+            }
+        } else {
+            for (int i = line; i < armorStands.size(); i++) {
+                ArmorStand stand = armorStands.get(i);
+                stand.teleport(stand.getLocation().subtract(0, 0.25, 0));
+            }
         }
 
         if (line >= armorStands.size()) {
             line = armorStands.size();
         }
 
-        Location location = this.location.clone().subtract(0, line * 0.25, 0);
+        Location location = this.location.clone();
+
+        if (!config.hologram_fixed_bottom) {
+            location.subtract(0, line * 0.25, 0);
+        }
 
         try {
             ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
@@ -92,7 +106,7 @@ public class Hologram {
 
         text = ChatColor.translateAlternateColorCodes('&', text);
 
-        if (armorStands.size() <= line) {
+        if (line >= armorStands.size()) {
             addLine(line, text);
             return;
         }
@@ -101,12 +115,19 @@ public class Hologram {
     }
 
     public void removeLine(int line) {
-        for (int i = line + 1; i < armorStands.size(); i++) {
-            ArmorStand stand = armorStands.get(i);
-            stand.teleport(stand.getLocation().add(0, 0.25, 0));
-        }
+        if (line < armorStands.size()) {
+            if (config.hologram_fixed_bottom) {
+                for (int i = 0; i < line; i++) {
+                    ArmorStand stand = armorStands.get(i);
+                    stand.teleport(stand.getLocation().subtract(0, 0.25, 0));
+                }
+            } else {
+                for (int i = line + 1; i < armorStands.size(); i++) {
+                    ArmorStand stand = armorStands.get(i);
+                    stand.teleport(stand.getLocation().add(0, 0.25, 0));
+                }
+            }
 
-        if (armorStands.size() > line) {
             armorStands.get(line).remove();
             armorStands.remove(line);
             nmsArmorStands.remove(line);

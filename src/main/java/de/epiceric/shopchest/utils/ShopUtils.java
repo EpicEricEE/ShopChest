@@ -3,6 +3,7 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -205,6 +206,7 @@ public class ShopUtils {
 
         if (reloadConfig) {
             plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
+            plugin.getHologramFormat().reload();
             plugin.getUpdater().setMaxDelta(plugin.getShopChestConfig().update_quality.getTime());
         }
 
@@ -227,6 +229,11 @@ public class ShopUtils {
                                     addShop(shop, false);
                                 }
                             }
+
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                updateShops(player, true);
+                            }
+
                             if (callback != null) callback.callSyncResult(shops.length);
                         }
                     }
@@ -247,7 +254,16 @@ public class ShopUtils {
      * @param player Player to show the updates
      */
     public void updateShops(Player player) {
-        if (player.getLocation().equals(playerLocation.get(player))) {
+        updateShops(player, false);
+    }
+
+    /**
+     * Update hologram and item of all shops for a player
+     * @param player Player to show the updates
+     * @param force Whether update should be forced even if player has not moved
+     */
+    public void updateShops(Player player, boolean force) {
+        if (!force && player.getLocation().equals(playerLocation.get(player))) {
             // Player has not moved, so don't calculate shops again.
             return;
         }
