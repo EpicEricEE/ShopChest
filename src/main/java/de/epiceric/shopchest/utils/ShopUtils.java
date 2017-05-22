@@ -7,8 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
@@ -16,7 +14,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,9 +36,7 @@ public class ShopUtils {
      * @return Shop at the given location or <b>null</b> if no shop is found there
      */
     public Shop getShop(Location location) {
-        Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-
-        return shopLocation.get(newLocation);
+        return shopLocation.get(location.getBlock().getLocation());
     }
 
     /**
@@ -50,8 +45,7 @@ public class ShopUtils {
      * @return Whether there is a shop at the given location
      */
     public boolean isShop(Location location) {
-        Location newLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-        return shopLocation.containsKey(newLocation);
+        return shopLocation.containsKey(location.getBlock().getLocation());
     }
 
     /**
@@ -269,35 +263,17 @@ public class ShopUtils {
         }
 
         if (plugin.getShopChestConfig().only_show_shops_in_sight) {
-            Set<Block> sight = getBlocksInSight(player);
+            Set<Shop> sight = getShopsInSight(player);
 
-            ArrayList<Shop> shopsInSight = new ArrayList<>();
+            Set<Shop> _sight = new HashSet<>();
 
-            for (Block block : sight) {
-                if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
-                    Shop shop = getShop(block.getLocation());
-                    if (shop != null) {
-                        shopsInSight.add(shop);
-
-                        if (shop.getHologram() != null && !shop.getHologram().isVisible(player)) {
-                            shop.getHologram().showPlayer(player);
-                        }
-
-                        if (plugin.getShopChestConfig().only_show_first_shop_in_sight) break;
-                    }
-                } else {
-                    Block below = block.getRelative(BlockFace.DOWN);
-                    Shop shop = getShop(below.getLocation());
-                    if (shop != null) {
-                        shopsInSight.add(shop);
-
-                        if (shop.getHologram() != null && !shop.getHologram().isVisible(player)) {
-                            shop.getHologram().showPlayer(player);
-                        }
-
-                        if (plugin.getShopChestConfig().only_show_first_shop_in_sight) break;
-                    }
+            for (Shop shop : sight) {
+                _sight.add(shop);
+                if (shop.getHologram() != null && !shop.getHologram().isVisible(player)) {
+                    shop.getHologram().showPlayer(player);
                 }
+
+                if (plugin.getShopChestConfig().only_show_first_shop_in_sight) break;
             }
 
             double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
@@ -311,7 +287,7 @@ public class ShopUtils {
                     }
                 }
 
-                if (!shopsInSight.contains(shop)) {
+                if (!_sight.contains(shop)) {
                     if (shop.getHologram() != null) {
                         shop.getHologram().hidePlayer(player);
                     }
@@ -326,26 +302,43 @@ public class ShopUtils {
         playerLocation.put(player, player.getLocation());
     }
 
-    private Set<Block> getBlocksInSight(Player player) {
+    private Set<Shop> getShopsInSight(Player player) {
         double dist = plugin.getShopChestConfig().maximal_distance;
 
         Location loc = player.getEyeLocation();
         Vector direction =  loc.getDirection();
 
-        Set<Block> blocks = new HashSet<>();
-        blocks.add(loc.getBlock());
+        Set<Shop> shops = new HashSet<>();
 
         double i = 0;
 
         do {
-            blocks.add(loc.add(direction).getBlock());
+            Location below = loc.clone().subtract(0, 1, 0);
+
+            Shop shop = getShop(loc);
+            if (shop != null) {
+                shops.add(shop);
+            } else if ((shop = getShop(below)) != null) {
+                shops.add(shop);
+            }
+
+            loc.add(direction);
             i++;
-        } while (i < dist - (dist%1));
+        } while (i <= dist - (dist%1));
 
         direction.multiply(dist - (dist%1));
-        blocks.add(loc.add(direction).getBlock());
+        loc.add(direction);
 
-        return blocks;
+        Location below = loc.clone().subtract(0, 1, 0);
+
+        Shop shop = getShop(loc);
+        if (shop != null) {
+            shops.add(shop);
+        } else if ((shop = getShop(below)) != null) {
+            shops.add(shop);
+        }
+
+        return shops;
     }
 
     /**
