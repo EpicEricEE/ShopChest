@@ -88,9 +88,7 @@ only-show-first-shop-in-sight: true
 hologram-fixed-bottom: true
 
 # Set the amount (may be negative) a hologram should be lifted in the y-axis.
-# If the hologram lift is already increased by the values above,
-# the holograms will still be lifted by the here specified amount.
-# This also works with 'two-line-prices' disabled.
+# A value of '1' equals to one block, and a value of '0.25' is equal to the
 hologram-lift: 0
 
 # Set whether players should be allowed to sell their items, even if the
