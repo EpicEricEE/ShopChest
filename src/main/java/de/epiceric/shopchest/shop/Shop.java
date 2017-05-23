@@ -3,7 +3,7 @@ package de.epiceric.shopchest.shop;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.HologramFormat;
-import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.exceptions.ChestNotFoundException;
 import de.epiceric.shopchest.exceptions.NotEnoughSpaceException;
 import de.epiceric.shopchest.language.LanguageUtils;
@@ -195,7 +195,6 @@ public class Shop {
         List<String> lines = new ArrayList<>();
 
         Map<HologramFormat.Requirement, Object> requirements = new HashMap<>();
-
         requirements.put(HologramFormat.Requirement.VENDOR, getVendor().getName());
         requirements.put(HologramFormat.Requirement.AMOUNT, getProduct().getAmount());
         requirements.put(HologramFormat.Requirement.ITEM_TYPE, getProduct().getType() + (getProduct().getDurability() > 0 ? ":" + getProduct().getDurability() : ""));
@@ -212,48 +211,37 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
         requirements.put(HologramFormat.Requirement.MAX_STACK, getProduct().getMaxStackSize());
 
+        Map<Placeholder, Object> placeholders = new HashMap<>();
+        placeholders.put(Placeholder.VENDOR, getVendor().getName());
+        placeholders.put(Placeholder.AMOUNT, getProduct().getAmount());
+        placeholders.put(Placeholder.ITEM_NAME, LanguageUtils.getItemName(getProduct()));
+        placeholders.put(Placeholder.ENCHANTMENT, LanguageUtils.getEnchantmentString(ItemUtils.getEnchantments(getProduct())));
+        placeholders.put(Placeholder.BUY_PRICE, getBuyPrice());
+        placeholders.put(Placeholder.SELL_PRICE, getSellPrice());
+        placeholders.put(Placeholder.POTION_EFFECT, LanguageUtils.getPotionEffectName(getProduct()));
+        placeholders.put(Placeholder.MUSIC_TITLE, LanguageUtils.getMusicDiscName(getProduct().getType()));
+        placeholders.put(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(ItemUtils.getBookGeneration(getProduct())));
+        placeholders.put(Placeholder.STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
+
         int lineCount = plugin.getHologramFormat().getLineCount();
 
         for (int i = 0; i < lineCount; i++) {
-            String format = plugin.getHologramFormat().getFormat(i, requirements);
-            for (Regex regex : Regex.values()) {
+            String format = plugin.getHologramFormat().getFormat(i, requirements, placeholders);
+            for (Placeholder regex : placeholders.keySet()) {
                 String replace = "";
 
                 switch (regex) {
-                    case VENDOR:
-                        replace = getVendor().getName();
-                        break;
-                    case AMOUNT:
-                        replace = String.valueOf(getProduct().getAmount());
-                        break;
-                    case ITEM_NAME:
-                        replace = LanguageUtils.getItemName(getProduct());
-                        break;
-                    case ENCHANTMENT:
-                        replace = LanguageUtils.getEnchantmentString(ItemUtils.getEnchantments(getProduct()));
-                        break;
                     case BUY_PRICE:
                         replace = plugin.getEconomy().format(getBuyPrice());
                         break;
                     case SELL_PRICE:
                         replace = plugin.getEconomy().format(getSellPrice());
                         break;
-                    case POTION_EFFECT:
-                        replace = LanguageUtils.getPotionEffectName(getProduct());
-                        break;
-                    case MUSIC_TITLE:
-                        replace = LanguageUtils.getMusicDiscName(getProduct().getType());
-                        break;
-                    case GENERATION:
-                        CustomBookMeta.Generation gen = ItemUtils.getBookGeneration(getProduct());
-                        if (gen != null) replace = LanguageUtils.getBookGenerationName(gen);
-                        break;
-                    case STOCK:
-                        replace = String.valueOf(Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
-                        break;
+                    default:
+                        replace = String.valueOf(placeholders.get(regex));
                 }
 
-                format = format.replace(regex.getName(), replace);
+                format = format.replace(regex.toString(), replace);
             }
 
             lines.add(format);

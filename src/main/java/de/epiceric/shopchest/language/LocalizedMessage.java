@@ -1,15 +1,15 @@
 package de.epiceric.shopchest.language;
 
-import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.config.Placeholder;
 import org.bukkit.ChatColor;
 
 public class LocalizedMessage {
 
     private Message message;
-    private Regex[] regexes;
+    private Placeholder[] regexes;
     private String localizedString;
 
-    public LocalizedMessage(Message message, String localizedString, Regex... regexes) {
+    public LocalizedMessage(Message message, String localizedString, Placeholder... regexes) {
         this.message = message;
         this.regexes = regexes;
         this.localizedString = ChatColor.translateAlternateColorCodes('&', localizedString);
@@ -28,9 +28,9 @@ public class LocalizedMessage {
     }
 
     /**
-     * @return Array of {@link Regex}, which are required by the message
+     * @return Array of {@link Placeholder}, which are required by the message
      */
-    public Regex[] getRegexes() {
+    public Placeholder[] getRegexes() {
         return regexes;
     }
 
@@ -134,10 +134,10 @@ public class LocalizedMessage {
 
     public static class ReplacedRegex {
 
-        private Regex regex;
+        private Placeholder regex;
         private String replace;
 
-        public ReplacedRegex(Regex regex, String replace) {
+        public ReplacedRegex(Placeholder regex, String replace) {
             this.regex = regex;
             this.replace = replace;
         }
@@ -150,9 +150,9 @@ public class LocalizedMessage {
         }
 
         /**
-         * @return Regex that will be replaced
+         * @return Placeholder that will be replaced
          */
-        public Regex getRegex() {
+        public Placeholder getRegex() {
             return regex;
         }
 

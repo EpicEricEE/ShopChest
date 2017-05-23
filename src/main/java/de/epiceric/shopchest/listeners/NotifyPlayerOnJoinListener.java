@@ -1,7 +1,7 @@
 package de.epiceric.shopchest.listeners;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.JsonBuilder;
@@ -27,7 +27,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
 
         if (plugin.isUpdateNeeded()) {
             if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
-                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Regex.VERSION, plugin.getLatestVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), plugin.getDownloadLink());
+                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Placeholder.VERSION, plugin.getLatestVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), plugin.getDownloadLink());
                 jb.sendJson(p);
             }
         }
@@ -39,7 +39,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
                     long lastLogout = (long) result;
                     if (lastLogout < 0) {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED,
-                                new LocalizedMessage.ReplacedRegex(Regex.ERROR, "Could not get last time you logged out")));
+                                new LocalizedMessage.ReplacedRegex(Placeholder.ERROR, "Could not get last time you logged out")));
                         return;
                     }
 
@@ -50,7 +50,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
                                 double revenue = (double) result;
                                 if (revenue != 0) {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE,
-                                            new LocalizedMessage.ReplacedRegex(Regex.REVENUE, String.valueOf(revenue))));
+                                            new LocalizedMessage.ReplacedRegex(Placeholder.REVENUE, String.valueOf(revenue))));
                                 }
                             }
                         }

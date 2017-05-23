@@ -10,6 +10,8 @@ import javax.script.ScriptException;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HologramFormat {
 
@@ -32,11 +34,11 @@ public class HologramFormat {
     /**
      * Get the format for the given line of the hologram
      * @param line Line of the hologram
-     * @param values Values of the requirements that might be needed by the format (contains {@code null} if not comparable)
+     * @param reqMap Values of the requirements that might be needed by the format (contains {@code null} if not comparable)
      * @return  The format of the first working option, or an empty String if no option is working
      *          because of not fulfilled requirements
      */
-    public String getFormat(int line, Map<Requirement, Object> values) {
+    public String getFormat(int line, Map<Requirement, Object> reqMap, Map<Placeholder, Object> plaMap) {
         ConfigurationSection options = config.getConfigurationSection("lines." + line + ".options");
 
         optionLoop:
@@ -47,16 +49,16 @@ public class HologramFormat {
             String format = option.getString("format");
 
             for (String sReq : requirements) {
-                for (Requirement req : values.keySet()) {
+                for (Requirement req : reqMap.keySet()) {
                     if (sReq.contains(req.toString())) {
-                        if (!eval(sReq, values)) {
+                        if (!evalRequirement(sReq, reqMap)) {
                             continue optionLoop;
                         }
                     }
                 }
             }
 
-            return format;
+            return evalPlaceholder(format, plaMap);
         }
 
         return "";
@@ -76,7 +78,7 @@ public class HologramFormat {
                 ConfigurationSection option = options.getConfigurationSection(key);
 
                 String format = option.getString("format");
-                if (format.contains(Regex.STOCK.getName())) {
+                if (format.contains(Placeholder.STOCK.toString())) {
                     return true;
                 }
 
@@ -107,29 +109,76 @@ public class HologramFormat {
      * @param values Values of the requirements
      * @return Result of the condition
      */
-    public boolean eval(String condition, Map<Requirement, Object> values) {
+    public boolean evalRequirement(String condition, Map<Requirement, Object> values) {
         try {
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("JavaScript");
 
-            String c = condition;
+            String cond = condition;
 
             for (HologramFormat.Requirement req : HologramFormat.Requirement.values()) {
-                if (c.contains(req.toString()) && values.containsKey(req)) {
-                    String replace = String.valueOf(values.get(req));
-                    if (values.get(req) instanceof String) {
-                        replace = String.format("\"%s\"", replace);
+                if (cond.contains(req.toString()) && values.containsKey(req)) {
+                    Object val = values.get(req);
+                    String sVal = String.valueOf(val);
+
+                    if (val instanceof String && !(sVal.startsWith("\"") && sVal.endsWith("\""))) {
+                        sVal = String.format("\"%s\"", sVal);
                     }
-                    c = c.replace(req.toString(), replace);
+
+                    cond = cond.replace(req.toString(), sVal);
                 }
             }
 
-            return (boolean) engine.eval(c);
+            return (boolean) engine.eval(cond);
         } catch (ScriptException e) {
             plugin.debug("Failed to eval condition: " + condition);
             plugin.debug(e);
         }
 
         return false;
+    }
+
+    /**
+     * Parse and evaluate a condition
+     * @param string Message or hologram format whose containing scripts to execute
+     * @param values Values of the placeholders
+     * @return Result of the condition
+     */
+    public String evalPlaceholder(String string, Map<Placeholder, Object> values) {
+        try {
+            ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = manager.getEngineByName("JavaScript");
+
+            Matcher matcher = Pattern.compile("\\{([^}]+)}").matcher(string);
+            String newString = string;
+
+            while (matcher.find()) {
+                String withBrackets = matcher.group();
+                String script = withBrackets.substring(1, withBrackets.length() - 1);
+
+                for (Placeholder placeholder : values.keySet()) {
+                    if (script.contains(placeholder.toString())) {
+                        Object val = values.get(placeholder);
+                        String sVal = String.valueOf(val);
+
+                        if (val instanceof String && !(sVal.startsWith("\"") && sVal.endsWith("\""))) {
+                            sVal = String.format("\"%s\"", sVal);
+                        }
+
+                        script = script.replace(placeholder.toString(), sVal);
+                    }
+                }
+
+                String result = String.valueOf(engine.eval(script));
+                newString = newString.replace(withBrackets, result);
+            }
+
+            return newString;
+        } catch (ScriptException e) {
+            plugin.debug("Failed to eval placeholder script in string: " + string);
+            plugin.debug(e);
+        }
+
+        return string;
     }
 }

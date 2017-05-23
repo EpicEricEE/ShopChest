@@ -2,7 +2,7 @@ package de.epiceric.shopchest.language;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.LanguageConfiguration;
-import de.epiceric.shopchest.config.Regex;
+import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.SpawnEggMeta;
 import de.epiceric.shopchest.utils.Utils;
@@ -1003,36 +1003,36 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.DOUBLE_CHEST_BLOCKED, langConfig.getString("message.double-chest-blocked", "&cThere must not be a block above the chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_REMOVED, langConfig.getString("message.shop-removed", "&6Shop removed.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_NO_SHOP, langConfig.getString("message.chest-no-shop", "&cChest is not a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, langConfig.getString("message.shop-create-not-enough-money", "&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop."), Regex.CREATION_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR, langConfig.getString("message.shopInfo.vendor", "&6Vendor: &e%VENDOR%"), Regex.VENDOR));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT, langConfig.getString("message.shopInfo.product", "&6Product: &e%AMOUNT% x %ITEMNAME%"), Regex.AMOUNT, Regex.ITEM_NAME));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_STOCK, langConfig.getString("message.shopInfo.stock", "&6In Stock: &e%AMOUNT%"), Regex.AMOUNT));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS, langConfig.getString("message.shopInfo.enchantments", "&6Enchantments: &e%ENCHANTMENT%"), Regex.ENCHANTMENT));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT, langConfig.getString("message.shopInfo.potion-effect", "&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%"), Regex.POTION_EFFECT, Regex.EXTENDED));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE, langConfig.getString("message.shopInfo.music-disc-title", "&6Music Disc Title: &e%MUSIC-TITLE%"), Regex.MUSIC_TITLE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_BOOK_GENERATION, langConfig.getString("message.shopInfo.book-generation", "&6Generation: &e%GENERATION%"), Regex.GENERATION));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, langConfig.getString("message.shop-create-not-enough-money", "&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop."), Placeholder.CREATION_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR, langConfig.getString("message.shopInfo.vendor", "&6Vendor: &e%VENDOR%"), Placeholder.VENDOR));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT, langConfig.getString("message.shopInfo.product", "&6Product: &e%AMOUNT% x %ITEMNAME%"), Placeholder.AMOUNT, Placeholder.ITEM_NAME));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_STOCK, langConfig.getString("message.shopInfo.stock", "&6In Stock: &e%AMOUNT%"), Placeholder.AMOUNT));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS, langConfig.getString("message.shopInfo.enchantments", "&6Enchantments: &e%ENCHANTMENT%"), Placeholder.ENCHANTMENT));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT, langConfig.getString("message.shopInfo.potion-effect", "&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%"), Placeholder.POTION_EFFECT, Placeholder.EXTENDED));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE, langConfig.getString("message.shopInfo.music-disc-title", "&6Music Disc Title: &e%MUSIC-TITLE%"), Placeholder.MUSIC_TITLE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_BOOK_GENERATION, langConfig.getString("message.shopInfo.book-generation", "&6Generation: &e%GENERATION%"), Placeholder.GENERATION));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_NONE, langConfig.getString("message.shopInfo.none", "&7None")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_PRICE, langConfig.getString("message.shopInfo.price", "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%"), Regex.BUY_PRICE, Regex.SELL_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_PRICE, langConfig.getString("message.shopInfo.price", "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%"), Placeholder.BUY_PRICE, Placeholder.SELL_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED, langConfig.getString("message.shopInfo.disabled", "&7Disabled")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_NORMAL, langConfig.getString("message.shopInfo.is-normal", "&6Type: &eNormal")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_ADMIN, langConfig.getString("message.shopInfo.is-admin", "&6Type: &eAdmin")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED, langConfig.getString("message.shopInfo.extended", "(Extended)")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SELL_DISABLED, langConfig.getString("message.buy-and-sell-disabled", "&cYou can't create a shop with buying and selling disabled.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCCESS, langConfig.getString("message.buy-success", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.BUY_PRICE, Regex.VENDOR));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, langConfig.getString("message.buy-success-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.BUY_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS, langConfig.getString("message.sell-success", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.SELL_PRICE, Regex.VENDOR));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, langConfig.getString("message.sell-success-admin", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a."), Regex.AMOUNT, Regex.ITEM_NAME, Regex.SELL_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, langConfig.getString("message.someone-bought", "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop."), Regex.PLAYER, Regex.AMOUNT, Regex.ITEM_NAME, Regex.BUY_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_SOLD, langConfig.getString("message.someone-sold", "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop."), Regex.PLAYER, Regex.AMOUNT, Regex.ITEM_NAME, Regex.SELL_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE, langConfig.getString("message.revenue-while-offline", "&6While you were offline, your shops have made a revenue of &c%REVENUE%&6."), Regex.REVENUE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCCESS, langConfig.getString("message.buy-success", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a."), Placeholder.AMOUNT, Placeholder.ITEM_NAME, Placeholder.BUY_PRICE, Placeholder.VENDOR));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, langConfig.getString("message.buy-success-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a."), Placeholder.AMOUNT, Placeholder.ITEM_NAME, Placeholder.BUY_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS, langConfig.getString("message.sell-success", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a."), Placeholder.AMOUNT, Placeholder.ITEM_NAME, Placeholder.SELL_PRICE, Placeholder.VENDOR));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, langConfig.getString("message.sell-success-admin", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a."), Placeholder.AMOUNT, Placeholder.ITEM_NAME, Placeholder.SELL_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, langConfig.getString("message.someone-bought", "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop."), Placeholder.PLAYER, Placeholder.AMOUNT, Placeholder.ITEM_NAME, Placeholder.BUY_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_SOLD, langConfig.getString("message.someone-sold", "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop."), Placeholder.PLAYER, Placeholder.AMOUNT, Placeholder.ITEM_NAME, Placeholder.SELL_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE, langConfig.getString("message.revenue-while-offline", "&6While you were offline, your shops have made a revenue of &c%REVENUE%&6."), Placeholder.REVENUE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE, langConfig.getString("message.not-enough-inventory-space", "&cNot enough space in inventory.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE, langConfig.getString("message.chest-not-enough-inventory-space", "&cShop is full.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_MONEY, langConfig.getString("message.not-enough-money", "&cNot enough money.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS, langConfig.getString("message.not-enough-items", "&cNot enough items.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.VENDOR_NOT_ENOUGH_MONEY, langConfig.getString("message.vendor-not-enough-money", "&cVendor has not enough money.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.OUT_OF_STOCK, langConfig.getString("message.out-of-stock", "&cShop out of stock.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.VENDOR_OUT_OF_STOCK, langConfig.getString("message.vendor-out-of-stock", "&cYour shop that sells &6%AMOUNT% x %ITEMNAME% &cis out of stock."), Regex.AMOUNT, Regex.ITEM_NAME));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.ERROR_OCCURRED, langConfig.getString("message.error-occurred", "&cAn error occurred: %ERROR%"), Regex.ERROR));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.VENDOR_OUT_OF_STOCK, langConfig.getString("message.vendor-out-of-stock", "&cYour shop that sells &6%AMOUNT% x %ITEMNAME% &cis out of stock."), Placeholder.AMOUNT, Placeholder.ITEM_NAME));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.ERROR_OCCURRED, langConfig.getString("message.error-occurred", "&cAn error occurred: %ERROR%"), Placeholder.ERROR));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER, langConfig.getString("message.amount-and-price-not-number", "&cAmount and price must be a number.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO, langConfig.getString("message.amount-is-zero", "&cAmount must be greater than 0.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS, langConfig.getString("message.prices-contain-decimals", "&cPrices must not contain decimals.")));
@@ -1041,20 +1041,20 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE, langConfig.getString("message.click-chest-to-remove-shop", "&aClick a shop to remove it.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_INFO, langConfig.getString("message.click-chest-for-info", "&aClick a shop to retrieve information.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_OPEN, langConfig.getString("message.click-chest-to-open-shop", "&aClick a shop to open it.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.OPENED_SHOP, langConfig.getString("message.opened-shop", "&aYou opened %VENDOR%'s shop."), Regex.VENDOR));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.OPENED_SHOP, langConfig.getString("message.opened-shop", "&aYou opened %VENDOR%'s shop."), Placeholder.VENDOR));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_BREAK_SHOP, langConfig.getString("message.cannot-break-shop", "&cYou can't break a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM, langConfig.getString("message.cannot-sell-broken-item", "&cYou can't sell a broken item.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, langConfig.getString("message.buy-price-too-low", "&cThe buy price must be higher than %MIN-PRICE%."), Regex.MIN_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, langConfig.getString("message.sell-price-too-low", "&cThe sell price must be higher than %MIN-PRICE%."), Regex.MIN_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, langConfig.getString("message.buy-price-too-high", "&cThe buy price must be lower than %MAX-PRICE%."), Regex.MAX_PRICE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, langConfig.getString("message.sell-price-too-high", "&cThe sell price must be lower than %MAX-PRICE%."), Regex.MAX_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, langConfig.getString("message.buy-price-too-low", "&cThe buy price must be higher than %MIN-PRICE%."), Placeholder.MIN_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, langConfig.getString("message.sell-price-too-low", "&cThe sell price must be higher than %MIN-PRICE%."), Placeholder.MIN_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, langConfig.getString("message.buy-price-too-high", "&cThe buy price must be lower than %MAX-PRICE%."), Placeholder.MAX_PRICE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, langConfig.getString("message.sell-price-too-high", "&cThe sell price must be lower than %MAX-PRICE%."), Placeholder.MAX_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.BUYING_DISABLED, langConfig.getString("message.buying-disabled", "&cBuying is disabled at this shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SELLING_DISABLED, langConfig.getString("message.selling-disabled", "&cSelling is disabled at this shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.RELOADED_SHOPS, langConfig.getString("message.reloaded-shops", "&aSuccessfully reloaded %AMOUNT% shop/s."), Regex.AMOUNT));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, langConfig.getString("message.shop-limit-reached", "&cYou reached your limit of &6%LIMIT% &cshop/s."), Regex.LIMIT));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS, langConfig.getString("message.occupied-shop-slots", "&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied."), Regex.AMOUNT, Regex.LIMIT));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.RELOADED_SHOPS, langConfig.getString("message.reloaded-shops", "&aSuccessfully reloaded %AMOUNT% shop/s."), Placeholder.AMOUNT));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, langConfig.getString("message.shop-limit-reached", "&cYou reached your limit of &6%LIMIT% &cshop/s."), Placeholder.LIMIT));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS, langConfig.getString("message.occupied-shop-slots", "&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied."), Placeholder.AMOUNT, Placeholder.LIMIT));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_SELL_ITEM, langConfig.getString("message.cannot-sell-item", "&cYou cannot create a shop with this item.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, langConfig.getString("message.update.update-available", "&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere."), Regex.VERSION));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, langConfig.getString("message.update.update-available", "&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere."), Placeholder.VERSION));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD, langConfig.getString("message.update.click-to-download", "Click to download")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE, langConfig.getString("message.update.no-update", "&6&lNo new update available.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_CHECKING, langConfig.getString("message.update.checking", "&6&lChecking for updates...")));
@@ -1082,9 +1082,9 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "View shop limits.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_OPEN, langConfig.getString("message.commandDescription.open", "Open a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "Change configuration values.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6."), Regex.PROPERTY, Regex.VALUE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6."), Regex.PROPERTY, Regex.VALUE));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, langConfig.getString("message.config.added", "&6Added &a%VALUE% &6to &a%PROPERTY%&6."), Regex.PROPERTY, Regex.VALUE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6."), Placeholder.PROPERTY, Placeholder.VALUE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6."), Placeholder.PROPERTY, Placeholder.VALUE));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, langConfig.getString("message.config.added", "&6Added &a%VALUE% &6to &a%PROPERTY%&6."), Placeholder.PROPERTY, Placeholder.VALUE));
     }
 
     /**
@@ -1092,6 +1092,7 @@ public class LanguageUtils {
      * @return Localized Name of the Item, the custom name, or if <i>stack</i> is a book, the title of the book
      */
     public static String getItemName(ItemStack stack) {
+        if (stack == null) return null;
         if (stack.hasItemMeta()) {
             ItemMeta meta = stack.getItemMeta();
             if (meta.getDisplayName() != null) {
@@ -1187,6 +1188,7 @@ public class LanguageUtils {
      * @return Localized Name of the enchantment with the given level afterwards
      */
     public static String getEnchantmentName(Enchantment enchantment, int level) {
+        if (enchantment == null) return null;
         String enchantmentString = formatDefaultString(enchantment.getName());
         String levelString = langConfig.getString("enchantment.level." + level, String.valueOf(level));
 
@@ -1210,6 +1212,7 @@ public class LanguageUtils {
      * @return Comma separated list of localized enchantments
      */
     public static String getEnchantmentString(Map<Enchantment, Integer> enchantmentMap) {
+        if (enchantmentMap == null) return null;
         Enchantment[] enchantments = enchantmentMap.keySet().toArray(new Enchantment[enchantmentMap.size()]);
         StringBuilder enchantmentList = new StringBuilder();
 
@@ -1232,6 +1235,7 @@ public class LanguageUtils {
      * @return Localized Name of the Base Potion Effect
      */
     public static String getPotionEffectName(ItemStack itemStack) {
+        if (itemStack == null) return null;
         if (!(itemStack.getItemMeta() instanceof PotionMeta)) return "";
 
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
@@ -1263,6 +1267,7 @@ public class LanguageUtils {
      * @return Localized title of the Music Disc
      */
     public static String getMusicDiscName(Material musicDiscMaterial) {
+        if (musicDiscMaterial == null) return null;
         for (MusicDiscName musicDiscName : musicDiscNames) {
             if (musicDiscMaterial == musicDiscName.getMusicDiscMaterial()) {
                 return musicDiscName.getLocalizedName();
@@ -1277,6 +1282,7 @@ public class LanguageUtils {
      * @return Localized title of the generation
      */
     public static String getBookGenerationName(CustomBookMeta.Generation generation) {
+        if (generation == null) return null;
         for (BookGenerationName generationName : generationNames) {
             if (generation == generationName.getGeneration()) {
                 return generationName.getLocalizedName();
@@ -1294,8 +1300,8 @@ public class LanguageUtils {
     public static String getMessage(LocalizedMessage.Message message, LocalizedMessage.ReplacedRegex... replacedRegexes) {
         String _message = ChatColor.RED + "An error occurred: Message not found: " + message.toString();
 
-        ArrayList<Regex> neededRegexes = new ArrayList<>();
-        ArrayList<Regex> usedRegexes = new ArrayList<>();
+        ArrayList<Placeholder> neededRegexes = new ArrayList<>();
+        ArrayList<Placeholder> usedRegexes = new ArrayList<>();
 
         for (LocalizedMessage localizedMessage : messages) {
             if (localizedMessage.getMessage() == message) {
@@ -1304,15 +1310,15 @@ public class LanguageUtils {
                     neededRegexes.add(replacedRegex.getRegex());
                     for (int i = 0; i < localizedMessage.getRegexes().length; i++) {
                         if (localizedMessage.getRegexes()[i] == replacedRegex.getRegex()) {
-                            Regex regex = replacedRegex.getRegex();
+                            Placeholder regex = replacedRegex.getRegex();
                             String toReplace = replacedRegex.getReplace();
-                            if (regex == Regex.BUY_PRICE || regex == Regex.SELL_PRICE || regex == Regex.MIN_PRICE || regex == Regex.CREATION_PRICE || regex == Regex.REVENUE) {
+                            if (regex == Placeholder.BUY_PRICE || regex == Placeholder.SELL_PRICE || regex == Placeholder.MIN_PRICE || regex == Placeholder.CREATION_PRICE || regex == Placeholder.REVENUE) {
                                 if (!toReplace.equals(getMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED))) {
                                     double price = Double.parseDouble(toReplace);
                                     toReplace = plugin.getEconomy().format(price);
                                 }
                             }
-                            _message = _message.replace(regex.getName(), toReplace);
+                            _message = _message.replace(regex.toString(), toReplace);
                             usedRegexes.add(regex);
                             break;
                         }
@@ -1322,9 +1328,9 @@ public class LanguageUtils {
         }
 
         if (!neededRegexes.containsAll(usedRegexes)) {
-            for (Regex regex : usedRegexes) {
+            for (Placeholder regex : usedRegexes) {
                 if (!neededRegexes.contains(regex)) {
-                    plugin.getLogger().warning("Regex '" + regex.toString() + "' was not used in message '" + message.toString() + "'");
+                    plugin.getLogger().warning("Placeholder '" + regex.toString() + "' was not used in message '" + message.toString() + "'");
                 }
             }
         }

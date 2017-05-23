@@ -1,6 +1,6 @@
 package de.epiceric.shopchest.config;
 
-public enum Regex {
+public enum Placeholder {
 
     VENDOR("%VENDOR%"),
     AMOUNT("%AMOUNT%"),
@@ -27,11 +27,12 @@ public enum Regex {
 
     private String name;
 
-    Regex(String name) {
+    Placeholder(String name) {
         this.name = name;
     }
 
-    public String getName() {
+    @Override
+    public String toString() {
         return name;
     }
 

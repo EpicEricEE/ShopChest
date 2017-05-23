@@ -26,11 +26,17 @@
 # %SELL-PRICE%, %POTION-EFFECT%, %MUSIC-TITLE%, %GENERATION%,
 # %STOCK%, %MAX-STACK%
 #
+# In the format, placeholders can also be used for scripts.
+# Examples:
+#   - "In Stock: {%STOCK% / 64} Stk."
+#   - "In Stock: {(%STOCK% - (%STOCK% % 64)) / 64} Stk. {%STOCK% % 64}"
+#
 # Other information:
 # - Options can be called however you want.
 # - Color codes can be used in the format.
 # - Options are checked from top to bottom; the first to
 #   fulfill the requirements will be taken.
+# - All scripts have to be in JavaScript syntax.
 # - Lines start with 0.
 
 lines:
