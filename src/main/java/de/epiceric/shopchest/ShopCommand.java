@@ -174,7 +174,6 @@ class ShopCommand implements CommandExecutor {
             }
         }
 
-
         if (needsHelp) sendBasicHelpMessage(sender);
         return true;
     }
@@ -275,114 +274,92 @@ class ShopCommand implements CommandExecutor {
         int amount;
         double buyPrice, sellPrice;
 
+        // Check for limits
         int limit = shopUtils.getShopLimit(p);
-
         if (limit != -1) {
             if (shopUtils.getShopAmount(p) >= limit) {
                 if (shopType != ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, new LocalizedMessage.ReplacedRegex(Regex.LIMIT, String.valueOf(limit))));
+                    plugin.debug(p.getName() + " has reached the limit");
                     return;
                 }
             }
         }
 
-        plugin.debug(p.getName() + " has not reached the limit");
-
+        // Check if amount and prices are valid
         try {
             amount = Integer.parseInt(args[1]);
             buyPrice = Double.parseDouble(args[2]);
             sellPrice = Double.parseDouble(args[3]);
         } catch (NumberFormatException e) {
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER));
+            plugin.debug(p.getName() + " has entered an invalid amount");
             return;
         }
 
         if (amount <= 0) {
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO));
+            plugin.debug(p.getName() + " has entered an invalid amount");
             return;
         }
-
-        plugin.debug(p.getName() + " has entered numbers as prices and amount");
 
         if (!plugin.getShopChestConfig().allow_decimals_in_price && (buyPrice != (int) buyPrice || sellPrice != (int) sellPrice)) {
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS));
+            plugin.debug(p.getName() + " has entered an invalid price");
             return;
         }
-
-        plugin.debug(p.getName() + " has entered the numbers correctly (according to allow-decimals configuration)");
 
         boolean buyEnabled = buyPrice > 0;
         boolean sellEnabled = sellPrice > 0;
 
         if (!buyEnabled && !sellEnabled) {
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SELL_DISABLED));
+            plugin.debug(p.getName() + " has disabled buying and selling");
             return;
         }
 
-        plugin.debug(p.getName() + " has enabled buying, selling or both");
+        ItemStack inHand = Utils.getPreferredItemInHand(p);
 
-        if (Utils.getPreferredItemInHand(p) == null) {
+        // Check if item in hand
+        if (inHand == null) {
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND));
+            plugin.debug(p.getName() + " does not have an item in his hand");
             return;
         }
 
-        plugin.debug(p.getName() + " has an item in his hand");
-
+        // Check if item on blacklist
         for (String item : plugin.getShopChestConfig().blacklist) {
-            ItemStack itemStack;
+            ItemStack itemStack = ItemUtils.getItemStack(item);
 
-            if (item.contains(":")) {
-                Material mat = Material.getMaterial(item.split(":")[0]);
-                if (mat == null) {
-                    plugin.getLogger().warning("Invalid item found in blacklist: " + item);
-                    plugin.debug("Invalid item in blacklist: " + item);
-                    continue;
-                }
-                itemStack = new ItemStack(mat, 1, Short.parseShort(item.split(":")[1]));
-            } else {
-                Material mat = Material.getMaterial(item);
-                if (mat == null) {
-                    plugin.getLogger().warning("Invalid item found in blacklist: " + item);
-                    plugin.debug("Invalid item in blacklist: " + item);
-                    continue;
-                }
-                itemStack = new ItemStack(mat, 1);
+            if (itemStack == null) {
+                plugin.getLogger().warning("Invalid item found in blacklist: " + item);
+                plugin.debug("Invalid item in blacklist: " + item);
+                continue;
             }
 
-            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
+            if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_ITEM));
+                plugin.debug(p.getName() + "'s item is on the blacklist");
                 return;
             }
         }
 
-        plugin.debug(p.getName() + "'s item is not on the blacklist");
-
+        // Check if prices lower than minimum price
         for (String key : plugin.getShopChestConfig().minimum_prices) {
-            ItemStack itemStack;
+            ItemStack itemStack = ItemUtils.getItemStack(key);
             double minPrice = plugin.getConfig().getDouble("minimum-prices." + key);
 
-            if (key.contains(":")) {
-                Material mat = Material.getMaterial(key.split(":")[0]);
-                if (mat == null) {
-                    plugin.getLogger().warning("Invalid item found in minimum-prices: " + key);
-                    plugin.debug("Invalid item in minimum-prices: " + key);
-                    continue;
-                }
-                itemStack = new ItemStack(mat, 1, Short.parseShort(key.split(":")[1]));
-            } else {
-                Material mat = Material.getMaterial(key);
-                if (mat == null) {
-                    plugin.getLogger().warning("Invalid item found in minimum-prices: " + key);
-                    plugin.debug("Invalid item in minimum-prices: " + key);
-                    continue;
-                }
-                itemStack = new ItemStack(mat, 1);
+            if (itemStack == null) {
+                plugin.getLogger().warning("Invalid item found in minimum-prices: " + key);
+                plugin.debug("Invalid item in minimum-prices: " + key);
+                continue;
             }
 
-            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
+            if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
                 if (buyEnabled) {
                     if ((buyPrice < amount * minPrice) && (buyPrice > 0)) {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * minPrice))));
+                        plugin.debug(p.getName() + "'s buy price is lower than the minimum");
                         return;
                     }
                 }
@@ -390,40 +367,29 @@ class ShopCommand implements CommandExecutor {
                 if (sellEnabled) {
                     if ((sellPrice < amount * minPrice) && (sellPrice > 0)) {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(amount * minPrice))));
+                        plugin.debug(p.getName() + "'s sell price is lower than the minimum");
                         return;
                     }
                 }
             }
         }
 
-        plugin.debug(p.getName() + "'s prices are higher than the minimum");
-
+        // Check if prices higher than maximum price
         for (String key : plugin.getShopChestConfig().maximum_prices) {
-            ItemStack itemStack;
+            ItemStack itemStack = ItemUtils.getItemStack(key);
             double maxPrice = plugin.getConfig().getDouble("maximum-prices." + key);
 
-            if (key.contains(":")) {
-                Material mat = Material.getMaterial(key.split(":")[0]);
-                if (mat == null) {
-                    plugin.getLogger().warning("Invalid item found in maximum-prices: " + key);
-                    plugin.debug("Invalid item in maximum-prices: " + key);
-                    continue;
-                }
-                itemStack = new ItemStack(mat, 1, Short.parseShort(key.split(":")[1]));
-            } else {
-                Material mat = Material.getMaterial(key);
-                if (mat == null) {
-                    plugin.getLogger().warning("Invalid item found in maximum-prices: " + key);
-                    plugin.debug("Invalid item in maximum-prices: " + key);
-                    continue;
-                }
-                itemStack = new ItemStack(mat, 1);
+            if (itemStack == null) {
+                plugin.getLogger().warning("Invalid item found in maximum-prices: " + key);
+                plugin.debug("Invalid item in maximum-prices: " + key);
+                continue;
             }
 
-            if (itemStack.getType().equals(Utils.getPreferredItemInHand(p).getType()) && itemStack.getDurability() == Utils.getPreferredItemInHand(p).getDurability()) {
+            if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
                 if (buyEnabled) {
                     if ((buyPrice > amount * maxPrice) && (buyPrice > 0)) {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedRegex(Regex.MAX_PRICE, String.valueOf(amount * maxPrice))));
+                        plugin.debug(p.getName() + "'s buy price is higher than the maximum");
                         return;
                     }
                 }
@@ -431,52 +397,49 @@ class ShopCommand implements CommandExecutor {
                 if (sellEnabled) {
                     if ((sellPrice > amount * maxPrice) && (sellPrice > 0)) {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedRegex(Regex.MAX_PRICE, String.valueOf(amount * maxPrice))));
+                        plugin.debug(p.getName() + "'s sell price is higher than the maximum");
                         return;
                     }
                 }
             }
         }
 
-        plugin.debug(p.getName() + "'s prices are lower than the maximum");
 
         if (sellEnabled && buyEnabled) {
             if (plugin.getShopChestConfig().buy_greater_or_equal_sell) {
                 if (buyPrice < sellPrice) {
                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedRegex(Regex.MIN_PRICE, String.valueOf(sellPrice))));
+                    plugin.debug(p.getName() + "'s buy price is lower than the sell price");
                     return;
                 }
             }
         }
 
-        plugin.debug(p.getName() + "'s buy price is high enough");
+        ItemStack product = new ItemStack(inHand.getType(), amount, inHand.getDurability());
+        product.setItemMeta(inHand.getItemMeta());
 
-        ItemStack itemStack = new ItemStack(Utils.getPreferredItemInHand(p).getType(), amount, Utils.getPreferredItemInHand(p).getDurability());
-        itemStack.setItemMeta(Utils.getPreferredItemInHand(p).getItemMeta());
-
-        if (Enchantment.DURABILITY.canEnchantItem(itemStack)) {
-            if (itemStack.getDurability() > 0 && !plugin.getShopChestConfig().allow_broken_items) {
+        if (Enchantment.DURABILITY.canEnchantItem(product)) {
+            if (product.getDurability() > 0 && !plugin.getShopChestConfig().allow_broken_items) {
                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM));
+                plugin.debug(p.getName() + "'s item is broken");
                 return;
             }
         }
-
-        plugin.debug(p.getName() + "'s item is not broken (or broken items are allowed through config)");
 
         double creationPrice = (shopType == ShopType.NORMAL) ? plugin.getShopChestConfig().shop_creation_price_normal : plugin.getShopChestConfig().shop_creation_price_admin;
         if (creationPrice > 0) {
             if (plugin.getEconomy().getBalance(p) < creationPrice) {
                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, new LocalizedMessage.ReplacedRegex(Regex.CREATION_PRICE, String.valueOf(creationPrice))));
+                plugin.debug(p.getName() + " can not pay the creation price");
                 return;
             }
         }
 
-        plugin.debug(p.getName() + " can pay the creation price");
-
-        ShopPreCreateEvent event = new ShopPreCreateEvent(p, new Shop(plugin, p, itemStack, null, buyPrice, sellPrice, shopType));
+        ShopPreCreateEvent event = new ShopPreCreateEvent(p, new Shop(plugin, p, product, null, buyPrice, sellPrice, shopType));
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            ClickType.setPlayerClickType(p, new ClickType(EnumClickType.CREATE, itemStack, buyPrice, sellPrice, shopType));
+            ClickType.setPlayerClickType(p, new ClickType(EnumClickType.CREATE, product, buyPrice, sellPrice, shopType));
             plugin.debug(p.getName() + " can now click a chest");
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
         } else {
