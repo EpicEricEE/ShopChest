@@ -90,9 +90,8 @@ public class ShopUtils {
      * Remove a shop
      * @param shop Shop to remove
      * @param removeFromDatabase Whether the shop should also be removed from the database
-     * @param useCurrentThread Whether the current thread should be used instead of a new async task
      */
-    public void removeShop(Shop shop, boolean removeFromDatabase, boolean useCurrentThread) {
+    public void removeShop(Shop shop, boolean removeFromDatabase) {
         plugin.debug("Removing shop (#" + shop.getID() + ")");
 
         InventoryHolder ih = shop.getInventoryHolder();
@@ -109,19 +108,10 @@ public class ShopUtils {
         }
 
         shop.removeItem();
-        shop.removeHologram(useCurrentThread);
+        shop.removeHologram();
 
         if (removeFromDatabase)
             plugin.getShopDatabase().removeShop(shop, null);
-    }
-
-    /**
-     * Remove a shop
-     * @param shop Shop to remove
-     * @param removeFromDatabase Whether the shop should also be removed from the database
-     */
-    public void removeShop(Shop shop, boolean removeFromDatabase) {
-        removeShop(shop, removeFromDatabase, false);
     }
 
     /**

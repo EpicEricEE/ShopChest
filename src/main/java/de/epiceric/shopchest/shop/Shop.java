@@ -92,23 +92,11 @@ public class Shop {
     /**
      * Removes the hologram of the shop
      */
-    public void removeHologram(boolean useCurrentThread) {
+    public void removeHologram() {
         if (hologram != null && hologram.exists()) {
             plugin.debug("Removing hologram (#" + id + ")");
-
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                hologram.hidePlayer(p, useCurrentThread);
-            }
-
             hologram.remove();
         }
-    }
-
-    /**
-     * Removes the hologram of the shop
-     */
-    public void removeHologram() {
-        removeHologram(false);
     }
 
     /**

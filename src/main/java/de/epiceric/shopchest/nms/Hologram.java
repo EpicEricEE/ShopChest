@@ -287,6 +287,10 @@ public class Hologram {
             armorStand.remove();
         }
 
+        if (interactArmorStand != null) {
+            interactArmorStand.remove();
+        }
+
         exists = false;
         holograms.remove(this);
     }
