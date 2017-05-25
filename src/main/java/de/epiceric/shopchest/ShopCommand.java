@@ -12,6 +12,7 @@ import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -22,6 +23,8 @@ import org.bukkit.plugin.Plugin;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 class ShopCommand implements CommandExecutor {
@@ -169,6 +172,16 @@ class ShopCommand implements CommandExecutor {
                 } else {
                     needsHelp = false;
                     sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG));
+                }
+            } else if (args[0].equalsIgnoreCase("removeall")) {
+                if (sender.hasPermission(Permissions.REMOVE_OTHER)) {
+                    if (args.length >= 2) {
+                        needsHelp = false;
+                        removeAll(sender, args);
+                    }
+                } else {
+                    needsHelp = false;
+                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS));
                 }
             }
         }
@@ -503,6 +516,35 @@ class ShopCommand implements CommandExecutor {
         ClickType.setPlayerClickType(p, new ClickType(EnumClickType.OPEN));
     }
 
+    private void removeAll(CommandSender sender, String[] args) {
+        OfflinePlayer vendor = Bukkit.getOfflinePlayer(args[1]);
+
+        plugin.debug(sender.getName() + " is removing all shops of " + vendor.getName());
+
+        List<Shop> shops = new ArrayList<>();
+
+        for (Shop shop : shopUtils.getShops()) {
+            if (shop.getVendor().getUniqueId().equals(vendor.getUniqueId())) {
+                shops.add(shop);
+            }
+        }
+
+        ShopRemoveAllEvent event = new ShopRemoveAllEvent(sender, vendor, shops);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()){
+            plugin.debug("Remove all event cancelled");
+            return;
+        }
+
+        for (Shop shop : shops) {
+            shopUtils.removeShop(shop, true);
+        }
+
+        sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ALL_SHOPS_REMOVED,
+                new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(shops.size())),
+                new LocalizedMessage.ReplacedRegex(Placeholder.VENDOR, vendor.getName())));
+    }
+
     /**
      * Sends the basic help message
      * @param sender {@link CommandSender} who will receive the message
@@ -532,6 +574,10 @@ class ShopCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " info - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO));
             sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " limits - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS));
             sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " open - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_OPEN));
+        }
+
+        if (sender.hasPermission(Permissions.REMOVE_OTHER)) {
+            sender.sendMessage(ChatColor.GREEN + "/" + plugin.getShopChestConfig().main_command_name + " removeall <player> - " + LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVEALL));
         }
 
         if (sender.hasPermission(Permissions.RELOAD)) {

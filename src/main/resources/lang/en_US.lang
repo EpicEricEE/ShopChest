@@ -14,6 +14,10 @@ message.double-chest-blocked=&cThere must not be a block above the chest.
 # Set the message when the clicked shop is removed.
 message.shop-removed=&6Shop removed.
 
+# Set the message when all shops of a player were removed.
+# Usable Placeholders: %AMOUNT%, %VENDOR%
+message.all-shops-removed=&6Removed all (&c%AMOUNT%&6) shop/s of &c%VENDOR%&6.
+
 # Set the message when the clicked chest is not a shop.
 message.chest-no-shop=&cChest is not a shop.
 
@@ -271,6 +275,9 @@ message.commandDescription.remove=Remove a shop.
 
 # Set the command description message for '/shop info' when you type '/shop'.
 message.commandDescription.info=Retrieve shop information.
+
+# Set the command description message for '/shop removeall' when you type '/shop'.
+message.commandDescription.removeall=Remove all shops of a player.
 
 # Set the command description message for '/shop reload' when you type '/shop'.
 message.commandDescription.reload=Reload shops.

@@ -1002,6 +1002,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_BLOCKED, langConfig.getString("message.chest-blocked", "&cThere must not be a block above the chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.DOUBLE_CHEST_BLOCKED, langConfig.getString("message.double-chest-blocked", "&cThere must not be a block above the chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_REMOVED, langConfig.getString("message.shop-removed", "&6Shop removed.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.ALL_SHOPS_REMOVED, langConfig.getString("message.all-shops-removed", "&6Removed all (&c%AMOUNT%&6) shop/s of &c%VENDOR%&6."), Placeholder.AMOUNT, Placeholder.VENDOR));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_NO_SHOP, langConfig.getString("message.chest-no-shop", "&cChest is not a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, langConfig.getString("message.shop-create-not-enough-money", "&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop."), Placeholder.CREATION_PRICE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR, langConfig.getString("message.shopInfo.vendor", "&6Vendor: &e%VENDOR%"), Placeholder.VENDOR));
@@ -1078,6 +1079,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "Create a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "Remove a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "Retrieve shop information.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVEALL, langConfig.getString("message.commandDescription.removeall", "Remove all shops of a player.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD, langConfig.getString("message.commandDescription.reload", "Reload shops.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE, langConfig.getString("message.commandDescription.update", "Check for Updates.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "View shop limits.")));
