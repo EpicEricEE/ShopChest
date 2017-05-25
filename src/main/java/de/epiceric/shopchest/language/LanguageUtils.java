@@ -1054,6 +1054,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, langConfig.getString("message.shop-limit-reached", "&cYou reached your limit of &6%LIMIT% &cshop/s."), Placeholder.LIMIT));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS, langConfig.getString("message.occupied-shop-slots", "&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied."), Placeholder.AMOUNT, Placeholder.LIMIT));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_SELL_ITEM, langConfig.getString("message.cannot-sell-item", "&cYou cannot create a shop with this item.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.USE_IN_CREATIVE, langConfig.getString("message.use-in-creative", "&cYou cannot use a shop in creative mode.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, langConfig.getString("message.update.update-available", "&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere."), Placeholder.VERSION));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD, langConfig.getString("message.update.click-to-download", "Click to download")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE, langConfig.getString("message.update.no-update", "&6&lNo new update available.")));

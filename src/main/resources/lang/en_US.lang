@@ -199,6 +199,9 @@ message.occupied-shop-slots=&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied
 # Set the message when the player tries to create a shop with an item which is listed in the blacklist.
 message.cannot-sell-item=&cYou cannot create a shop with this item.
 
+# Set the message when the player tries to use a shop in creative mode.
+message.use-in-creative=&cYou cannot use a shop in creative mode.
+
 # Set the message when an update is available.
 # Usable Placeholders: %VERSION%
 message.update.update-available=&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere.

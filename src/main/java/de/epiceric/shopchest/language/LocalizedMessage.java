@@ -99,6 +99,7 @@ public class LocalizedMessage {
         SHOP_LIMIT_REACHED,
         OCCUPIED_SHOP_SLOTS,
         CANNOT_SELL_ITEM,
+        USE_IN_CREATIVE,
         UPDATE_AVAILABLE,
         UPDATE_CLICK_TO_DOWNLOAD,
         UPDATE_NO_UPDATE,

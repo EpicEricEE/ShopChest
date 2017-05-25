@@ -55,6 +55,7 @@ message.reloaded-shops=&a%AMOUNT% Shop/s wurden erfolgreich neu geladen.
 message.shop-limit-reached=&cDu hast dein Limit von &6%LIMIT% &cShop/s erreicht.
 message.occupied-shop-slots=&6Du hast &c%AMOUNT%/%LIMIT% &6Shop Slot/s benutzt.
 message.cannot-sell-item=&cDu kannst für diesen Artikel keinen Shop erstellen.
+message.use-in-creative=&cDu kannst im Kreativ-Modus keine Shops benutzen.
 message.update.update-available=&6&lVersion &c%VERSION% &6von &cShopChest &6ist verfügbar.
 message.update.click-to-download=Klicke hier zum Herunterladen
 message.update.no-update=&6&lKeine neue Aktualisierung verfügbar.
