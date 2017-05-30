@@ -55,6 +55,10 @@ public class Hologram {
     public void addLine(int line, String text) {
         if (text == null || text.isEmpty()) return;
 
+        if (line >= armorStands.size()) {
+            line = armorStands.size();
+        }
+
         text = ChatColor.translateAlternateColorCodes('&', text);
 
         if (config.hologram_fixed_bottom) {
@@ -67,10 +71,6 @@ public class Hologram {
                 ArmorStand stand = armorStands.get(i);
                 stand.teleport(stand.getLocation().subtract(0, 0.25, 0));
             }
-        }
-
-        if (line >= armorStands.size()) {
-            line = armorStands.size();
         }
 
         Location location = this.location.clone();
@@ -152,7 +152,7 @@ public class Hologram {
             Location loc = location.clone().add(0, 0.4, 0);
 
             try {
-                ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+                ArmorStand armorStand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
                 armorStand.setGravity(false);
                 armorStand.setVisible(false);
 

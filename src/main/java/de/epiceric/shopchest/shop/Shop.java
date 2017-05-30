@@ -231,7 +231,9 @@ public class Shop {
                 format = format.replace(regex.toString(), replace);
             }
 
-            lines.add(format);
+            if (!format.isEmpty()) {
+                lines.add(format);
+            }
         }
 
         return lines.toArray(new String[lines.size()]);
