@@ -7,7 +7,6 @@ import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.exceptions.ChestNotFoundException;
 import de.epiceric.shopchest.exceptions.NotEnoughSpaceException;
 import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Utils;
@@ -193,7 +192,7 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.HAS_POTION_EFFECT, ItemUtils.getPotionEffect(getProduct()) != null);
         requirements.put(HologramFormat.Requirement.IS_MUSIC_DISC, ItemUtils.isMusicDisc(getProduct()));
         requirements.put(HologramFormat.Requirement.IS_POTION_EXTENDED, ItemUtils.isExtendedPotion(getProduct()));
-        requirements.put(HologramFormat.Requirement.IS_BOOK, ItemUtils.getBookGeneration(getProduct()) != null);
+        requirements.put(HologramFormat.Requirement.IS_WRITTEN_BOOK, ItemUtils.getBookGeneration(getProduct()) != null);
         requirements.put(HologramFormat.Requirement.ADMIN_SHOP, getShopType() == ShopType.ADMIN);
         requirements.put(HologramFormat.Requirement.NORMAL_SHOP, getShopType() == ShopType.NORMAL);
         requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
