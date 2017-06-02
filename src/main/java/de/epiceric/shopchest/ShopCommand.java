@@ -440,7 +440,7 @@ class ShopCommand implements CommandExecutor {
 
         double creationPrice = (shopType == ShopType.NORMAL) ? plugin.getShopChestConfig().shop_creation_price_normal : plugin.getShopChestConfig().shop_creation_price_admin;
         if (creationPrice > 0) {
-            if (plugin.getEconomy().getBalance(p) < creationPrice) {
+            if (plugin.getEconomy().getBalance(p, p.getWorld().getName()) < creationPrice) {
                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, new LocalizedMessage.ReplacedPlaceholder(Placeholder.CREATION_PRICE, String.valueOf(creationPrice))));
                 plugin.debug(p.getName() + " can not pay the creation price");
                 return;
