@@ -459,8 +459,8 @@ public class ShopInteractListener implements Listener {
                                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
                                                         if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
                                                             shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.VENDOR_OUT_OF_STOCK,
-                                                                    new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
-                                                                            new LocalizedMessage.ReplacedRegex(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct()))));
+                                                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                                                                            new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct()))));
                                                         }
                                                         plugin.debug("Shop is out of stock");
                                                     }
@@ -644,7 +644,7 @@ public class ShopInteractListener implements Listener {
         EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
         if (!r.transactionSuccess()) {
             plugin.debug("Economy transaction failed: " + r.errorMessage);
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Placeholder.ERROR, r.errorMessage)));
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
             return;
         }
 
@@ -705,7 +705,7 @@ public class ShopInteractListener implements Listener {
 
         executor.openInventory(shop.getInventoryHolder().getInventory());
         plugin.debug("Opened shop (#" + shop.getID() + ")");
-        if (message) executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedRegex(Placeholder.VENDOR, shop.getVendor().getName())));
+        if (message) executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, shop.getVendor().getName())));
     }
 
     /**
@@ -732,11 +732,11 @@ public class ShopInteractListener implements Listener {
                 shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
 
         String vendorString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR,
-                new LocalizedMessage.ReplacedRegex(Placeholder.VENDOR, vendorName));
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, vendorName));
 
         String productString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT,
-                new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
-                new LocalizedMessage.ReplacedRegex(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct())));
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct())));
 
         String enchantmentString = "";
         String potionEffectString = "";
@@ -746,14 +746,14 @@ public class ShopInteractListener implements Listener {
         String disabled = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED);
 
         String priceString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRICE,
-                new LocalizedMessage.ReplacedRegex(Placeholder.BUY_PRICE, (shop.getBuyPrice() > 0 ? String.valueOf(shop.getBuyPrice()) : disabled)),
-                new LocalizedMessage.ReplacedRegex(Placeholder.SELL_PRICE, (shop.getSellPrice() > 0 ? String.valueOf(shop.getSellPrice()) : disabled)));
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, (shop.getBuyPrice() > 0 ? String.valueOf(shop.getBuyPrice()) : disabled)),
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, (shop.getSellPrice() > 0 ? String.valueOf(shop.getSellPrice()) : disabled)));
 
         String shopType = LanguageUtils.getMessage(shop.getShopType() == ShopType.NORMAL ?
                 LocalizedMessage.Message.SHOP_INFO_NORMAL : LocalizedMessage.Message.SHOP_INFO_ADMIN);
 
         String stock = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_STOCK,
-                new LocalizedMessage.ReplacedRegex(Placeholder.STOCK, String.valueOf(amount)));
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.STOCK, String.valueOf(amount)));
 
         String potionEffectName = LanguageUtils.getPotionEffectName(shop.getProduct());
 
@@ -762,8 +762,8 @@ public class ShopInteractListener implements Listener {
 
             String extended = potionExtended ? LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED) : "";
             potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT,
-                    new LocalizedMessage.ReplacedRegex(Placeholder.POTION_EFFECT, potionEffectName),
-                    new LocalizedMessage.ReplacedRegex(Placeholder.EXTENDED, extended));
+                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.POTION_EFFECT, potionEffectName),
+                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.EXTENDED, extended));
         }
 
         if (type == Material.WRITTEN_BOOK) {
@@ -782,13 +782,13 @@ public class ShopInteractListener implements Listener {
             }
 
             bookGenerationString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_BOOK_GENERATION,
-                    new LocalizedMessage.ReplacedRegex(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(generation)));
+                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(generation)));
         }
 
         String musicDiscName = LanguageUtils.getMusicDiscName(type);
         if (musicDiscName.length() > 0) {
             musicDiscTitleString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE,
-                    new LocalizedMessage.ReplacedRegex(Placeholder.MUSIC_TITLE, musicDiscName));
+                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.MUSIC_TITLE, musicDiscName));
         }
 
         Map<Enchantment, Integer> enchantmentMap = ItemUtils.getEnchantments(shop.getProduct());
@@ -796,7 +796,7 @@ public class ShopInteractListener implements Listener {
 
         if (enchantmentList.length() > 0) {
             enchantmentString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS,
-                    new LocalizedMessage.ReplacedRegex(Placeholder.ENCHANTMENT, enchantmentList));
+                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.ENCHANTMENT, enchantmentList));
         }
 
         executor.sendMessage(" ");
@@ -905,21 +905,21 @@ public class ShopInteractListener implements Listener {
                             executor.updateInventory();
 
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS, new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                    new LocalizedMessage.ReplacedRegex(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
-                                    new LocalizedMessage.ReplacedRegex(Placeholder.VENDOR, vendorName)));
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
 
                             if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
-                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                        new LocalizedMessage.ReplacedRegex(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
-                                        new LocalizedMessage.ReplacedRegex(Placeholder.PLAYER, executor.getName())));
+                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.PLAYER, executor.getName())));
                             }
 
                         } else {
                             plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Placeholder.ERROR, r2.errorMessage)));
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r2.errorMessage)));
                             econ.depositPlayer(executor, newPrice);
                         }
                     } else {
@@ -936,14 +936,14 @@ public class ShopInteractListener implements Listener {
 
                         addToInventory(inventory, newProduct);
                         executor.updateInventory();
-                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                new LocalizedMessage.ReplacedRegex(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Placeholder.BUY_PRICE, String.valueOf(newPrice))));
+                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, String.valueOf(newPrice))));
 
                         plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
                     }
                 } else {
                     plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
-                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Placeholder.ERROR, r.errorMessage)));
+                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
                 }
             } else {
                 executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE));
@@ -1044,21 +1044,21 @@ public class ShopInteractListener implements Listener {
                             executor.updateInventory();
 
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS, new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                    new LocalizedMessage.ReplacedRegex(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
-                                    new LocalizedMessage.ReplacedRegex(Placeholder.VENDOR, vendorName)));
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
+                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
 
                             if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
-                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_SOLD, new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                        new LocalizedMessage.ReplacedRegex(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
-                                        new LocalizedMessage.ReplacedRegex(Placeholder.PLAYER, executor.getName())));
+                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_SOLD, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
+                                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.PLAYER, executor.getName())));
                             }
 
                         } else {
                             plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Placeholder.ERROR, r2.errorMessage)));
+                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r2.errorMessage)));
                             econ.withdrawPlayer(executor, newPrice);
                         }
 
@@ -1076,15 +1076,15 @@ public class ShopInteractListener implements Listener {
 
                         removeFromInventory(executor.getInventory(), newProduct);
                         executor.updateInventory();
-                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, new LocalizedMessage.ReplacedRegex(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                new LocalizedMessage.ReplacedRegex(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedRegex(Placeholder.SELL_PRICE, String.valueOf(newPrice))));
+                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, String.valueOf(newPrice))));
 
                         plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
                     }
 
                 } else {
                     plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
-                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedRegex(Placeholder.ERROR, r.errorMessage)));
+                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
                 }
 
             } else {

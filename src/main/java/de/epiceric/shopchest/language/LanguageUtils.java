@@ -1076,15 +1076,16 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG, langConfig.getString("message.noPermission.config", "&cYou don't have permission to change configuration values.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_OTHERS, langConfig.getString("message.noPermission.extend-others", "&cYou don't have permission to extend this chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_PROTECTED, langConfig.getString("message.noPermission.extend-protected", "&cYou don't have permission to extend this chest to here.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "Create a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "Remove a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "Retrieve shop information.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVEALL, langConfig.getString("message.commandDescription.removeall", "Remove all shops of a player.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD, langConfig.getString("message.commandDescription.reload", "Reload shops.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE, langConfig.getString("message.commandDescription.update", "Check for Updates.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "View shop limits.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_OPEN, langConfig.getString("message.commandDescription.open", "Open a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "Change configuration values.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "&a/%COMMAND% remove - Remove a shop."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "&a/%COMMAND% info - Retrieve shop information."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVEALL, langConfig.getString("message.commandDescription.removeall", "&a/%COMMAND% removeall - Remove all shops of a player."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD, langConfig.getString("message.commandDescription.reload", "&a/%COMMAND% reload - Reload shops."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE, langConfig.getString("message.commandDescription.update", "&a/%COMMAND% update - Check for Updates."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "&a/%COMMAND% limits - View shop limits."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_OPEN, langConfig.getString("message.commandDescription.open", "&a/%COMMAND% open - Open a shop."), Placeholder.COMMAND));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "&a/%COMMAND% config <set|get|remove> <property> <value> - Change configuration values."), Placeholder.COMMAND));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6."), Placeholder.PROPERTY, Placeholder.VALUE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6."), Placeholder.PROPERTY, Placeholder.VALUE));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, langConfig.getString("message.config.added", "&6Added &a%VALUE% &6to &a%PROPERTY%&6."), Placeholder.PROPERTY, Placeholder.VALUE));
@@ -1297,32 +1298,32 @@ public class LanguageUtils {
 
     /**
      * @param message Message which should be translated
-     * @param replacedRegexes Regexes which might be required to be replaced in the message
+     * @param replacedPlaceholders Placeholders which might be required to be replaced in the message
      * @return Localized Message
      */
-    public static String getMessage(LocalizedMessage.Message message, LocalizedMessage.ReplacedRegex... replacedRegexes) {
+    public static String getMessage(LocalizedMessage.Message message, LocalizedMessage.ReplacedPlaceholder... replacedPlaceholders) {
         String _message = ChatColor.RED + "An error occurred: Message not found: " + message.toString();
 
-        ArrayList<Placeholder> neededRegexes = new ArrayList<>();
-        ArrayList<Placeholder> usedRegexes = new ArrayList<>();
+        ArrayList<Placeholder> neededPlaceholders = new ArrayList<>();
+        ArrayList<Placeholder> usedPlaceholders = new ArrayList<>();
 
         for (LocalizedMessage localizedMessage : messages) {
             if (localizedMessage.getMessage() == message) {
                 _message = localizedMessage.getLocalizedString();
-                for (LocalizedMessage.ReplacedRegex replacedRegex : replacedRegexes) {
-                    neededRegexes.add(replacedRegex.getRegex());
-                    for (int i = 0; i < localizedMessage.getRegexes().length; i++) {
-                        if (localizedMessage.getRegexes()[i] == replacedRegex.getRegex()) {
-                            Placeholder regex = replacedRegex.getRegex();
-                            String toReplace = replacedRegex.getReplace();
-                            if (regex == Placeholder.BUY_PRICE || regex == Placeholder.SELL_PRICE || regex == Placeholder.MIN_PRICE || regex == Placeholder.CREATION_PRICE || regex == Placeholder.REVENUE) {
+                for (LocalizedMessage.ReplacedPlaceholder replacedPlaceholder : replacedPlaceholders) {
+                    neededPlaceholders.add(replacedPlaceholder.getPlaceholder());
+                    for (int i = 0; i < localizedMessage.getPlaceholders().length; i++) {
+                        if (localizedMessage.getPlaceholders()[i] == replacedPlaceholder.getPlaceholder()) {
+                            Placeholder placeholder = replacedPlaceholder.getPlaceholder();
+                            String toReplace = replacedPlaceholder.getReplace();
+                            if (placeholder == Placeholder.BUY_PRICE || placeholder == Placeholder.SELL_PRICE || placeholder == Placeholder.MIN_PRICE || placeholder == Placeholder.CREATION_PRICE || placeholder == Placeholder.REVENUE) {
                                 if (!toReplace.equals(getMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED))) {
                                     double price = Double.parseDouble(toReplace);
                                     toReplace = plugin.getEconomy().format(price);
                                 }
                             }
-                            _message = _message.replace(regex.toString(), toReplace);
-                            usedRegexes.add(regex);
+                            _message = _message.replace(placeholder.toString(), toReplace);
+                            usedPlaceholders.add(placeholder);
                             break;
                         }
                     }
@@ -1330,10 +1331,10 @@ public class LanguageUtils {
             }
         }
 
-        if (!neededRegexes.containsAll(usedRegexes)) {
-            for (Placeholder regex : usedRegexes) {
-                if (!neededRegexes.contains(regex)) {
-                    plugin.getLogger().warning("Placeholder '" + regex.toString() + "' was not used in message '" + message.toString() + "'");
+        if (!neededPlaceholders.containsAll(usedPlaceholders)) {
+            for (Placeholder placeholder : usedPlaceholders) {
+                if (!neededPlaceholders.contains(placeholder)) {
+                    plugin.getLogger().warning("Placeholder '" + placeholder.toString() + "' was not used in message '" + message.toString() + "'");
                 }
             }
         }

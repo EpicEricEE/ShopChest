@@ -6,12 +6,12 @@ import org.bukkit.ChatColor;
 public class LocalizedMessage {
 
     private Message message;
-    private Placeholder[] regexes;
+    private Placeholder[] placeholders;
     private String localizedString;
 
-    public LocalizedMessage(Message message, String localizedString, Placeholder... regexes) {
+    public LocalizedMessage(Message message, String localizedString, Placeholder... placeholders) {
         this.message = message;
-        this.regexes = regexes;
+        this.placeholders = placeholders;
         this.localizedString = ChatColor.translateAlternateColorCodes('&', localizedString);
     }
 
@@ -30,8 +30,8 @@ public class LocalizedMessage {
     /**
      * @return Array of {@link Placeholder}, which are required by the message
      */
-    public Placeholder[] getRegexes() {
-        return regexes;
+    public Placeholder[] getPlaceholders() {
+        return placeholders;
     }
 
     /**
@@ -122,6 +122,7 @@ public class LocalizedMessage {
         NO_PERMISSION_EXTEND_OTHERS,
         NO_PERMISSION_EXTEND_PROTECTED,
         COMMAND_DESC_CREATE,
+        COMMAND_DESC_CREATE_ADMIN,
         COMMAND_DESC_REMOVE,
         COMMAND_DESC_INFO,
         COMMAND_DESC_REMOVEALL,
@@ -135,18 +136,18 @@ public class LocalizedMessage {
         CHANGED_CONFIG_ADDED
     }
 
-    public static class ReplacedRegex {
+    public static class ReplacedPlaceholder {
 
-        private Placeholder regex;
+        private Placeholder placeholder;
         private String replace;
 
-        public ReplacedRegex(Placeholder regex, String replace) {
-            this.regex = regex;
+        public ReplacedPlaceholder(Placeholder placeholder, String replace) {
+            this.placeholder = placeholder;
             this.replace = replace;
         }
 
         /**
-         * @return String which will replace the regex
+         * @return String which will replace the placeholder
          */
         public String getReplace() {
             return replace;
@@ -155,8 +156,8 @@ public class LocalizedMessage {
         /**
          * @return Placeholder that will be replaced
          */
-        public Placeholder getRegex() {
-            return regex;
+        public Placeholder getPlaceholder() {
+            return placeholder;
         }
 
     }

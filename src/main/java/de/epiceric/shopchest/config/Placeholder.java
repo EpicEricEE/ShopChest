@@ -23,7 +23,8 @@ public enum Placeholder {
     REVENUE("%REVENUE%"),
     GENERATION("%GENERATION%"),
     STOCK("%STOCK%"),
-    MAX_STACK("%MAX-STACK%");
+    MAX_STACK("%MAX-STACK%"),
+    COMMAND("%COMMAND%");
 
     private String name;
 

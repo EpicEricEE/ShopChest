@@ -27,7 +27,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
 
         if (plugin.isUpdateNeeded()) {
             if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
-                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedRegex(Placeholder.VERSION, plugin.getLatestVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), plugin.getDownloadLink());
+                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedPlaceholder(Placeholder.VERSION, plugin.getLatestVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), plugin.getDownloadLink());
                 jb.sendJson(p);
             }
         }
@@ -39,7 +39,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
                     long lastLogout = (long) result;
                     if (lastLogout < 0) {
                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED,
-                                new LocalizedMessage.ReplacedRegex(Placeholder.ERROR, "Could not get last time you logged out")));
+                                new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, "Could not get last time you logged out")));
                         return;
                     }
 
@@ -50,7 +50,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
                                 double revenue = (double) result;
                                 if (revenue != 0) {
                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE,
-                                            new LocalizedMessage.ReplacedRegex(Placeholder.REVENUE, String.valueOf(revenue))));
+                                            new LocalizedMessage.ReplacedPlaceholder(Placeholder.REVENUE, String.valueOf(revenue))));
                                 }
                             }
                         }

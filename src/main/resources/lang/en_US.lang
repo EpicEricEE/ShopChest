@@ -268,31 +268,44 @@ message.noPermission.extend-others=&cYou don't have permission to extend this ch
 message.noPermission.extend-protected=&cYou don't have permission to extend this chest to here.
 
 # Set the command description message for '/shop create' when you type '/shop'.
-message.commandDescription.create=Create a shop.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.create=&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop.
+
+# Set the command description message for '/shop create' when you type '/shop' and have permission "shopchest.create.admin"
+# Usable Placeholders: %COMMAND%
+message.commandDescription.create-admin=&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.
 
 # Set the command description message for '/shop remove' when you type '/shop'.
-message.commandDescription.remove=Remove a shop.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.remove=&a/%COMMAND% remove - Remove a shop.
 
 # Set the command description message for '/shop info' when you type '/shop'.
-message.commandDescription.info=Retrieve shop information.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.info=&a/%COMMAND% info - Retrieve shop information.
 
 # Set the command description message for '/shop removeall' when you type '/shop'.
-message.commandDescription.removeall=Remove all shops of a player.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.removeall=&a/%COMMAND% removeall - Remove all shops of a player.
 
 # Set the command description message for '/shop reload' when you type '/shop'.
-message.commandDescription.reload=Reload shops.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.reload=&a/%COMMAND% reload - Reload shops.
 
 # Set the command description message for '/shop update' when you type '/shop'.
-message.commandDescription.update=Check for Updates.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.update=&a%/%COMMAND% update - Check for Updates.
 
 # Set the command description message for '/shop limits' when you type '/shop'.
-message.commandDescription.limits=View shop limits.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.limits=&a/%COMMAND% limits - View shop limits.
 
 # Set the command description message for '/shop open' when you type '/shop'.
-message.commandDescription.open=Open a shop.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.open=&a/%COMMAND% open - Open a shop.
 
 # Set the command description message for '/shop config' when you type '/shop'.
-message.commandDescription.config=Change configuration values.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.config=&a/%COMMAND% config <set|add|remove> <property> <value> - Change configuration values.
 
 # Set the message a player gets after setting a configuration value per command
 # Usable Placeholders: %PROPERTY%, %VALUE%

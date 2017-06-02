@@ -214,10 +214,10 @@ public class Shop {
 
         for (int i = 0; i < lineCount; i++) {
             String format = plugin.getHologramFormat().getFormat(i, requirements, placeholders);
-            for (Placeholder regex : placeholders.keySet()) {
+            for (Placeholder placeholder : placeholders.keySet()) {
                 String replace = "";
 
-                switch (regex) {
+                switch (placeholder) {
                     case BUY_PRICE:
                         replace = plugin.getEconomy().format(getBuyPrice());
                         break;
@@ -225,10 +225,10 @@ public class Shop {
                         replace = plugin.getEconomy().format(getSellPrice());
                         break;
                     default:
-                        replace = String.valueOf(placeholders.get(regex));
+                        replace = String.valueOf(placeholders.get(placeholder));
                 }
 
-                format = format.replace(regex.toString(), replace);
+                format = format.replace(placeholder.toString(), replace);
             }
 
             if (!format.isEmpty()) {
