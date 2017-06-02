@@ -6,6 +6,7 @@ import com.wasteofplastic.askyblock.ASkyBlock;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.config.Placeholder;
+import de.epiceric.shopchest.event.ShopInitializedEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
@@ -378,6 +379,7 @@ public class ShopChest extends JavaPlugin {
             public void onResult(Object result) {
                 if (result instanceof Integer) {
                     int count = (int) result;
+                    Bukkit.getServer().getPluginManager().callEvent(new ShopInitializedEvent(count));
                     getLogger().info("Initialized " + count + " Shops");
                     debug("Initialized " + count + " Shops");
                 }
