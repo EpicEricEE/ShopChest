@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -290,7 +291,7 @@ class ShopCommand implements CommandExecutor {
      * @param shopType The {@link ShopType}, the shop will have
      * @param p The command executor
      */
-    private void create(String[] args, ShopType shopType, Player p) {
+    private void create(String[] args, ShopType shopType, final Player p) {
         plugin.debug(p.getName() + " wants to create a shop");
 
         int amount;
@@ -470,6 +471,14 @@ class ShopCommand implements CommandExecutor {
             ClickType.setPlayerClickType(p, new ClickType(EnumClickType.CREATE, product, buyPrice, sellPrice, shopType));
             plugin.debug(p.getName() + " can now click a chest");
             p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
+
+            // Remove ClickType after 15 seconds if player has not clicked a chest
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ClickType.removePlayerClickType(p);
+                }
+            }.runTaskLater(plugin, 300);
         } else {
             plugin.debug("Shop pre create event cancelled");
         }
@@ -479,7 +488,7 @@ class ShopCommand implements CommandExecutor {
      * A given player removes a shop
      * @param p The command executor
      */
-    private void remove(Player p) {
+    private void remove(final Player p) {
         plugin.debug(p.getName() + " wants to remove a shop");
 
         ShopPreRemoveEvent event = new ShopPreRemoveEvent(p);
@@ -492,13 +501,21 @@ class ShopCommand implements CommandExecutor {
         plugin.debug(p.getName() + " can now click a chest");
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE));
         ClickType.setPlayerClickType(p, new ClickType(EnumClickType.REMOVE));
+
+        // Remove ClickType after 15 seconds if player has not clicked a chest
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ClickType.removePlayerClickType(p);
+            }
+        }.runTaskLater(plugin, 300);
     }
 
     /**
      * A given player retrieves information about a shop
      * @param p The command executor
      */
-    private void info(Player p) {
+    private void info(final Player p) {
         plugin.debug(p.getName() + " wants to retrieve information");
 
         ShopPreInfoEvent event = new ShopPreInfoEvent(p);
@@ -511,13 +528,21 @@ class ShopCommand implements CommandExecutor {
         plugin.debug(p.getName() + " can now click a chest");
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_INFO));
         ClickType.setPlayerClickType(p, new ClickType(EnumClickType.INFO));
+
+        // Remove ClickType after 15 seconds if player has not clicked a chest
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ClickType.removePlayerClickType(p);
+            }
+        }.runTaskLater(plugin, 300);
     }
 
     /**
      * A given player opens a shop
      * @param p The command executor
      */
-    private void open(Player p) {
+    private void open(final Player p) {
         plugin.debug(p.getName() + " wants to open a shop");
 
         ShopPreOpenEvent event = new ShopPreOpenEvent(p);
@@ -530,6 +555,14 @@ class ShopCommand implements CommandExecutor {
         plugin.debug(p.getName() + " can now click a chest");
         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_OPEN));
         ClickType.setPlayerClickType(p, new ClickType(EnumClickType.OPEN));
+
+        // Remove ClickType after 15 seconds if player has not clicked a chest
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ClickType.removePlayerClickType(p);
+            }
+        }.runTaskLater(plugin, 300);
     }
 
     private void removeAll(CommandSender sender, String[] args) {

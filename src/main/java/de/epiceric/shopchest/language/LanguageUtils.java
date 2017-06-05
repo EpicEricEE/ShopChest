@@ -1039,10 +1039,10 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO, langConfig.getString("message.amount-is-zero", "&cAmount must be greater than 0.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS, langConfig.getString("message.prices-contain-decimals", "&cPrices must not contain decimals.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND, langConfig.getString("message.no-item-in-hand", "&cNo item in hand")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE, langConfig.getString("message.click-chest-to-create-shop", "&aClick a chest to create a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE, langConfig.getString("message.click-chest-to-remove-shop", "&aClick a shop to remove it.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_INFO, langConfig.getString("message.click-chest-for-info", "&aClick a shop to retrieve information.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_OPEN, langConfig.getString("message.click-chest-to-open-shop", "&aClick a shop to open it.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE, langConfig.getString("message.click-chest-to-create-shop", "&aClick a chest within 15 seconds to create a shop.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE, langConfig.getString("message.click-chest-to-remove-shop", "&aClick a shop within 15 seconds to remove it.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_INFO, langConfig.getString("message.click-chest-for-info", "&aClick a shop within 15 seconds to retrieve information.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_OPEN, langConfig.getString("message.click-chest-to-open-shop", "&aClick a shop within 15 seconds to open it.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.OPENED_SHOP, langConfig.getString("message.opened-shop", "&aYou opened %VENDOR%'s shop."), Placeholder.VENDOR));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_BREAK_SHOP, langConfig.getString("message.cannot-break-shop", "&cYou can't break a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM, langConfig.getString("message.cannot-sell-broken-item", "&cYou can't sell a broken item.")));

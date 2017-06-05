@@ -150,16 +150,16 @@ message.prices-contain-decimals=&cPrices must not contain decimals.
 message.no-item-in-hand=&cNo item in hand
 
 # Set the message when the player must click a chest to create a shop.
-message.click-chest-to-create-shop=&aClick a chest to create a shop.
+message.click-chest-to-create-shop=&aClick a chest within 15 seconds to create a shop.
 
 # Set the message when the player must click a shop to remove it.
-message.click-chest-to-remove-shop=&aClick a shop to remove it.
+message.click-chest-to-remove-shop=&aClick a shop within 15 seconds to remove it.
 
 # Set the message when the player must click a shop to retrieve information.
-message.click-chest-for-info=&aClick a shop to retrieve information.
+message.click-chest-for-info=&aClick a shop within 15 seconds to retrieve information.
 
 # Set the message when the player must click a shop to open it.
-message.click-chest-to-open-shop=&aClick a shop to open it.
+message.click-chest-to-open-shop=&aClick a shop within 15 seconds to open it.
 
 # Set the message when the player opened a shop.
 # Usable Placeholders: %VENDOR%
