@@ -1021,9 +1021,9 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED, langConfig.getString("message.shopInfo.extended", "(Extended)")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SELL_DISABLED, langConfig.getString("message.buy-and-sell-disabled", "&cYou can't create a shop with buying and selling disabled.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCCESS, langConfig.getString("message.buy-success", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCESS_ADMIN, langConfig.getString("message.buy-success-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS, langConfig.getString("message.sell-success", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCESS_ADMIN, langConfig.getString("message.sell-success-admin", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCCESS_ADMIN, langConfig.getString("message.buy-success-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCCESS, langConfig.getString("message.sell-success", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCCESS_ADMIN, langConfig.getString("message.sell-success-admin", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, langConfig.getString("message.someone-bought", "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_SOLD, langConfig.getString("message.someone-sold", "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE, langConfig.getString("message.revenue-while-offline", "&6While you were offline, your shops have made a revenue of &c%REVENUE%&6.")));
