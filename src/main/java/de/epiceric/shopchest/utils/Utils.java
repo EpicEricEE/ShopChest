@@ -270,14 +270,16 @@ public class Utils {
             return true;
         }
 
-        if (item.getDurability() == 0) {
-            if (player.hasPermission(Permissions.CREATE + "." + item.getType().toString())) {
+        if (item != null) {
+            if (item.getDurability() == 0) {
+                if (player.hasPermission(Permissions.CREATE + "." + item.getType().toString())) {
+                    return true;
+                }
+            }
+
+            if (player.hasPermission(Permissions.CREATE + "." + item.getType().toString() + "." + item.getDurability())) {
                 return true;
             }
-        }
-
-        if (player.hasPermission(Permissions.CREATE + "." + item.getType().toString() + "." + item.getDurability())) {
-            return true;
         }
 
         return false;
