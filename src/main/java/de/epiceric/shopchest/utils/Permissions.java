@@ -3,6 +3,8 @@ package de.epiceric.shopchest.utils;
 public class Permissions {
 
     public static final String CREATE = "shopchest.create";
+    public static final String CREATE_BUY = "shopchest.create.buy";
+    public static final String CREATE_SELL = "shopchest.create.sell";
     public static final String CREATE_ADMIN = "shopchest.create.admin";
     public static final String CREATE_PROTECTED = "shopchest.create.protected";
     public static final String REMOVE_OTHER = "shopchest.remove.other";

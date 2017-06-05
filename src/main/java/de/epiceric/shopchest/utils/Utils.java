@@ -258,31 +258,58 @@ public class Utils {
     }
 
     /**
-     * <p>Check if a player is allowed to create a shop that sells (or buys) the given item.</p>
-     * The player is allowed to create the shop if has either the permission {@code shopchest.create},
-     * {@code shopchest.create.[ITEM]} or {@code shopchest.create.[ITEM].[DURABILITY]}
+     * <p>Check if a player is allowed to create a shop that sells or buys the given item.</p>
      * @param player Player to check
      * @param item Item to be sold or bought
+     * @param buy Whether buying should be enabled
+     * @param sell Whether selling should be enabled
      * @return Whether the player is allowed
      */
-    public static boolean hasPermissionToCreateShop(Player player, ItemStack item) {
-        if (player.hasPermission(Permissions.CREATE)) {
+    public static boolean hasPermissionToCreateShop(Player player, ItemStack item, boolean buy, boolean sell) {
+        if (hasPermissionToCreateShop(player, item, Permissions.CREATE)) {
+            return true;
+        } else if (!sell && buy && hasPermissionToCreateShop(player, item,Permissions.CREATE_BUY)) {
+            return true;
+        } else if (!buy && sell && hasPermissionToCreateShop(player, item, Permissions.CREATE_SELL)) {
+            return true;
+        } else if (buy && sell && hasPermissionToCreateShop(player, item, Permissions.CREATE_BUY, Permissions.CREATE_SELL)) {
             return true;
         }
 
-        if (item != null) {
-            if (item.getDurability() == 0) {
-                if (player.hasPermission(Permissions.CREATE + "." + item.getType().toString())) {
-                    return true;
+        return false;
+    }
+
+    private static boolean hasPermissionToCreateShop(Player player, ItemStack item, String... permissions) {
+        for (String permission : permissions) {
+            boolean b1 = false;
+            boolean b2 = false;
+            boolean b3 = false;
+
+            if (player.hasPermission(permission)) {
+                b1 = true;
+            }
+
+            if (item != null) {
+                if (item.getDurability() == 0) {
+                    String perm1 = permission + "." + item.getType().toString();
+                    String perm2 = permission + "." + item.getType().toString() + ".0";
+
+                    if (player.hasPermission(perm1) || player.hasPermission(perm2)) {
+                        b2 = true;
+                    }
+                }
+
+                if (player.hasPermission(permission + "." + item.getType().toString() + "." + item.getDurability())) {
+                    b3 = true;
                 }
             }
 
-            if (player.hasPermission(Permissions.CREATE + "." + item.getType().toString() + "." + item.getDurability())) {
-                return true;
+            if (!(b1 || b2 || b3)) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     /**

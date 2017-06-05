@@ -1,19 +1,34 @@
 package de.epiceric.shopchest;
 
 import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.event.*;
+import de.epiceric.shopchest.event.ShopPreCreateEvent;
+import de.epiceric.shopchest.event.ShopPreInfoEvent;
+import de.epiceric.shopchest.event.ShopPreOpenEvent;
+import de.epiceric.shopchest.event.ShopPreRemoveEvent;
+import de.epiceric.shopchest.event.ShopReloadEvent;
+import de.epiceric.shopchest.event.ShopRemoveAllEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
-import de.epiceric.shopchest.utils.*;
+import de.epiceric.shopchest.utils.Callback;
+import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ClickType.EnumClickType;
+import de.epiceric.shopchest.utils.ItemUtils;
+import de.epiceric.shopchest.utils.Permissions;
+import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
+import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -109,26 +124,21 @@ class ShopCommand implements CommandExecutor {
                 Player p = (Player) sender;
 
                 if (args[0].equalsIgnoreCase("create")) {
-                    if (Utils.hasPermissionToCreateShop(p, Utils.getPreferredItemInHand(p))) {
-                        if (args.length == 4) {
+                    if (args.length == 4) {
+                        needsHelp = false;
+                        create(args, ShopType.NORMAL, p);
+                    } else if (args.length == 5) {
+                        if (args[4].equalsIgnoreCase("normal")) {
                             needsHelp = false;
                             create(args, ShopType.NORMAL, p);
-                        } else if (args.length == 5) {
-                            if (args[4].equalsIgnoreCase("normal")) {
-                                needsHelp = false;
-                                create(args, ShopType.NORMAL, p);
-                            } else if (args[4].equalsIgnoreCase("admin")) {
-                                needsHelp = false;
-                                if (p.hasPermission(Permissions.CREATE_ADMIN)) {
-                                    create(args, ShopType.ADMIN, p);
-                                } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_ADMIN));
-                                }
+                        } else if (args[4].equalsIgnoreCase("admin")) {
+                            needsHelp = false;
+                            if (p.hasPermission(Permissions.CREATE_ADMIN)) {
+                                create(args, ShopType.ADMIN, p);
+                            } else {
+                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_ADMIN));
                             }
                         }
-                    } else {
-                        needsHelp = false;
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE));
                     }
                 } else if (args[0].equalsIgnoreCase("remove")) {
                     needsHelp = false;
@@ -286,6 +296,23 @@ class ShopCommand implements CommandExecutor {
         int amount;
         double buyPrice, sellPrice;
 
+        // Check if amount and prices are valid
+        try {
+            amount = Integer.parseInt(args[1]);
+            buyPrice = Double.parseDouble(args[2]);
+            sellPrice = Double.parseDouble(args[3]);
+        } catch (NumberFormatException e) {
+            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER));
+            plugin.debug(p.getName() + " has entered an invalid amount and/or prices");
+            return;
+        }
+
+        if (!Utils.hasPermissionToCreateShop(p, Utils.getPreferredItemInHand(p), buyPrice > 0, sellPrice > 0)) {
+            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE));
+            plugin.debug(p.getName() + " is not permitted to create the shop");
+            return;
+        }
+
         // Check for limits
         int limit = shopUtils.getShopLimit(p);
         if (limit != -1) {
@@ -296,17 +323,6 @@ class ShopCommand implements CommandExecutor {
                     return;
                 }
             }
-        }
-
-        // Check if amount and prices are valid
-        try {
-            amount = Integer.parseInt(args[1]);
-            buyPrice = Double.parseDouble(args[2]);
-            sellPrice = Double.parseDouble(args[3]);
-        } catch (NumberFormatException e) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER));
-            plugin.debug(p.getName() + " has entered an invalid amount");
-            return;
         }
 
         if (amount <= 0) {

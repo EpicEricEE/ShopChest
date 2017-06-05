@@ -14,6 +14,8 @@ permissions:
     description: Gives access to all ShopChest permissions.
     children:
       shopchest.create: true
+      shopchest.create.buy: true
+      shopchest.create.sell: true
       shopchest.create.admin: true
       shopchest.create.protected: true
       shopchest.remove.other: true
@@ -30,6 +32,15 @@ permissions:
       shopchest.external.bypass: true
   shopchest.create:
     description: Allows you to create a shop.
+    children:
+      shopchest.create.buy: true
+      shopchest.create.sell: true
+    default: true
+  shopchest.create.buy:
+    description: Allows you to create a buy-shop.
+    default: true
+  shopchest.create.sell:
+    description: Allows you to create a sell-shop.
     default: true
   shopchest.create.admin:
     description: Allows you to create an admin shop.
