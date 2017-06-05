@@ -563,6 +563,8 @@ class ShopCommand implements CommandExecutor {
             }
         }
 
+        sender.sendMessage(" ");
+
         LocalizedMessage.ReplacedPlaceholder cmdPlaceholder = new LocalizedMessage.ReplacedPlaceholder(Placeholder.COMMAND, plugin.getShopChestConfig().main_command_name);
 
         if (sender instanceof Player) {
@@ -593,6 +595,8 @@ class ShopCommand implements CommandExecutor {
         if (sender.hasPermission(Permissions.CONFIG)) {
             sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG, cmdPlaceholder));
         }
+
+        sender.sendMessage(" ");
     }
 
 }
