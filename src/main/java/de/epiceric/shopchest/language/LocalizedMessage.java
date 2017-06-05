@@ -43,6 +43,7 @@ public class LocalizedMessage {
 
     public enum Message {
         SHOP_CREATED,
+        ADMIN_SHOP_CREATED,
         CHEST_ALREADY_SHOP,
         CHEST_BLOCKED,
         DOUBLE_CHEST_BLOCKED,

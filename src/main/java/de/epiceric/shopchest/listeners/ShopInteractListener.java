@@ -644,7 +644,8 @@ public class ShopInteractListener implements Listener {
         EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
         if (!r.transactionSuccess()) {
             plugin.debug("Economy transaction failed: " + r.errorMessage);
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED,
+                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
             return;
         }
 
@@ -653,7 +654,14 @@ public class ShopInteractListener implements Listener {
         plugin.debug("Shop created");
         shopUtils.addShop(shop, true);
 
-        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED));
+        LocalizedMessage.ReplacedPlaceholder placeholder = new LocalizedMessage.ReplacedPlaceholder(
+                Placeholder.CREATION_PRICE, String.valueOf(creationPrice));
+
+        if (shopType == ShopType.ADMIN) {
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ADMIN_SHOP_CREATED, placeholder));
+        } else {
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED, placeholder));
+        }
 
         for (Player p : location.getWorld().getPlayers()) {
             if (p.getLocation().distanceSquared(location) <= Math.pow(config.maximal_distance, 2)) {

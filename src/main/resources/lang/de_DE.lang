@@ -1,4 +1,5 @@
-message.shop-created=&6Shop erstellt.
+message.shop-created=&6Dir wurden &c%CREATION-PRICE% abgenommen, um diesen Shop zu erstellen.
+message.admin-shop-created=&6Dir wurden &c%CREATION-PRICE% abgenommen, um diesen Admin Shop zu erstellen.
 message.chest-already-shop=&cTruhe ist bereits ein Shop.
 message.chest-blocked=&cÜber der Truhe ist kein Platz.
 message.double-chest-blocked=&cÜber der Truhe ist kein Platz.
