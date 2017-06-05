@@ -6,14 +6,7 @@ import org.bukkit.ChatColor;
 public class LocalizedMessage {
 
     private Message message;
-    private Placeholder[] placeholders;
     private String localizedString;
-
-    public LocalizedMessage(Message message, String localizedString, Placeholder... placeholders) {
-        this.message = message;
-        this.placeholders = placeholders;
-        this.localizedString = ChatColor.translateAlternateColorCodes('&', localizedString);
-    }
 
     public LocalizedMessage(Message message, String localizedString) {
         this.message = message;
@@ -25,13 +18,6 @@ public class LocalizedMessage {
      */
     public Message getMessage() {
         return message;
-    }
-
-    /**
-     * @return Array of {@link Placeholder}, which are required by the message
-     */
-    public Placeholder[] getPlaceholders() {
-        return placeholders;
     }
 
     /**
