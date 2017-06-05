@@ -74,6 +74,8 @@ public class ItemUtils {
      * @return The de-serialized ItemStack or {@code null} if the serialized item is invalid
      */
     public static ItemStack getItemStack(String item) {
+        if (item.trim().isEmpty()) return null;
+
         if (item.contains(":")) {
             Material mat = Material.getMaterial(item.split(":")[0]);
             if (mat == null) return null;

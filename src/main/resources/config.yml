@@ -23,6 +23,10 @@ show-shop-items: true
 # may lead to TPS loss.
 update-quality: NORMAL
 
+# Set the item with which a player can click a shop to retrieve information.
+# You can set this to an empty string to disable this feature.
+shop-info-item: "STICK"
+
 # Set whether interaction with the hologram should be enabled.
 # If set to true, a player can do the exact same thing with the
 # hologram, as with the chest. You can even open the chest if you

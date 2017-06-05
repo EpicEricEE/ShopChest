@@ -394,11 +394,28 @@ public class ShopInteractListener implements Listener {
                         }
                     }
                 } else {
-                    if (shopUtils.isShop(b.getLocation())) {
-                        Shop shop = shopUtils.getShop(b.getLocation());
-
+                    Shop shop = shopUtils.getShop(b.getLocation());
+                    if (shop != null) {
                         if (e.getAction() == Action.LEFT_CLICK_BLOCK && p.isSneaking() && Utils.hasAxeInHand(p)) {
                             return;
+                        }
+                        ItemStack infoItem = config.shop_info_item;
+                        if (infoItem != null) {
+                            if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                                ItemStack item = Utils.getItemInMainHand(p);
+                                if (item == null || !(infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability())) {
+                                    item = Utils.getItemInMainHand(p);
+                                    if (item != null && infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability()) {
+                                        e.setCancelled(true);
+                                        info(p, shop);
+                                        return;
+                                    }
+                                } else {
+                                    e.setCancelled(true);
+                                    info(p, shop);
+                                    return;
+                                }
+                            }
                         }
 
                         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && p.getUniqueId().equals(shop.getVendor().getUniqueId()) && shop.getShopType() != ShopType.ADMIN) {
