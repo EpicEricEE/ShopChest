@@ -298,7 +298,7 @@ message.commandDescription.reload=&a/%COMMAND% reload - Reload shops.
 
 # Set the command description message for '/shop update' when you type '/shop'.
 # Usable Placeholders: %COMMAND%
-message.commandDescription.update=&a%/%COMMAND% update - Check for Updates.
+message.commandDescription.update=&a/%COMMAND% update - Check for Updates.
 
 # Set the command description message for '/shop limits' when you type '/shop'.
 # Usable Placeholders: %COMMAND%
