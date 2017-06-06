@@ -17,11 +17,11 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import me.ryanhamshire.GriefPrevention.Claim;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -59,28 +59,27 @@ public class ChestProtectListener implements Listener {
         this.worldGuard = worldGuard;
     }
 
-    private void remove(final Shop shop, final Block b, Player p) {
-        shopUtils.removeShop(shop, true);
-
+    private void remove(final Shop shop, final Block b, final Player p) {
         if (shop.getInventoryHolder() instanceof DoubleChest) {
             DoubleChest dc = (DoubleChest) shop.getInventoryHolder();
             final Chest l = (Chest) dc.getLeftSide();
             final Chest r = (Chest) dc.getRightSide();
 
-            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            Location loc = (b.getLocation().equals(l.getLocation()) ? r.getLocation() : l.getLocation());
+            final Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), loc, shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+
+            shopUtils.removeShop(shop, true, new Callback(plugin) {
                 @Override
-                public void run() {
-                    Location loc = (b.getLocation().equals(l.getLocation()) ? r.getLocation() : l.getLocation());
-                    Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), loc, shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+                public void onResult(Object result) {
                     newShop.create(true);
                     shopUtils.addShop(newShop, true);
                 }
-            }, 1L);
-            return;
+            });
+        } else {
+            shopUtils.removeShop(shop, true);
+            plugin.debug(String.format("%s broke %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
         }
-
-        plugin.debug(String.format("%s broke %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
-        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -130,7 +129,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent e) {
-        Player p = e.getPlayer();
+        final Player p = e.getPlayer();
         Block b = e.getBlockPlaced();
         if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
 
@@ -143,7 +142,7 @@ public class ChestProtectListener implements Listener {
                 Chest l = (Chest) dc.getLeftSide();
 
                 if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) {
-                    Shop shop;
+                    final Shop shop;
 
                     if (b.getLocation().equals(r.getLocation())) {
                         shop = shopUtils.getShop(l.getLocation());
@@ -171,12 +170,13 @@ public class ChestProtectListener implements Listener {
                                 for (Resident resident : town.getResidents()) {
                                     if (resident.getName().equals(p.getName())) {
                                         if (resident.isMayor()) {
-                                            externalPluginsAllowed &= (config.towny_shop_plots_mayor.contains(townBlock.getType().name()));
+                                            externalPluginsAllowed = (config.towny_shop_plots_mayor.contains(townBlock.getType().name()));
                                         } else if (resident.isKing()) {
-                                            externalPluginsAllowed &= (config.towny_shop_plots_king.contains(townBlock.getType().name()));
+                                            externalPluginsAllowed = (config.towny_shop_plots_king.contains(townBlock.getType().name()));
                                         } else {
-                                            externalPluginsAllowed &= (config.towny_shop_plots_residents.contains(townBlock.getType().name()));
+                                            externalPluginsAllowed = (config.towny_shop_plots_residents.contains(townBlock.getType().name()));
                                         }
+                                        break;
                                     }
                                 }
                             } catch (Exception ex) {
@@ -189,45 +189,49 @@ public class ChestProtectListener implements Listener {
                         com.intellectualcrafters.plot.object.Location loc =
                                 new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
-                        externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(loc.getOwnedPlot(), PlotSquaredShopFlag.CREATE_SHOP, p);
+                        externalPluginsAllowed = Utils.isFlagAllowedOnPlot(loc.getOwnedPlot(), PlotSquaredShopFlag.CREATE_SHOP, p);
                     }
 
                     if (externalPluginsAllowed && plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
                         IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(b.getLocation());
                         if (islandInfo != null) {
-                            externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
+                            externalPluginsAllowed = islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
                         }
                     }
 
                     if (externalPluginsAllowed && plugin.hasASkyBlock() && config.enable_askyblock_integration) {
                         Island island = ASkyBlockAPI.getInstance().getIslandAt(b.getLocation());
                         if (island != null) {
-                            externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                            externalPluginsAllowed = island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
                         }
                     }
 
                     if (externalPluginsAllowed && plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
                         if (b.getWorld().getName().equals(IslandWorldApi.getIslandWorld().getName())) {
-                            externalPluginsAllowed &= IslandWorldApi.canBuildOnLocation(p, b.getLocation(), true);
+                            externalPluginsAllowed = IslandWorldApi.canBuildOnLocation(p, b.getLocation(), true);
                         }
                     }
 
                     if (externalPluginsAllowed && plugin.hasGriefPrevention() && config.enable_griefprevention_integration) {
                         Claim claim = plugin.getGriefPrevention().dataStore.getClaimAt(b.getLocation(), false, null);
                         if (claim != null) {
-                            externalPluginsAllowed &= claim.allowContainers(p) == null;
+                            externalPluginsAllowed = claim.allowContainers(p) == null;
                         }
                     }
 
                     if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {
                         if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.EXTEND_OTHER)) {
-
                             if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
-                                shopUtils.removeShop(shop, true);
-                                Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-                                newShop.create(true);
-                                shopUtils.addShop(newShop, true);
-                                plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+                                final Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+
+                                shopUtils.removeShop(shop, true, new Callback(plugin) {
+                                    @Override
+                                    public void onResult(Object result) {
+                                        newShop.create(true);
+                                        shopUtils.addShop(newShop, true);
+                                        plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+                                    }
+                                });
                             } else {
                                 e.setCancelled(true);
                                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));

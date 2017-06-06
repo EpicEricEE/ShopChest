@@ -304,28 +304,44 @@ public abstract class Database {
                 ResultSet rs = null;
 
                 try {
-                    ps = connection.prepareStatement("REPLACE INTO shops (vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                    if (!shop.hasId()) {
+                        ps = connection.prepareStatement("REPLACE INTO shops (vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
-                    ps.setString(1, shop.getVendor().getUniqueId().toString());
-                    ps.setString(2, Utils.encode(shop.getProduct()));
-                    ps.setString(3, shop.getLocation().getWorld().getName());
-                    ps.setInt(4, shop.getLocation().getBlockX());
-                    ps.setInt(5, shop.getLocation().getBlockY());
-                    ps.setInt(6, shop.getLocation().getBlockZ());
-                    ps.setDouble(7, shop.getBuyPrice());
-                    ps.setDouble(8, shop.getSellPrice());
-                    ps.setString(9, shop.getShopType().toString());
-                    ps.executeUpdate();
+                        ps.setString(1, shop.getVendor().getUniqueId().toString());
+                        ps.setString(2, Utils.encode(shop.getProduct()));
+                        ps.setString(3, shop.getLocation().getWorld().getName());
+                        ps.setInt(4, shop.getLocation().getBlockX());
+                        ps.setInt(5, shop.getLocation().getBlockY());
+                        ps.setInt(6, shop.getLocation().getBlockZ());
+                        ps.setDouble(7, shop.getBuyPrice());
+                        ps.setDouble(8, shop.getSellPrice());
+                        ps.setString(9, shop.getShopType().toString());
+                        ps.executeUpdate();
 
-                    int shopId = -1;
-                    rs = ps.getGeneratedKeys();
-                    if (rs.next()) {
-                        shopId = rs.getInt(1);
+                        int shopId = -1;
+                        rs = ps.getGeneratedKeys();
+                        if (rs.next()) {
+                            shopId = rs.getInt(1);
+                        }
+
+                        shop.setId(shopId);
+                    } else {
+                        ps = connection.prepareStatement("REPLACE INTO shops (id,vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?)");
+
+                        ps.setInt(1, shop.getID());
+                        ps.setString(2, shop.getVendor().getUniqueId().toString());
+                        ps.setString(3, Utils.encode(shop.getProduct()));
+                        ps.setString(4, shop.getLocation().getWorld().getName());
+                        ps.setInt(5, shop.getLocation().getBlockX());
+                        ps.setInt(6, shop.getLocation().getBlockY());
+                        ps.setInt(7, shop.getLocation().getBlockZ());
+                        ps.setDouble(8, shop.getBuyPrice());
+                        ps.setDouble(9, shop.getSellPrice());
+                        ps.setString(10, shop.getShopType().toString());
+                        ps.executeUpdate();
                     }
 
-                    shop.setId(shopId);
-
-                    if (callback != null) callback.callSyncResult(shopId);
+                    if (callback != null) callback.callSyncResult(shop.getID());
                     plugin.debug("Adding shop to database (#" + shop.getID() + ")");
                 } catch (SQLException ex) {
                     if (callback != null) callback.callSyncError(ex);

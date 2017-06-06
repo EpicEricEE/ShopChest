@@ -61,8 +61,9 @@ public class ShopUtils {
      * Add a shop
      * @param shop Shop to add
      * @param addToDatabase Whether the shop should also be added to the database
+     * @param callback Callback that - if succeeded - returns the ID the shop had or was given (as {@code int})
      */
-    public void addShop(Shop shop, boolean addToDatabase) {
+    public void addShop(Shop shop, boolean addToDatabase, Callback callback) {
         InventoryHolder ih = shop.getInventoryHolder();
         plugin.debug("Adding shop... (#" + shop.getID() + ")");
 
@@ -81,17 +82,29 @@ public class ShopUtils {
             shopLocation.put(shop.getLocation(), shop);
         }
 
-        if (addToDatabase)
-            plugin.getShopDatabase().addShop(shop, null);
+        if (addToDatabase) {
+            plugin.getShopDatabase().addShop(shop, callback);
+        } else {
+            if (callback != null) callback.callSyncResult(shop.getID());
+        }
 
     }
 
     /**
-     * Remove a shop
+     * Add a shop
+     * @param shop Shop to add
+     * @param addToDatabase Whether the shop should also be added to the database
+     */
+    public void addShop(Shop shop, boolean addToDatabase) {
+        addShop(shop, addToDatabase, null);
+    }
+
+    /** Remove a shop
      * @param shop Shop to remove
      * @param removeFromDatabase Whether the shop should also be removed from the database
+     * @param callback Callback that - if succeeded - returns null
      */
-    public void removeShop(Shop shop, boolean removeFromDatabase) {
+    public void removeShop(Shop shop, boolean removeFromDatabase, Callback callback) {
         plugin.debug("Removing shop (#" + shop.getID() + ")");
 
         InventoryHolder ih = shop.getInventoryHolder();
@@ -110,8 +123,20 @@ public class ShopUtils {
         shop.removeItem();
         shop.removeHologram();
 
-        if (removeFromDatabase)
-            plugin.getShopDatabase().removeShop(shop, null);
+        if (removeFromDatabase) {
+            plugin.getShopDatabase().removeShop(shop, callback);
+        } else {
+            if (callback != null) callback.callSyncResult(null);
+        }
+    }
+
+    /**
+     * Remove a shop
+     * @param shop Shop to remove
+     * @param removeFromDatabase Whether the shop should also be removed from the database
+     */
+    public void removeShop(Shop shop, boolean removeFromDatabase) {
+        removeShop(shop, removeFromDatabase, null);
     }
 
     /**
