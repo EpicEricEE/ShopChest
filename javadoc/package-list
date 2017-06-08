@@ -1,6 +1,9 @@
 de.epiceric.shopchest
+de.epiceric.shopchest.command
 de.epiceric.shopchest.config
 de.epiceric.shopchest.event
+de.epiceric.shopchest.exceptions
+de.epiceric.shopchest.external
 de.epiceric.shopchest.language
 de.epiceric.shopchest.listeners
 de.epiceric.shopchest.nms
