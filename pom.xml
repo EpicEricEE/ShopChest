@@ -16,7 +16,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
 
-        <version.number>1.11.1</version.number>
+        <version.number>1.12</version.number>
         <version.final>${version.number}-${version.git}</version.final>
 
         <github.global.server>github</github.global.server>
