@@ -240,8 +240,13 @@ public class ShopInteractListener implements Listener {
                                         if (loc != null) {
                                             Island island = ASkyBlockAPI.getInstance().getIslandAt(loc);
                                             if (island != null) {
-                                                plugin.debug("Chest is on island of " + Bukkit.getOfflinePlayer(island.getOwner()).getName());
-                                                externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                                                if (island.getOwner() == null) {
+                                                    plugin.debug("Chest is on an unowned island.");
+                                                    externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId());
+                                                } else {
+                                                    plugin.debug("Chest is on island of " + Bukkit.getOfflinePlayer(island.getOwner()).getName());
+                                                    externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                                                }
                                             }
                                         }
                                     }
