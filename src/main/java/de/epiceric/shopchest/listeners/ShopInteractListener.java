@@ -187,11 +187,12 @@ public class ShopInteractListener implements Listener {
                                                                 plugin.debug(p.getName() + " is resident in town");
                                                                 externalPluginsAllowed &= (config.towny_shop_plots_residents.contains(townBlock.getType().name()));
                                                             }
+                                                            break;
                                                         }
                                                     }
                                                     if (!residentFound) {
                                                         plugin.debug(p.getName() + " is not resident in town");
-                                                        externalPluginsAllowed &= false;
+                                                        externalPluginsAllowed = false;
                                                     }
                                                 } catch (Exception ex) {
                                                     plugin.debug(ex);
@@ -445,14 +446,14 @@ public class ShopInteractListener implements Listener {
                                             Plot plot = plotLocation.getOwnedPlot();
                                             Flag flag = (shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP);
 
-                                            externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(plot, flag, p);
+                                            externalPluginsAllowed = Utils.isFlagAllowedOnPlot(plot, flag, p);
                                         }
 
-                                        if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                        if (externalPluginsAllowed && plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                                             StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? WorldGuardShopFlag.USE_ADMIN_SHOP : WorldGuardShopFlag.USE_SHOP);
                                             RegionContainer container = worldGuard.getRegionContainer();
                                             RegionQuery query = container.createQuery();
-                                            externalPluginsAllowed &= query.testState(b.getLocation(), p, flag);
+                                            externalPluginsAllowed = query.testState(b.getLocation(), p, flag);
                                         }
 
                                         if (shop.getShopType() == ShopType.ADMIN) {
@@ -514,15 +515,15 @@ public class ShopInteractListener implements Listener {
                                             Plot plot = plotLocation.getOwnedPlot();
                                             Flag flag = (shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP);
 
-                                            externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(plot, flag, p);
+                                            externalPluginsAllowed = Utils.isFlagAllowedOnPlot(plot, flag, p);
                                         }
 
-                                        if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                        if (externalPluginsAllowed && plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                                             RegionContainer container = worldGuard.getRegionContainer();
                                             RegionQuery query = container.createQuery();
 
                                             StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? WorldGuardShopFlag.USE_ADMIN_SHOP : WorldGuardShopFlag.USE_SHOP);
-                                            externalPluginsAllowed &= query.testState(b.getLocation(), p, flag);
+                                            externalPluginsAllowed = query.testState(b.getLocation(), p, flag);
                                         }
 
                                         if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
@@ -730,7 +731,8 @@ public class ShopInteractListener implements Listener {
 
         executor.openInventory(shop.getInventoryHolder().getInventory());
         plugin.debug("Opened shop (#" + shop.getID() + ")");
-        if (message) executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP, new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, shop.getVendor().getName())));
+        if (message) executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP,
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, shop.getVendor().getName())));
     }
 
     /**
@@ -945,6 +947,7 @@ public class ShopInteractListener implements Listener {
                         } else {
                             plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r2.errorMessage)));
+                            econ.withdrawPlayer(shop.getVendor(), worldName, newPrice);
                             econ.depositPlayer(executor, worldName, newPrice);
                         }
                     } else {
@@ -969,6 +972,7 @@ public class ShopInteractListener implements Listener {
                 } else {
                     plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
                     executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
+                    econ.depositPlayer(executor, worldName, newPrice);
                 }
             } else {
                 executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE));
@@ -1085,6 +1089,7 @@ public class ShopInteractListener implements Listener {
                             plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r2.errorMessage)));
                             econ.withdrawPlayer(executor, worldName, newPrice);
+                            econ.depositPlayer(shop.getVendor(), worldName, newPrice);
                         }
 
                     } else {
@@ -1110,6 +1115,7 @@ public class ShopInteractListener implements Listener {
                 } else {
                     plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
                     executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
+                    econ.withdrawPlayer(executor, worldName, newPrice);
                 }
 
             } else {
