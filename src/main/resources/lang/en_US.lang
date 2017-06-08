@@ -272,6 +272,14 @@ message.noPermission.extend-others=&cYou don't have permission to extend this ch
 # Set the message when a not permitted player tries to extend a chest into a protected region/plot (e.g. WorldGuard/Towny).
 message.noPermission.extend-protected=&cYou don't have permission to extend this chest to here.
 
+# Set the header of the help message the player gets after entering '/shop' or an invalid command.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.header=&6==== &c/%COMMAND% &6Help
+
+# Set the footer of the help message the player gets after entering '/shop' or an invalid command.
+# Usable Placeholders: %COMMAND%
+message.commandDescription.footer=&6==== End
+
 # Set the command description message for '/shop create' when you type '/shop'.
 # Usable Placeholders: %COMMAND%
 message.commandDescription.create=&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop.

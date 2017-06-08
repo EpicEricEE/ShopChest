@@ -83,6 +83,9 @@ public class LanguageConfiguration extends FileConfiguration {
                             StringBuilder sbValue = new StringBuilder();
 
                             for (int i = 1; i < line.split("=").length; i++) {
+                                if (i > 1) {
+                                    sbValue.append("=");
+                                }
                                 sbValue.append(line.split("=")[i]);
                             }
 

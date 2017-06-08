@@ -78,6 +78,8 @@ message.noPermission.update=&cDu hast keine Berechtigung nach Aktualisierungen z
 message.noPermission.config=&cDu hast keine Berechtigung Konfigurationswerte zu verändern.
 message.noPermission.extend-others=&cDu hast keine Berechtigung diesen Shop zu erweitern.
 message.noPermission.extend-protected=&cDu hast keine Berechtigung diesen Shop nach hier zu erweitern.
+message.commandDescription.header=&6==== &c/%COMMAND% &6Hilfe
+message.commandDescription.footer=&6==== Ende
 message.commandDescription.create=&a/%COMMAND% create <amount> <buy-price> <sell-price> - Erstelle einen Shop.
 message.commandDescription.create-admin=&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Erstelle einen Shop.
 message.commandDescription.remove=&a/%COMMAND% remove - Entferne einen Shop.

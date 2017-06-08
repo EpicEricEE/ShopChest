@@ -214,6 +214,10 @@ public class ShopCommand {
         plugin.debug("Sending basic help message to " + sender.getName());
 
         sender.sendMessage(" ");
+        String header = LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_HEADER,
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.COMMAND, plugin.getShopChestConfig().main_command_name));
+
+        if (!header.trim().isEmpty()) sender.sendMessage(header);
 
         for (ShopSubCommand subCommand : subCommands) {
             String msg = subCommand.getHelpMessage(sender);
@@ -224,6 +228,10 @@ public class ShopCommand {
             sender.sendMessage(msg);
         }
 
+        String footer = LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_FOOTER,
+                new LocalizedMessage.ReplacedPlaceholder(Placeholder.COMMAND, plugin.getShopChestConfig().main_command_name));
+
+        if (!footer.trim().isEmpty()) sender.sendMessage(footer);
         sender.sendMessage(" ");
     }
 

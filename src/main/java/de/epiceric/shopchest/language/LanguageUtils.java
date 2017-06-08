@@ -1077,6 +1077,8 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG, langConfig.getString("message.noPermission.config", "&cYou don't have permission to change configuration values.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_OTHERS, langConfig.getString("message.noPermission.extend-others", "&cYou don't have permission to extend this chest.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_PROTECTED, langConfig.getString("message.noPermission.extend-protected", "&cYou don't have permission to extend this chest to here.")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_HEADER, langConfig.getString("message.commandDescription.header", "&6==== &c/%COMMAND% &6Help")));
+        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_FOOTER, langConfig.getString("message.commandDescription.footer", "&6==== End")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.")));
         messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "&a/%COMMAND% remove - Remove a shop.")));
