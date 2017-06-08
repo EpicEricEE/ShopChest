@@ -3,6 +3,7 @@ package de.epiceric.shopchest;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.wasteofplastic.askyblock.ASkyBlock;
+import de.epiceric.shopchest.command.ShopCommand;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.config.Placeholder;

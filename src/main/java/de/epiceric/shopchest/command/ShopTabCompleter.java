@@ -1,6 +1,6 @@
-package de.epiceric.shopchest;
+package de.epiceric.shopchest.command;
 
-
+import de.epiceric.shopchest.ShopChest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -22,7 +22,6 @@ class ShopTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase(plugin.getShopChestConfig().main_command_name)) {
 
-            List<String> subCommands = Arrays.asList("config", "create", "info", "limits", "open", "reload", "remove", "update");
             List<String> createSubCommands = Arrays.asList("admin", "normal");
             List<String> configSubCommands = Arrays.asList("add", "remove", "set");
             List<String> areaShopRemoveEvents = Arrays.asList("DELETE", "RESELL", "SELL", "UNRENT");
@@ -32,19 +31,7 @@ class ShopTabCompleter implements TabCompleter {
 
             ArrayList<String> returnCompletions = new ArrayList<>();
 
-            if (args.length == 1) {
-                if (!args[0].equals("")) {
-                    for (String s : subCommands) {
-                        if (s.startsWith(args[0])) {
-                            returnCompletions.add(s);
-                        }
-                    }
-
-                    return returnCompletions;
-                } else {
-                    return subCommands;
-                }
-            } else if (args.length == 2) {
+            if (args.length == 2) {
                 if (args[0].equals("config")) {
                     if (!args[1].equals("")) {
                         for (String s : configSubCommands) {
