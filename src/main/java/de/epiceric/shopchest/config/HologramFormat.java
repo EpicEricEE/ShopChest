@@ -18,7 +18,7 @@ public class HologramFormat {
     public enum Requirement {
         VENDOR, AMOUNT, ITEM_TYPE, ITEM_NAME, HAS_ENCHANTMENT, BUY_PRICE,
         SELL_PRICE, HAS_POTION_EFFECT, IS_MUSIC_DISC, IS_POTION_EXTENDED, IS_WRITTEN_BOOK, ADMIN_SHOP,
-        NORMAL_SHOP, IN_STOCK, MAX_STACK
+        NORMAL_SHOP, IN_STOCK, MAX_STACK, CHEST_SPACE
     }
 
     private ShopChest plugin;
@@ -78,12 +78,12 @@ public class HologramFormat {
                 ConfigurationSection option = options.getConfigurationSection(key);
 
                 String format = option.getString("format");
-                if (format.contains(Placeholder.STOCK.toString())) {
+                if (format.contains(Placeholder.STOCK.toString()) || format.contains(Placeholder.CHEST_SPACE.toString())) {
                     return true;
                 }
 
                 for (String req : option.getStringList("requirements")) {
-                    if (req.contains(Requirement.IN_STOCK.toString())) {
+                    if (req.contains(Requirement.IN_STOCK.toString()) || req.contains(Requirement.CHEST_SPACE.toString())) {
                         return true;
                     }
                 }

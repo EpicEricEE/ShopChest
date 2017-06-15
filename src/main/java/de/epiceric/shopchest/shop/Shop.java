@@ -197,6 +197,7 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.NORMAL_SHOP, getShopType() == ShopType.NORMAL);
         requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
         requirements.put(HologramFormat.Requirement.MAX_STACK, getProduct().getMaxStackSize());
+        requirements.put(HologramFormat.Requirement.CHEST_SPACE, Utils.getFreeSpaceForItem(getInventoryHolder().getInventory(), getProduct()));
 
         Map<Placeholder, Object> placeholders = new HashMap<>();
         placeholders.put(Placeholder.VENDOR, getVendor().getName());
@@ -209,6 +210,8 @@ public class Shop {
         placeholders.put(Placeholder.MUSIC_TITLE, LanguageUtils.getMusicDiscName(getProduct().getType()));
         placeholders.put(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(ItemUtils.getBookGeneration(getProduct())));
         placeholders.put(Placeholder.STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
+        placeholders.put(Placeholder.MAX_STACK, getProduct().getMaxStackSize());
+        placeholders.put(Placeholder.CHEST_SPACE, Utils.getFreeSpaceForItem(getInventoryHolder().getInventory(), getProduct()));
 
         int lineCount = plugin.getHologramFormat().getLineCount();
 

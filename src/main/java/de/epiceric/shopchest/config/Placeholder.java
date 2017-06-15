@@ -23,6 +23,7 @@ public enum Placeholder {
     REVENUE("%REVENUE%"),
     GENERATION("%GENERATION%"),
     STOCK("%STOCK%"),
+    CHEST_SPACE("%CHEST-SPACE%"),
     MAX_STACK("%MAX-STACK%"),
     COMMAND("%COMMAND%");
 
