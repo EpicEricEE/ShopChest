@@ -1,37 +1,59 @@
 package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.event.ShopUpdateEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class ShopUpdater extends Thread {
+import java.util.Collection;
+
+public class ShopUpdater extends BukkitRunnable {
+
+    public enum UpdateQuality {
+        SLOWEST(31L),
+        SLOWER(24L),
+        SLOW(17L),
+        NORMAL(10L),
+        FAST(7L),
+        FASTER(4L),
+        FASTEST(1L);
+
+        private long interval;
+
+        UpdateQuality(long interval) {
+            this.interval = interval;
+        }
+
+        public long getInterval() {
+            return interval;
+        }
+    }
 
     private ShopChest plugin;
 
     private boolean running;
-    private long maxDelta;
-    private long lastTime;
+    private long interval;
 
     public ShopUpdater(ShopChest plugin) {
         this.plugin = plugin;
-        setMaxDelta(plugin.getShopChestConfig().update_quality.getTime());
+        setInterval(plugin.getShopChestConfig().update_quality.getInterval());
     }
 
-    public synchronized void setMaxDelta(long maxDelta) {
-        this.maxDelta = maxDelta * 50;
+    public synchronized void setInterval(long interval) {
+        this.interval = interval;
+    }
+
+    public synchronized void start() {
+        super.runTaskTimerAsynchronously(plugin, interval, interval);
+        running = true;
     }
 
     @Override
-    public synchronized void start() {
-        super.start();
-        running = true;
-        lastTime = System.currentTimeMillis();
-    }
-
     public synchronized void cancel() {
-        running = false;
-        super.interrupt();
+        if (running) {
+            running = false;
+            super.cancel();
+        }
     }
 
     public boolean isRunning() {
@@ -40,23 +62,14 @@ public class ShopUpdater extends Thread {
 
     @Override
     public void run() {
-        while(running) {
-            if (Bukkit.getOnlinePlayers().isEmpty()) {
-                cancel();
-            }
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
-            long timeNow = System.currentTimeMillis();
-            long timeElapsed = timeNow - lastTime;
+        if (players.isEmpty()) {
+            cancel();
+        }
 
-            if (timeElapsed >= maxDelta) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        Bukkit.getPluginManager().callEvent(new ShopUpdateEvent());
-                    }
-                }.runTask(plugin);
-                lastTime = timeNow;
-            }
+        for (Player p : players) {
+            plugin.getShopUtils().updateShops(p);
         }
     }
 }

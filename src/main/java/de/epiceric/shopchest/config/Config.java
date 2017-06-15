@@ -1,10 +1,10 @@
 package de.epiceric.shopchest.config;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.event.ShopUpdateEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.ItemUtils;
+import de.epiceric.shopchest.utils.ShopUpdater;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +25,7 @@ public class Config {
     private LanguageConfiguration langConfig;
 
     /** The quality of hologram and item updating (performance saving, or better quality) **/
-    public ShopUpdateEvent.UpdateQuality update_quality;
+    public ShopUpdater.UpdateQuality update_quality;
 
     /** The item with which a player can click a shop to retrieve information **/
     public ItemStack shop_info_item;
@@ -338,7 +338,7 @@ public class Config {
     public void reload(boolean firstLoad, boolean langReload, boolean showMessages) {
         plugin.reloadConfig();
 
-        update_quality = ShopUpdateEvent.UpdateQuality.valueOf(plugin.getConfig().getString("update-quality"));
+        update_quality = ShopUpdater.UpdateQuality.valueOf(plugin.getConfig().getString("update-quality"));
         shop_info_item = ItemUtils.getItemStack(plugin.getConfig().getString("shop-info-item"));
         wg_allow_create_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.create-shop");
         wg_allow_use_admin_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-admin-shop");

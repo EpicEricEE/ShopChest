@@ -5,7 +5,6 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
@@ -216,7 +215,10 @@ public class ShopUtils {
         if (reloadConfig) {
             plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
             plugin.getHologramFormat().reload();
-            plugin.getUpdater().setMaxDelta(plugin.getShopChestConfig().update_quality.getTime());
+            plugin.getUpdater().cancel();
+
+            plugin.setUpdater(new ShopUpdater(plugin));
+            plugin.getUpdater().start();
         }
 
         plugin.getShopDatabase().connect(new Callback(plugin) {
@@ -362,8 +364,6 @@ public class ShopUtils {
      * @param player Player to show the update
      */
     public void updateShop(Shop shop, Player player) {
-        if (!shop.getLocation().getChunk().isLoaded()) return;
-
         double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
         double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
 
@@ -372,12 +372,6 @@ public class ShopUtils {
 
             if (distSqr <= holoDistSqr) {
                 if (shop.getHologram() != null) {
-                    Material type = shop.getLocation().getBlock().getType();
-
-                    if (type != Material.CHEST && type != Material.TRAPPED_CHEST) {
-                        plugin.getShopUtils().removeShop(shop, plugin.getShopChestConfig().remove_shop_on_error);
-                        return;
-                    }
                     if (!shop.getHologram().isVisible(player)) {
                         shop.getHologram().showPlayer(player);
                     }
