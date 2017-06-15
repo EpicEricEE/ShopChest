@@ -155,7 +155,9 @@ public class Hologram {
                     wrapper.setVisible(p, true);
                 }
 
-                interactArmorStandWrapper.setVisible(p, true);
+                if (interactArmorStandWrapper != null) {
+                    interactArmorStandWrapper.setVisible(p, true);
+                }
             }
         }.runTaskAsynchronously(plugin);
 
@@ -173,7 +175,9 @@ public class Hologram {
                     wrapper.setVisible(p, false);
                 }
 
-                interactArmorStandWrapper.setVisible(p, false);
+                if (interactArmorStandWrapper != null) {
+                    interactArmorStandWrapper.setVisible(p, false);
+                }
             }
         }.runTaskAsynchronously(plugin);
 
