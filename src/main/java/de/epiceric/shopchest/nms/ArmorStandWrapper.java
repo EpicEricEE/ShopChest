@@ -24,6 +24,8 @@ public class ArmorStandWrapper {
 
     private ShopChest plugin;
 
+    private Object nmsWorld;
+
     private Object entity;
     private Location location;
     private String customName;
@@ -37,10 +39,10 @@ public class ArmorStandWrapper {
 
         try {
             Object craftWorld = location.getWorld().getClass().cast(location.getWorld());
-            Object worldServer = craftWorld.getClass().getMethod("getHandle").invoke(craftWorld);
+            nmsWorld = craftWorld.getClass().getMethod("getHandle").invoke(craftWorld);
 
             entity = entityArmorStandClass.getConstructor(worldClass, double.class, double.class,double.class)
-                    .newInstance(worldServer, location.getX(), location.getY(), location.getZ());
+                    .newInstance(nmsWorld, location.getX(), location.getY(), location.getZ());
 
             if (customName != null && !customName.trim().isEmpty()) {
                 entityArmorStandClass.getMethod("setCustomName", String.class).invoke(entity, customName);
@@ -58,7 +60,7 @@ public class ArmorStandWrapper {
             // Adds the entity to some lists so it can call interact events
             Method addEntityMethod = worldServerClass.getDeclaredMethod((Utils.getMajorVersion() == 8 ? "a" : "b"), entityClass);
             addEntityMethod.setAccessible(true);
-            addEntityMethod.invoke(worldServerClass.cast(worldServer), entity);
+            addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
 
             uuid = (UUID) entityClass.getMethod("getUniqueID").invoke(entity);
             entityId = (int) entityArmorStandClass.getMethod("getId").invoke(entity);
@@ -138,6 +140,17 @@ public class ArmorStandWrapper {
     public void remove() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             setVisible(player, false);
+        }
+
+        try {
+            // Removes the entity from the lists it was added to for interaction
+            Method addEntityMethod = worldServerClass.getDeclaredMethod((Utils.getMajorVersion() == 8 ? "b" : "c"), entityClass);
+            addEntityMethod.setAccessible(true);
+            addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
+        } catch (ReflectiveOperationException e) {
+            plugin.getLogger().severe("Could not remove hologram");
+            plugin.debug("Could not remove armor stand from entity lists");
+            plugin.debug(e);
         }
     }
 
