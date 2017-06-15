@@ -202,7 +202,11 @@ public class ChestProtectListener implements Listener {
                     if (externalPluginsAllowed && plugin.hasASkyBlock() && config.enable_askyblock_integration) {
                         Island island = ASkyBlockAPI.getInstance().getIslandAt(b.getLocation());
                         if (island != null) {
-                            externalPluginsAllowed = island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                            if (island.getOwner() == null) {
+                                externalPluginsAllowed = island.getMembers().contains(p.getUniqueId());
+                            } else {
+                                externalPluginsAllowed = island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
+                            }
                         }
                     }
 
