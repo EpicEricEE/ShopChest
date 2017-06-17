@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,6 +21,18 @@ public class ShopUpdateListener implements Listener {
 
     public ShopUpdateListener(ShopChest plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerTeleport(final PlayerTeleportEvent e) {
+        // Wait till the chunk should have loaded on the client
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                hideShops(e.getPlayer(), true);
+                plugin.getShopUtils().updateShops(e.getPlayer(), true);
+            }
+        }.runTaskLater(plugin, 15L);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -75,8 +88,15 @@ public class ShopUpdateListener implements Listener {
             plugin.getUpdater().start();
         }
 
+        hideShops(p, false);
+    }
+
+    private void hideShops(Player p, boolean onlyItem) {
         for (Shop shop : plugin.getShopUtils().getShops()) {
-            if (shop.getHologram() != null) shop.getHologram().hidePlayer(p);
+            if (!onlyItem) {
+                if (shop.getHologram() != null) shop.getHologram().hidePlayer(p);
+            }
+
             if (shop.getItem() != null) shop.getItem().setVisible(p, false);
         }
     }
