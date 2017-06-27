@@ -35,7 +35,10 @@ public class ShopUtils {
      * @return Shop at the given location or <b>null</b> if no shop is found there
      */
     public Shop getShop(Location location) {
-        return shopLocation.get(location.getBlock().getLocation());
+        Location newLocation = new Location(location.getWorld(), location.getBlockX(),
+                location.getBlockY(), location.getBlockZ());
+
+        return shopLocation.get(newLocation);
     }
 
     /**
@@ -44,7 +47,7 @@ public class ShopUtils {
      * @return Whether there is a shop at the given location
      */
     public boolean isShop(Location location) {
-        return shopLocation.containsKey(location.getBlock().getLocation());
+        return getShop(location) != null;
     }
 
     /**
