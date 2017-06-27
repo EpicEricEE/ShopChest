@@ -96,11 +96,16 @@ public class ShopInteractListener implements Listener {
 
         Inventory chestInv = e.getInventory();
 
-        if (!(e.getInventory().getHolder() instanceof Chest || e.getInventory().getHolder() instanceof DoubleChest)) {
+        if (!(chestInv.getHolder() instanceof Chest || chestInv.getHolder() instanceof DoubleChest)) {
             return;
         }
 
-        Location loc = chestInv.getLocation();
+        Location loc = null;
+        if (chestInv.getHolder() instanceof Chest) {
+            loc = ((Chest) chestInv.getHolder()).getLocation();
+        } else if (chestInv.getHolder() instanceof DoubleChest) {
+            loc = ((DoubleChest) chestInv.getHolder()).getLocation();
+        }
 
         final Shop shop = plugin.getShopUtils().getShop(loc);
         if (shop == null) return;
