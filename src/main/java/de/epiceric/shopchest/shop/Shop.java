@@ -198,6 +198,7 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
         requirements.put(HologramFormat.Requirement.MAX_STACK, getProduct().getMaxStackSize());
         requirements.put(HologramFormat.Requirement.CHEST_SPACE, Utils.getFreeSpaceForItem(getInventoryHolder().getInventory(), getProduct()));
+        requirements.put(HologramFormat.Requirement.DURABILITY, getProduct().getDurability());
 
         Map<Placeholder, Object> placeholders = new HashMap<>();
         placeholders.put(Placeholder.VENDOR, getVendor().getName());
@@ -212,6 +213,7 @@ public class Shop {
         placeholders.put(Placeholder.STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
         placeholders.put(Placeholder.MAX_STACK, getProduct().getMaxStackSize());
         placeholders.put(Placeholder.CHEST_SPACE, Utils.getFreeSpaceForItem(getInventoryHolder().getInventory(), getProduct()));
+        placeholders.put(Placeholder.DURABILITY, getProduct().getDurability());
 
         int lineCount = plugin.getHologramFormat().getLineCount();
 
