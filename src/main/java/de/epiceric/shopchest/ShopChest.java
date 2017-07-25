@@ -185,7 +185,7 @@ public class ShopChest extends JavaPlugin {
 
         if (updater != null) {
             debug("Stopping updater");
-            updater.cancel();
+            updater.stop();
         }
 
         if (database != null) {
@@ -431,13 +431,6 @@ public class ShopChest extends JavaPlugin {
      */
     public ShopUpdater getUpdater() {
         return updater;
-    }
-
-    /**
-     * Set the {@link ShopUpdater} that schedules hologram and item updates
-     */
-    public void setUpdater(ShopUpdater updater) {
-        this.updater = updater;
     }
 
     /**
