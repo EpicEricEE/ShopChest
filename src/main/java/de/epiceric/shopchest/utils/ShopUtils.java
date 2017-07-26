@@ -13,16 +13,13 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ShopUtils {
 
-    private HashMap<Location, Shop> shopLocation = new HashMap<>();
-    private HashMap<Player, Location> playerLocation = new HashMap<>();
-    private ShopChest plugin;
+    private final HashMap<Location, Shop> shopLocation = new HashMap<>();
+    private final HashMap<UUID, Location> playerLocation = new HashMap<>();
+    private final ShopChest plugin;
 
     public ShopUtils(ShopChest plugin) {
         this.plugin = plugin;
@@ -55,8 +52,7 @@ public class ShopUtils {
      * @return Array of all Shops
      */
     public Shop[] getShops() {
-        Collection<Shop> shops = shopLocation.values();
-        return shops.toArray(new Shop[shops.size()]);
+        return shopLocation.values().toArray(new Shop[0]);
     }
 
     /**
@@ -274,7 +270,7 @@ public class ShopUtils {
      * @param force Whether update should be forced even if player has not moved
      */
     public void updateShops(Player player, boolean force) {
-        if (!force && player.getLocation().equals(playerLocation.get(player))) {
+        if (!force && player.getLocation().equals(playerLocation.get(player.getUniqueId()))) {
             // Player has not moved, so don't calculate shops again.
             return;
         }
@@ -314,7 +310,7 @@ public class ShopUtils {
             updateNearestShops(player);
         }
 
-        playerLocation.put(player, player.getLocation());
+        playerLocation.put(player.getUniqueId(), player.getLocation());
     }
 
     private Set<Shop> getShopsInSight(Player player) {

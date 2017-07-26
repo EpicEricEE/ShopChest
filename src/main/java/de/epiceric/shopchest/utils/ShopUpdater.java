@@ -5,6 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class ShopUpdater {
 
     public enum UpdateQuality {
@@ -28,8 +31,7 @@ public class ShopUpdater {
     }
 
     private final ShopChest plugin;
-
-    private long interval = UpdateQuality.NORMAL.getInterval();
+    private final Queue<Runnable> beforeNext = new ConcurrentLinkedQueue<>();
 
     private volatile BukkitTask running;
 
@@ -42,8 +44,8 @@ public class ShopUpdater {
      */
     public void start() {
         if (!isRunning()) {
-            interval = plugin.getShopChestConfig().update_quality.getInterval();
-            running = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new ShopUpdaterTask(plugin), interval, interval);
+            long interval = plugin.getShopChestConfig().update_quality.getInterval();
+            running = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new ShopUpdaterTask(), interval, interval);
         }
     }
 
@@ -72,16 +74,26 @@ public class ShopUpdater {
         return running != null;
     }
 
-    private static class ShopUpdaterTask implements Runnable {
+    /**
+     * Register a task to run before next loop
+     *
+     * @param runnable task to run
+     */
+    public void beforeNext(Runnable runnable) {
+        beforeNext.add(runnable);
+    }
 
-        private final ShopChest plugin;
-
-        private ShopUpdaterTask(ShopChest plugin) {
-            this.plugin = plugin;
-        }
+    private class ShopUpdaterTask implements Runnable {
 
         @Override
         public void run() {
+            if (!beforeNext.isEmpty()) {
+                for (Runnable runnable : beforeNext) {
+                    runnable.run();
+                }
+                beforeNext.clear();
+            }
+
             for (Player p : Bukkit.getOnlinePlayers()) {
                 plugin.getShopUtils().updateShops(p);
             }

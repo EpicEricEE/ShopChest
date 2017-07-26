@@ -10,18 +10,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Hologram {
 
     private static List<Hologram> holograms = new ArrayList<>();
 
+    private final Set<UUID> visibility = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
+    private final List<ArmorStandWrapper> wrappers = new ArrayList<>();
+    private final Location location;
+    private final ShopChest plugin;
+    private final Config config;
+
     private boolean exists = false;
-    private List<ArmorStandWrapper> wrappers = new ArrayList<>();
     private ArmorStandWrapper interactArmorStandWrapper;
-    private Location location;
-    private Set<UUID> visibility = new HashSet<>();
-    private ShopChest plugin;
-    private Config config;
 
     public Hologram(ShopChest plugin, String[] lines, Location location) {
         this.plugin = plugin;
@@ -254,7 +256,9 @@ public class Hologram {
      */
     public static Hologram getHologram(ArmorStand armorStand) {
         for (Hologram hologram : holograms) {
-            if (hologram.contains(armorStand)) return hologram;
+            if (hologram.contains(armorStand)) {
+                return hologram;
+            }
         }
 
         return null;
@@ -265,12 +269,7 @@ public class Hologram {
      * @return Whether the armor stand is part of a hologram
      */
     public static boolean isPartOfHologram(ArmorStand armorStand) {
-        for (Hologram hologram : holograms) {
-            if (hologram.contains(armorStand)) {
-                return true;
-            }
-        }
-        return false;
+        return getHologram(armorStand) != null;
     }
 
 }

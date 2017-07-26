@@ -10,16 +10,17 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ShopItem {
 
-    private ShopChest plugin;
-    private Set<UUID> visibility = new HashSet<>();
-    private ItemStack itemStack;
-    private Location location;
+    private final ShopChest plugin;
+    private final Set<UUID> visibility = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
+    private final ItemStack itemStack;
+    private final Location location;
 
     private Object entityItem;
     private int entityId;
