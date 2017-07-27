@@ -18,6 +18,7 @@ import java.util.*;
 public class ShopUtils {
 
     private final HashMap<Location, Shop> shopLocation = new HashMap<>();
+    private final Collection<Shop> shopLocationValues = Collections.unmodifiableCollection(shopLocation.values());
     private final HashMap<UUID, Location> playerLocation = new HashMap<>();
     private final ShopChest plugin;
 
@@ -48,11 +49,11 @@ public class ShopUtils {
     }
 
     /**
-     * Get all Shops
-     * @return Array of all Shops
+     * Get all shops
+     * @return Read-only collection of all shops, may contain duplicates
      */
-    public Shop[] getShops() {
-        return shopLocation.values().toArray(new Shop[0]);
+    public Collection<Shop> getShops() {
+        return shopLocationValues;
     }
 
     /**
