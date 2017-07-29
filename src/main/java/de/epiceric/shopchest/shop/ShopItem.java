@@ -2,6 +2,7 @@ package de.epiceric.shopchest.shop;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -9,15 +10,17 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ShopItem {
 
-    private ShopChest plugin;
-    private Map<Player, Boolean> visible = new HashMap<>();
-    private ItemStack itemStack;
-    private Location location;
+    private final ShopChest plugin;
+    private final Set<UUID> visibility = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
+    private final ItemStack itemStack;
+    private final Location location;
 
     private Object entityItem;
     private int entityId;
@@ -88,8 +91,9 @@ public class ShopItem {
     }
 
     public void remove() {
-        for (Player p : visible.keySet()) {
-            if (isVisible(p)) setVisible(p, false);
+        for (UUID uuid : visibility) {
+            Player p = Bukkit.getPlayer(uuid);
+            if (p != null) setVisible(p, false);
         }
     }
 
@@ -103,7 +107,7 @@ public class ShopItem {
     }
 
     public boolean isVisible(Player p) {
-        return visible.get(p) == null ? false : visible.get(p);
+        return visibility.contains(p.getUniqueId());
     }
 
     public void setVisible(final Player p, boolean visible) {
@@ -114,6 +118,7 @@ public class ShopItem {
             for (Object packet : this.creationPackets) {
                 Utils.sendPacket(plugin, packet, p);
             }
+            visibility.add(p.getUniqueId());
         } else {
             try {
                 if (p.isOnline()) {
@@ -125,9 +130,8 @@ public class ShopItem {
                 plugin.debug("Failed to destroy shop item with reflection");
                 plugin.debug(e);
             }
+            visibility.remove(p.getUniqueId());
         }
-
-        this.visible.put(p, visible);
     }
 
 

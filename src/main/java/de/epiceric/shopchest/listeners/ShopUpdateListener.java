@@ -3,14 +3,11 @@ package de.epiceric.shopchest.listeners;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Callback;
-import de.epiceric.shopchest.utils.ShopUpdater;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,45 +21,38 @@ public class ShopUpdateListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerTeleport(final PlayerTeleportEvent e) {
+    public void onPlayerTeleport(PlayerTeleportEvent e) {
+        Location from = e.getFrom();
+        Location to = e.getTo();
+        final Player p = e.getPlayer();
+
         // Wait till the chunk should have loaded on the client
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                hideShops(e.getPlayer(), true);
-                plugin.getShopUtils().updateShops(e.getPlayer(), true);
-            }
-        }.runTaskLater(plugin, 15L);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        restartShopUpdater(e.getPlayer());
-    }
-
-    // The Bukkit::getOnlinePlayers() list does not include players that
-    // are currently respawning or chaning worlds, so when only one player is
-    // online and is currently respawning, the updater will think that no player
-    // is online, so it will stop. To prevent that, a delay of 1 tick is needed.
-
-    @EventHandler
-    public void onPlayerChangedWorld(final PlayerChangedWorldEvent e) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                restartShopUpdater(e.getPlayer());
-            }
-        }.runTaskLater(plugin, 1L);
-    }
-
-    @EventHandler
-    public void onPlayerRespawn(final PlayerRespawnEvent e) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                restartShopUpdater(e.getPlayer());
-            }
-        }.runTaskLater(plugin, 1L);
+        // Update IF worlds are different OR chunks are different (as many teleports are in same chunk)
+        if (!from.getWorld().equals(to.getWorld())
+                || from.getChunk().getX() != to.getChunk().getX()
+                || from.getChunk().getZ() != to.getChunk().getZ()) {
+            // Wait for 15 ticks before we actually put it in the queue
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    plugin.getUpdater().beforeNext(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (p.isOnline()) {
+                                for (Shop shop : plugin.getShopUtils().getShops()) {
+                                    if (shop.getItem() != null) {
+                                        shop.getItem().setVisible(p, false);
+                                    }
+                                    if (shop.getHologram() != null) {
+                                        shop.getHologram().hidePlayer(p);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }.runTaskLater(plugin, 15L);
+        }
     }
 
     @EventHandler
@@ -81,24 +71,4 @@ public class ShopUpdateListener implements Listener {
             }
         });
     }
-
-    private void restartShopUpdater(Player p) {
-        if (!plugin.getUpdater().isRunning()) {
-            plugin.setUpdater(new ShopUpdater(plugin));
-            plugin.getUpdater().start();
-        }
-
-        hideShops(p, false);
-    }
-
-    private void hideShops(Player p, boolean onlyItem) {
-        for (Shop shop : plugin.getShopUtils().getShops()) {
-            if (!onlyItem) {
-                if (shop.getHologram() != null) shop.getHologram().hidePlayer(p);
-            }
-
-            if (shop.getItem() != null) shop.getItem().setVisible(p, false);
-        }
-    }
-
 }

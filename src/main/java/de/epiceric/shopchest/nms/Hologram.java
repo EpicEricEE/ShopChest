@@ -2,26 +2,28 @@ package de.epiceric.shopchest.nms;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Hologram {
 
     private static List<Hologram> holograms = new ArrayList<>();
 
+    private final Set<UUID> visibility = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
+    private final List<ArmorStandWrapper> wrappers = new ArrayList<>();
+    private final Location location;
+    private final ShopChest plugin;
+    private final Config config;
+
     private boolean exists = false;
-    private List<ArmorStandWrapper> wrappers = new ArrayList<>();
     private ArmorStandWrapper interactArmorStandWrapper;
-    private Location location;
-    private List<Player> visible = new ArrayList<>();
-    private ShopChest plugin;
-    private Config config;
 
     public Hologram(ShopChest plugin, String[] lines, Location location) {
         this.plugin = plugin;
@@ -66,8 +68,11 @@ public class Hologram {
         wrappers.add(line, wrapper);
 
         if (forceUpdateLine) {
-            for (Player player : visible) {
-                wrapper.setVisible(player, true);
+            for (UUID uuid : visibility) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player != null) {
+                    wrapper.setVisible(player, true);
+                }
             }
         }
     }
@@ -148,40 +153,44 @@ public class Hologram {
      * @param p Player to which the hologram should be shown
      */
     public void showPlayer(final Player p) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (ArmorStandWrapper wrapper : wrappers) {
-                    wrapper.setVisible(p, true);
-                }
+        if (!isVisible(p)) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (ArmorStandWrapper wrapper : wrappers) {
+                        wrapper.setVisible(p, true);
+                    }
 
-                if (interactArmorStandWrapper != null) {
-                    interactArmorStandWrapper.setVisible(p, true);
+                    if (interactArmorStandWrapper != null) {
+                        interactArmorStandWrapper.setVisible(p, true);
+                    }
                 }
-            }
-        }.runTaskAsynchronously(plugin);
+            }.runTaskAsynchronously(plugin);
 
-        visible.add(p);
+            visibility.add(p.getUniqueId());
+        }
     }
 
     /**
      * @param p Player from which the hologram should be hidden
      */
     public void hidePlayer(final Player p) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (ArmorStandWrapper wrapper : wrappers) {
-                    wrapper.setVisible(p, false);
-                }
+        if (isVisible(p)) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (ArmorStandWrapper wrapper : wrappers) {
+                        wrapper.setVisible(p, false);
+                    }
 
-                if (interactArmorStandWrapper != null) {
-                    interactArmorStandWrapper.setVisible(p, false);
+                    if (interactArmorStandWrapper != null) {
+                        interactArmorStandWrapper.setVisible(p, false);
+                    }
                 }
-            }
-        }.runTaskAsynchronously(plugin);
+            }.runTaskAsynchronously(plugin);
 
-        visible.remove(p);
+            visibility.remove(p.getUniqueId());
+        }
     }
 
     /**
@@ -189,7 +198,7 @@ public class Hologram {
      * @return Whether the hologram is visible to the player
      */
     public boolean isVisible(Player p) {
-        return visible.contains(p);
+        return visibility.contains(p.getUniqueId());
     }
 
     /**
@@ -247,7 +256,9 @@ public class Hologram {
      */
     public static Hologram getHologram(ArmorStand armorStand) {
         for (Hologram hologram : holograms) {
-            if (hologram.contains(armorStand)) return hologram;
+            if (hologram.contains(armorStand)) {
+                return hologram;
+            }
         }
 
         return null;
@@ -258,12 +269,7 @@ public class Hologram {
      * @return Whether the armor stand is part of a hologram
      */
     public static boolean isPartOfHologram(ArmorStand armorStand) {
-        for (Hologram hologram : holograms) {
-            if (hologram.contains(armorStand)) {
-                return true;
-            }
-        }
-        return false;
+        return getHologram(armorStand) != null;
     }
 
 }

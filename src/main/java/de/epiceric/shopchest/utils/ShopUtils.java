@@ -13,16 +13,14 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ShopUtils {
 
-    private HashMap<Location, Shop> shopLocation = new HashMap<>();
-    private HashMap<Player, Location> playerLocation = new HashMap<>();
-    private ShopChest plugin;
+    private final HashMap<Location, Shop> shopLocation = new HashMap<>();
+    private final Collection<Shop> shopLocationValues = Collections.unmodifiableCollection(shopLocation.values());
+    private final HashMap<UUID, Location> playerLocation = new HashMap<>();
+    private final ShopChest plugin;
 
     public ShopUtils(ShopChest plugin) {
         this.plugin = plugin;
@@ -51,12 +49,11 @@ public class ShopUtils {
     }
 
     /**
-     * Get all Shops
-     * @return Array of all Shops
+     * Get all shops
+     * @return Read-only collection of all shops, may contain duplicates
      */
-    public Shop[] getShops() {
-        Collection<Shop> shops = shopLocation.values();
-        return shops.toArray(new Shop[shops.size()]);
+    public Collection<Shop> getShops() {
+        return shopLocationValues;
     }
 
     /**
@@ -218,10 +215,7 @@ public class ShopUtils {
         if (reloadConfig) {
             plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
             plugin.getHologramFormat().reload();
-            plugin.getUpdater().cancel();
-
-            plugin.setUpdater(new ShopUpdater(plugin));
-            plugin.getUpdater().start();
+            plugin.getUpdater().restart();
         }
 
         plugin.getShopDatabase().connect(new Callback(plugin) {
@@ -277,7 +271,7 @@ public class ShopUtils {
      * @param force Whether update should be forced even if player has not moved
      */
     public void updateShops(Player player, boolean force) {
-        if (!force && player.getLocation().equals(playerLocation.get(player))) {
+        if (!force && player.getLocation().equals(playerLocation.get(player.getUniqueId()))) {
             // Player has not moved, so don't calculate shops again.
             return;
         }
@@ -314,12 +308,10 @@ public class ShopUtils {
                 }
             }
         } else {
-            for (Shop shop : getShops()) {
-                updateShop(shop, player);
-            }
+            updateNearestShops(player);
         }
 
-        playerLocation.put(player, player.getLocation());
+        playerLocation.put(player.getUniqueId(), player.getLocation());
     }
 
     private Set<Shop> getShopsInSight(Player player) {
@@ -370,27 +362,36 @@ public class ShopUtils {
         double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
         double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
 
+        updateShop(shop, player, holoDistSqr, itemDistSqr);
+    }
+
+    private void updateNearestShops(Player p) {
+        double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
+        double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
+
+        for (Shop shop : getShops()) {
+            updateShop(shop, p, holoDistSqr, itemDistSqr);
+        }
+    }
+
+    private void updateShop(Shop shop, Player player, double holoDistSqr, double itemDistSqr) {
         if (player.getLocation().getWorld().getName().equals(shop.getLocation().getWorld().getName())) {
             double distSqr = shop.getLocation().distanceSquared(player.getLocation());
 
-            if (distSqr <= holoDistSqr) {
-                if (shop.getHologram() != null) {
-                    if (!shop.getHologram().isVisible(player)) {
-                        shop.getHologram().showPlayer(player);
-                    }
-                }
-            } else {
-                if (shop.getHologram() != null) {
+            if (shop.getHologram() != null) {
+                if (distSqr <= holoDistSqr) {
+                    shop.getHologram().showPlayer(player);
+                } else {
                     shop.getHologram().hidePlayer(player);
                 }
             }
 
-            if (distSqr <= itemDistSqr) {
-                if (shop.getItem() != null) {
+            if (shop.getItem() != null) {
+                if (distSqr <= itemDistSqr) {
                     shop.getItem().setVisible(player, true);
+                } else {
+                    shop.getItem().setVisible(player, false);
                 }
-            } else {
-                if (shop.getItem() != null) shop.getItem().setVisible(player, false);
             }
         }
     }

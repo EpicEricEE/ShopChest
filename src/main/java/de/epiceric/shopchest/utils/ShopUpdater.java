@@ -3,11 +3,12 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Collection;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ShopUpdater extends BukkitRunnable {
+public class ShopUpdater {
 
     public enum UpdateQuality {
         SLOWEST(31L),
@@ -18,7 +19,7 @@ public class ShopUpdater extends BukkitRunnable {
         FASTER(4L),
         FASTEST(1L);
 
-        private long interval;
+        private final long interval;
 
         UpdateQuality(long interval) {
             this.interval = interval;
@@ -29,47 +30,73 @@ public class ShopUpdater extends BukkitRunnable {
         }
     }
 
-    private ShopChest plugin;
+    private final ShopChest plugin;
+    private final Queue<Runnable> beforeNext = new ConcurrentLinkedQueue<>();
 
-    private boolean running;
-    private long interval;
+    private volatile BukkitTask running;
 
     public ShopUpdater(ShopChest plugin) {
         this.plugin = plugin;
-        setInterval(plugin.getShopChestConfig().update_quality.getInterval());
     }
 
-    public synchronized void setInterval(long interval) {
-        this.interval = interval;
-    }
-
-    public synchronized void start() {
-        super.runTaskTimerAsynchronously(plugin, interval, interval);
-        running = true;
-    }
-
-    @Override
-    public synchronized void cancel() {
-        if (running) {
-            running = false;
-            super.cancel();
+    /**
+     * Start task, except if it is already
+     */
+    public void start() {
+        if (!isRunning()) {
+            long interval = plugin.getShopChestConfig().update_quality.getInterval();
+            running = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new ShopUpdaterTask(), interval, interval);
         }
     }
 
+    /**
+     * Stop any running task then start it again
+     */
+    public void restart() {
+        stop();
+        start();
+    }
+
+    /**
+     * Stop task properly
+     */
+    public void stop() {
+        if (running != null) {
+            running.cancel();
+            running = null;
+        }
+    }
+
+    /**
+     * @return whether task is running or not
+     */
     public boolean isRunning() {
-        return running;
+        return running != null;
     }
 
-    @Override
-    public void run() {
-        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+    /**
+     * Register a task to run before next loop
+     *
+     * @param runnable task to run
+     */
+    public void beforeNext(Runnable runnable) {
+        beforeNext.add(runnable);
+    }
 
-        if (players.isEmpty()) {
-            cancel();
-        }
+    private class ShopUpdaterTask implements Runnable {
 
-        for (Player p : players) {
-            plugin.getShopUtils().updateShops(p);
+        @Override
+        public void run() {
+            if (!beforeNext.isEmpty()) {
+                for (Runnable runnable : beforeNext) {
+                    runnable.run();
+                }
+                beforeNext.clear();
+            }
+
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                plugin.getShopUtils().updateShops(p);
+            }
         }
     }
 }

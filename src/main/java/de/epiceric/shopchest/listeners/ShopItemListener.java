@@ -4,9 +4,7 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -15,7 +13,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 public class ShopItemListener implements Listener {
@@ -33,6 +32,9 @@ public class ShopItemListener implements Listener {
         for (Shop shop : plugin.getShopUtils().getShops()) {
             if (shop.getItem() != null) {
                 shop.getItem().setVisible(e.getPlayer(), false);
+            }
+            if (shop.getHologram() != null) {
+                shop.getHologram().hidePlayer(e.getPlayer());
             }
         }
     }

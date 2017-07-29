@@ -6,21 +6,30 @@
 
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest</artifactId>
-    <packaging>jar</packaging>
     <version>${version.final}</version>
-    <name>ShopChest</name>
+
+    <name>${project.artifactId}</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
     <description>Let your players create their own nice-looking shops to sell their stuff to other players!</description>
+    <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <!-- Project Properties -->
+        <projectEncoding>UTF-8</projectEncoding>
+        <project.build.sourceEncoding>${projectEncoding}</project.build.sourceEncoding>
+        <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
 
+        <!-- JDK Version -->
+        <jdkVersion>1.7</jdkVersion>
+        <maven.compiler.source>${jdkVersion}</maven.compiler.source>
+        <maven.compiler.target>${jdkVersion}</maven.compiler.target>
+
+        <!-- Versioning -->
         <version.number>1.12.3</version.number>
         <version.final>${version.number}-${version.git}</version.final>
 
+        <!-- Others -->
         <github.global.server>github</github.global.server>
-
         <javadoc.opts><!-- Only jdk 1.8 and later --></javadoc.opts>
     </properties>
 
@@ -252,6 +261,7 @@
                             <shadedPattern>de.epiceric.shopchest.utils</shadedPattern>
                         </relocation>
                     </relocations>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
                 </configuration>
                 <executions>
                     <execution>
