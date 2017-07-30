@@ -415,7 +415,7 @@ public class ShopInteractListener implements Listener {
                             if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                                 ItemStack item = Utils.getItemInMainHand(p);
                                 if (item == null || !(infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability())) {
-                                    item = Utils.getItemInMainHand(p);
+                                    item = Utils.getItemInOffHand(p);
                                     if (item != null && infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability()) {
                                         e.setCancelled(true);
                                         info(p, shop);
