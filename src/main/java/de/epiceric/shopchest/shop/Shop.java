@@ -185,7 +185,7 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.VENDOR, getVendor().getName());
         requirements.put(HologramFormat.Requirement.AMOUNT, getProduct().getAmount());
         requirements.put(HologramFormat.Requirement.ITEM_TYPE, getProduct().getType() + (getProduct().getDurability() > 0 ? ":" + getProduct().getDurability() : ""));
-        requirements.put(HologramFormat.Requirement.ITEM_NAME, getProduct().getItemMeta().getDisplayName());
+        requirements.put(HologramFormat.Requirement.ITEM_NAME, getProduct().hasItemMeta() ? getProduct().getItemMeta().getDisplayName() : null);
         requirements.put(HologramFormat.Requirement.HAS_ENCHANTMENT, !LanguageUtils.getEnchantmentString(ItemUtils.getEnchantments(getProduct())).isEmpty());
         requirements.put(HologramFormat.Requirement.BUY_PRICE, getBuyPrice());
         requirements.put(HologramFormat.Requirement.SELL_PRICE, getSellPrice());
