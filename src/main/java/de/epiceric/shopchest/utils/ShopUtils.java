@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +24,6 @@ import java.util.UUID;
 public class ShopUtils {
 
     private final HashMap<Location, Shop> shopLocation = new HashMap<>();
-    private final Collection<Shop> shopLocationValues = Collections.unmodifiableCollection(shopLocation.values());
     private final HashMap<UUID, Location> playerLocation = new HashMap<>();
     private final ShopChest plugin;
 
@@ -58,7 +58,7 @@ public class ShopUtils {
      * @return Read-only collection of all shops, may contain duplicates
      */
     public Collection<Shop> getShops() {
-        return shopLocationValues;
+        return Collections.unmodifiableCollection(new ArrayList<>(shopLocation.values()));
     }
 
     /**

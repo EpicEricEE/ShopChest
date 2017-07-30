@@ -205,8 +205,7 @@ public class ShopChest extends JavaPlugin {
 
         if (database != null) {
             for (Shop shop : shopUtils.getShops()) {
-                shop.removeHologram();
-                shop.removeItem();
+                shopUtils.removeShop(shop, false);
                 debug("Removed shop (#" + shop.getID() + ")");
             }
 
