@@ -186,14 +186,12 @@ class ShopCommandExecutor implements CommandExecutor {
             return;
         }
 
-        shopUtils.reloadShops(true, true, new Callback(plugin) {
+        shopUtils.reloadShops(true, true, new Callback<Integer>(plugin) {
             @Override
-            public void onResult(Object result) {
-                if (result instanceof Integer) {
-                    int count = (int) result;
-                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(count))));
-                    plugin.debug(sender.getName() + " has reloaded " + count + " shops");
-                }
+            public void onResult(Integer result) {
+                sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS,
+                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(result))));
+                plugin.debug(sender.getName() + " has reloaded " + result + " shops");
             }
         });
     }

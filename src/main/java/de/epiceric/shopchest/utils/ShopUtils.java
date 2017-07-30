@@ -13,7 +13,12 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class ShopUtils {
 
@@ -62,7 +67,7 @@ public class ShopUtils {
      * @param addToDatabase Whether the shop should also be added to the database
      * @param callback Callback that - if succeeded - returns the ID the shop had or was given (as {@code int})
      */
-    public void addShop(Shop shop, boolean addToDatabase, Callback callback) {
+    public void addShop(Shop shop, boolean addToDatabase, Callback<Integer> callback) {
         InventoryHolder ih = shop.getInventoryHolder();
         plugin.debug("Adding shop... (#" + shop.getID() + ")");
 
@@ -103,7 +108,7 @@ public class ShopUtils {
      * @param removeFromDatabase Whether the shop should also be removed from the database
      * @param callback Callback that - if succeeded - returns null
      */
-    public void removeShop(Shop shop, boolean removeFromDatabase, Callback callback) {
+    public void removeShop(Shop shop, boolean removeFromDatabase, Callback<Void> callback) {
         plugin.debug("Removing shop (#" + shop.getID() + ")");
 
         InventoryHolder ih = shop.getInventoryHolder();
@@ -209,7 +214,7 @@ public class ShopUtils {
      * @param showConsoleMessages Whether messages about the language file should be shown in the console
      * @param callback Callback that - if succeeded - returns the amount of shops that were reloaded (as {@code int})
      */
-    public void reloadShops(boolean reloadConfig, final boolean showConsoleMessages, final Callback callback) {
+    public void reloadShops(boolean reloadConfig, final boolean showConsoleMessages, final Callback<Integer> callback) {
         plugin.debug("Reloading shops...");
 
         if (reloadConfig) {
@@ -218,32 +223,28 @@ public class ShopUtils {
             plugin.getUpdater().restart();
         }
 
-        plugin.getShopDatabase().connect(new Callback(plugin) {
+        plugin.getShopDatabase().connect(new Callback<Integer>(plugin) {
             @Override
-            public void onResult(Object result) {
-
+            public void onResult(Integer result) {
                 for (Shop shop : getShops()) {
                     removeShop(shop, false);
                     plugin.debug("Removed shop (#" + shop.getID() + ")");
                 }
 
-                plugin.getShopDatabase().getShops(showConsoleMessages, new Callback(plugin) {
+                plugin.getShopDatabase().getShops(showConsoleMessages, new Callback<Shop[]>(plugin) {
                     @Override
-                    public void onResult(Object result) {
-                        if (result instanceof Shop[]) {
-                            Shop[] shops = (Shop[]) result;
-                            for (Shop shop : shops) {
-                                if (shop.create(showConsoleMessages)) {
-                                    addShop(shop, false);
-                                }
+                    public void onResult(Shop[] result) {
+                        for (Shop shop : result) {
+                            if (shop.create(showConsoleMessages)) {
+                                addShop(shop, false);
                             }
-
-                            for (Player player : Bukkit.getOnlinePlayers()) {
-                                updateShops(player, true);
-                            }
-
-                            if (callback != null) callback.callSyncResult(shops.length);
                         }
+
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            updateShops(player, true);
+                        }
+
+                        if (callback != null) callback.callSyncResult(result.length);
                     }
 
                     @Override

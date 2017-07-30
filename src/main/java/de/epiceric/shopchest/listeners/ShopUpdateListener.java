@@ -59,15 +59,11 @@ public class ShopUpdateListener implements Listener {
     public void onWorldLoad(WorldLoadEvent e) {
         final String worldName = e.getWorld().getName();
 
-        plugin.getShopUtils().reloadShops(false, false, new Callback(plugin) {
+        plugin.getShopUtils().reloadShops(false, false, new Callback<Integer>(plugin) {
             @Override
-            public void onResult(Object result) {
-                int amount = -1;
-                if (result instanceof Integer) {
-                    amount = (int) result;
-                }
-                plugin.getLogger().info(String.format("Reloaded %d shops because a new world '%s' was loaded", amount, worldName));
-                plugin.debug(String.format("Reloaded %d shops because a new world '%s' was loaded", amount, worldName));
+            public void onResult(Integer result) {
+                plugin.getLogger().info(String.format("Reloaded %d shops because a new world '%s' was loaded", result, worldName));
+                plugin.debug(String.format("Reloaded %d shops because a new world '%s' was loaded", result, worldName));
             }
         });
     }

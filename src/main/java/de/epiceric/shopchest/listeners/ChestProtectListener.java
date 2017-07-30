@@ -68,9 +68,9 @@ public class ChestProtectListener implements Listener {
             Location loc = (b.getLocation().equals(l.getLocation()) ? r.getLocation() : l.getLocation());
             final Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), loc, shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
 
-            shopUtils.removeShop(shop, true, new Callback(plugin) {
+            shopUtils.removeShop(shop, true, new Callback<Void>(plugin) {
                 @Override
-                public void onResult(Object result) {
+                public void onResult(Void result) {
                     newShop.create(true);
                     shopUtils.addShop(newShop, true);
                 }
@@ -228,9 +228,9 @@ public class ChestProtectListener implements Listener {
                             if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
                                 final Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
 
-                                shopUtils.removeShop(shop, true, new Callback(plugin) {
+                                shopUtils.removeShop(shop, true, new Callback<Void>(plugin) {
                                     @Override
-                                    public void onResult(Object result) {
+                                    public void onResult(Void result) {
                                         newShop.create(true);
                                         shopUtils.addShop(newShop, true);
                                         plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));

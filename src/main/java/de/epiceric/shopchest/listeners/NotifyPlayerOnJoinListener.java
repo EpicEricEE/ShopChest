@@ -32,33 +32,26 @@ public class NotifyPlayerOnJoinListener implements Listener {
             }
         }
 
-        plugin.getShopDatabase().getLastLogout(p, new Callback(plugin) {
+        plugin.getShopDatabase().getLastLogout(p, new Callback<Long>(plugin) {
             @Override
-            public void onResult(Object result) {
-                if (result instanceof Long) {
-                    long lastLogout = (long) result;
-                    if (lastLogout < 0) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED,
-                                new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, "Could not get last time you logged out")));
-                        return;
-                    }
-
-                    plugin.getShopDatabase().getRevenue(p, lastLogout, new Callback(plugin) {
-                        @Override
-                        public void onResult(Object result) {
-                            if (result instanceof Double) {
-                                double revenue = (double) result;
-                                if (revenue != 0) {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE,
-                                            new LocalizedMessage.ReplacedPlaceholder(Placeholder.REVENUE, String.valueOf(revenue))));
-                                }
-                            }
-                        }
-                    });
+            public void onResult(Long result) {
+                if (result < 0) {
+                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED,
+                            new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, "Could not get last time you logged out")));
+                    return;
                 }
+
+                plugin.getShopDatabase().getRevenue(p, result, new Callback<Double>(plugin) {
+                    @Override
+                    public void onResult(Double result) {
+                        if (result != 0) {
+                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE,
+                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.REVENUE, String.valueOf(result))));
+                        }
+                    }
+                });
             }
         });
-
     }
 
     @EventHandler

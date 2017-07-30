@@ -9,18 +9,30 @@ import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.event.ShopInitializedEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.LocalizedMessage;
-import de.epiceric.shopchest.listeners.*;
+import de.epiceric.shopchest.listeners.AreaShopListener;
+import de.epiceric.shopchest.listeners.BlockExplodeListener;
+import de.epiceric.shopchest.listeners.ChestProtectListener;
+import de.epiceric.shopchest.listeners.NotifyPlayerOnJoinListener;
+import de.epiceric.shopchest.listeners.ShopInteractListener;
+import de.epiceric.shopchest.listeners.ShopItemListener;
+import de.epiceric.shopchest.listeners.ShopUpdateListener;
+import de.epiceric.shopchest.listeners.WorldGuardListener;
 import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.sql.MySQL;
 import de.epiceric.shopchest.sql.SQLite;
-import de.epiceric.shopchest.utils.*;
+import de.epiceric.shopchest.utils.Callback;
+import de.epiceric.shopchest.utils.Permissions;
+import de.epiceric.shopchest.utils.ShopUpdater;
+import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.UpdateChecker.UpdateCheckerResult;
-import de.epiceric.shopchest.external.WorldGuardShopFlag;
+import de.epiceric.shopchest.utils.Utils;
 import fr.xephi.authme.AuthMe;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.wiefferink.areashop.AreaShop;
@@ -36,7 +48,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import pl.islandworld.IslandWorld;
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -375,15 +390,12 @@ public class ShopChest extends JavaPlugin {
      */
     private void initializeShops() {
         debug("Initializing Shops...");
-        shopUtils.reloadShops(false, true, new Callback(this) {
+        shopUtils.reloadShops(false, true, new Callback<Integer>(this) {
             @Override
-            public void onResult(Object result) {
-                if (result instanceof Integer) {
-                    int count = (int) result;
-                    Bukkit.getServer().getPluginManager().callEvent(new ShopInitializedEvent(count));
-                    getLogger().info("Initialized " + count + " Shops");
-                    debug("Initialized " + count + " Shops");
-                }
+            public void onResult(Integer result) {
+                Bukkit.getServer().getPluginManager().callEvent(new ShopInitializedEvent(result));
+                getLogger().info("Initialized " + result + " Shops");
+                debug("Initialized " + result + " Shops");
             }
         });
     }

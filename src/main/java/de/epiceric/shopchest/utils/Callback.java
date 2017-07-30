@@ -3,18 +3,18 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public abstract class Callback {
+public abstract class Callback<T> {
     private ShopChest plugin;
 
     public Callback(ShopChest plugin) {
         this.plugin = plugin;
     }
 
-    public void onResult(Object result) {}
+    public void onResult(T result) {}
 
     public void onError(Throwable throwable) {}
 
-    public final void callSyncResult(final Object result) {
+    public final void callSyncResult(final T result) {
         new BukkitRunnable() {
             @Override
             public void run() {

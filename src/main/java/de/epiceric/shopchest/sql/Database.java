@@ -46,7 +46,7 @@ public abstract class Database {
      * Creates the table (if doesn't exist) and tests the connection
      * @param callback Callback that - if succeeded - returns the amount of shops that were found (as {@code int})
      */
-    public void connect(final Callback callback) {
+    public void connect(final Callback<Integer> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -164,7 +164,7 @@ public abstract class Database {
      * @param shop Shop to remove
      * @param callback Callback that - if succeeded - returns {@code null}
      */
-    public void removeShop(final Shop shop, final Callback callback) {
+    public void removeShop(final Shop shop, final Callback<Void> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -193,7 +193,7 @@ public abstract class Database {
      * @param id ID of the shop
      * @param callback Callback that - if succeeded - returns whether a shop with the given ID exists (as {@code boolean})
      */
-    public void isShop(final int id, final Callback callback) {
+    public void isShop(final int id, final Callback<Boolean> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -230,7 +230,7 @@ public abstract class Database {
      * @param callback Callback that - if succeeded - returns an array of all shops (as {@code Shop[]})
      * @param showConsoleMessages Whether console messages (errors or warnings) should be shown
      */
-    public void getShops(final boolean showConsoleMessages, final Callback callback) {
+    public void getShops(final boolean showConsoleMessages, final Callback<Shop[]> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -296,7 +296,7 @@ public abstract class Database {
      * @param shop Shop to add
      * @param callback Callback that - if succeeded - returns the ID the shop was given (as {@code int})
      */
-    public void addShop(final Shop shop, final Callback callback) {
+    public void addShop(final Shop shop, final Callback<Integer> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -365,7 +365,7 @@ public abstract class Database {
      * @param type Whether the player bought or sold something
      * @param callback Callback that - if succeeded - returns {@code null}
      */
-    public void logEconomy(final Player executor, final ItemStack product, final OfflinePlayer vendor, final ShopType shopType, final Location location, final double price, final ShopBuySellEvent.Type type, final Callback callback) {
+    public void logEconomy(final Player executor, final ItemStack product, final OfflinePlayer vendor, final ShopType shopType, final Location location, final double price, final ShopBuySellEvent.Type type, final Callback<Void> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -406,7 +406,7 @@ public abstract class Database {
      * @param logoutTime Time in milliseconds when he logged out the last time
      * @param callback Callback that - if succeeded - returns the revenue the player made while offline (as {@code double})
      */
-    public void getRevenue(final Player player, final long logoutTime, final Callback callback) {
+    public void getRevenue(final Player player, final long logoutTime, final Callback<Double> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -464,7 +464,7 @@ public abstract class Database {
      * @param timestamp Time in milliseconds when the player logged out
      * @param callback Callback that - if succeeded - returns {@code null}
      */
-    public void logLogout(final Player player, final long timestamp, final Callback callback) {
+    public void logLogout(final Player player, final long timestamp, final Callback<Void> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -496,7 +496,7 @@ public abstract class Database {
      * @param player Player who logged out
      * @param callback Callback that - if succeeded - returns the time in milliseconds the player logged out (as {@code long})
      */
-    public void getLastLogout(final Player player, final Callback callback) {
+    public void getLastLogout(final Player player, final Callback<Long> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -517,7 +517,7 @@ public abstract class Database {
                         }
                     }
 
-                    if (callback != null) callback.callSyncResult(-1);
+                    if (callback != null) callback.callSyncResult(-1L);
                 } catch (SQLException ex) {
                     if (callback != null) callback.callSyncError(ex);
                     plugin.getLogger().severe("Failed to access database");
