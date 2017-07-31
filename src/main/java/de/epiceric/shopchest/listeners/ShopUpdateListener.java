@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,6 +19,20 @@ public class ShopUpdateListener implements Listener {
 
     public ShopUpdateListener(ShopChest plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent e) {
+        for (Shop shop : plugin.getShopUtils().getShops()) {
+            if (shop.hasItem()) {
+                shop.getItem().hidePlayer(e.getPlayer());
+            }
+            if (shop.hasHologram()) {
+                shop.getHologram().hidePlayer(e.getPlayer());
+            }
+        }
+
+        plugin.getShopUtils().resetPlayerLocation(e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -40,13 +55,15 @@ public class ShopUpdateListener implements Listener {
                         public void run() {
                             if (p.isOnline()) {
                                 for (Shop shop : plugin.getShopUtils().getShops()) {
-                                    if (shop.getItem() != null) {
-                                        shop.getItem().setVisible(p, false);
+                                    if (shop.hasItem()) {
+                                        shop.getItem().hidePlayer(p);
                                     }
-                                    if (shop.getHologram() != null) {
+                                    if (shop.hasHologram()) {
                                         shop.getHologram().hidePlayer(p);
                                     }
                                 }
+                                // so next update will update correctly
+                                plugin.getShopUtils().resetPlayerLocation(p);
                             }
                         }
                     });

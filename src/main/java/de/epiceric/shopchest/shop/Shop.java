@@ -10,7 +10,6 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -19,7 +18,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,18 +28,24 @@ import java.util.Map;
 
 public class Shop {
 
+    public enum ShopType {
+        NORMAL,
+        ADMIN,
+    }
+
+    private final ShopChest plugin;
+    private final OfflinePlayer vendor;
+    private final ItemStack product;
+    private final Location location;
+    private final double buyPrice;
+    private final double sellPrice;
+    private final ShopType shopType;
+    private final Config config;
+
     private boolean created;
     private int id;
-    private ShopChest plugin;
-    private OfflinePlayer vendor;
-    private ItemStack product;
-    private Location location;
     private Hologram hologram;
     private ShopItem item;
-    private double buyPrice;
-    private double sellPrice;
-    private ShopType shopType;
-    private Config config;
 
     public Shop(int id, ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
         this.id = id;
@@ -59,6 +63,29 @@ public class Shop {
         this(-1, plugin, vendor, product, location, buyPrice, sellPrice, shopType);
     }
 
+    /**
+     * Test if this shop is equals to another
+     *
+     * @param o Other object to test against
+     * @return true if we are sure they are the same, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Shop shop = (Shop) o;
+
+        // id = -1 means temp shop
+        return id != -1 && id == shop.id;
+    }
+
+    /**
+     * Create the shop
+     *
+     * @param showConsoleMessages to log exceptions to console
+     * @return Whether is was created or not
+     */
     public boolean create(boolean showConsoleMessages) {
         if (created) return false;
 
@@ -123,11 +150,7 @@ public class Shop {
             itemStack = product.clone();
             itemStack.setAmount(1);
 
-            this.item = new ShopItem(plugin, itemStack, itemLocation);
-
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                item.setVisible(p, true);
-            }
+            item = new ShopItem(plugin, itemStack, itemLocation);
         }
     }
 
@@ -163,6 +186,9 @@ public class Shop {
         hologram = new Hologram(plugin, holoText, holoLocation);
     }
 
+    /**
+     * Keep hologram text up to date
+     */
     public void updateHologramText() {
         String[] lines = getHologramText();
         String[] currentLines = hologram.getLines();
@@ -220,7 +246,7 @@ public class Shop {
         for (int i = 0; i < lineCount; i++) {
             String format = plugin.getHologramFormat().getFormat(i, requirements, placeholders);
             for (Placeholder placeholder : placeholders.keySet()) {
-                String replace = "";
+                String replace;
 
                 switch (placeholder) {
                     case BUY_PRICE:
@@ -374,6 +400,14 @@ public class Shop {
         return item;
     }
 
+    public boolean hasHologram() {
+        return hologram != null;
+    }
+
+    public boolean hasItem() {
+        return item != null;
+    }
+
     /**
      * @return {@link InventoryHolder} of the shop or <b>null</b> if the shop has no chest.
      */
@@ -386,11 +420,6 @@ public class Shop {
         }
 
         return null;
-    }
-
-    public enum ShopType {
-        NORMAL,
-        ADMIN
     }
 
 }

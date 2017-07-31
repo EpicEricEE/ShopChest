@@ -13,18 +13,14 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ShopUtils {
 
-    private final HashMap<Location, Shop> shopLocation = new HashMap<>();
-    private final HashMap<UUID, Location> playerLocation = new HashMap<>();
+    // concurrent since it is updated in async task
+    private final Map<UUID, Location> playerLocation = new ConcurrentHashMap<>();
+    private final Map<Location, Shop> shopLocation = new HashMap<>();
     private final ShopChest plugin;
 
     public ShopUtils(ShopChest plugin) {
@@ -55,10 +51,24 @@ public class ShopUtils {
 
     /**
      * Get all shops
+     * Do not use for removing while iteration!
+     *
+     * @see #getShopsCopy()
      * @return Read-only collection of all shops, may contain duplicates
      */
     public Collection<Shop> getShops() {
         return Collections.unmodifiableCollection(new ArrayList<>(shopLocation.values()));
+    }
+
+    /**
+     * Get all shops
+     * Same as {@link #getShops()} but this is safe to remove while iterating
+     *
+     * @see #getShops()
+     * @return Copy of collection of all shops, may contain duplicates
+     */
+    public Collection<Shop> getShopsCopy() {
+        return new ArrayList<>(getShops());
     }
 
     /**
@@ -226,7 +236,7 @@ public class ShopUtils {
         plugin.getShopDatabase().connect(new Callback<Integer>(plugin) {
             @Override
             public void onResult(Integer result) {
-                for (Shop shop : getShops()) {
+                for (Shop shop : getShopsCopy()) {
                     removeShop(shop, false);
                     plugin.debug("Removed shop (#" + shop.getID() + ")");
                 }
@@ -278,36 +288,7 @@ public class ShopUtils {
         }
 
         if (plugin.getShopChestConfig().only_show_shops_in_sight) {
-            Set<Shop> sight = getShopsInSight(player);
-
-            Set<Shop> _sight = new HashSet<>();
-
-            for (Shop shop : sight) {
-                _sight.add(shop);
-                if (shop.getHologram() != null && !shop.getHologram().isVisible(player)) {
-                    shop.getHologram().showPlayer(player);
-                }
-
-                if (plugin.getShopChestConfig().only_show_first_shop_in_sight) break;
-            }
-
-            double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
-
-            for (Shop shop : getShops()) {
-                if (shop.getItem() != null && shop.getLocation().getWorld().getName().equals(player.getWorld().getName())) {
-                    if (shop.getLocation().distanceSquared(player.getEyeLocation()) <= itemDistSqr) {
-                        shop.getItem().setVisible(player, true);
-                    } else {
-                        shop.getItem().setVisible(player, false);
-                    }
-                }
-
-                if (!_sight.contains(shop)) {
-                    if (shop.getHologram() != null) {
-                        shop.getHologram().hidePlayer(player);
-                    }
-                }
-            }
+            updateVisibleShops(player);
         } else {
             updateNearestShops(player);
         }
@@ -315,55 +296,85 @@ public class ShopUtils {
         playerLocation.put(player.getUniqueId(), player.getLocation());
     }
 
-    private Set<Shop> getShopsInSight(Player player) {
-        double dist = plugin.getShopChestConfig().maximal_distance;
-
-        Location loc = player.getEyeLocation();
-        Vector direction =  loc.getDirection();
-
-        Set<Shop> shops = new HashSet<>();
-
-        double i = 0;
-
-        do {
-            Location below = loc.clone().subtract(0, 1, 0);
-
-            Shop shop = getShop(loc);
-            if (shop != null) {
-                shops.add(shop);
-            } else if ((shop = getShop(below)) != null) {
-                shops.add(shop);
-            }
-
-            loc.add(direction);
-            i++;
-        } while (i <= dist - (dist%1));
-
-        direction.multiply(dist - (dist%1));
-        loc.add(direction);
-
-        Location below = loc.clone().subtract(0, 1, 0);
-
-        Shop shop = getShop(loc);
-        if (shop != null) {
-            shops.add(shop);
-        } else if ((shop = getShop(below)) != null) {
-            shops.add(shop);
-        }
-
-        return shops;
+    /**
+     * Remove a player from the {@code playerLocation} map.
+     * This should only be called when really needed
+     */
+    public void resetPlayerLocation(Player player) {
+        playerLocation.remove(player.getUniqueId());
     }
 
-    /**
-     * Update hologram and item of the shop for a player based on their distance to each other
-     * @param shop Shop to update
-     * @param player Player to show the update
-     */
-    public void updateShop(Shop shop, Player player) {
-        double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
-        double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
+    private static final double TARGET_THRESHOLD = 1.5;
 
-        updateShop(shop, player, holoDistSqr, itemDistSqr);
+    private void updateVisibleShops(Player player) {
+        double itemDistSquared = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
+
+        boolean firstShopInSight = plugin.getShopChestConfig().only_show_first_shop_in_sight;
+
+        // used if only_show_first_shop_in_sight
+        List<Shop> otherShopsInSight = firstShopInSight ? new ArrayList<Shop>() : Collections.<Shop>emptyList();
+        double nearestDistance = 0;
+        Shop nearestShop = null;
+
+        Location pLoc = player.getLocation();
+        Vector pVec = pLoc.toVector();
+        Vector pDir = pLoc.getDirection();
+
+        for (Shop shop : getShops()) {
+            Location shopLocation = shop.getLocation();
+
+            if (shopLocation.getWorld().getName().equals(player.getWorld().getName())) {
+                double distanceSquared = shop.getLocation().distanceSquared(player.getLocation());
+
+                // Display item based on distance
+                if (shop.hasItem()) {
+                    if (distanceSquared <= itemDistSquared) {
+                        shop.getItem().showPlayer(player);
+                    } else {
+                        shop.getItem().hidePlayer(player);
+                    }
+                }
+
+                // Display hologram based on sight
+                if (shop.hasHologram()) {
+                    double angle = shopLocation.toVector().subtract(pVec).angle(pDir);
+                    double distance = Math.sqrt(distanceSquared);
+
+                    // Check if is targeted
+                    if (angle * distance < TARGET_THRESHOLD) {
+                        // Display even if not the nearest
+                        if (!firstShopInSight) {
+                            shop.getHologram().showPlayer(player);
+                            continue;
+                        }
+
+                        if (nearestShop == null) {
+                            // nearestShop is null
+                            // => we guess this one will be the nearest
+                            nearestShop = shop;
+                            nearestDistance = distance;
+                            continue;
+                        } else if (distance < nearestDistance) {
+                            // nearestShop is NOT null && this shop is nearest
+                            // => we'll hide nearestShop, and guess this one will be the nearest
+                            otherShopsInSight.add(nearestShop);
+                            nearestShop = shop;
+                            nearestDistance = distance;
+                            continue;
+                        }
+                        // else: hologram is farther than nearest, so we hide it
+                    }
+
+                    // If not in sight
+                    shop.getHologram().hidePlayer(player);
+                }
+            }
+        }
+
+        for (Shop shop : otherShopsInSight) {
+            // we already checked hasHologram() before adding it
+            shop.getHologram().hidePlayer(player);
+        }
     }
 
     private void updateNearestShops(Player p) {
@@ -371,27 +382,23 @@ public class ShopUtils {
         double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
 
         for (Shop shop : getShops()) {
-            updateShop(shop, p, holoDistSqr, itemDistSqr);
-        }
-    }
+            if (p.getLocation().getWorld().getName().equals(shop.getLocation().getWorld().getName())) {
+                double distSqr = shop.getLocation().distanceSquared(p.getLocation());
 
-    private void updateShop(Shop shop, Player player, double holoDistSqr, double itemDistSqr) {
-        if (player.getLocation().getWorld().getName().equals(shop.getLocation().getWorld().getName())) {
-            double distSqr = shop.getLocation().distanceSquared(player.getLocation());
-
-            if (shop.getHologram() != null) {
-                if (distSqr <= holoDistSqr) {
-                    shop.getHologram().showPlayer(player);
-                } else {
-                    shop.getHologram().hidePlayer(player);
+                if (shop.hasHologram()) {
+                    if (distSqr <= holoDistSqr) {
+                        shop.getHologram().showPlayer(p);
+                    } else {
+                        shop.getHologram().hidePlayer(p);
+                    }
                 }
-            }
 
-            if (shop.getItem() != null) {
-                if (distSqr <= itemDistSqr) {
-                    shop.getItem().setVisible(player, true);
-                } else {
-                    shop.getItem().setVisible(player, false);
+                if (shop.hasItem()) {
+                    if (distSqr <= itemDistSqr) {
+                        shop.getItem().showPlayer(p);
+                    } else {
+                        shop.getItem().hidePlayer(p);
+                    }
                 }
             }
         }

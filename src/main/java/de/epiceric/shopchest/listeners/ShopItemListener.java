@@ -27,18 +27,6 @@ public class ShopItemListener implements Listener {
         this.shopUtils = plugin.getShopUtils();
     }
 
-    @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent e) {
-        for (Shop shop : plugin.getShopUtils().getShops()) {
-            if (shop.getItem() != null) {
-                shop.getItem().setVisible(e.getPlayer(), false);
-            }
-            if (shop.getHologram() != null) {
-                shop.getHologram().hidePlayer(e.getPlayer());
-            }
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(BlockPlaceEvent e) {
         Block b = e.getBlockPlaced();

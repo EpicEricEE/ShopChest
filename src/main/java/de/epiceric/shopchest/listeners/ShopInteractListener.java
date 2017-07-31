@@ -692,16 +692,7 @@ public class ShopInteractListener implements Listener {
         }
 
         for (Player p : location.getWorld().getPlayers()) {
-            if (p.getLocation().distanceSquared(location) <= Math.pow(config.maximal_distance, 2)) {
-                if (shop.getHologram() != null) {
-                    shop.getHologram().showPlayer(p);
-                }
-            }
-            if (p.getLocation().distanceSquared(location) <= Math.pow(config.maximal_item_distance, 2)) {
-                if (shop.getItem() != null) {
-                    shop.getItem().setVisible(p, true);
-                }
-            }
+            plugin.getShopUtils().updateShops(p);
         }
     }
 
