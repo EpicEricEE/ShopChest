@@ -43,7 +43,7 @@ public class ShopUpdateListener implements Listener {
 
         // Wait till the chunk should have loaded on the client
         // Update IF worlds are different OR chunks are different (as many teleports are in same chunk)
-        if (!from.getWorld().equals(to.getWorld())
+        if (!from.getWorld().getName().equals(to.getWorld().getName())
                 || from.getChunk().getX() != to.getChunk().getX()
                 || from.getChunk().getZ() != to.getChunk().getZ()) {
             // Wait for 15 ticks before we actually put it in the queue
