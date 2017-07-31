@@ -21,6 +21,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -227,10 +229,10 @@ public abstract class Database {
 
     /**
      * Get all shops from the database
-     * @param callback Callback that - if succeeded - returns an array of all shops (as {@code Shop[]})
+     * @param callback Callback that - if succeeded - returns a read-only collection of all shops (as {@code Collection<Shop>})
      * @param showConsoleMessages Whether console messages (errors or warnings) should be shown
      */
-    public void getShops(final boolean showConsoleMessages, final Callback<Shop[]> callback) {
+    public void getShops(final boolean showConsoleMessages, final Callback<Collection<Shop>> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -276,7 +278,7 @@ public abstract class Database {
                         shops.add(new Shop(id, plugin, vendor, product, location, buyPrice, sellPrice, shopType));
                     }
 
-                    if (callback != null) callback.callSyncResult(shops.toArray(new Shop[shops.size()]));
+                    if (callback != null) callback.callSyncResult(Collections.unmodifiableCollection(shops));
                 } catch (SQLException ex) {
                     if (callback != null) callback.callSyncError(ex);
                     plugin.getLogger().severe("Failed to access database");

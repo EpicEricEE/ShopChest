@@ -242,9 +242,9 @@ public class ShopUtils {
                     plugin.debug("Removed shop (#" + shop.getID() + ")");
                 }
 
-                plugin.getShopDatabase().getShops(showConsoleMessages, new Callback<Shop[]>(plugin) {
+                plugin.getShopDatabase().getShops(showConsoleMessages, new Callback<Collection<Shop>>(plugin) {
                     @Override
-                    public void onResult(Shop[] result) {
+                    public void onResult(Collection<Shop> result) {
                         for (Shop shop : result) {
                             if (shop.create(showConsoleMessages)) {
                                 addShop(shop, false);
@@ -255,7 +255,7 @@ public class ShopUtils {
                             updateShops(player, true);
                         }
 
-                        if (callback != null) callback.callSyncResult(result.length);
+                        if (callback != null) callback.callSyncResult(result.size());
                     }
 
                     @Override
