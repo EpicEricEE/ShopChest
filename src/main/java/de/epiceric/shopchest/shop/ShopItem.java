@@ -181,15 +181,9 @@ public class ShopItem {
      */
     public void remove() {
         // Avoid ConcurrentModificationException
-        Deque<Player> queue = new ArrayDeque<>(viewers.size());
-
-        for (UUID uuid : viewers) {
+        for (UUID uuid : new ArrayList<>(viewers)) {
             Player p = Bukkit.getPlayer(uuid);
-            if (p != null) queue.add(p);
-        }
-
-        for (Player p : queue) {
-            hidePlayer(p);
+            if (p != null) hidePlayer(p);
         }
     }
 

@@ -80,6 +80,11 @@ public class Shop {
         return id != -1 && id == shop.id;
     }
 
+    @Override
+    public int hashCode() {
+        return id != -1 ? id : super.hashCode();
+    }
+
     /**
      * Create the shop
      *

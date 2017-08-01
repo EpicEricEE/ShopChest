@@ -21,6 +21,7 @@ public class ShopUtils {
     // concurrent since it is updated in async task
     private final Map<UUID, Location> playerLocation = new ConcurrentHashMap<>();
     private final Map<Location, Shop> shopLocation = new HashMap<>();
+    private final Collection<Shop> shopLocationValues = Collections.unmodifiableCollection(shopLocation.values());
     private final ShopChest plugin;
 
     public ShopUtils(ShopChest plugin) {
@@ -57,7 +58,7 @@ public class ShopUtils {
      * @return Read-only collection of all shops, may contain duplicates
      */
     public Collection<Shop> getShops() {
-        return Collections.unmodifiableCollection(new ArrayList<>(shopLocation.values()));
+        return shopLocationValues;
     }
 
     /**
@@ -313,13 +314,16 @@ public class ShopUtils {
         boolean firstShopInSight = plugin.getShopChestConfig().only_show_first_shop_in_sight;
 
         // used if only_show_first_shop_in_sight
-        List<Shop> otherShopsInSight = firstShopInSight ? new ArrayList<Shop>() : Collections.<Shop>emptyList();
+        List<Shop> otherShopsInSight = firstShopInSight ? new ArrayList<Shop>() : null;
         double nearestDistance = 0;
         Shop nearestShop = null;
 
         Location pLoc = player.getEyeLocation();
-        Vector pVec = pLoc.toVector();
+        double pX = pLoc.getX();
+        double pY = pLoc.getY();
+        double pZ = pLoc.getZ();
         Vector pDir = pLoc.getDirection();
+        double dirLength = pDir.length();
 
         for (Shop shop : getShops()) {
             Location shopLocation = shop.getLocation();
@@ -339,12 +343,19 @@ public class ShopUtils {
                 // Display hologram based on sight
                 if (shop.hasHologram()) {
                     if (distanceSquared < hologramDistSquared) {
+                        Location holoLocation = shop.getHologram().getLocation();
 
-                        Location targetLocation = shop.getHologram().getLocation();
-                        targetLocation.setY(shop.getLocation().getY() + 1);
+                        double x = holoLocation.getX() - pX;
+                        double y = shopLocation.getY() - pY + 1.15; // chest block + item offset
+                        double z = holoLocation.getZ() - pZ;
 
-                        double angle = targetLocation.toVector().subtract(pVec).angle(pDir);
-                        double distance = Math.sqrt(distanceSquared);
+                        // See: org.bukkit.util.Vector#angle(Vector)
+                        double angle = FastMath.acos(
+                                (x * pDir.getX() + y * pDir.getY() + z * pDir.getZ())
+                                        / (FastMath.sqrt(x * x + y * y + z * z) * dirLength)
+                        );
+
+                        double distance = FastMath.sqrt(distanceSquared);
 
                         // Check if is targeted
                         if (angle * distance < TARGET_THRESHOLD) {
@@ -378,9 +389,12 @@ public class ShopUtils {
             }
         }
 
-        for (Shop shop : otherShopsInSight) {
-            // we already checked hasHologram() before adding it
-            shop.getHologram().hidePlayer(player);
+        if (firstShopInSight) {
+            // we hide other shop as we wan't to display only the first
+            for (Shop shop : otherShopsInSight) {
+                // we already checked hasHologram() before adding it
+                shop.getHologram().hidePlayer(player);
+            }
         }
 
         if (nearestShop != null && nearestShop.hasHologram()) {

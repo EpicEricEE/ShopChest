@@ -692,7 +692,9 @@ public class ShopInteractListener implements Listener {
         }
 
         // next update will display the new shop
-        plugin.getShopUtils().resetPlayerLocation(executor);
+        for (Player player : location.getWorld().getPlayers()) {
+            plugin.getShopUtils().resetPlayerLocation(player);
+        }
     }
 
     /**
