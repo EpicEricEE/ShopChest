@@ -563,6 +563,36 @@ public abstract class Database {
         }
     }
 
+    /**
+     * Purges the database
+     */
+    public void purge() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try (Statement stmt = connection.createStatement()) {
+                    if (Database.this instanceof MySQL) {
+                        stmt.addBatch("TRUNCATE TABLE `shops`");
+                        stmt.addBatch("TRUNCATE TABLE `shop_log`");
+                        stmt.addBatch("TRUNCATE TABLE `player_logout`");
+                    }
+                    else {
+                        stmt.addBatch("DELETE FROM `shops`");
+                        stmt.addBatch("DELETE FROM `shop_log`");
+                        stmt.addBatch("DELETE FROM `player_logout`");
+                        stmt.addBatch("VACUUM");
+                    }
+
+                    stmt.executeBatch();
+                } catch (SQLException e) {
+                    plugin.getLogger().severe("Failed to purge database.");
+                    plugin.debug("Failed to purge database");
+                    plugin.debug(e);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
     public enum DatabaseType {
         SQLite,
         MySQL
