@@ -2,7 +2,6 @@ package de.epiceric.shopchest.nms;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -38,6 +37,7 @@ public class Hologram {
     }
 
     // concurrent since update task is in async thread
+    // since this is a fake entity, hologram is hidden per default
     private final Set<UUID> viewers = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
     private final List<ArmorStandWrapper> wrappers = new ArrayList<>();
     private final Location location;
@@ -61,15 +61,11 @@ public class Hologram {
             if (config.hologram_fixed_bottom) y = 0.85;
 
             Location loc = getLocation().add(0, y, 0);
-            interactArmorStandWrapper = new ArmorStandWrapper(plugin, loc, null);
+            interactArmorStandWrapper = new ArmorStandWrapper(plugin, loc, null, true);
         }
 
         this.exists = true;
         HOLOGRAMS.add(this);
-
-//        for (Player player : location.getWorld().getPlayers()) {
-//            plugin.getShopUtils().updateShops(player, true);
-//        }
     }
 
     /**
@@ -120,8 +116,16 @@ public class Hologram {
     /**
      * @param p Player to which the hologram should be shown
      */
-    public void showPlayer(final Player p) {
-        if (viewers.add(p.getUniqueId())) {
+    public void showPlayer(Player p) {
+        showPlayer(p, false);
+    }
+
+    /**
+     * @param p Player to which the hologram should be shown
+     * @param force whether to force or not
+     */
+    public void showPlayer(Player p, boolean force) {
+        if (viewers.add(p.getUniqueId()) || force) {
             togglePlayer(p, true);
         }
     }
@@ -129,8 +133,16 @@ public class Hologram {
     /**
      * @param p Player from which the hologram should be hidden
      */
-    public void hidePlayer(final Player p) {
-        if (viewers.remove(p.getUniqueId())) {
+    public void hidePlayer(Player p) {
+        hidePlayer(p, false);
+    }
+
+    /**
+     * @param p Player from which the hologram should be hidden
+     * @param force whether to force or not
+     */
+    public void hidePlayer(Player p, boolean force) {
+        if (viewers.remove(p.getUniqueId()) || force) {
             togglePlayer(p, false);
         }
     }
@@ -140,15 +152,7 @@ public class Hologram {
      * Hologram will be hidden from all players and will be killed
      */
     public void remove() {
-        if (!viewers.isEmpty()) {
-            for (UUID uuid : viewers) {
-                Player p = Bukkit.getPlayer(uuid);
-                if (p != null) {
-                    togglePlayer(p, false);
-                }
-            }
-            viewers.clear();
-        }
+        viewers.clear();
 
         for (ArmorStandWrapper wrapper : wrappers) {
             wrapper.remove();
@@ -162,6 +166,10 @@ public class Hologram {
 
         exists = false;
         HOLOGRAMS.remove(this);
+    }
+
+    public void resetVisible(Player p) {
+        viewers.remove(p.getUniqueId());
     }
 
     private void togglePlayer(Player p, boolean visible) {
@@ -225,13 +233,12 @@ public class Hologram {
             loc.subtract(0, line * 0.25, 0);
         }
 
-        ArmorStandWrapper wrapper = new ArmorStandWrapper(plugin, loc, text);
+        ArmorStandWrapper wrapper = new ArmorStandWrapper(plugin, loc, text, false);
         wrappers.add(line, wrapper);
 
         if (forceUpdateLine) {
-            for (UUID uuid : viewers) {
-                Player player = Bukkit.getPlayer(uuid);
-                if (player != null) {
+            for (Player player : location.getWorld().getPlayers()) {
+                if (viewers.contains(player.getUniqueId())) {
                     wrapper.setVisible(player, true);
                 }
             }

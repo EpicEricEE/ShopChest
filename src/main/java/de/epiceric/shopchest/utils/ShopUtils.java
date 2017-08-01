@@ -304,10 +304,11 @@ public class ShopUtils {
         playerLocation.remove(player.getUniqueId());
     }
 
-    private static final double TARGET_THRESHOLD = 1.5;
+    private static final double TARGET_THRESHOLD = 1;
 
     private void updateVisibleShops(Player player) {
         double itemDistSquared = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
+        double hologramDistSquared = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
 
         boolean firstShopInSight = plugin.getShopChestConfig().only_show_first_shop_in_sight;
 
@@ -316,7 +317,7 @@ public class ShopUtils {
         double nearestDistance = 0;
         Shop nearestShop = null;
 
-        Location pLoc = player.getLocation();
+        Location pLoc = player.getEyeLocation();
         Vector pVec = pLoc.toVector();
         Vector pDir = pLoc.getDirection();
 
@@ -337,32 +338,38 @@ public class ShopUtils {
 
                 // Display hologram based on sight
                 if (shop.hasHologram()) {
-                    double angle = shopLocation.toVector().subtract(pVec).angle(pDir);
-                    double distance = Math.sqrt(distanceSquared);
+                    if (distanceSquared < hologramDistSquared) {
 
-                    // Check if is targeted
-                    if (angle * distance < TARGET_THRESHOLD) {
-                        // Display even if not the nearest
-                        if (!firstShopInSight) {
-                            shop.getHologram().showPlayer(player);
-                            continue;
-                        }
+                        Location targetLocation = shop.getHologram().getLocation();
+                        targetLocation.setY(shop.getLocation().getY() + 1);
 
-                        if (nearestShop == null) {
-                            // nearestShop is null
-                            // => we guess this one will be the nearest
-                            nearestShop = shop;
-                            nearestDistance = distance;
-                            continue;
-                        } else if (distance < nearestDistance) {
-                            // nearestShop is NOT null && this shop is nearest
-                            // => we'll hide nearestShop, and guess this one will be the nearest
-                            otherShopsInSight.add(nearestShop);
-                            nearestShop = shop;
-                            nearestDistance = distance;
-                            continue;
+                        double angle = targetLocation.toVector().subtract(pVec).angle(pDir);
+                        double distance = Math.sqrt(distanceSquared);
+
+                        // Check if is targeted
+                        if (angle * distance < TARGET_THRESHOLD) {
+                            // Display even if not the nearest
+                            if (!firstShopInSight) {
+                                shop.getHologram().showPlayer(player);
+                                continue;
+                            }
+
+                            if (nearestShop == null) {
+                                // nearestShop is null
+                                // => we guess this one will be the nearest
+                                nearestShop = shop;
+                                nearestDistance = distance;
+                                continue;
+                            } else if (distance < nearestDistance) {
+                                // nearestShop is NOT null && this shop is nearest
+                                // => we'll hide nearestShop, and guess this one will be the nearest
+                                otherShopsInSight.add(nearestShop);
+                                nearestShop = shop;
+                                nearestDistance = distance;
+                                continue;
+                            }
+                            // else: hologram is farther than nearest, so we hide it
                         }
-                        // else: hologram is farther than nearest, so we hide it
                     }
 
                     // If not in sight
@@ -374,6 +381,10 @@ public class ShopUtils {
         for (Shop shop : otherShopsInSight) {
             // we already checked hasHologram() before adding it
             shop.getHologram().hidePlayer(player);
+        }
+
+        if (nearestShop != null && nearestShop.hasHologram()) {
+            nearestShop.getHologram().showPlayer(player);
         }
     }
 

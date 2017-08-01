@@ -16,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ShopItem {
 
     private final ShopChest plugin;
+
+    // concurrent since update task is in async thread
+    // since this is a fake entity, item is hidden per default
     private final Set<UUID> viewers = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
     private final ItemStack itemStack;
     private final Location location;
@@ -127,7 +130,15 @@ public class ShopItem {
      * @param p Player to which the item should be shown
      */
     public void showPlayer(Player p) {
-        if (viewers.add(p.getUniqueId())) {
+        showPlayer(p, false);
+    }
+
+    /**
+     * @param p Player to which the item should be shown
+     * @param force whether to force or not
+     */
+    public void showPlayer(Player p, boolean force) {
+        if (viewers.add(p.getUniqueId()) || force) {
             for (Object packet : creationPackets) {
                 Utils.sendPacket(plugin, packet, p);
             }
@@ -138,7 +149,15 @@ public class ShopItem {
      * @param p Player from which the item should be hidden
      */
     public void hidePlayer(Player p) {
-        if (viewers.remove(p.getUniqueId())) {
+        hidePlayer(p, false);
+    }
+
+    /**
+     * @param p Player from which the item should be hidden
+     * @param force whether to force or not
+     */
+    public void hidePlayer(Player p, boolean force) {
+        if (viewers.remove(p.getUniqueId()) || force) {
             try {
                 if (p.isOnline()) {
                     Object packetPlayOutEntityDestroy = packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[]{entityId});
@@ -150,6 +169,10 @@ public class ShopItem {
                 plugin.debug(e);
             }
         }
+    }
+
+    public void resetVisible(Player p) {
+        viewers.remove(p.getUniqueId());
     }
 
     /**

@@ -32,7 +32,7 @@ public class ArmorStandWrapper {
     private UUID uuid;
     private int entityId;
 
-    public ArmorStandWrapper(ShopChest plugin, Location location, String customName) {
+    public ArmorStandWrapper(ShopChest plugin, Location location, String customName, boolean interactable) {
         this.plugin = plugin;
         this.location = location;
         this.customName = customName;
@@ -58,9 +58,12 @@ public class ArmorStandWrapper {
             entityArmorStandClass.getMethod("setInvisible", boolean.class).invoke(entity, true);
 
             // Adds the entity to some lists so it can call interact events
-            Method addEntityMethod = worldServerClass.getDeclaredMethod((Utils.getMajorVersion() == 8 ? "a" : "b"), entityClass);
-            addEntityMethod.setAccessible(true);
-            addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
+            // It will also automatically load/unload it when far away
+            if (interactable) {
+                Method addEntityMethod = worldServerClass.getDeclaredMethod((Utils.getMajorVersion() == 8 ? "a" : "b"), entityClass);
+                addEntityMethod.setAccessible(true);
+                addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
+            }
 
             uuid = (UUID) entityClass.getMethod("getUniqueID").invoke(entity);
             entityId = (int) entityArmorStandClass.getMethod("getId").invoke(entity);

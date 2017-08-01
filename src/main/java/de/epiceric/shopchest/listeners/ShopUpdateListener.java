@@ -25,10 +25,10 @@ public class ShopUpdateListener implements Listener {
     public void onPlayerLeave(PlayerQuitEvent e) {
         for (Shop shop : plugin.getShopUtils().getShops()) {
             if (shop.hasItem()) {
-                shop.getItem().hidePlayer(e.getPlayer());
+                shop.getItem().resetVisible(e.getPlayer());
             }
             if (shop.hasHologram()) {
-                shop.getHologram().hidePlayer(e.getPlayer());
+                shop.getHologram().resetVisible(e.getPlayer());
             }
         }
 
