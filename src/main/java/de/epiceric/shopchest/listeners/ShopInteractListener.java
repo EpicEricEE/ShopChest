@@ -691,9 +691,8 @@ public class ShopInteractListener implements Listener {
             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED, placeholder));
         }
 
-//        for (Player p : location.getWorld().getPlayers()) {
-//            plugin.getShopUtils().updateShops(p);
-//        }
+        // next update will display the new shop
+        plugin.getShopUtils().resetPlayerLocation(executor);
     }
 
     /**
