@@ -25,7 +25,7 @@
         <maven.compiler.target>${jdkVersion}</maven.compiler.target>
 
         <!-- Versioning -->
-        <version.number>1.12.3</version.number>
+        <version.number>1.12.4</version.number>
         <version.final>${version.number}-${version.git}</version.final>
 
         <!-- Others -->
