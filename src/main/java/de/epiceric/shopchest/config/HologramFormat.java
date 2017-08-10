@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.config;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.utils.Operator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -20,6 +21,13 @@ public class HologramFormat {
         SELL_PRICE, HAS_POTION_EFFECT, IS_MUSIC_DISC, IS_POTION_EXTENDED, IS_WRITTEN_BOOK, ADMIN_SHOP,
         NORMAL_SHOP, IN_STOCK, MAX_STACK, CHEST_SPACE, DURABILITY
     }
+
+    // no "-" sign since no variable can be negative
+    // e.g.: 100.0 >= 50.0
+    private static final Pattern SIMPLE_NUMERIC_CONDITION = Pattern.compile("^(\\d+(?:\\.\\d+)?) ([<>][=]?|[=!]=) (\\d+(?:\\.\\d+)?)$");
+
+    // e.g.: "STONE" == "DIAMOND_SWORD"
+    private static final Pattern SIMPLE_STRING_CONDITION = Pattern.compile("^\"([^\"]*)\" ([=!]=) \"([^\"]*)\"$");
 
     private ShopChest plugin;
     private File configFile;
@@ -110,32 +118,78 @@ public class HologramFormat {
      * @return Result of the condition
      */
     public boolean evalRequirement(String condition, Map<Requirement, Object> values) {
-        try {
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("JavaScript");
+        String cond = condition;
 
-            String cond = condition;
+        for (HologramFormat.Requirement req : HologramFormat.Requirement.values()) {
+            if (cond.contains(req.toString()) && values.containsKey(req)) {
+                Object val = values.get(req);
+                String sVal = String.valueOf(val);
 
-            for (HologramFormat.Requirement req : HologramFormat.Requirement.values()) {
-                if (cond.contains(req.toString()) && values.containsKey(req)) {
-                    Object val = values.get(req);
-                    String sVal = String.valueOf(val);
+                if (val instanceof String && !(sVal.startsWith("\"") && sVal.endsWith("\""))) {
+                    sVal = String.format("\"%s\"", sVal);
+                }
 
-                    if (val instanceof String && !(sVal.startsWith("\"") && sVal.endsWith("\""))) {
-                        sVal = String.format("\"%s\"", sVal);
+                cond = cond.replace(req.toString(), sVal);
+            }
+        }
+
+        if (cond.equals("true")) {
+            // e.g.: ADMIN_SHOP
+            return true;
+        } else if (cond.equals("false")) {
+            return false;
+        } else {
+            char firstChar = cond.charAt(0);
+
+            // numeric cond: first char must be a digit (no variable can be negative)
+            if (firstChar >= '0' && firstChar <= '9') {
+                Matcher matcher = SIMPLE_NUMERIC_CONDITION.matcher(cond);
+
+                if (matcher.find()) {
+                    Double a, b;
+                    Operator operator;
+                    try {
+                        a = Double.valueOf(matcher.group(1));
+                        operator = Operator.from(matcher.group(2));
+                        b = Double.valueOf(matcher.group(3));
+
+                        return operator.compare(a, b);
+                    } catch (IllegalArgumentException ignored) {
+                        // should not happen, since regex checked that there is valid number and valid operator
                     }
-
-                    cond = cond.replace(req.toString(), sVal);
                 }
             }
 
-            return (boolean) engine.eval(cond);
-        } catch (ScriptException e) {
-            plugin.debug("Failed to eval condition: " + condition);
-            plugin.debug(e);
-        }
+            // string cond: first char must be a: "
+            if (firstChar == '"') {
+                Matcher matcher = SIMPLE_STRING_CONDITION.matcher(cond);
 
-        return false;
+                if (matcher.find()) {
+                    String a, b;
+                    Operator operator;
+                    try {
+                        a = matcher.group(1);
+                        operator = Operator.from(matcher.group(2));
+                        b = matcher.group(3);
+
+                        return operator.compare(a, b);
+                    } catch (IllegalArgumentException | UnsupportedOperationException ignored) {
+                        // should not happen, since regex checked that there is valid operator
+                    }
+                }
+            }
+
+            // complex comparison
+            try {
+                ScriptEngineManager manager = new ScriptEngineManager();
+                ScriptEngine engine = manager.getEngineByName("JavaScript");
+                return (boolean) engine.eval(cond);
+            } catch (ScriptException e) {
+                plugin.debug("Failed to eval condition: " + condition);
+                plugin.debug(e);
+                return false;
+            }
+        }
     }
 
     /**

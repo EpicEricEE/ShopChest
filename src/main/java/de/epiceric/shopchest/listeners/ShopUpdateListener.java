@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,6 +21,20 @@ public class ShopUpdateListener implements Listener {
         this.plugin = plugin;
     }
 
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent e) {
+        for (Shop shop : plugin.getShopUtils().getShops()) {
+            if (shop.hasItem()) {
+                shop.getItem().resetVisible(e.getPlayer());
+            }
+            if (shop.hasHologram()) {
+                shop.getHologram().resetVisible(e.getPlayer());
+            }
+        }
+
+        plugin.getShopUtils().resetPlayerLocation(e.getPlayer());
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         Location from = e.getFrom();
@@ -28,7 +43,7 @@ public class ShopUpdateListener implements Listener {
 
         // Wait till the chunk should have loaded on the client
         // Update IF worlds are different OR chunks are different (as many teleports are in same chunk)
-        if (!from.getWorld().equals(to.getWorld())
+        if (!from.getWorld().getName().equals(to.getWorld().getName())
                 || from.getChunk().getX() != to.getChunk().getX()
                 || from.getChunk().getZ() != to.getChunk().getZ()) {
             // Wait for 15 ticks before we actually put it in the queue
@@ -40,13 +55,15 @@ public class ShopUpdateListener implements Listener {
                         public void run() {
                             if (p.isOnline()) {
                                 for (Shop shop : plugin.getShopUtils().getShops()) {
-                                    if (shop.getItem() != null) {
-                                        shop.getItem().setVisible(p, false);
+                                    if (shop.hasItem()) {
+                                        shop.getItem().hidePlayer(p);
                                     }
-                                    if (shop.getHologram() != null) {
+                                    if (shop.hasHologram()) {
                                         shop.getHologram().hidePlayer(p);
                                     }
                                 }
+                                // so next update will update correctly
+                                plugin.getShopUtils().resetPlayerLocation(p);
                             }
                         }
                     });

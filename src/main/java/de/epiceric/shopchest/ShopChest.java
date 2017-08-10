@@ -204,7 +204,7 @@ public class ShopChest extends JavaPlugin {
         }
 
         if (database != null) {
-            for (Shop shop : shopUtils.getShops()) {
+            for (Shop shop : shopUtils.getShopsCopy()) {
                 shopUtils.removeShop(shop, false);
                 debug("Removed shop (#" + shop.getID() + ")");
             }
