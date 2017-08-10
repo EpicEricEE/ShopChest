@@ -21,10 +21,7 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Shop {
 
@@ -212,7 +209,7 @@ public class Shop {
     private String[] getHologramText() {
         List<String> lines = new ArrayList<>();
 
-        Map<HologramFormat.Requirement, Object> requirements = new HashMap<>();
+        Map<HologramFormat.Requirement, Object> requirements = new EnumMap<>(HologramFormat.Requirement.class);
         requirements.put(HologramFormat.Requirement.VENDOR, getVendor().getName());
         requirements.put(HologramFormat.Requirement.AMOUNT, getProduct().getAmount());
         requirements.put(HologramFormat.Requirement.ITEM_TYPE, getProduct().getType() + (getProduct().getDurability() > 0 ? ":" + getProduct().getDurability() : ""));
@@ -231,7 +228,7 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.CHEST_SPACE, Utils.getFreeSpaceForItem(getInventoryHolder().getInventory(), getProduct()));
         requirements.put(HologramFormat.Requirement.DURABILITY, getProduct().getDurability());
 
-        Map<Placeholder, Object> placeholders = new HashMap<>();
+        Map<Placeholder, Object> placeholders = new EnumMap<>(Placeholder.class);
         placeholders.put(Placeholder.VENDOR, getVendor().getName());
         placeholders.put(Placeholder.AMOUNT, getProduct().getAmount());
         placeholders.put(Placeholder.ITEM_NAME, LanguageUtils.getItemName(getProduct()));
@@ -272,7 +269,7 @@ public class Shop {
             }
         }
 
-        return lines.toArray(new String[lines.size()]);
+        return lines.toArray(new String[0]);
     }
 
     private Location getHologramLocation(boolean doubleChest, Chest[] chests) {
