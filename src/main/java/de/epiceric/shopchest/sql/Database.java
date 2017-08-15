@@ -98,6 +98,11 @@ public abstract class Database {
                                     "SELECT name FROM sqlite_master WHERE type='table' AND name='shop_list'" :
                                     "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='shop_list'");
 
+                    String queryCheckIfBackupTableExists =
+                            (Database.this instanceof SQLite ?
+                                    "SELECT name FROM sqlite_master WHERE type='table' AND name='shop_list_old'" :
+                                    "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='shop_list_old'");
+
                     String queryCopyTableShopList = "INSERT INTO shops (vendor,product,world,x,y,z,buyprice,sellprice,shoptype) SELECT vendor,product,world,x,y,z,buyprice,sellprice,shoptype FROM shop_list";
                     String queryRenameTableShopList = "ALTER TABLE shop_list RENAME TO shop_list_old";
 
@@ -111,21 +116,33 @@ public abstract class Database {
                     ResultSet rs = s2.executeQuery(queryCheckIfTableExists);
 
                     if (rs.next()) {
-                        plugin.debug("Table 'shop_list' exists: Copying contents...");
-                        // Table exists: Copy contents to new table
-                        PreparedStatement ps = connection.prepareStatement(queryCopyTableShopList);
-                        ps.executeUpdate();
-                        ps.close();
+                        plugin.debug("Table 'shop_list' exists");
 
-                        plugin.debug("Renaming table...");
-                        // Rename/Backup old table
-                        PreparedStatement ps2 = connection.prepareStatement(queryRenameTableShopList);
-                        ps2.executeUpdate();
-                        ps2.close();
+                        // Check if backup table "shop_list_old" already exists
+                        Statement s3 = connection.createStatement();
+                        ResultSet rs2 = s3.executeQuery(queryCheckIfBackupTableExists);
+
+                        if (rs2.next()) {
+                            plugin.debug("Backup table 'shop_list_old' already exists: Cannot backup current table");
+                        } else {
+                            plugin.debug("Backing up old table");
+
+                            // Table exists: Copy contents to new table
+                            PreparedStatement ps = connection.prepareStatement(queryCopyTableShopList);
+                            ps.executeUpdate();
+                            ps.close();
+
+                            plugin.debug("Renaming table");
+                            // Rename/Backup old table
+                            PreparedStatement ps2 = connection.prepareStatement(queryRenameTableShopList);
+                            ps2.executeUpdate();
+                            ps2.close();
+                        }
+
+                        close(s3, rs2);
                     }
 
-                    s2.close();
-                    rs.close();
+                    close(s2, rs);
 
                     // Create table "shop_log"
                     Statement s3 = connection.createStatement();
