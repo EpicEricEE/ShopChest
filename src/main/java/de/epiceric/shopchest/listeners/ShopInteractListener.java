@@ -914,7 +914,7 @@ public class ShopInteractListener implements Listener {
      * @param shop Shop, from which the player buys
      * @param stack Whether a whole stack should be bought
      */
-    private void buy(Player executor, Shop shop, boolean stack) {
+    private void buy(Player executor, final Shop shop, boolean stack) {
         plugin.debug(executor.getName() + " is buying (#" + shop.getID() + ")");
 
         int amount = shop.getProduct().getAmount();
@@ -1000,6 +1000,15 @@ public class ShopInteractListener implements Listener {
                             removeFromInventory(c.getInventory(), newProduct);
                             executor.updateInventory();
 
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (plugin.getHologramFormat().isDynamic()) {
+                                        shop.updateHologramText();
+                                    }
+                                }
+                            }.runTaskLater(plugin, 1L);
+
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                     new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
@@ -1033,6 +1042,16 @@ public class ShopInteractListener implements Listener {
 
                         addToInventory(inventory, newProduct);
                         executor.updateInventory();
+
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (plugin.getHologramFormat().isDynamic()) {
+                                    shop.updateHologramText();
+                                }
+                            }
+                        }.runTaskLater(plugin, 1L);
+
                         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS_ADMIN, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                 new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, String.valueOf(newPrice))));
 
@@ -1056,7 +1075,7 @@ public class ShopInteractListener implements Listener {
      * @param executor Player, who executed the command and will sell the product
      * @param shop Shop, to which the player sells
      */
-    private void sell(Player executor, Shop shop, boolean stack) {
+    private void sell(Player executor, final Shop shop, boolean stack) {
         plugin.debug(executor.getName() + " is selling (#" + shop.getID() + ")");
 
         int amount = shop.getProduct().getAmount();
@@ -1141,6 +1160,15 @@ public class ShopInteractListener implements Listener {
                             removeFromInventory(executor.getInventory(), newProduct);
                             executor.updateInventory();
 
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (plugin.getHologramFormat().isDynamic()) {
+                                        shop.updateHologramText();
+                                    }
+                                }
+                            }.runTaskLater(plugin, 1L);
+
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
                             executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCCESS, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                     new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
@@ -1175,6 +1203,16 @@ public class ShopInteractListener implements Listener {
 
                         removeFromInventory(executor.getInventory(), newProduct);
                         executor.updateInventory();
+
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (plugin.getHologramFormat().isDynamic()) {
+                                    shop.updateHologramText();
+                                }
+                            }
+                        }.runTaskLater(plugin, 1L);
+
                         executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCCESS_ADMIN, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                 new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, String.valueOf(newPrice))));
 
