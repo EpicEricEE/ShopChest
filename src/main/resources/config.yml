@@ -27,6 +27,10 @@ update-quality: NORMAL
 # You can set this to an empty string to disable this feature.
 shop-info-item: "STICK"
 
+# Set whether buys or sells need to be confirmed by the player
+# in order to prevent accidental purchases or sells.
+confirm-shopping: false
+
 # Set whether interaction with the hologram should be enabled.
 # If set to true, a player can do the exact same thing with the
 # hologram, as with the chest. You can even open the chest if you

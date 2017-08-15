@@ -70,7 +70,10 @@ import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class ShopInteractListener implements Listener {
 
@@ -326,6 +329,8 @@ public class ShopInteractListener implements Listener {
         }
     }
 
+    private Map<UUID, Set<Integer>> needsConfirmation = new HashMap<>();
+
     private void handleInteractEvent(PlayerInteractEvent e) {
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
@@ -339,27 +344,19 @@ public class ShopInteractListener implements Listener {
             if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
                 if (ClickType.getPlayerClickType(p) != null) {
                     if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        Shop shop = shopUtils.getShop(b.getLocation());
+                        if (shop != null || ClickType.getPlayerClickType(p).getClickType() == ClickType.EnumClickType.CREATE) {
+                            switch (ClickType.getPlayerClickType(p).getClickType()) {
+                                case INFO:
+                                    e.setCancelled(true);
 
-                        switch (ClickType.getPlayerClickType(p).getClickType()) {
-                            case INFO:
-                                e.setCancelled(true);
-
-                                if (shopUtils.isShop(b.getLocation())) {
-                                    Shop shop = shopUtils.getShop(b.getLocation());
                                     info(p, shop);
-                                } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
-                                    plugin.debug("Chest is not a shop");
-                                }
 
-                                ClickType.removePlayerClickType(p);
-                                break;
+                                    ClickType.removePlayerClickType(p);
+                                    break;
 
-                            case REMOVE:
-                                e.setCancelled(true);
-
-                                if (shopUtils.isShop(b.getLocation())) {
-                                    Shop shop = shopUtils.getShop(b.getLocation());
+                                case REMOVE:
+                                    e.setCancelled(true);
 
                                     if (shop.getShopType() == ShopType.ADMIN) {
                                         if (p.hasPermission(Permissions.REMOVE_ADMIN)) {
@@ -376,46 +373,46 @@ public class ShopInteractListener implements Listener {
                                             plugin.debug(p.getName() + " is not permitted to remove another player's shop");
                                         }
                                     }
-                                } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
-                                    plugin.debug("Chest is not a shop");
-                                }
 
-                                ClickType.removePlayerClickType(p);
-                                break;
+                                    ClickType.removePlayerClickType(p);
+                                    break;
 
-                            case OPEN:
-                                e.setCancelled(true);
+                                case OPEN:
+                                    e.setCancelled(true);
 
-                                if (shopUtils.isShop(b.getLocation())) {
-                                    Shop shop = shopUtils.getShop(b.getLocation());
                                     if (p.getUniqueId().equals(shop.getVendor().getUniqueId()) || p.hasPermission(Permissions.OPEN_OTHER)) {
                                         open(p, shop, true);
                                     } else {
                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
                                         plugin.debug(p.getName() + " is not permitted to open another player's shop");
                                     }
-                                } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
-                                    plugin.debug("Chest is not a shop");
-                                }
 
-                                ClickType.removePlayerClickType(p);
-                                break;
+                                    ClickType.removePlayerClickType(p);
+                                    break;
+                            }
+                        } else {
+                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
+                            plugin.debug("Chest is not a shop");
                         }
                     }
                 } else {
                     Shop shop = shopUtils.getShop(b.getLocation());
+
+                    boolean confirmed = needsConfirmation.containsKey(p.getUniqueId()) && needsConfirmation.get(p.getUniqueId()).contains(shop.getID());
+
                     if (shop != null) {
                         if (e.getAction() == Action.LEFT_CLICK_BLOCK && p.isSneaking() && Utils.hasAxeInHand(p)) {
                             return;
                         }
+
                         ItemStack infoItem = config.shop_info_item;
                         if (infoItem != null) {
                             if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                                 ItemStack item = Utils.getItemInMainHand(p);
+
                                 if (item == null || !(infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability())) {
                                     item = Utils.getItemInOffHand(p);
+
                                     if (item != null && infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability()) {
                                         e.setCancelled(true);
                                         info(p, shop);
@@ -468,7 +465,21 @@ public class ShopInteractListener implements Listener {
 
                                         if (shop.getShopType() == ShopType.ADMIN) {
                                             if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
-                                                buy(p, shop, p.isSneaking());
+                                                if (confirmed || !config.confirm_shopping) {
+                                                    buy(p, shop, p.isSneaking());
+                                                    if (config.confirm_shopping) {
+                                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                        ids.remove(shop.getID());
+                                                        if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                                        else needsConfirmation.put(p.getUniqueId(), ids);
+                                                    }
+                                                } else {
+                                                    plugin.debug("Needs confirmation");
+                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                    Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                    ids.add(shop.getID());
+                                                    needsConfirmation.put(p.getUniqueId(), ids);
+                                                }
                                             } else {
                                                 plugin.debug(p.getName() + " doesn't have external plugin's permission");
                                                 p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY_HERE));
@@ -479,10 +490,38 @@ public class ShopInteractListener implements Listener {
                                                 int amount = (p.isSneaking() ? shop.getProduct().getMaxStackSize() : shop.getProduct().getAmount());
 
                                                 if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= amount) {
-                                                    buy(p, shop, p.isSneaking());
+                                                    if (confirmed || !config.confirm_shopping) {
+                                                        buy(p, shop, p.isSneaking());
+                                                        if (config.confirm_shopping) {
+                                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                            ids.remove(shop.getID());
+                                                            if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                                            else needsConfirmation.put(p.getUniqueId(), ids);
+                                                        }
+                                                    } else {
+                                                        plugin.debug("Needs confirmation");
+                                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                        ids.add(shop.getID());
+                                                        needsConfirmation.put(p.getUniqueId(), ids);
+                                                    }
                                                 } else {
                                                     if (config.auto_calculate_item_amount && Utils.getAmount(c.getInventory(), shop.getProduct()) > 0) {
-                                                        buy(p, shop, p.isSneaking());
+                                                        if (confirmed || !config.confirm_shopping) {
+                                                            buy(p, shop, p.isSneaking());
+                                                            if (config.confirm_shopping) {
+                                                                Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                                ids.remove(shop.getID());
+                                                                if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                                                else needsConfirmation.put(p.getUniqueId(), ids);
+                                                            }
+                                                        } else {
+                                                            plugin.debug("Needs confirmation");
+                                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                            ids.add(shop.getID());
+                                                            needsConfirmation.put(p.getUniqueId(), ids);
+                                                        }
                                                     } else {
                                                         p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
                                                         if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
@@ -541,10 +580,38 @@ public class ShopInteractListener implements Listener {
                                             int amount = stack ? shop.getProduct().getMaxStackSize() : shop.getProduct().getAmount();
 
                                             if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= amount) {
-                                                sell(p, shop, stack);
+                                                if (confirmed || !config.confirm_shopping) {
+                                                    sell(p, shop, stack);
+                                                    if (config.confirm_shopping) {
+                                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                        ids.remove(shop.getID());
+                                                        if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                                        else needsConfirmation.put(p.getUniqueId(), ids);
+                                                    }
+                                                } else {
+                                                    plugin.debug("Needs confirmation");
+                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                    Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                    ids.add(shop.getID());
+                                                    needsConfirmation.put(p.getUniqueId(), ids);
+                                                }
                                             } else {
                                                 if (config.auto_calculate_item_amount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
-                                                    sell(p, shop, stack);
+                                                    if (confirmed || !config.confirm_shopping) {
+                                                        sell(p, shop, stack);
+                                                        if (config.confirm_shopping) {
+                                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                            ids.remove(shop.getID());
+                                                            if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                                            else needsConfirmation.put(p.getUniqueId(), ids);
+                                                        }
+                                                    } else {
+                                                        plugin.debug("Needs confirmation");
+                                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                        ids.add(shop.getID());
+                                                        needsConfirmation.put(p.getUniqueId(), ids);
+                                                    }
                                                 } else {
                                                     p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
                                                     plugin.debug(p.getName() + " doesn't have enough items");

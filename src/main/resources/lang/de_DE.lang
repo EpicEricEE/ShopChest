@@ -44,6 +44,7 @@ message.click-chest-to-create-shop=&aKlicke innerhalb von 15 Sekunden auf eine T
 message.click-chest-to-remove-shop=&aKlicke innerhalb von 15 Sekunden  auf einen Shop, um ihn zu entfernen.
 message.click-chest-for-info=&aKlicke innerhalb von 15 Sekunden  auf einen Shop, um Informationen über ihn zu bekommen.
 message.click-chest-to-open-shop=&Klicke innerhalb von 15 Sekunden  auf einen Shop, um ihn zu öffnen.
+message.click-to-confirm=&aKlicke noch einmal zum Bestätigen.
 message.opened-shop=&aDu hast &6%VENDOR%&as Shop geöffnet.
 message.cannot-break-shop=&cDu kannst einen Shop nicht zerstören.
 message.cannot-sell-broken-item=&cDu kannst kein kaputtes Artikel verkaufen.

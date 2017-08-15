@@ -104,6 +104,9 @@ public class Config {
     /** Whether shops should be protected by explosions **/
     public boolean explosion_protection;
 
+    /** Whether buys and sells must be confirmed **/
+    public boolean confirm_shopping;
+
     /** Whether quality mode should be enabled **/
     public boolean enable_quality_mode;
 
@@ -365,6 +368,8 @@ public class Config {
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
         buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
+        explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
+        confirm_shopping = plugin.getConfig().getBoolean("confirm-shopping");
         enable_quality_mode = plugin.getConfig().getBoolean("enable-quality-mode");
         enable_hologram_interaction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
@@ -379,7 +384,6 @@ public class Config {
         enable_griefprevention_integration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
         enable_areashop_integration = plugin.getConfig().getBoolean("enable-areashop-integration");
         enable_vendor_messages = plugin.getConfig().getBoolean("enable-vendor-messages");
-        explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
         only_show_shops_in_sight = plugin.getConfig().getBoolean("only-show-shops-in-sight");
         only_show_first_shop_in_sight = plugin.getConfig().getBoolean("only-show-first-shop-in-sight");
         exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");

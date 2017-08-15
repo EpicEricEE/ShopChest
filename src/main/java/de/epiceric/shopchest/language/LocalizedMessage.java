@@ -74,6 +74,7 @@ public class LocalizedMessage {
         CLICK_CHEST_REMOVE,
         CLICK_CHEST_INFO,
         CLICK_CHEST_OPEN,
+        CLICK_TO_CONFIRM,
         OPENED_SHOP,
         CANNOT_BREAK_SHOP,
         CANNOT_SELL_BROKEN_ITEM,

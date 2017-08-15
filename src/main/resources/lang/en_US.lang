@@ -161,6 +161,9 @@ message.click-chest-for-info=&aClick a shop within 15 seconds to retrieve inform
 # Set the message when the player must click a shop to open it.
 message.click-chest-to-open-shop=&aClick a shop within 15 seconds to open it.
 
+# Set the message when the player must click the shop again to confirm the buy/sell.
+message.click-to-confirm=&aClick again to confirm.
+
 # Set the message when the player opened a shop.
 # Usable Placeholders: %VENDOR%
 message.opened-shop=&aYou opened %VENDOR%'s shop.
