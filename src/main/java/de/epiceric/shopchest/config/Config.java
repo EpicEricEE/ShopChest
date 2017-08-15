@@ -113,6 +113,9 @@ public class Config {
     /** Whether the debug log file should be created **/
     public boolean enable_debug_log;
 
+    /** Whether buys and sells should be logged in the database **/
+    public boolean enable_ecomomy_log;
+
     /** Whether WorldGuard integration should be enabled **/
     public boolean enable_worldguard_integration;
 
@@ -365,6 +368,7 @@ public class Config {
         enable_quality_mode = plugin.getConfig().getBoolean("enable-quality-mode");
         enable_hologram_interaction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
+        enable_ecomomy_log = plugin.getConfig().getBoolean("enable-economy-log");
         enable_worldguard_integration = plugin.getConfig().getBoolean("enable-worldguard-integration");
         enable_towny_integration = plugin.getConfig().getBoolean("enable-towny-integration");
         enable_authme_integration = plugin.getConfig().getBoolean("enable-authme-integration");

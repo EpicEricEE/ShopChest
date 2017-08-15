@@ -33,6 +33,9 @@ shop-info-item: "STICK"
 # are the vendor or have permission.
 enable-hologram-interaction: true
 
+# Set whether buys and sells should be logged in the database.
+enable-economy-log: false
+
 # Set whether a debug log file should be created.
 # The file may get large! Please enable this setting when reporting bugs.
 enable-debug-log: false

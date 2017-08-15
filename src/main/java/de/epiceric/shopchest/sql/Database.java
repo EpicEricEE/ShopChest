@@ -368,38 +368,42 @@ public abstract class Database {
      * @param callback Callback that - if succeeded - returns {@code null}
      */
     public void logEconomy(final Player executor, final ItemStack product, final OfflinePlayer vendor, final ShopType shopType, final Location location, final double price, final ShopBuySellEvent.Type type, final Callback<Void> callback) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                PreparedStatement ps = null;
+        if (plugin.getShopChestConfig().enable_ecomomy_log) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    PreparedStatement ps = null;
 
-                try {
-                    ps = connection.prepareStatement("INSERT INTO shop_log (timestamp,executor,product,vendor,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?)");
+                    try {
+                        ps = connection.prepareStatement("INSERT INTO shop_log (timestamp,executor,product,vendor,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-                    ps.setString(1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
-                    ps.setString(2, executor.getUniqueId().toString() + " (" + executor.getName() + ")");
-                    ps.setString(3, product.getAmount() + " x " + LanguageUtils.getItemName(product));
-                    ps.setString(4, vendor.getUniqueId().toString() + " (" + vendor.getName() + ")" + (shopType == ShopType.ADMIN ? " (ADMIN)" : ""));
-                    ps.setString(5, location.getWorld().getName());
-                    ps.setInt(6, location.getBlockX());
-                    ps.setInt(7, location.getBlockY());
-                    ps.setInt(8, location.getBlockZ());
-                    ps.setDouble(9, price);
-                    ps.setString(10, type.toString());
-                    ps.executeUpdate();
+                        ps.setString(1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
+                        ps.setString(2, executor.getUniqueId().toString() + " (" + executor.getName() + ")");
+                        ps.setString(3, product.getAmount() + " x " + LanguageUtils.getItemName(product));
+                        ps.setString(4, vendor.getUniqueId().toString() + " (" + vendor.getName() + ")" + (shopType == ShopType.ADMIN ? " (ADMIN)" : ""));
+                        ps.setString(5, location.getWorld().getName());
+                        ps.setInt(6, location.getBlockX());
+                        ps.setInt(7, location.getBlockY());
+                        ps.setInt(8, location.getBlockZ());
+                        ps.setDouble(9, price);
+                        ps.setString(10, type.toString());
+                        ps.executeUpdate();
 
-                    if (callback != null) callback.callSyncResult(null);
-                    plugin.debug("Logged economy transaction to database");
-                } catch (final SQLException ex) {
-                    if (callback != null) callback.callSyncError(ex);
-                    plugin.getLogger().severe("Failed to access database");
-                    plugin.debug("Failed to log economy transaction to database");
-                    plugin.debug(ex);
-                } finally {
-                    close(ps, null);
+                        if (callback != null) callback.callSyncResult(null);
+                        plugin.debug("Logged economy transaction to database");
+                    } catch (final SQLException ex) {
+                        if (callback != null) callback.callSyncError(ex);
+                        plugin.getLogger().severe("Failed to access database");
+                        plugin.debug("Failed to log economy transaction to database");
+                        plugin.debug(ex);
+                    } finally {
+                        close(ps, null);
+                    }
                 }
-            }
-        }.runTaskAsynchronously(plugin);
+            }.runTaskAsynchronously(plugin);
+        } else {
+            if (callback != null) callback.callSyncResult(null);
+        }
     }
 
     /**
