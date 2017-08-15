@@ -537,14 +537,14 @@ public abstract class Database {
     }
 
     /**
-     * Closes a {@link PreparedStatement} and a {@link ResultSet}
-     * @param ps {@link PreparedStatement} to close
+     * Closes a {@link Statement} and a {@link ResultSet}
+     * @param s {@link Statement} to close
      * @param rs {@link ResultSet} to close
      */
-    private void close(PreparedStatement ps, ResultSet rs) {
+    void close(Statement s, ResultSet rs) {
         try {
-            if (ps != null)
-                ps.close();
+            if (s != null)
+                s.close();
             if (rs != null)
                 rs.close();
         } catch (SQLException ex) {

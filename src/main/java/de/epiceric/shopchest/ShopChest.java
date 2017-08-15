@@ -209,6 +209,10 @@ public class ShopChest extends JavaPlugin {
                 debug("Removed shop (#" + shop.getID() + ")");
             }
 
+            if (database instanceof SQLite) {
+                ((SQLite) database).vacuum(false);
+            }
+
             database.disconnect();
         }
 
