@@ -35,6 +35,7 @@ import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import fr.xephi.authme.AuthMe;
+import me.crafter.mc.lockettepro.LocketteProAPI;
 import me.ryanhamshire.GriefPrevention.Claim;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -157,6 +158,18 @@ public class ShopInteractListener implements Listener {
                                 }
 
                                 String denyReason = "Event Cancelled";
+
+                                //Hmm is it a Lockette chest or a normal one?
+                                if(LocketteProAPI.isLocked(b)) {
+                                    //Oops, it is locked, but maybe the user interacting with it is the owner... Lets see
+                                    if (!LocketteProAPI.isOwner(b, p)) {
+                                        // Nope, not the owner, cancel the event.
+                                        denyReason = "The chest is protected by Lockette, and you are not the owner.";
+                                        plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest because " + denyReason);
+                                        e.setCancelled(true);
+                                        return;
+                                    }
+                                }
 
                                 if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
                                     plugin.debug("Checking if WorldGuard allows shop creation...");
