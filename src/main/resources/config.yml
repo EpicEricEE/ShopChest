@@ -40,6 +40,13 @@ enable-hologram-interaction: true
 # Set whether buys and sells should be logged in the database.
 enable-economy-log: false
 
+# Set whether the economy-log should be cleaned up on server start.
+cleanup-ecomomy-log: true
+
+# Sets the time limit for cleaning up the economy log in days.
+# All log entries older than this will be deleted on server start.
+cleanup-ecomomy-log-days: 30
+
 # Set whether a debug log file should be created.
 # The file may get large! Please enable this setting when reporting bugs.
 enable-debug-log: false

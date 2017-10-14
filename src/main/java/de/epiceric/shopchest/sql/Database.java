@@ -159,6 +159,11 @@ public abstract class Database {
                     PreparedStatement ps = connection.prepareStatement("SELECT * FROM shops");
                     ResultSet rs2 = ps.executeQuery();
 
+                    // Clean up economy log
+                    if (plugin.getShopChestConfig().cleanup_ecomomy_log) {
+                        cleanUpEconomy(true);
+                    }
+
                     int count = 0;
                     while (rs2.next()) {
                         if (rs2.getString("vendor") != null) count++;
@@ -421,6 +426,44 @@ public abstract class Database {
             }.runTaskAsynchronously(plugin);
         } else {
             if (callback != null) callback.callSyncResult(null);
+        }
+    }
+
+    /**
+     * Cleans up the economy log to reduce file size
+     * @param async Whether the call should be executed asynchronously
+     */
+    public void cleanUpEconomy(boolean async) {
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Statement s = null;
+
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, (plugin.getShopChestConfig().cleanup_ecomomy_log_days * -1));
+                String logPurgeLimit = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+                String queryCleanUpLog = "DELETE FROM shop_log WHERE timestamp < '" + logPurgeLimit + "'";
+
+                try {
+                    s = connection.createStatement();
+                    s.executeUpdate(queryCleanUpLog);
+
+                    plugin.getLogger().info("Cleaned up economy log");
+                    plugin.debug("Cleaned up economy log");
+                } catch (final SQLException ex) {
+                    plugin.getLogger().severe("Failed to access database");
+                    plugin.debug("Failed to clean up economy log");
+                    plugin.debug(ex);
+                } finally {
+                    close(s, null);
+                }
+            }
+        };
+
+        if (async) {
+            runnable.runTaskAsynchronously(plugin);
+        } else {
+            runnable.run();
         }
     }
 
