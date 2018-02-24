@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.sql;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
@@ -23,10 +24,10 @@ public class MySQL extends Database {
 
             Class.forName("com.mysql.jdbc.Driver");
 
-            String connectUrl = "jdbc:mysql://" + plugin.getShopChestConfig().database_mysql_host + ":" + plugin.getShopChestConfig().database_mysql_port + "/" + plugin.getShopChestConfig().database_mysql_database + "?autoReconnect=true&useSSL=false";
-            plugin.debug("Connecting to MySQL Server \"" + connectUrl + "\" as user \"" + plugin.getShopChestConfig().database_mysql_username + "\"");
+            String connectUrl = "jdbc:mysql://" + Config.databaseMySqlHost + ":" + Config.databaseMySqlPort + "/" + Config.databaseMySqlDatabase + "?autoReconnect=true&useSSL=false";
+            plugin.debug("Connecting to MySQL Server \"" + connectUrl + "\" as user \"" + Config.databaseMySqlUsername + "\"");
 
-            connection = DriverManager.getConnection(connectUrl, plugin.getShopChestConfig().database_mysql_username, plugin.getShopChestConfig().database_mysql_password);
+            connection = DriverManager.getConnection(connectUrl, Config.databaseMySqlUsername, Config.databaseMySqlPassword);
 
             return connection;
         } catch (Exception ex) {

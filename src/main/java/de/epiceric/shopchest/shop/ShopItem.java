@@ -44,13 +44,13 @@ public class ShopItem {
         Class<?> craftWorldClass = Utils.getCraftClass("CraftWorld");
         Class<?> nmsWorldClass = Utils.getNMSClass("World");
 
-        Class[] requiredClasses = new Class[] {
+        Class<?>[] requiredClasses = new Class[] {
                 nmsWorldClass, craftWorldClass, nmsItemStackClass, craftItemStackClass, entityItemClass,
                 packetPlayOutSpawnEntityClass, packetPlayOutEntityMetadataClass, dataWatcherClass,
                 packetPlayOutEntityDestroyClass, entityClass, packetPlayOutEntityVelocityClass,
         };
 
-        for (Class c : requiredClasses) {
+        for (Class<?> c : requiredClasses) {
             if (c == null) {
                 plugin.debug("Failed to create shop item: Could not find all required classes");
                 entityItem = null;

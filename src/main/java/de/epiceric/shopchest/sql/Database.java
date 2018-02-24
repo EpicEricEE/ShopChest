@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.sql;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.ShopBuySellEvent;
 import de.epiceric.shopchest.exceptions.WorldNotFoundException;
 import de.epiceric.shopchest.language.LanguageUtils;
@@ -385,7 +386,7 @@ public abstract class Database {
      * @param callback Callback that - if succeeded - returns {@code null}
      */
     public void logEconomy(final Player executor, final ItemStack product, final OfflinePlayer vendor, final ShopType shopType, final Location location, final double price, final ShopBuySellEvent.Type type, final Callback<Void> callback) {
-        if (plugin.getShopChestConfig().enable_ecomomy_log) {
+        if (Config.enableEcomomyLog) {
             new BukkitRunnable() {
                 @Override
                 public void run() {

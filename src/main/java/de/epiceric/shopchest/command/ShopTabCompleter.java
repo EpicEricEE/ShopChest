@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.command;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -20,7 +21,7 @@ class ShopTabCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase(plugin.getShopChestConfig().main_command_name)) {
+        if (command.getName().equalsIgnoreCase(Config.mainCommandName)) {
 
             List<String> createSubCommands = Arrays.asList("admin", "normal");
             List<String> configSubCommands = Arrays.asList("add", "remove", "set");

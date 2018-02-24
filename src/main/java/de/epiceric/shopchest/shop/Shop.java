@@ -37,7 +37,6 @@ public class Shop {
     private final double buyPrice;
     private final double sellPrice;
     private final ShopType shopType;
-    private final Config config;
 
     private boolean created;
     private int id;
@@ -53,7 +52,6 @@ public class Shop {
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.shopType = shopType;
-        this.config = plugin.getShopChestConfig();
     }
 
     public Shop(ShopChest plugin, OfflinePlayer vendor, ItemStack product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
@@ -96,14 +94,14 @@ public class Shop {
         Block b = location.getBlock();
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
             ChestNotFoundException ex = new ChestNotFoundException(String.format("No Chest found in world '%s' at location: %d; %d; %d", b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
-            plugin.getShopUtils().removeShop(this, config.remove_shop_on_error);
+            plugin.getShopUtils().removeShop(this, Config.removeShopOnError);
             if (showConsoleMessages) plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
             return false;
-        } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && config.show_shop_items) {
+        } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && Config.showShopItems) {
             NotEnoughSpaceException ex = new NotEnoughSpaceException(String.format("No space above chest in world '%s' at location: %d; %d; %d", b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
-            plugin.getShopUtils().removeShop(this, config.remove_shop_on_error);
+            plugin.getShopUtils().removeShop(this, Config.removeShopOnError);
             if (showConsoleMessages) plugin.getLogger().severe(ex.getMessage());
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
@@ -142,7 +140,7 @@ public class Shop {
      * <b>Call this after {@link #createHologram()}, because it depends on the hologram's location</b>
      */
     private void createItem() {
-        if (config.show_shop_items) {
+        if (Config.showShopItems) {
             plugin.debug("Creating item (#" + id + ")");
 
             Location itemLocation;
@@ -283,7 +281,7 @@ public class Shop {
 
         double subtractY = 0.6;
 
-        if (config.hologram_fixed_bottom) subtractY = 0.85;
+        if (Config.hologramFixedBottom) subtractY = 0.85;
 
         if (doubleChest) {
             Chest r = chests[0];
@@ -310,7 +308,7 @@ public class Shop {
             holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
         }
 
-        holoLocation.add(0, config.hologram_lift, 0);
+        holoLocation.add(0, Config.hologramLift, 0);
 
         return holoLocation;
     }

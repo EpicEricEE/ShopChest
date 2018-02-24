@@ -1,18 +1,15 @@
 package de.epiceric.shopchest.command;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.LocalizedMessage;
+import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.utils.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
@@ -41,14 +38,13 @@ public class ShopCommand {
         }
 
         this.plugin = plugin;
-        this.name = plugin.getShopChestConfig().main_command_name;
+        this.name = Config.mainCommandName;
         this.pluginCommand = createPluginCommand();
 
         ShopCommandExecutor executor = new ShopCommandExecutor(plugin);
         ShopTabCompleter tabCompleter = new ShopTabCompleter(plugin);
 
-        final LocalizedMessage.ReplacedPlaceholder cmdPlaceholder = new LocalizedMessage.ReplacedPlaceholder(
-                Placeholder.COMMAND, plugin.getShopChestConfig().main_command_name);
+        final Replacement cmdReplacement = new Replacement(Placeholder.COMMAND, name);
 
         addSubCommand(new ShopSubCommand("create", true, executor, tabCompleter) {
             @Override
@@ -65,9 +61,9 @@ public class ShopCommand {
                 }
 
                 if (sender.hasPermission(Permissions.CREATE_ADMIN)) {
-                    return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE_ADMIN, cmdPlaceholder);
+                    return LanguageUtils.getMessage(Message.COMMAND_DESC_CREATE_ADMIN, cmdReplacement);
                 } else if (receiveCreateMessage) {
-                    return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE, cmdPlaceholder);
+                    return LanguageUtils.getMessage(Message.COMMAND_DESC_CREATE, cmdReplacement);
                 }
 
                 return "";
@@ -77,28 +73,28 @@ public class ShopCommand {
         addSubCommand(new ShopSubCommand("remove", true, executor, tabCompleter) {
             @Override
             public String getHelpMessage(CommandSender sender) {
-                return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE, cmdPlaceholder);
+                return LanguageUtils.getMessage(Message.COMMAND_DESC_REMOVE, cmdReplacement);
             }
         });
 
         addSubCommand(new ShopSubCommand("info", true, executor, tabCompleter) {
             @Override
             public String getHelpMessage(CommandSender sender) {
-                return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_INFO, cmdPlaceholder);
+                return LanguageUtils.getMessage(Message.COMMAND_DESC_INFO, cmdReplacement);
             }
         });
 
         addSubCommand(new ShopSubCommand("limits", true, executor, tabCompleter) {
             @Override
             public String getHelpMessage(CommandSender sender) {
-                return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, cmdPlaceholder);
+                return LanguageUtils.getMessage(Message.COMMAND_DESC_LIMITS, cmdReplacement);
             }
         });
 
         addSubCommand(new ShopSubCommand("open", true, executor, tabCompleter) {
             @Override
             public String getHelpMessage(CommandSender sender) {
-                return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_OPEN, cmdPlaceholder);
+                return LanguageUtils.getMessage(Message.COMMAND_DESC_OPEN, cmdReplacement);
             }
         });
 
@@ -106,7 +102,7 @@ public class ShopCommand {
             @Override
             public String getHelpMessage(CommandSender sender) {
                 if (sender.hasPermission(Permissions.REMOVE_OTHER)) {
-                    return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVEALL, cmdPlaceholder);
+                    return LanguageUtils.getMessage(Message.COMMAND_DESC_REMOVEALL, cmdReplacement);
                 } else {
                     return "";
                 }
@@ -117,7 +113,7 @@ public class ShopCommand {
             @Override
             public String getHelpMessage(CommandSender sender) {
                 if (sender.hasPermission(Permissions.RELOAD)) {
-                    return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD, cmdPlaceholder);
+                    return LanguageUtils.getMessage(Message.COMMAND_DESC_RELOAD, cmdReplacement);
                 } else {
                     return "";
                 }
@@ -128,7 +124,7 @@ public class ShopCommand {
             @Override
             public String getHelpMessage(CommandSender sender) {
                 if (sender.hasPermission(Permissions.UPDATE)) {
-                    return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE, cmdPlaceholder);
+                    return LanguageUtils.getMessage(Message.COMMAND_DESC_UPDATE, cmdReplacement);
                 } else {
                     return "";
                 }
@@ -139,7 +135,7 @@ public class ShopCommand {
             @Override
             public String getHelpMessage(CommandSender sender) {
                 if (sender.hasPermission(Permissions.CONFIG)) {
-                    return LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG, cmdPlaceholder);
+                    return LanguageUtils.getMessage(Message.COMMAND_DESC_CONFIG, cmdReplacement);
                 } else {
                     return "";
                 }
@@ -208,14 +204,15 @@ public class ShopCommand {
 
     /**
      * Sends the basic help message
+     *
      * @param sender {@link CommandSender} who will receive the message
      */
     private void sendBasicHelpMessage(CommandSender sender) {
         plugin.debug("Sending basic help message to " + sender.getName());
 
         sender.sendMessage(" ");
-        String header = LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_HEADER,
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.COMMAND, plugin.getShopChestConfig().main_command_name));
+        String header = LanguageUtils.getMessage(Message.COMMAND_DESC_HEADER,
+                new Replacement(Placeholder.COMMAND, Config.mainCommandName));
 
         if (!header.trim().isEmpty()) sender.sendMessage(header);
 
@@ -228,8 +225,8 @@ public class ShopCommand {
             sender.sendMessage(msg);
         }
 
-        String footer = LanguageUtils.getMessage(LocalizedMessage.Message.COMMAND_DESC_FOOTER,
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.COMMAND, plugin.getShopChestConfig().main_command_name));
+        String footer = LanguageUtils.getMessage(Message.COMMAND_DESC_FOOTER,
+                new Replacement(Placeholder.COMMAND,Config.mainCommandName));
 
         if (!footer.trim().isEmpty()) sender.sendMessage(footer);
         sender.sendMessage(" ");

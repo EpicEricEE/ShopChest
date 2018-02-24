@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.command;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.event.ShopPreCreateEvent;
 import de.epiceric.shopchest.event.ShopPreInfoEvent;
@@ -9,7 +10,8 @@ import de.epiceric.shopchest.event.ShopPreRemoveEvent;
 import de.epiceric.shopchest.event.ShopReloadEvent;
 import de.epiceric.shopchest.event.ShopRemoveAllEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.LocalizedMessage;
+import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Callback;
@@ -65,19 +67,19 @@ class ShopCommandExecutor implements CommandExecutor {
                 if (sender.hasPermission(Permissions.RELOAD)) {
                     reload(sender);
                 } else {
-                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_RELOAD));
+                    sender.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_RELOAD));
                 }
             } else if (subCommand.getName().equalsIgnoreCase("update")) {
                 if (sender.hasPermission(Permissions.UPDATE)) {
                     checkUpdates(sender);
                 } else {
-                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_UPDATE));
+                    sender.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_UPDATE));
                 }
             } else if (subCommand.getName().equalsIgnoreCase("config")) {
                 if (sender.hasPermission(Permissions.CONFIG)) {
                     return args.length >= 4 && changeConfig(sender, args);
                 } else {
-                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG));
+                    sender.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CONFIG));
                 }
             } else if (subCommand.getName().equalsIgnoreCase("removeall")) {
                 if (sender.hasPermission(Permissions.REMOVE_OTHER)) {
@@ -87,7 +89,7 @@ class ShopCommandExecutor implements CommandExecutor {
                         return false;
                     }
                 } else {
-                    sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS));
+                    sender.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_OTHERS));
                 }
             } else {
                 if (sender instanceof Player) {
@@ -103,7 +105,7 @@ class ShopCommandExecutor implements CommandExecutor {
                                 if (p.hasPermission(Permissions.CREATE_ADMIN)) {
                                     create(args, Shop.ShopType.ADMIN, p);
                                 } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_ADMIN));
+                                    p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CREATE_ADMIN));
                                 }
                             } else {
                                 return false;
@@ -118,9 +120,9 @@ class ShopCommandExecutor implements CommandExecutor {
                     } else if (subCommand.getName().equalsIgnoreCase("limits")) {
                         plugin.debug(p.getName() + " is viewing his shop limits: " + shopUtils.getShopAmount(p) + "/" + shopUtils.getShopLimit(p));
                         int limit = shopUtils.getShopLimit(p);
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS,
-                                new LocalizedMessage.ReplacedPlaceholder(Placeholder.LIMIT, (limit < 0 ? "∞" : String.valueOf(limit))),
-                                new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
+                        p.sendMessage(LanguageUtils.getMessage(Message.OCCUPIED_SHOP_SLOTS,
+                                new Replacement(Placeholder.LIMIT, (limit < 0 ? "∞" : String.valueOf(limit))),
+                                new Replacement(Placeholder.AMOUNT, String.valueOf(shopUtils.getShopAmount(p)))));
                     } else if (subCommand.getName().equalsIgnoreCase("open")) {
                         open(p);
                     } else {
@@ -142,7 +144,7 @@ class ShopCommandExecutor implements CommandExecutor {
     private void checkUpdates(CommandSender sender) {
         plugin.debug(sender.getName() + " is checking for updates");
 
-        sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
+        sender.sendMessage(LanguageUtils.getMessage(Message.UPDATE_CHECKING));
 
         UpdateChecker uc = new UpdateChecker(ShopChest.getInstance());
         UpdateChecker.UpdateCheckerResult result = uc.check();
@@ -153,22 +155,22 @@ class ShopCommandExecutor implements CommandExecutor {
             plugin.setUpdateNeeded(true);
 
             if (sender instanceof Player) {
-                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedPlaceholder(Placeholder.VERSION, uc.getVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), uc.getLink());
+                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, uc.getVersion())), LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD), uc.getLink());
                 jb.sendJson((Player) sender);
             } else {
-                sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedPlaceholder(Placeholder.VERSION, uc.getVersion())));
+                sender.sendMessage(LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, uc.getVersion())));
             }
 
         } else if (result == UpdateChecker.UpdateCheckerResult.FALSE) {
             plugin.setLatestVersion("");
             plugin.setDownloadLink("");
             plugin.setUpdateNeeded(false);
-            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE));
+            sender.sendMessage(LanguageUtils.getMessage(Message.UPDATE_NO_UPDATE));
         } else {
             plugin.setLatestVersion("");
             plugin.setDownloadLink("");
             plugin.setUpdateNeeded(false);
-            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
+            sender.sendMessage(LanguageUtils.getMessage(Message.UPDATE_ERROR));
         }
     }
 
@@ -189,8 +191,8 @@ class ShopCommandExecutor implements CommandExecutor {
         shopUtils.reloadShops(true, true, new Callback<Integer>(plugin) {
             @Override
             public void onResult(Integer result) {
-                sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.RELOADED_SHOPS,
-                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(result))));
+                sender.sendMessage(LanguageUtils.getMessage(Message.RELOADED_SHOPS,
+                        new Replacement(Placeholder.AMOUNT, String.valueOf(result))));
                 plugin.debug(sender.getName() + " has reloaded " + result + " shops");
             }
         });
@@ -214,13 +216,13 @@ class ShopCommandExecutor implements CommandExecutor {
             buyPrice = Double.parseDouble(args[2]);
             sellPrice = Double.parseDouble(args[3]);
         } catch (NumberFormatException e) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER));
+            p.sendMessage(LanguageUtils.getMessage(Message.AMOUNT_PRICE_NOT_NUMBER));
             plugin.debug(p.getName() + " has entered an invalid amount and/or prices");
             return;
         }
 
         if (!Utils.hasPermissionToCreateShop(p, Utils.getPreferredItemInHand(p), buyPrice > 0, sellPrice > 0)) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE));
+            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CREATE));
             plugin.debug(p.getName() + " is not permitted to create the shop");
             return;
         }
@@ -229,8 +231,8 @@ class ShopCommandExecutor implements CommandExecutor {
         int limit = shopUtils.getShopLimit(p);
         if (limit != -1) {
             if (shopUtils.getShopAmount(p) >= limit) {
-                if (shopType != Shop.ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
-                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.LIMIT, String.valueOf(limit))));
+                if (shopType != Shop.ShopType.ADMIN || !Config.excludeAdminShops) {
+                    p.sendMessage(LanguageUtils.getMessage(Message.SHOP_LIMIT_REACHED, new Replacement(Placeholder.LIMIT, String.valueOf(limit))));
                     plugin.debug(p.getName() + " has reached the limit");
                     return;
                 }
@@ -238,13 +240,13 @@ class ShopCommandExecutor implements CommandExecutor {
         }
 
         if (amount <= 0) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO));
+            p.sendMessage(LanguageUtils.getMessage(Message.AMOUNT_IS_ZERO));
             plugin.debug(p.getName() + " has entered an invalid amount");
             return;
         }
 
-        if (!plugin.getShopChestConfig().allow_decimals_in_price && (buyPrice != (int) buyPrice || sellPrice != (int) sellPrice)) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS));
+        if (!Config.allowDecimalsInPrice && (buyPrice != (int) buyPrice || sellPrice != (int) sellPrice)) {
+            p.sendMessage(LanguageUtils.getMessage(Message.PRICES_CONTAIN_DECIMALS));
             plugin.debug(p.getName() + " has entered an invalid price");
             return;
         }
@@ -253,7 +255,7 @@ class ShopCommandExecutor implements CommandExecutor {
         boolean sellEnabled = sellPrice > 0;
 
         if (!buyEnabled && !sellEnabled) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SELL_DISABLED));
+            p.sendMessage(LanguageUtils.getMessage(Message.BUY_SELL_DISABLED));
             plugin.debug(p.getName() + " has disabled buying and selling");
             return;
         }
@@ -262,13 +264,13 @@ class ShopCommandExecutor implements CommandExecutor {
 
         // Check if item in hand
         if (inHand == null) {
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND));
+            p.sendMessage(LanguageUtils.getMessage(Message.NO_ITEM_IN_HAND));
             plugin.debug(p.getName() + " does not have an item in his hand");
             return;
         }
 
         // Check if item on blacklist
-        for (String item : plugin.getShopChestConfig().blacklist) {
+        for (String item :Config.blacklist) {
             ItemStack itemStack = ItemUtils.getItemStack(item);
 
             if (itemStack == null) {
@@ -278,14 +280,14 @@ class ShopCommandExecutor implements CommandExecutor {
             }
 
             if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
-                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_ITEM));
+                p.sendMessage(LanguageUtils.getMessage(Message.CANNOT_SELL_ITEM));
                 plugin.debug(p.getName() + "'s item is on the blacklist");
                 return;
             }
         }
 
         // Check if prices lower than minimum price
-        for (String key : plugin.getShopChestConfig().minimum_prices) {
+        for (String key :Config.minimumPrices) {
             ItemStack itemStack = ItemUtils.getItemStack(key);
             double minPrice = plugin.getConfig().getDouble("minimum-prices." + key);
 
@@ -298,7 +300,7 @@ class ShopCommandExecutor implements CommandExecutor {
             if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
                 if (buyEnabled) {
                     if ((buyPrice < amount * minPrice) && (buyPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedPlaceholder(Placeholder.MIN_PRICE, String.valueOf(amount * minPrice))));
+                        p.sendMessage(LanguageUtils.getMessage(Message.BUY_PRICE_TOO_LOW, new Replacement(Placeholder.MIN_PRICE, String.valueOf(amount * minPrice))));
                         plugin.debug(p.getName() + "'s buy price is lower than the minimum");
                         return;
                     }
@@ -306,7 +308,7 @@ class ShopCommandExecutor implements CommandExecutor {
 
                 if (sellEnabled) {
                     if ((sellPrice < amount * minPrice) && (sellPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, new LocalizedMessage.ReplacedPlaceholder(Placeholder.MIN_PRICE, String.valueOf(amount * minPrice))));
+                        p.sendMessage(LanguageUtils.getMessage(Message.SELL_PRICE_TOO_LOW, new Replacement(Placeholder.MIN_PRICE, String.valueOf(amount * minPrice))));
                         plugin.debug(p.getName() + "'s sell price is lower than the minimum");
                         return;
                     }
@@ -315,7 +317,7 @@ class ShopCommandExecutor implements CommandExecutor {
         }
 
         // Check if prices higher than maximum price
-        for (String key : plugin.getShopChestConfig().maximum_prices) {
+        for (String key :Config.maximumPrices) {
             ItemStack itemStack = ItemUtils.getItemStack(key);
             double maxPrice = plugin.getConfig().getDouble("maximum-prices." + key);
 
@@ -328,7 +330,7 @@ class ShopCommandExecutor implements CommandExecutor {
             if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
                 if (buyEnabled) {
                     if ((buyPrice > amount * maxPrice) && (buyPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedPlaceholder(Placeholder.MAX_PRICE, String.valueOf(amount * maxPrice))));
+                        p.sendMessage(LanguageUtils.getMessage(Message.BUY_PRICE_TOO_HIGH, new Replacement(Placeholder.MAX_PRICE, String.valueOf(amount * maxPrice))));
                         plugin.debug(p.getName() + "'s buy price is higher than the maximum");
                         return;
                     }
@@ -336,7 +338,7 @@ class ShopCommandExecutor implements CommandExecutor {
 
                 if (sellEnabled) {
                     if ((sellPrice > amount * maxPrice) && (sellPrice > 0)) {
-                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, new LocalizedMessage.ReplacedPlaceholder(Placeholder.MAX_PRICE, String.valueOf(amount * maxPrice))));
+                        p.sendMessage(LanguageUtils.getMessage(Message.SELL_PRICE_TOO_HIGH, new Replacement(Placeholder.MAX_PRICE, String.valueOf(amount * maxPrice))));
                         plugin.debug(p.getName() + "'s sell price is higher than the maximum");
                         return;
                     }
@@ -346,9 +348,9 @@ class ShopCommandExecutor implements CommandExecutor {
 
 
         if (sellEnabled && buyEnabled) {
-            if (plugin.getShopChestConfig().buy_greater_or_equal_sell) {
+            if (Config.buyGreaterOrEqualSell) {
                 if (buyPrice < sellPrice) {
-                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, new LocalizedMessage.ReplacedPlaceholder(Placeholder.MIN_PRICE, String.valueOf(sellPrice))));
+                    p.sendMessage(LanguageUtils.getMessage(Message.BUY_PRICE_TOO_LOW, new Replacement(Placeholder.MIN_PRICE, String.valueOf(sellPrice))));
                     plugin.debug(p.getName() + "'s buy price is lower than the sell price");
                     return;
                 }
@@ -359,17 +361,17 @@ class ShopCommandExecutor implements CommandExecutor {
         product.setItemMeta(inHand.getItemMeta());
 
         if (Enchantment.DURABILITY.canEnchantItem(product)) {
-            if (product.getDurability() > 0 && !plugin.getShopChestConfig().allow_broken_items) {
-                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM));
+            if (product.getDurability() > 0 && !Config.allowBrokenItems) {
+                p.sendMessage(LanguageUtils.getMessage(Message.CANNOT_SELL_BROKEN_ITEM));
                 plugin.debug(p.getName() + "'s item is broken");
                 return;
             }
         }
 
-        double creationPrice = (shopType == Shop.ShopType.NORMAL) ? plugin.getShopChestConfig().shop_creation_price_normal : plugin.getShopChestConfig().shop_creation_price_admin;
+        double creationPrice = (shopType == Shop.ShopType.NORMAL) ?Config.shopCreationPriceNormal :Config.shopCreationPriceAdmin;
         if (creationPrice > 0) {
             if (plugin.getEconomy().getBalance(p, p.getWorld().getName()) < creationPrice) {
-                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, new LocalizedMessage.ReplacedPlaceholder(Placeholder.CREATION_PRICE, String.valueOf(creationPrice))));
+                p.sendMessage(LanguageUtils.getMessage(Message.SHOP_CREATE_NOT_ENOUGH_MONEY, new Replacement(Placeholder.CREATION_PRICE, String.valueOf(creationPrice))));
                 plugin.debug(p.getName() + " can not pay the creation price");
                 return;
             }
@@ -381,7 +383,7 @@ class ShopCommandExecutor implements CommandExecutor {
         if (!event.isCancelled()) {
             ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.CREATE, product, buyPrice, sellPrice, shopType));
             plugin.debug(p.getName() + " can now click a chest");
-            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE));
+            p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_CREATE));
 
             // Remove ClickType after 15 seconds if player has not clicked a chest
             new BukkitRunnable() {
@@ -410,7 +412,7 @@ class ShopCommandExecutor implements CommandExecutor {
         }
 
         plugin.debug(p.getName() + " can now click a chest");
-        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE));
+        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_REMOVE));
         ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.REMOVE));
 
         // Remove ClickType after 15 seconds if player has not clicked a chest
@@ -437,7 +439,7 @@ class ShopCommandExecutor implements CommandExecutor {
         }
 
         plugin.debug(p.getName() + " can now click a chest");
-        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_INFO));
+        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_INFO));
         ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.INFO));
 
         // Remove ClickType after 15 seconds if player has not clicked a chest
@@ -464,7 +466,7 @@ class ShopCommandExecutor implements CommandExecutor {
         }
 
         plugin.debug(p.getName() + " can now click a chest");
-        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_CHEST_OPEN));
+        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_OPEN));
         ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.OPEN));
 
         // Remove ClickType after 15 seconds if player has not clicked a chest
@@ -484,13 +486,13 @@ class ShopCommandExecutor implements CommandExecutor {
 
         if (args[1].equalsIgnoreCase("set")) {
             plugin.getShopChestConfig().set(property, value);
-            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, new LocalizedMessage.ReplacedPlaceholder(Placeholder.PROPERTY, property), new LocalizedMessage.ReplacedPlaceholder(Placeholder.VALUE, value)));
+            sender.sendMessage(LanguageUtils.getMessage(Message.CHANGED_CONFIG_SET, new Replacement(Placeholder.PROPERTY, property), new Replacement(Placeholder.VALUE, value)));
         } else if (args[1].equalsIgnoreCase("add")) {
             plugin.getShopChestConfig().add(property, value);
-            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.PROPERTY, property), new LocalizedMessage.ReplacedPlaceholder(Placeholder.VALUE, value)));
+            sender.sendMessage(LanguageUtils.getMessage(Message.CHANGED_CONFIG_ADDED, new Replacement(Placeholder.PROPERTY, property), new Replacement(Placeholder.VALUE, value)));
         } else if (args[1].equalsIgnoreCase("remove")) {
             plugin.getShopChestConfig().remove(property, value);
-            sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.PROPERTY, property), new LocalizedMessage.ReplacedPlaceholder(Placeholder.VALUE, value)));
+            sender.sendMessage(LanguageUtils.getMessage(Message.CHANGED_CONFIG_REMOVED, new Replacement(Placeholder.PROPERTY, property), new Replacement(Placeholder.VALUE, value)));
         } else {
             return false;
         }
@@ -522,8 +524,8 @@ class ShopCommandExecutor implements CommandExecutor {
             shopUtils.removeShop(shop, true);
         }
 
-        sender.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ALL_SHOPS_REMOVED,
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(shops.size())),
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, vendor.getName())));
+        sender.sendMessage(LanguageUtils.getMessage(Message.ALL_SHOPS_REMOVED,
+                new Replacement(Placeholder.AMOUNT, String.valueOf(shops.size())),
+                new Replacement(Placeholder.VENDOR, vendor.getName())));
     }
 }

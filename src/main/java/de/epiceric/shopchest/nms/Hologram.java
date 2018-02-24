@@ -42,23 +42,21 @@ public class Hologram {
     private final List<ArmorStandWrapper> wrappers = new ArrayList<>();
     private final Location location;
     private final ShopChest plugin;
-    private final Config config;
 
     private boolean exists;
     private ArmorStandWrapper interactArmorStandWrapper;
 
     public Hologram(ShopChest plugin, String[] lines, Location location) {
         this.plugin = plugin;
-        this.config = plugin.getShopChestConfig();
         this.location = location;
 
         for (int i = 0; i < lines.length; i++) {
             addLine(i, lines[i]);
         }
 
-        if (plugin.getShopChestConfig().enable_hologram_interaction) {
+        if (Config.enableHologramInteraction) {
             double y = 0.6;
-            if (config.hologram_fixed_bottom) y = 0.85;
+            if (Config.hologramFixedBottom) y = 0.85;
 
             Location loc = getLocation().add(0, y, 0);
             interactArmorStandWrapper = new ArmorStandWrapper(plugin, loc, null, true);
@@ -215,7 +213,7 @@ public class Hologram {
 
         text = ChatColor.translateAlternateColorCodes('&', text);
 
-        if (config.hologram_fixed_bottom) {
+        if (Config.hologramFixedBottom) {
             for (int i = 0; i < line; i++) {
                 ArmorStandWrapper wrapper = wrappers.get(i);
                 wrapper.setLocation(wrapper.getLocation().add(0, 0.25, 0));
@@ -229,7 +227,7 @@ public class Hologram {
 
         Location loc = getLocation();
 
-        if (!config.hologram_fixed_bottom) {
+        if (!Config.hologramFixedBottom) {
             loc.subtract(0, line * 0.25, 0);
         }
 
@@ -274,7 +272,7 @@ public class Hologram {
      */
     public void removeLine(int line) {
         if (line < wrappers.size()) {
-            if (config.hologram_fixed_bottom) {
+            if (Config.hologramFixedBottom) {
                 for (int i = 0; i < line; i++) {
                     ArmorStandWrapper wrapper = wrappers.get(i);
                     wrapper.setLocation(wrapper.getLocation().subtract(0, 0.25, 0));

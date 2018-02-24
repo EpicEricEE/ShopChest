@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.language;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.LanguageConfiguration;
 import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.nms.CustomBookMeta;
@@ -38,7 +39,7 @@ public class LanguageUtils {
 
 
     public static void load() {
-        langConfig = plugin.getShopChestConfig().getLanguageConfig();
+        langConfig = Config.langConfig;
 
         itemNames.clear();
         enchantmentNames.clear();
@@ -997,102 +998,102 @@ public class LanguageUtils {
         generationNames.add(new BookGenerationName(CustomBookMeta.Generation.TATTERED, langConfig.getString("book.generation.3", "Tattered")));
 
         // Add ShopChest Messages
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATED, langConfig.getString("message.shop-created", "&6You were withdrawn &c%CREATION-PRICE% &6to create this shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.ADMIN_SHOP_CREATED, langConfig.getString("message.admin-shop-created", "&6You were withdrawn &c%CREATION-PRICE% &6to create this admin shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP, langConfig.getString("message.chest-already-shop", "&cChest already shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_BLOCKED, langConfig.getString("message.chest-blocked", "&cThere must not be a block above the chest.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.DOUBLE_CHEST_BLOCKED, langConfig.getString("message.double-chest-blocked", "&cThere must not be a block above the chest.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_REMOVED, langConfig.getString("message.shop-removed", "&6Shop removed.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.ALL_SHOPS_REMOVED, langConfig.getString("message.all-shops-removed", "&6Removed all (&c%AMOUNT%&6) shop/s of &c%VENDOR%&6.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_NO_SHOP, langConfig.getString("message.chest-no-shop", "&cChest is not a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_CREATE_NOT_ENOUGH_MONEY, langConfig.getString("message.shop-create-not-enough-money", "&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR, langConfig.getString("message.shopInfo.vendor", "&6Vendor: &e%VENDOR%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT, langConfig.getString("message.shopInfo.product", "&6Product: &e%AMOUNT% x %ITEMNAME%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_STOCK, langConfig.getString("message.shopInfo.stock", "&6In Stock: &e%STOCK%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS, langConfig.getString("message.shopInfo.enchantments", "&6Enchantments: &e%ENCHANTMENT%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT, langConfig.getString("message.shopInfo.potion-effect", "&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE, langConfig.getString("message.shopInfo.music-disc-title", "&6Music Disc Title: &e%MUSIC-TITLE%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_BOOK_GENERATION, langConfig.getString("message.shopInfo.book-generation", "&6Generation: &e%GENERATION%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_NONE, langConfig.getString("message.shopInfo.none", "&7None")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_PRICE, langConfig.getString("message.shopInfo.price", "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED, langConfig.getString("message.shopInfo.disabled", "&7Disabled")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_NORMAL, langConfig.getString("message.shopInfo.is-normal", "&6Type: &eNormal")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_ADMIN, langConfig.getString("message.shopInfo.is-admin", "&6Type: &eAdmin")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED, langConfig.getString("message.shopInfo.extended", "(Extended)")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SELL_DISABLED, langConfig.getString("message.buy-and-sell-disabled", "&cYou can't create a shop with buying and selling disabled.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCCESS, langConfig.getString("message.buy-success", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_SUCCESS_ADMIN, langConfig.getString("message.buy-success-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCCESS, langConfig.getString("message.sell-success", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_SUCCESS_ADMIN, langConfig.getString("message.sell-success-admin", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, langConfig.getString("message.someone-bought", "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SOMEONE_SOLD, langConfig.getString("message.someone-sold", "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE, langConfig.getString("message.revenue-while-offline", "&6While you were offline, your shops have made a revenue of &c%REVENUE%&6.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE, langConfig.getString("message.not-enough-inventory-space", "&cNot enough space in inventory.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE, langConfig.getString("message.chest-not-enough-inventory-space", "&cShop is full.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_MONEY, langConfig.getString("message.not-enough-money", "&cNot enough money.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS, langConfig.getString("message.not-enough-items", "&cNot enough items.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.VENDOR_NOT_ENOUGH_MONEY, langConfig.getString("message.vendor-not-enough-money", "&cVendor has not enough money.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.OUT_OF_STOCK, langConfig.getString("message.out-of-stock", "&cShop out of stock.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.VENDOR_OUT_OF_STOCK, langConfig.getString("message.vendor-out-of-stock", "&cYour shop that sells &6%AMOUNT% x %ITEMNAME% &cis out of stock.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.ERROR_OCCURRED, langConfig.getString("message.error-occurred", "&cAn error occurred: %ERROR%")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_PRICE_NOT_NUMBER, langConfig.getString("message.amount-and-price-not-number", "&cAmount and price must be a number.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.AMOUNT_IS_ZERO, langConfig.getString("message.amount-is-zero", "&cAmount must be greater than 0.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.PRICES_CONTAIN_DECIMALS, langConfig.getString("message.prices-contain-decimals", "&cPrices must not contain decimals.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_ITEM_IN_HAND, langConfig.getString("message.no-item-in-hand", "&cNo item in hand")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_CREATE, langConfig.getString("message.click-chest-to-create-shop", "&aClick a chest within 15 seconds to create a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_REMOVE, langConfig.getString("message.click-chest-to-remove-shop", "&aClick a shop within 15 seconds to remove it.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_INFO, langConfig.getString("message.click-chest-for-info", "&aClick a shop within 15 seconds to retrieve information.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_CHEST_OPEN, langConfig.getString("message.click-chest-to-open-shop", "&aClick a shop within 15 seconds to open it.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM, langConfig.getString("message.click-to-confirm", "&aClick again to confirm.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.OPENED_SHOP, langConfig.getString("message.opened-shop", "&aYou opened %VENDOR%'s shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_BREAK_SHOP, langConfig.getString("message.cannot-break-shop", "&cYou can't break a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_SELL_BROKEN_ITEM, langConfig.getString("message.cannot-sell-broken-item", "&cYou can't sell a broken item.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_PRICE_TOO_LOW, langConfig.getString("message.buy-price-too-low", "&cThe buy price must be higher than %MIN-PRICE%.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_PRICE_TOO_LOW, langConfig.getString("message.sell-price-too-low", "&cThe sell price must be higher than %MIN-PRICE%.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUY_PRICE_TOO_HIGH, langConfig.getString("message.buy-price-too-high", "&cThe buy price must be lower than %MAX-PRICE%.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELL_PRICE_TOO_HIGH, langConfig.getString("message.sell-price-too-high", "&cThe sell price must be lower than %MAX-PRICE%.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.BUYING_DISABLED, langConfig.getString("message.buying-disabled", "&cBuying is disabled at this shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SELLING_DISABLED, langConfig.getString("message.selling-disabled", "&cSelling is disabled at this shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.RELOADED_SHOPS, langConfig.getString("message.reloaded-shops", "&aSuccessfully reloaded %AMOUNT% shop/s.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.SHOP_LIMIT_REACHED, langConfig.getString("message.shop-limit-reached", "&cYou reached your limit of &6%LIMIT% &cshop/s.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.OCCUPIED_SHOP_SLOTS, langConfig.getString("message.occupied-shop-slots", "&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CANNOT_SELL_ITEM, langConfig.getString("message.cannot-sell-item", "&cYou cannot create a shop with this item.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.USE_IN_CREATIVE, langConfig.getString("message.use-in-creative", "&cYou cannot use a shop in creative mode.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, langConfig.getString("message.update.update-available", "&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD, langConfig.getString("message.update.click-to-download", "Click to download")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE, langConfig.getString("message.update.no-update", "&6&lNo new update available.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_CHECKING, langConfig.getString("message.update.checking", "&6&lChecking for updates...")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.UPDATE_ERROR, langConfig.getString("message.update.error", "&c&lError while checking for updates.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE, langConfig.getString("message.noPermission.create", "&cYou don't have permission to create a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_ADMIN, langConfig.getString("message.noPermission.create-admin", "&cYou don't have permission to create an admin shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED, langConfig.getString("message.noPermission.create-protected", "&cYou don't have permission to create a shop on a protected chest.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS, langConfig.getString("message.noPermission.open-others", "&cYou don't have permission to open this chest.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_BUY, langConfig.getString("message.noPermission.buy", "&cYou don't have permission to buy something.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_SELL, langConfig.getString("message.noPermission.sell", "&cYou don't have permission to sell something.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_BUY_HERE, langConfig.getString("message.noPermission.buy-here", "&cYou don't have permission to buy something here.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_SELL_HERE, langConfig.getString("message.noPermission.sell-here", "&cYou don't have permission to sell something here.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS, langConfig.getString("message.noPermission.remove-others", "&cYou don't have permission to remove this shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_ADMIN, langConfig.getString("message.noPermission.remove-admin", "&cYou don't have permission to remove an admin shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_RELOAD, langConfig.getString("message.noPermission.reload", "&cYou don't have permission to reload the shops.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_UPDATE, langConfig.getString("message.noPermission.update", "&cYou don't have permission to check for updates.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_CONFIG, langConfig.getString("message.noPermission.config", "&cYou don't have permission to change configuration values.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_OTHERS, langConfig.getString("message.noPermission.extend-others", "&cYou don't have permission to extend this chest.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.NO_PERMISSION_EXTEND_PROTECTED, langConfig.getString("message.noPermission.extend-protected", "&cYou don't have permission to extend this chest to here.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_HEADER, langConfig.getString("message.commandDescription.header", "&6==== &c/%COMMAND% &6Help")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_FOOTER, langConfig.getString("message.commandDescription.footer", "&6==== End")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "&a/%COMMAND% remove - Remove a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "&a/%COMMAND% info - Retrieve shop information.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_REMOVEALL, langConfig.getString("message.commandDescription.removeall", "&a/%COMMAND% removeall - Remove all shops of a player.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_RELOAD, langConfig.getString("message.commandDescription.reload", "&a/%COMMAND% reload - Reload shops.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_UPDATE, langConfig.getString("message.commandDescription.update", "&a/%COMMAND% update - Check for Updates.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "&a/%COMMAND% limits - View shop limits.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_OPEN, langConfig.getString("message.commandDescription.open", "&a/%COMMAND% open - Open a shop.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "&a/%COMMAND% config <set|get|remove> <property> <value> - Change configuration values.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6.")));
-        messages.add(new LocalizedMessage(LocalizedMessage.Message.CHANGED_CONFIG_ADDED, langConfig.getString("message.config.added", "&6Added &a%VALUE% &6to &a%PROPERTY%&6.")));
+        messages.add(new LocalizedMessage(Message.SHOP_CREATED, langConfig.getString("message.shop-created", "&6You were withdrawn &c%CREATION-PRICE% &6to create this shop.")));
+        messages.add(new LocalizedMessage(Message.ADMIN_SHOP_CREATED, langConfig.getString("message.admin-shop-created", "&6You were withdrawn &c%CREATION-PRICE% &6to create this admin shop.")));
+        messages.add(new LocalizedMessage(Message.CHEST_ALREADY_SHOP, langConfig.getString("message.chest-already-shop", "&cChest already shop.")));
+        messages.add(new LocalizedMessage(Message.CHEST_BLOCKED, langConfig.getString("message.chest-blocked", "&cThere must not be a block above the chest.")));
+        messages.add(new LocalizedMessage(Message.DOUBLE_CHEST_BLOCKED, langConfig.getString("message.double-chest-blocked", "&cThere must not be a block above the chest.")));
+        messages.add(new LocalizedMessage(Message.SHOP_REMOVED, langConfig.getString("message.shop-removed", "&6Shop removed.")));
+        messages.add(new LocalizedMessage(Message.ALL_SHOPS_REMOVED, langConfig.getString("message.all-shops-removed", "&6Removed all (&c%AMOUNT%&6) shop/s of &c%VENDOR%&6.")));
+        messages.add(new LocalizedMessage(Message.CHEST_NO_SHOP, langConfig.getString("message.chest-no-shop", "&cChest is not a shop.")));
+        messages.add(new LocalizedMessage(Message.SHOP_CREATE_NOT_ENOUGH_MONEY, langConfig.getString("message.shop-create-not-enough-money", "&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop.")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_VENDOR, langConfig.getString("message.shopInfo.vendor", "&6Vendor: &e%VENDOR%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_PRODUCT, langConfig.getString("message.shopInfo.product", "&6Product: &e%AMOUNT% x %ITEMNAME%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_STOCK, langConfig.getString("message.shopInfo.stock", "&6In Stock: &e%STOCK%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_ENCHANTMENTS, langConfig.getString("message.shopInfo.enchantments", "&6Enchantments: &e%ENCHANTMENT%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_POTION_EFFECT, langConfig.getString("message.shopInfo.potion-effect", "&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_MUSIC_TITLE, langConfig.getString("message.shopInfo.music-disc-title", "&6Music Disc Title: &e%MUSIC-TITLE%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_BOOK_GENERATION, langConfig.getString("message.shopInfo.book-generation", "&6Generation: &e%GENERATION%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_NONE, langConfig.getString("message.shopInfo.none", "&7None")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_PRICE, langConfig.getString("message.shopInfo.price", "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_DISABLED, langConfig.getString("message.shopInfo.disabled", "&7Disabled")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_NORMAL, langConfig.getString("message.shopInfo.is-normal", "&6Type: &eNormal")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_ADMIN, langConfig.getString("message.shopInfo.is-admin", "&6Type: &eAdmin")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_EXTENDED, langConfig.getString("message.shopInfo.extended", "(Extended)")));
+        messages.add(new LocalizedMessage(Message.BUY_SELL_DISABLED, langConfig.getString("message.buy-and-sell-disabled", "&cYou can't create a shop with buying and selling disabled.")));
+        messages.add(new LocalizedMessage(Message.BUY_SUCCESS, langConfig.getString("message.buy-success", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a.")));
+        messages.add(new LocalizedMessage(Message.BUY_SUCCESS_ADMIN, langConfig.getString("message.buy-success-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a.")));
+        messages.add(new LocalizedMessage(Message.SELL_SUCCESS, langConfig.getString("message.sell-success", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to &6%VENDOR%&a.")));
+        messages.add(new LocalizedMessage(Message.SELL_SUCCESS_ADMIN, langConfig.getString("message.sell-success-admin", "&aYou sold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a.")));
+        messages.add(new LocalizedMessage(Message.SOMEONE_BOUGHT, langConfig.getString("message.someone-bought", "&6%PLAYER% &abought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from your shop.")));
+        messages.add(new LocalizedMessage(Message.SOMEONE_SOLD, langConfig.getString("message.someone-sold", "&6%PLAYER% &asold &6%AMOUNT% x %ITEMNAME%&a for &6%SELL-PRICE%&a to your shop.")));
+        messages.add(new LocalizedMessage(Message.REVENUE_WHILE_OFFLINE, langConfig.getString("message.revenue-while-offline", "&6While you were offline, your shops have made a revenue of &c%REVENUE%&6.")));
+        messages.add(new LocalizedMessage(Message.NOT_ENOUGH_INVENTORY_SPACE, langConfig.getString("message.not-enough-inventory-space", "&cNot enough space in inventory.")));
+        messages.add(new LocalizedMessage(Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE, langConfig.getString("message.chest-not-enough-inventory-space", "&cShop is full.")));
+        messages.add(new LocalizedMessage(Message.NOT_ENOUGH_MONEY, langConfig.getString("message.not-enough-money", "&cNot enough money.")));
+        messages.add(new LocalizedMessage(Message.NOT_ENOUGH_ITEMS, langConfig.getString("message.not-enough-items", "&cNot enough items.")));
+        messages.add(new LocalizedMessage(Message.VENDOR_NOT_ENOUGH_MONEY, langConfig.getString("message.vendor-not-enough-money", "&cVendor has not enough money.")));
+        messages.add(new LocalizedMessage(Message.OUT_OF_STOCK, langConfig.getString("message.out-of-stock", "&cShop out of stock.")));
+        messages.add(new LocalizedMessage(Message.VENDOR_OUT_OF_STOCK, langConfig.getString("message.vendor-out-of-stock", "&cYour shop that sells &6%AMOUNT% x %ITEMNAME% &cis out of stock.")));
+        messages.add(new LocalizedMessage(Message.ERROR_OCCURRED, langConfig.getString("message.error-occurred", "&cAn error occurred: %ERROR%")));
+        messages.add(new LocalizedMessage(Message.AMOUNT_PRICE_NOT_NUMBER, langConfig.getString("message.amount-and-price-not-number", "&cAmount and price must be a number.")));
+        messages.add(new LocalizedMessage(Message.AMOUNT_IS_ZERO, langConfig.getString("message.amount-is-zero", "&cAmount must be greater than 0.")));
+        messages.add(new LocalizedMessage(Message.PRICES_CONTAIN_DECIMALS, langConfig.getString("message.prices-contain-decimals", "&cPrices must not contain decimals.")));
+        messages.add(new LocalizedMessage(Message.NO_ITEM_IN_HAND, langConfig.getString("message.no-item-in-hand", "&cNo item in hand")));
+        messages.add(new LocalizedMessage(Message.CLICK_CHEST_CREATE, langConfig.getString("message.click-chest-to-create-shop", "&aClick a chest within 15 seconds to create a shop.")));
+        messages.add(new LocalizedMessage(Message.CLICK_CHEST_REMOVE, langConfig.getString("message.click-chest-to-remove-shop", "&aClick a shop within 15 seconds to remove it.")));
+        messages.add(new LocalizedMessage(Message.CLICK_CHEST_INFO, langConfig.getString("message.click-chest-for-info", "&aClick a shop within 15 seconds to retrieve information.")));
+        messages.add(new LocalizedMessage(Message.CLICK_CHEST_OPEN, langConfig.getString("message.click-chest-to-open-shop", "&aClick a shop within 15 seconds to open it.")));
+        messages.add(new LocalizedMessage(Message.CLICK_TO_CONFIRM, langConfig.getString("message.click-to-confirm", "&aClick again to confirm.")));
+        messages.add(new LocalizedMessage(Message.OPENED_SHOP, langConfig.getString("message.opened-shop", "&aYou opened %VENDOR%'s shop.")));
+        messages.add(new LocalizedMessage(Message.CANNOT_BREAK_SHOP, langConfig.getString("message.cannot-break-shop", "&cYou can't break a shop.")));
+        messages.add(new LocalizedMessage(Message.CANNOT_SELL_BROKEN_ITEM, langConfig.getString("message.cannot-sell-broken-item", "&cYou can't sell a broken item.")));
+        messages.add(new LocalizedMessage(Message.BUY_PRICE_TOO_LOW, langConfig.getString("message.buy-price-too-low", "&cThe buy price must be higher than %MIN-PRICE%.")));
+        messages.add(new LocalizedMessage(Message.SELL_PRICE_TOO_LOW, langConfig.getString("message.sell-price-too-low", "&cThe sell price must be higher than %MIN-PRICE%.")));
+        messages.add(new LocalizedMessage(Message.BUY_PRICE_TOO_HIGH, langConfig.getString("message.buy-price-too-high", "&cThe buy price must be lower than %MAX-PRICE%.")));
+        messages.add(new LocalizedMessage(Message.SELL_PRICE_TOO_HIGH, langConfig.getString("message.sell-price-too-high", "&cThe sell price must be lower than %MAX-PRICE%.")));
+        messages.add(new LocalizedMessage(Message.BUYING_DISABLED, langConfig.getString("message.buying-disabled", "&cBuying is disabled at this shop.")));
+        messages.add(new LocalizedMessage(Message.SELLING_DISABLED, langConfig.getString("message.selling-disabled", "&cSelling is disabled at this shop.")));
+        messages.add(new LocalizedMessage(Message.RELOADED_SHOPS, langConfig.getString("message.reloaded-shops", "&aSuccessfully reloaded %AMOUNT% shop/s.")));
+        messages.add(new LocalizedMessage(Message.SHOP_LIMIT_REACHED, langConfig.getString("message.shop-limit-reached", "&cYou reached your limit of &6%LIMIT% &cshop/s.")));
+        messages.add(new LocalizedMessage(Message.OCCUPIED_SHOP_SLOTS, langConfig.getString("message.occupied-shop-slots", "&6You have &c%AMOUNT%/%LIMIT% &6shop slot/s occupied.")));
+        messages.add(new LocalizedMessage(Message.CANNOT_SELL_ITEM, langConfig.getString("message.cannot-sell-item", "&cYou cannot create a shop with this item.")));
+        messages.add(new LocalizedMessage(Message.USE_IN_CREATIVE, langConfig.getString("message.use-in-creative", "&cYou cannot use a shop in creative mode.")));
+        messages.add(new LocalizedMessage(Message.UPDATE_AVAILABLE, langConfig.getString("message.update.update-available", "&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere.")));
+        messages.add(new LocalizedMessage(Message.UPDATE_CLICK_TO_DOWNLOAD, langConfig.getString("message.update.click-to-download", "Click to download")));
+        messages.add(new LocalizedMessage(Message.UPDATE_NO_UPDATE, langConfig.getString("message.update.no-update", "&6&lNo new update available.")));
+        messages.add(new LocalizedMessage(Message.UPDATE_CHECKING, langConfig.getString("message.update.checking", "&6&lChecking for updates...")));
+        messages.add(new LocalizedMessage(Message.UPDATE_ERROR, langConfig.getString("message.update.error", "&c&lError while checking for updates.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_CREATE, langConfig.getString("message.noPermission.create", "&cYou don't have permission to create a shop.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_CREATE_ADMIN, langConfig.getString("message.noPermission.create-admin", "&cYou don't have permission to create an admin shop.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_CREATE_PROTECTED, langConfig.getString("message.noPermission.create-protected", "&cYou don't have permission to create a shop on a protected chest.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_OPEN_OTHERS, langConfig.getString("message.noPermission.open-others", "&cYou don't have permission to open this chest.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_BUY, langConfig.getString("message.noPermission.buy", "&cYou don't have permission to buy something.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_SELL, langConfig.getString("message.noPermission.sell", "&cYou don't have permission to sell something.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_BUY_HERE, langConfig.getString("message.noPermission.buy-here", "&cYou don't have permission to buy something here.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_SELL_HERE, langConfig.getString("message.noPermission.sell-here", "&cYou don't have permission to sell something here.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_REMOVE_OTHERS, langConfig.getString("message.noPermission.remove-others", "&cYou don't have permission to remove this shop.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_REMOVE_ADMIN, langConfig.getString("message.noPermission.remove-admin", "&cYou don't have permission to remove an admin shop.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_RELOAD, langConfig.getString("message.noPermission.reload", "&cYou don't have permission to reload the shops.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_UPDATE, langConfig.getString("message.noPermission.update", "&cYou don't have permission to check for updates.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_CONFIG, langConfig.getString("message.noPermission.config", "&cYou don't have permission to change configuration values.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_EXTEND_OTHERS, langConfig.getString("message.noPermission.extend-others", "&cYou don't have permission to extend this chest.")));
+        messages.add(new LocalizedMessage(Message.NO_PERMISSION_EXTEND_PROTECTED, langConfig.getString("message.noPermission.extend-protected", "&cYou don't have permission to extend this chest to here.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_HEADER, langConfig.getString("message.commandDescription.header", "&6==== &c/%COMMAND% &6Help")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_FOOTER, langConfig.getString("message.commandDescription.footer", "&6==== End")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "&a/%COMMAND% remove - Remove a shop.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "&a/%COMMAND% info - Retrieve shop information.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_REMOVEALL, langConfig.getString("message.commandDescription.removeall", "&a/%COMMAND% removeall - Remove all shops of a player.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_RELOAD, langConfig.getString("message.commandDescription.reload", "&a/%COMMAND% reload - Reload shops.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_UPDATE, langConfig.getString("message.commandDescription.update", "&a/%COMMAND% update - Check for Updates.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "&a/%COMMAND% limits - View shop limits.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_OPEN, langConfig.getString("message.commandDescription.open", "&a/%COMMAND% open - Open a shop.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "&a/%COMMAND% config <set|get|remove> <property> <value> - Change configuration values.")));
+        messages.add(new LocalizedMessage(Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6.")));
+        messages.add(new LocalizedMessage(Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6.")));
+        messages.add(new LocalizedMessage(Message.CHANGED_CONFIG_ADDED, langConfig.getString("message.config.added", "&6Added &a%VALUE% &6to &a%PROPERTY%&6.")));
     }
 
     /**
@@ -1124,10 +1125,10 @@ public class LanguageUtils {
 
             if (Utils.getMajorVersion() < 9) {
                 potionType = Potion.fromItemStack(stack).getType();
-                upgradeString = (Potion.fromItemStack(stack).getLevel() == 2 && plugin.getShopChestConfig().append_potion_level_to_item_name ? " II" : "");
+                upgradeString = (Potion.fromItemStack(stack).getLevel() == 2 && Config.appendPotionLevelToItemName ? " II" : "");
             } else {
                 potionType = meta.getBasePotionData().getType();
-                upgradeString = (meta.getBasePotionData().isUpgraded() && plugin.getShopChestConfig().append_potion_level_to_item_name ? " II" : "");
+                upgradeString = (meta.getBasePotionData().isUpgraded() && Config.appendPotionLevelToItemName ? " II" : "");
             }
 
             for (PotionName potionName : potionNames) {
@@ -1302,22 +1303,22 @@ public class LanguageUtils {
 
     /**
      * @param message Message which should be translated
-     * @param replacedPlaceholders Placeholders which might be required to be replaced in the message
+     * @param replacements Replacements of placeholders which might be required to be replaced in the message
      * @return Localized Message
      */
-    public static String getMessage(LocalizedMessage.Message message, LocalizedMessage.ReplacedPlaceholder... replacedPlaceholders) {
+    public static String getMessage(Message message, Replacement... replacements) {
         String finalMessage = ChatColor.RED + "An error occurred: Message not found: " + message.toString();
 
         for (LocalizedMessage localizedMessage : messages) {
             if (localizedMessage.getMessage() == message) {
                 finalMessage = localizedMessage.getLocalizedString();
 
-                for (LocalizedMessage.ReplacedPlaceholder replacedPlaceholder : replacedPlaceholders) {
-                    Placeholder placeholder = replacedPlaceholder.getPlaceholder();
-                    String toReplace = replacedPlaceholder.getReplace();
+                for (Replacement replacement : replacements) {
+                    Placeholder placeholder = replacement.getPlaceholder();
+                    String toReplace = replacement.getReplacement();
 
                     if (placeholder == Placeholder.BUY_PRICE || placeholder == Placeholder.SELL_PRICE || placeholder == Placeholder.MIN_PRICE || placeholder == Placeholder.CREATION_PRICE || placeholder == Placeholder.REVENUE) {
-                        if (!toReplace.equals(getMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED))) {
+                        if (!toReplace.equals(getMessage(Message.SHOP_INFO_DISABLED))) {
                             double price = Double.parseDouble(toReplace);
                             toReplace = plugin.getEconomy().format(price);
                         }
