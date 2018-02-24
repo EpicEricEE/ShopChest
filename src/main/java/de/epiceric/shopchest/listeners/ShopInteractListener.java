@@ -23,7 +23,8 @@ import de.epiceric.shopchest.event.ShopRemoveEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.LocalizedMessage;
+import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
@@ -81,7 +82,6 @@ public class ShopInteractListener implements Listener {
     private Economy econ;
     private Database database;
     private ShopUtils shopUtils;
-    private Config config;
     private WorldGuardPlugin worldGuard;
 
     public ShopInteractListener(ShopChest plugin) {
@@ -89,7 +89,6 @@ public class ShopInteractListener implements Listener {
         this.econ = plugin.getEconomy();
         this.database = plugin.getShopDatabase();
         this.shopUtils = plugin.getShopUtils();
-        this.config = plugin.getShopChestConfig();
         this.worldGuard = plugin.getWorldGuard();
     }
 
@@ -136,7 +135,7 @@ public class ShopInteractListener implements Listener {
         Player p = e.getPlayer();
         Block b = e.getClickedBlock();
 
-        if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
 
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -158,7 +157,7 @@ public class ShopInteractListener implements Listener {
 
                                 String denyReason = "Event Cancelled";
 
-                                if (plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                if (plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
                                     plugin.debug("Checking if WorldGuard allows shop creation...");
                                     RegionContainer container = worldGuard.getRegionContainer();
                                     RegionQuery query = container.createQuery();
@@ -172,7 +171,7 @@ public class ShopInteractListener implements Listener {
                                     if (!externalPluginsAllowed) denyReason = "WorldGuard";
                                 }
 
-                                if (externalPluginsAllowed && plugin.hasTowny() && config.enable_towny_integration) {
+                                if (externalPluginsAllowed && plugin.hasTowny() && Config.enableTownyIntegration) {
                                     plugin.debug("Checking if Towny allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
@@ -187,13 +186,13 @@ public class ShopInteractListener implements Listener {
                                                             residentFound = true;
                                                             if (resident.isMayor()) {
                                                                 plugin.debug(p.getName() + " is mayor of town");
-                                                                externalPluginsAllowed &= (config.towny_shop_plots_mayor.contains(townBlock.getType().name()));
+                                                                externalPluginsAllowed &= (Config.townyShopPlotsMayor.contains(townBlock.getType().name()));
                                                             } else if (resident.isKing()) {
                                                                 plugin.debug(p.getName() + " is king of town");
-                                                                externalPluginsAllowed &= (config.towny_shop_plots_king.contains(townBlock.getType().name()));
+                                                                externalPluginsAllowed &= (Config.townyShopPlotsKing.contains(townBlock.getType().name()));
                                                             } else {
                                                                 plugin.debug(p.getName() + " is resident in town");
-                                                                externalPluginsAllowed &= (config.towny_shop_plots_residents.contains(townBlock.getType().name()));
+                                                                externalPluginsAllowed &= (Config.townyShopPlotsResidents.contains(townBlock.getType().name()));
                                                             }
                                                             break;
                                                         }
@@ -212,7 +211,7 @@ public class ShopInteractListener implements Listener {
                                     if (!externalPluginsAllowed) denyReason = "Towny";
                                 }
 
-                                if (externalPluginsAllowed && plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                                if (externalPluginsAllowed && plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
                                     plugin.debug("Checking if PlotSquared allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
@@ -227,7 +226,7 @@ public class ShopInteractListener implements Listener {
                                     if (!externalPluginsAllowed) denyReason = "PlotSquared";
                                 }
 
-                                if (externalPluginsAllowed && plugin.hasUSkyBlock() && config.enable_uskyblock_integration) {
+                                if (externalPluginsAllowed && plugin.hasUSkyBlock() && Config.enableUSkyblockIntegration) {
                                     plugin.debug("Checking if uSkyBlock allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
@@ -242,7 +241,7 @@ public class ShopInteractListener implements Listener {
                                     if (!externalPluginsAllowed) denyReason = "uSkyBlock";
                                 }
 
-                                if (externalPluginsAllowed && plugin.hasASkyBlock() && config.enable_askyblock_integration) {
+                                if (externalPluginsAllowed && plugin.hasASkyBlock() && Config.enableASkyblockIntegration) {
                                     plugin.debug("Checking if ASkyBlock allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
@@ -262,7 +261,7 @@ public class ShopInteractListener implements Listener {
                                     if (!externalPluginsAllowed) denyReason = "ASkyBlock";
                                 }
 
-                                if (externalPluginsAllowed && plugin.hasIslandWorld() && config.enable_islandworld_integration && IslandWorldApi.isInitialized()) {
+                                if (externalPluginsAllowed && plugin.hasIslandWorld() && Config.enableIslandWorldIntegration && IslandWorldApi.isInitialized()) {
                                     plugin.debug("Checking if IslandWorld allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
@@ -276,7 +275,7 @@ public class ShopInteractListener implements Listener {
                                     if (!externalPluginsAllowed) denyReason = "IslandWorld";
                                 }
 
-                                if (externalPluginsAllowed && plugin.hasGriefPrevention() && config.enable_griefprevention_integration) {
+                                if (externalPluginsAllowed && plugin.hasGriefPrevention() && Config.enableGriefPreventionIntegration) {
                                     plugin.debug("Checking if GriefPrevention allows shop creation...");
                                     String gpDenyReason = null;
                                     for (Location loc : chestLocations) {
@@ -294,7 +293,7 @@ public class ShopInteractListener implements Listener {
                                 }
 
                                 if ((e.isCancelled() || !externalPluginsAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE_PROTECTED));
+                                    p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CREATE_PROTECTED));
                                     ClickType.removePlayerClickType(p);
                                     plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest because " + denyReason);
                                     e.setCancelled(true);
@@ -312,12 +311,12 @@ public class ShopInteractListener implements Listener {
 
                                     create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
                                 } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_BLOCKED));
+                                    p.sendMessage(LanguageUtils.getMessage(Message.CHEST_BLOCKED));
                                     plugin.debug("Chest is blocked");
                                 }
                             } else {
                                 e.setCancelled(true);
-                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_ALREADY_SHOP));
+                                p.sendMessage(LanguageUtils.getMessage(Message.CHEST_ALREADY_SHOP));
                                 plugin.debug("Chest is already a shop");
                             }
 
@@ -334,7 +333,7 @@ public class ShopInteractListener implements Listener {
     private void handleInteractEvent(PlayerInteractEvent e) {
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
-        boolean inverted = config.invert_mouse_buttons;
+        boolean inverted = Config.invertMouseButtons;
 
         if (Utils.getMajorVersion() >= 9) {
             if (e.getHand() == EquipmentSlot.OFF_HAND) return;
@@ -362,14 +361,14 @@ public class ShopInteractListener implements Listener {
                                         if (p.hasPermission(Permissions.REMOVE_ADMIN)) {
                                             remove(p, shop);
                                         } else {
-                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_ADMIN));
+                                            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_ADMIN));
                                             plugin.debug(p.getName() + " is not permitted to remove an admin shop");
                                         }
                                     } else {
                                         if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.REMOVE_OTHER)) {
                                             remove(p, shop);
                                         } else {
-                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_REMOVE_OTHERS));
+                                            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_OTHERS));
                                             plugin.debug(p.getName() + " is not permitted to remove another player's shop");
                                         }
                                     }
@@ -383,7 +382,7 @@ public class ShopInteractListener implements Listener {
                                     if (p.getUniqueId().equals(shop.getVendor().getUniqueId()) || p.hasPermission(Permissions.OPEN_OTHER)) {
                                         open(p, shop, true);
                                     } else {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_OPEN_OTHERS));
+                                        p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_OPEN_OTHERS));
                                         plugin.debug(p.getName() + " is not permitted to open another player's shop");
                                     }
 
@@ -391,7 +390,7 @@ public class ShopInteractListener implements Listener {
                                     break;
                             }
                         } else {
-                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NO_SHOP));
+                            p.sendMessage(LanguageUtils.getMessage(Message.CHEST_NO_SHOP));
                             plugin.debug("Chest is not a shop");
                         }
                     }
@@ -405,7 +404,7 @@ public class ShopInteractListener implements Listener {
                             return;
                         }
 
-                        ItemStack infoItem = config.shop_info_item;
+                        ItemStack infoItem = Config.shopInfoItem;
                         if (infoItem != null) {
                             if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                                 ItemStack item = Utils.getItemInMainHand(p);
@@ -432,7 +431,7 @@ public class ShopInteractListener implements Listener {
 
                         if (p.getGameMode() == GameMode.CREATIVE) {
                             e.setCancelled(true);
-                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.USE_IN_CREATIVE));
+                            p.sendMessage(LanguageUtils.getMessage(Message.USE_IN_CREATIVE));
                             return;
                         }
 
@@ -446,7 +445,7 @@ public class ShopInteractListener implements Listener {
                                     if (p.hasPermission(Permissions.BUY)) {
                                         boolean externalPluginsAllowed = true;
 
-                                        if (plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                                        if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
                                             com.intellectualcrafters.plot.object.Location plotLocation =
                                                     new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
@@ -456,7 +455,7 @@ public class ShopInteractListener implements Listener {
                                             externalPluginsAllowed = Utils.isFlagAllowedOnPlot(plot, flag, p);
                                         }
 
-                                        if (externalPluginsAllowed && plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                        if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
                                             StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? WorldGuardShopFlag.USE_ADMIN_SHOP : WorldGuardShopFlag.USE_SHOP);
                                             RegionContainer container = worldGuard.getRegionContainer();
                                             RegionQuery query = container.createQuery();
@@ -465,9 +464,9 @@ public class ShopInteractListener implements Listener {
 
                                         if (shop.getShopType() == ShopType.ADMIN) {
                                             if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
-                                                if (confirmed || !config.confirm_shopping) {
+                                                if (confirmed || !Config.confirmShopping) {
                                                     buy(p, shop, p.isSneaking());
-                                                    if (config.confirm_shopping) {
+                                                    if (Config.confirmShopping) {
                                                         Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                         ids.remove(shop.getID());
                                                         if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
@@ -475,14 +474,14 @@ public class ShopInteractListener implements Listener {
                                                     }
                                                 } else {
                                                     plugin.debug("Needs confirmation");
-                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                    p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
                                                     Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                     ids.add(shop.getID());
                                                     needsConfirmation.put(p.getUniqueId(), ids);
                                                 }
                                             } else {
                                                 plugin.debug(p.getName() + " doesn't have external plugin's permission");
-                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY_HERE));
+                                                p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY_HERE));
                                             }
                                         } else {
                                             if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
@@ -490,9 +489,9 @@ public class ShopInteractListener implements Listener {
                                                 int amount = (p.isSneaking() ? shop.getProduct().getMaxStackSize() : shop.getProduct().getAmount());
 
                                                 if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= amount) {
-                                                    if (confirmed || !config.confirm_shopping) {
+                                                    if (confirmed || !Config.confirmShopping) {
                                                         buy(p, shop, p.isSneaking());
-                                                        if (config.confirm_shopping) {
+                                                        if (Config.confirmShopping) {
                                                             Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                             ids.remove(shop.getID());
                                                             if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
@@ -500,16 +499,16 @@ public class ShopInteractListener implements Listener {
                                                         }
                                                     } else {
                                                         plugin.debug("Needs confirmation");
-                                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
                                                         Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                         ids.add(shop.getID());
                                                         needsConfirmation.put(p.getUniqueId(), ids);
                                                     }
                                                 } else {
-                                                    if (config.auto_calculate_item_amount && Utils.getAmount(c.getInventory(), shop.getProduct()) > 0) {
-                                                        if (confirmed || !config.confirm_shopping) {
+                                                    if (Config.autoCalculateItemAmount && Utils.getAmount(c.getInventory(), shop.getProduct()) > 0) {
+                                                        if (confirmed || !Config.confirmShopping) {
                                                             buy(p, shop, p.isSneaking());
-                                                            if (config.confirm_shopping) {
+                                                            if (Config.confirmShopping) {
                                                                 Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                                 ids.remove(shop.getID());
                                                                 if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
@@ -517,32 +516,32 @@ public class ShopInteractListener implements Listener {
                                                             }
                                                         } else {
                                                             plugin.debug("Needs confirmation");
-                                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                            p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
                                                             Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                             ids.add(shop.getID());
                                                             needsConfirmation.put(p.getUniqueId(), ids);
                                                         }
                                                     } else {
-                                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
-                                                        if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
-                                                            shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.VENDOR_OUT_OF_STOCK,
-                                                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
-                                                                            new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct()))));
+                                                        p.sendMessage(LanguageUtils.getMessage(Message.OUT_OF_STOCK));
+                                                        if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
+                                                            shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
+                                                                    new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                                                                            new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct()))));
                                                         }
                                                         plugin.debug("Shop is out of stock");
                                                     }
                                                 }
                                             } else {
                                                 plugin.debug(p.getName() + " doesn't have external plugin's permission");
-                                                p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY_HERE));
+                                                p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY_HERE));
                                             }
                                         }
                                     } else {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_BUY));
+                                        p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY));
                                         plugin.debug(p.getName() + " is not permitted to buy");
                                     }
                                 } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUYING_DISABLED));
+                                    p.sendMessage(LanguageUtils.getMessage(Message.BUYING_DISABLED));
                                     plugin.debug("Buying is disabled");
                                 }
                             }
@@ -557,7 +556,7 @@ public class ShopInteractListener implements Listener {
                                     if (p.hasPermission(Permissions.SELL)) {
                                         boolean externalPluginsAllowed = true;
 
-                                        if (plugin.hasPlotSquared() && config.enable_plotsquared_integration) {
+                                        if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
                                             com.intellectualcrafters.plot.object.Location plotLocation =
                                                     new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
@@ -567,7 +566,7 @@ public class ShopInteractListener implements Listener {
                                             externalPluginsAllowed = Utils.isFlagAllowedOnPlot(plot, flag, p);
                                         }
 
-                                        if (externalPluginsAllowed && plugin.hasWorldGuard() && config.enable_worldguard_integration) {
+                                        if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
                                             RegionContainer container = worldGuard.getRegionContainer();
                                             RegionQuery query = container.createQuery();
 
@@ -580,9 +579,9 @@ public class ShopInteractListener implements Listener {
                                             int amount = stack ? shop.getProduct().getMaxStackSize() : shop.getProduct().getAmount();
 
                                             if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= amount) {
-                                                if (confirmed || !config.confirm_shopping) {
+                                                if (confirmed || !Config.confirmShopping) {
                                                     sell(p, shop, stack);
-                                                    if (config.confirm_shopping) {
+                                                    if (Config.confirmShopping) {
                                                         Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                         ids.remove(shop.getID());
                                                         if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
@@ -590,16 +589,16 @@ public class ShopInteractListener implements Listener {
                                                     }
                                                 } else {
                                                     plugin.debug("Needs confirmation");
-                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                    p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
                                                     Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                     ids.add(shop.getID());
                                                     needsConfirmation.put(p.getUniqueId(), ids);
                                                 }
                                             } else {
-                                                if (config.auto_calculate_item_amount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
-                                                    if (confirmed || !config.confirm_shopping) {
+                                                if (Config.autoCalculateItemAmount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
+                                                    if (confirmed || !Config.confirmShopping) {
                                                         sell(p, shop, stack);
-                                                        if (config.confirm_shopping) {
+                                                        if (Config.confirmShopping) {
                                                             Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                             ids.remove(shop.getID());
                                                             if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
@@ -607,26 +606,26 @@ public class ShopInteractListener implements Listener {
                                                         }
                                                     } else {
                                                         plugin.debug("Needs confirmation");
-                                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CLICK_TO_CONFIRM));
+                                                        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
                                                         Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
                                                         ids.add(shop.getID());
                                                         needsConfirmation.put(p.getUniqueId(), ids);
                                                     }
                                                 } else {
-                                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
+                                                    p.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_ITEMS));
                                                     plugin.debug(p.getName() + " doesn't have enough items");
                                                 }
                                             }
                                         } else {
                                             plugin.debug(p.getName() + " doesn't have external plugin's permission");
-                                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL_HERE));
+                                            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_SELL_HERE));
                                         }
                                     } else {
-                                        p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_SELL));
+                                        p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_SELL));
                                         plugin.debug(p.getName() + " is not permitted to sell");
                                     }
                                 } else {
-                                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELLING_DISABLED));
+                                    p.sendMessage(LanguageUtils.getMessage(Message.SELLING_DISABLED));
                                     plugin.debug("Selling is disabled");
                                 }
                             } else {
@@ -642,17 +641,17 @@ public class ShopInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(e.getPlayer())) return;
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(e.getPlayer())) return;
         handleInteractEvent(e);
     }
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent e) {
-        if (!plugin.getShopChestConfig().enable_hologram_interaction) return;
+        if (!Config.enableHologramInteraction) return;
 
         Entity entity = e.getRightClicked();
         Player p = e.getPlayer();
-        if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
 
         if (Utils.getMajorVersion() == 8 || e.getHand() == EquipmentSlot.HAND) {
             if (entity instanceof ArmorStand) {
@@ -680,14 +679,14 @@ public class ShopInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerDamageEntity(EntityDamageByEntityEvent e) {
-        if (!plugin.getShopChestConfig().enable_hologram_interaction) return;
+        if (!Config.enableHologramInteraction) return;
 
         Entity entity = e.getEntity();
         Entity damager = e.getDamager();
 
         if (!(damager instanceof Player)) return;
         Player p = (Player) damager;
-        if (config.enable_authme_integration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
 
         if (entity instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) entity;
@@ -726,12 +725,12 @@ public class ShopInteractListener implements Listener {
         plugin.debug(executor.getName() + " is creating new shop...");
 
         if (!executor.hasPermission(Permissions.CREATE)) {
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE));
+            executor.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CREATE));
             plugin.debug(executor.getName() + " is not permitted to create the shop");
             return;
         }
 
-        double creationPrice = (shopType == ShopType.NORMAL) ? config.shop_creation_price_normal : config.shop_creation_price_admin;
+        double creationPrice = (shopType == ShopType.NORMAL) ? Config.shopCreationPriceNormal : Config.shopCreationPriceAdmin;
         Shop shop = new Shop(plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
         ShopCreateEvent event = new ShopCreateEvent(executor, shop, creationPrice);
@@ -745,8 +744,8 @@ public class ShopInteractListener implements Listener {
         EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
         if (!r.transactionSuccess()) {
             plugin.debug("Economy transaction failed: " + r.errorMessage);
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED,
-                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
+            executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
+                    new Replacement(Placeholder.ERROR, r.errorMessage)));
             return;
         }
 
@@ -755,13 +754,13 @@ public class ShopInteractListener implements Listener {
         plugin.debug("Shop created");
         shopUtils.addShop(shop, true);
 
-        LocalizedMessage.ReplacedPlaceholder placeholder = new LocalizedMessage.ReplacedPlaceholder(
+        Replacement placeholder = new Replacement(
                 Placeholder.CREATION_PRICE, String.valueOf(creationPrice));
 
         if (shopType == ShopType.ADMIN) {
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ADMIN_SHOP_CREATED, placeholder));
+            executor.sendMessage(LanguageUtils.getMessage(Message.ADMIN_SHOP_CREATED, placeholder));
         } else {
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_CREATED, placeholder));
+            executor.sendMessage(LanguageUtils.getMessage(Message.SHOP_CREATED, placeholder));
         }
 
         // next update will display the new shop
@@ -786,14 +785,14 @@ public class ShopInteractListener implements Listener {
 
         shopUtils.removeShop(shop, true);
         plugin.debug("Removed shop (#" + shop.getID() + ")");
-        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_REMOVED));
+        executor.sendMessage(LanguageUtils.getMessage(Message.SHOP_REMOVED));
     }
 
     /**
      * Open a shop
      * @param executor Player, who executed the command and will receive the message
      * @param shop Shop to be opened
-     * @param message Whether the player should receive the {@link LocalizedMessage.Message#OPENED_SHOP} message
+     * @param message Whether the player should receive the {@link Message#OPENED_SHOP} message
      */
     private void open(Player executor, Shop shop, boolean message) {
         plugin.debug(executor.getName() + " is opening " + shop.getVendor().getName() + "'s shop (#" + shop.getID() + ")");
@@ -806,8 +805,8 @@ public class ShopInteractListener implements Listener {
 
         executor.openInventory(shop.getInventoryHolder().getInventory());
         plugin.debug("Opened shop (#" + shop.getID() + ")");
-        if (message) executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OPENED_SHOP,
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, shop.getVendor().getName())));
+        if (message) executor.sendMessage(LanguageUtils.getMessage(Message.OPENED_SHOP,
+                new Replacement(Placeholder.VENDOR, shop.getVendor().getName())));
     }
 
     /**
@@ -833,39 +832,39 @@ public class ShopInteractListener implements Listener {
         String vendorName = (shop.getVendor().getName() == null ?
                 shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
 
-        String vendorString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_VENDOR,
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, vendorName));
+        String vendorString = LanguageUtils.getMessage(Message.SHOP_INFO_VENDOR,
+                new Replacement(Placeholder.VENDOR, vendorName));
 
-        String productString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRODUCT,
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct())));
+        String productString = LanguageUtils.getMessage(Message.SHOP_INFO_PRODUCT,
+                new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct())));
 
         String enchantmentString = "";
         String potionEffectString = "";
         String bookGenerationString = "";
         String musicDiscTitleString = "";
 
-        String disabled = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_DISABLED);
+        String disabled = LanguageUtils.getMessage(Message.SHOP_INFO_DISABLED);
 
-        String priceString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_PRICE,
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, (shop.getBuyPrice() > 0 ? String.valueOf(shop.getBuyPrice()) : disabled)),
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, (shop.getSellPrice() > 0 ? String.valueOf(shop.getSellPrice()) : disabled)));
+        String priceString = LanguageUtils.getMessage(Message.SHOP_INFO_PRICE,
+                new Replacement(Placeholder.BUY_PRICE, (shop.getBuyPrice() > 0 ? String.valueOf(shop.getBuyPrice()) : disabled)),
+                new Replacement(Placeholder.SELL_PRICE, (shop.getSellPrice() > 0 ? String.valueOf(shop.getSellPrice()) : disabled)));
 
         String shopType = LanguageUtils.getMessage(shop.getShopType() == ShopType.NORMAL ?
-                LocalizedMessage.Message.SHOP_INFO_NORMAL : LocalizedMessage.Message.SHOP_INFO_ADMIN);
+                Message.SHOP_INFO_NORMAL : Message.SHOP_INFO_ADMIN);
 
-        String stock = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_STOCK,
-                new LocalizedMessage.ReplacedPlaceholder(Placeholder.STOCK, String.valueOf(amount)));
+        String stock = LanguageUtils.getMessage(Message.SHOP_INFO_STOCK,
+                new Replacement(Placeholder.STOCK, String.valueOf(amount)));
 
         String potionEffectName = LanguageUtils.getPotionEffectName(shop.getProduct());
 
         if (potionEffectName.length() > 0) {
             boolean potionExtended = ItemUtils.isExtendedPotion(shop.getProduct());
 
-            String extended = potionExtended ? LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_EXTENDED) : "";
-            potionEffectString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_POTION_EFFECT,
-                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.POTION_EFFECT, potionEffectName),
-                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.EXTENDED, extended));
+            String extended = potionExtended ? LanguageUtils.getMessage(Message.SHOP_INFO_EXTENDED) : "";
+            potionEffectString = LanguageUtils.getMessage(Message.SHOP_INFO_POTION_EFFECT,
+                    new Replacement(Placeholder.POTION_EFFECT, potionEffectName),
+                    new Replacement(Placeholder.EXTENDED, extended));
         }
 
         if (type == Material.WRITTEN_BOOK) {
@@ -883,22 +882,22 @@ public class ShopInteractListener implements Listener {
                 }
             }
 
-            bookGenerationString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_BOOK_GENERATION,
-                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(generation)));
+            bookGenerationString = LanguageUtils.getMessage(Message.SHOP_INFO_BOOK_GENERATION,
+                    new Replacement(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(generation)));
         }
 
         String musicDiscName = LanguageUtils.getMusicDiscName(type);
         if (musicDiscName.length() > 0) {
-            musicDiscTitleString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_MUSIC_TITLE,
-                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.MUSIC_TITLE, musicDiscName));
+            musicDiscTitleString = LanguageUtils.getMessage(Message.SHOP_INFO_MUSIC_TITLE,
+                    new Replacement(Placeholder.MUSIC_TITLE, musicDiscName));
         }
 
         Map<Enchantment, Integer> enchantmentMap = ItemUtils.getEnchantments(shop.getProduct());
         String enchantmentList = LanguageUtils.getEnchantmentString(enchantmentMap);
 
         if (enchantmentList.length() > 0) {
-            enchantmentString = LanguageUtils.getMessage(LocalizedMessage.Message.SHOP_INFO_ENCHANTMENTS,
-                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.ENCHANTMENT, enchantmentList));
+            enchantmentString = LanguageUtils.getMessage(Message.SHOP_INFO_ENCHANTMENTS,
+                    new Replacement(Placeholder.ENCHANTMENT, enchantmentList));
         }
 
         executor.sendMessage(" ");
@@ -931,12 +930,12 @@ public class ShopInteractListener implements Listener {
         double price = shop.getBuyPrice();
         if (stack) price = (price / shop.getProduct().getAmount()) * amount;
 
-        if (econ.getBalance(executor, worldName) >= price || config.auto_calculate_item_amount) {
+        if (econ.getBalance(executor, worldName) >= price || Config.autoCalculateItemAmount) {
 
             int amountForMoney = (int) (amount / price * econ.getBalance(executor, worldName));
 
-            if (amountForMoney == 0 && config.auto_calculate_item_amount) {
-                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_MONEY));
+            if (amountForMoney == 0 && Config.autoCalculateItemAmount) {
+                executor.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_MONEY));
                 return;
             }
 
@@ -948,7 +947,7 @@ public class ShopInteractListener implements Listener {
             int amountForChestItems = Utils.getAmount(c.getInventory(), shop.getProduct());
 
             if (amountForChestItems == 0 && shop.getShopType() != ShopType.ADMIN) {
-                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.OUT_OF_STOCK));
+                executor.sendMessage(LanguageUtils.getMessage(Message.OUT_OF_STOCK));
                 return;
             }
 
@@ -960,13 +959,13 @@ public class ShopInteractListener implements Listener {
             int freeSpace = Utils.getFreeSpaceForItem(inventory, product);
 
             if (freeSpace == 0) {
-                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE));
+                executor.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_INVENTORY_SPACE));
                 return;
             }
 
             int newAmount = amount;
 
-            if (config.auto_calculate_item_amount) {
+            if (Config.autoCalculateItemAmount) {
                 if (shop.getShopType() == ShopType.ADMIN)
                     newAmount = Math.min(amountForMoney, freeSpace);
                 else
@@ -1016,21 +1015,21 @@ public class ShopInteractListener implements Listener {
                             }.runTaskLater(plugin, 1L);
 
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
-                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, vendorName)));
+                            executor.sendMessage(LanguageUtils.getMessage(Message.BUY_SUCCESS, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                    new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                    new Replacement(Placeholder.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
 
-                            if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
-                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_BOUGHT, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
-                                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.PLAYER, executor.getName())));
+                            if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
+                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                        new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.PLAYER, executor.getName())));
                             }
 
                         } else {
                             plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r2.errorMessage)));
+                            executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r2.errorMessage)));
                             econ.withdrawPlayer(shop.getVendor(), worldName, newPrice);
                             econ.depositPlayer(executor, worldName, newPrice);
                         }
@@ -1058,21 +1057,21 @@ public class ShopInteractListener implements Listener {
                             }
                         }.runTaskLater(plugin, 1L);
 
-                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.BUY_SUCCESS_ADMIN, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.BUY_PRICE, String.valueOf(newPrice))));
+                        executor.sendMessage(LanguageUtils.getMessage(Message.BUY_SUCCESS_ADMIN, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice))));
 
                         plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
                     }
                 } else {
                     plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
-                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
+                    executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r.errorMessage)));
                     econ.depositPlayer(executor, worldName, newPrice);
                 }
             } else {
-                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_INVENTORY_SPACE));
+                executor.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_INVENTORY_SPACE));
             }
         } else {
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_MONEY));
+            executor.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_MONEY));
         }
     }
 
@@ -1092,13 +1091,13 @@ public class ShopInteractListener implements Listener {
 
         String worldName = shop.getLocation().getWorld().getName();
 
-        if (econ.getBalance(shop.getVendor(), worldName) >= price || shop.getShopType() == ShopType.ADMIN || config.auto_calculate_item_amount) {
+        if (econ.getBalance(shop.getVendor(), worldName) >= price || shop.getShopType() == ShopType.ADMIN || Config.autoCalculateItemAmount) {
             int amountForMoney = (int) (amount / price * econ.getBalance(shop.getVendor(), worldName));
 
             plugin.debug("Vendor has enough money for " + amountForMoney + " item(s) (#" + shop.getID() + ")");
 
-            if (amountForMoney == 0 && config.auto_calculate_item_amount && shop.getShopType() != ShopType.ADMIN) {
-                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.VENDOR_NOT_ENOUGH_MONEY));
+            if (amountForMoney == 0 && Config.autoCalculateItemAmount && shop.getShopType() != ShopType.ADMIN) {
+                executor.sendMessage(LanguageUtils.getMessage(Message.VENDOR_NOT_ENOUGH_MONEY));
                 return;
             }
 
@@ -1108,7 +1107,7 @@ public class ShopInteractListener implements Listener {
             int amountForItemCount = Utils.getAmount(executor.getInventory(), shop.getProduct());
 
             if (amountForItemCount == 0) {
-                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NOT_ENOUGH_ITEMS));
+                executor.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_ITEMS));
                 return;
             }
 
@@ -1120,13 +1119,13 @@ public class ShopInteractListener implements Listener {
             int freeSpace = Utils.getFreeSpaceForItem(inventory, product);
 
             if (freeSpace == 0 && shop.getShopType() != ShopType.ADMIN) {
-                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE));
+                executor.sendMessage(LanguageUtils.getMessage(Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE));
                 return;
             }
 
             int newAmount = amount;
 
-            if (config.auto_calculate_item_amount) {
+            if (Config.autoCalculateItemAmount) {
                 if (shop.getShopType() == ShopType.ADMIN)
                     newAmount = amountForItemCount;
                 else
@@ -1176,21 +1175,21 @@ public class ShopInteractListener implements Listener {
                             }.runTaskLater(plugin, 1L);
 
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCCESS, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
-                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.VENDOR, vendorName)));
+                            executor.sendMessage(LanguageUtils.getMessage(Message.SELL_SUCCESS, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                    new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
+                                    new Replacement(Placeholder.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
 
-                            if (shop.getVendor().isOnline() && config.enable_vendor_messages) {
-                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SOMEONE_SOLD, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
-                                        new LocalizedMessage.ReplacedPlaceholder(Placeholder.PLAYER, executor.getName())));
+                            if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
+                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_SOLD, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                        new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.PLAYER, executor.getName())));
                             }
 
                         } else {
                             plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
-                            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r2.errorMessage)));
+                            executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r2.errorMessage)));
                             econ.withdrawPlayer(executor, worldName, newPrice);
                             econ.depositPlayer(shop.getVendor(), worldName, newPrice);
                         }
@@ -1219,24 +1218,24 @@ public class ShopInteractListener implements Listener {
                             }
                         }.runTaskLater(plugin, 1L);
 
-                        executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.SELL_SUCCESS_ADMIN, new LocalizedMessage.ReplacedPlaceholder(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                new LocalizedMessage.ReplacedPlaceholder(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new LocalizedMessage.ReplacedPlaceholder(Placeholder.SELL_PRICE, String.valueOf(newPrice))));
+                        executor.sendMessage(LanguageUtils.getMessage(Message.SELL_SUCCESS_ADMIN, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice))));
 
                         plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
                     }
 
                 } else {
                     plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
-                    executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED, new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, r.errorMessage)));
+                    executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r.errorMessage)));
                     econ.withdrawPlayer(executor, worldName, newPrice);
                 }
 
             } else {
-                executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE));
+                executor.sendMessage(LanguageUtils.getMessage(Message.CHEST_NOT_ENOUGH_INVENTORY_SPACE));
             }
 
         } else {
-            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.VENDOR_NOT_ENOUGH_MONEY));
+            executor.sendMessage(LanguageUtils.getMessage(Message.VENDOR_NOT_ENOUGH_MONEY));
         }
     }
 

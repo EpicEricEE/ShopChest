@@ -9,6 +9,7 @@ import com.sk89q.worldguard.bukkit.event.entity.DamageEntityEvent;
 import com.sk89q.worldguard.bukkit.event.entity.UseEntityEvent;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.ClickType;
@@ -78,7 +79,7 @@ public class WorldGuardListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onUseEntity(UseEntityEvent event) {
-        if (plugin.getShopChestConfig().enable_worldguard_integration) {
+        if (Config.enableWorldGuardIntegration) {
             Player player = event.getCause().getFirstPlayer();
             if (player == null) return;
 
@@ -107,7 +108,7 @@ public class WorldGuardListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onDamageEntity(DamageEntityEvent event) {
-        if (plugin.getShopChestConfig().enable_worldguard_integration) {
+        if (Config.enableWorldGuardIntegration) {
             Player player = event.getCause().getFirstPlayer();
             if (player == null) return;
 
@@ -136,7 +137,7 @@ public class WorldGuardListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onUseBlock(UseBlockEvent event) {
-        if (plugin.getShopChestConfig().enable_worldguard_integration) {
+        if (Config.enableWorldGuardIntegration) {
             Player player = event.getCause().getFirstPlayer();
             if (player == null) return;
 

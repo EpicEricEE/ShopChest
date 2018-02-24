@@ -192,20 +192,20 @@ public class ShopUtils {
         }
 
         if (limit < -1) limit = -1;
-        return (useDefault ? plugin.getShopChestConfig().default_limit : limit);
+        return (useDefault ?Config.defaultLimit : limit);
     }
 
     /**
      * Get the amount of shops of a player
      * @param p Player, whose shops should be counted
-     * @return The amount of a shops a player has (if {@link Config#exclude_admin_shops} is true, admin shops won't be counted)
+     * @return The amount of a shops a player has (if {@link Config#excludeAdminShops} is true, admin shops won't be counted)
      */
     public int getShopAmount(OfflinePlayer p) {
         float shopCount = 0;
 
         for (Shop shop : getShops()) {
             if (shop.getVendor().equals(p)) {
-                if (shop.getShopType() != Shop.ShopType.ADMIN || !plugin.getShopChestConfig().exclude_admin_shops) {
+                if (shop.getShopType() != Shop.ShopType.ADMIN || !Config.excludeAdminShops) {
                     shopCount++;
 
                     InventoryHolder ih = shop.getInventoryHolder();
@@ -288,7 +288,7 @@ public class ShopUtils {
             return;
         }
 
-        if (plugin.getShopChestConfig().only_show_shops_in_sight) {
+        if (Config.onlyShowShopsInSight) {
             updateVisibleShops(player);
         } else {
             updateNearestShops(player);
@@ -308,12 +308,12 @@ public class ShopUtils {
     private static final double TARGET_THRESHOLD = 1;
 
     private void updateVisibleShops(Player player) {
-        double itemDistSquared = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
-        double hologramDistSquared = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
+        double itemDistSquared = Math.pow(Config.maximalItemDistance, 2);
+        double hologramDistSquared = Math.pow(Config.maximalDistance, 2);
 
-        boolean firstShopInSight = plugin.getShopChestConfig().only_show_first_shop_in_sight;
+        boolean firstShopInSight =Config.onlyShowFirstShopInSight;
 
-        // used if only_show_first_shop_in_sight
+        // used if onlyShowFirstShopInSight
         List<Shop> otherShopsInSight = firstShopInSight ? new ArrayList<Shop>() : null;
         double nearestDistance = 0;
         Shop nearestShop = null;
@@ -403,8 +403,8 @@ public class ShopUtils {
     }
 
     private void updateNearestShops(Player p) {
-        double holoDistSqr = Math.pow(plugin.getShopChestConfig().maximal_distance, 2);
-        double itemDistSqr = Math.pow(plugin.getShopChestConfig().maximal_item_distance, 2);
+        double holoDistSqr = Math.pow(Config.maximalDistance, 2);
+        double itemDistSqr = Math.pow(Config.maximalItemDistance, 2);
 
         for (Shop shop : getShops()) {
             if (p.getLocation().getWorld().getName().equals(shop.getLocation().getWorld().getName())) {

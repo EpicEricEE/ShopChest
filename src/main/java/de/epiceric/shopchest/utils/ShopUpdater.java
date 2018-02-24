@@ -1,6 +1,7 @@
 package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -44,7 +45,7 @@ public class ShopUpdater {
      */
     public void start() {
         if (!isRunning()) {
-            long interval = plugin.getShopChestConfig().update_quality.getInterval();
+            long interval = Config.updateQuality.getInterval();
             running = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new ShopUpdaterTask(), interval, interval);
         }
     }

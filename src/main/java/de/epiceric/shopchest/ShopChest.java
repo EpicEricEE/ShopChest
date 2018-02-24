@@ -11,7 +11,8 @@ import de.epiceric.shopchest.event.ShopInitializedEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.LocalizedMessage;
+import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.listeners.AreaShopListener;
 import de.epiceric.shopchest.listeners.BlockExplodeListener;
 import de.epiceric.shopchest.listeners.ChestProtectListener;
@@ -39,7 +40,6 @@ import me.wiefferink.areashop.AreaShop;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -106,7 +106,7 @@ public class ShopChest extends JavaPlugin {
 
         config = new Config(this);
 
-        if (config.enable_debug_log) {
+        if (Config.enableDebugLog) {
             File debugLogFile = new File(getDataFolder(), "debug.txt");
 
             try {
@@ -128,7 +128,7 @@ public class ShopChest extends JavaPlugin {
         Plugin worldGuardPlugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
         if (worldGuardPlugin instanceof WorldGuardPlugin) {
             worldGuard = (WorldGuardPlugin) worldGuardPlugin;
-            WorldGuardShopFlag.register(this, true);
+            WorldGuardShopFlag.register(this);
         }
     }
 
@@ -216,7 +216,7 @@ public class ShopChest extends JavaPlugin {
             database.disconnect();
         }
 
-        if (fw != null && config.enable_debug_log) {
+        if (fw != null && Config.enableDebugLog) {
             try {
                 fw.close();
             } catch (IOException e) {
@@ -227,21 +227,6 @@ public class ShopChest extends JavaPlugin {
     }
 
     private void loadExternalPlugins() {
-        if (worldGuard != null && !WorldGuardShopFlag.isLoaded()) {
-            WorldGuardShopFlag.register(this, false);
-
-            try {
-                // Reload WorldGuard regions, so that custom flags are applied
-                for (World world : getServer().getWorlds()) {
-                    worldGuard.getRegionManager(world).load();
-                }
-            } catch (Exception e) {
-                getLogger().severe("Failed to reload WorldGuard region manager. WorldGuard support will probably not work!");
-                debug("Failed to load WorldGuard region manager");
-                debug(e);
-            }
-        }
-
         Plugin townyPlugin = Bukkit.getServer().getPluginManager().getPlugin("Towny");
         if (townyPlugin instanceof Towny) {
             towny = (Towny) townyPlugin;
@@ -307,11 +292,11 @@ public class ShopChest extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("database_type") {
             @Override
             public String getValue() {
-                return config.database_type.toString();
+                return Config.databaseType.toString();
             }
         });
 
-        if (config.database_type == Database.DatabaseType.SQLite) {
+        if (Config.databaseType == Database.DatabaseType.SQLite) {
             debug("Using database type: SQLite");
             getLogger().info("Using SQLite");
             database = new SQLite(this);
@@ -319,7 +304,7 @@ public class ShopChest extends JavaPlugin {
             debug("Using database type: MySQL");
             getLogger().info("Using MySQL");
             database = new MySQL(this);
-            if (config.database_mysql_ping_interval > 0) {
+            if (Config.databaseMySqlPingInterval > 0) {
                 Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
                     @Override
                     public void run() {
@@ -327,7 +312,7 @@ public class ShopChest extends JavaPlugin {
                             ((MySQL) database).ping();
                         }
                     }
-                }, config.database_mysql_ping_interval * 20L, config.database_mysql_ping_interval * 20L);
+                }, Config.databaseMySqlPingInterval * 20L, Config.databaseMySqlPingInterval * 20L);
             }
         }
     }
@@ -339,16 +324,16 @@ public class ShopChest extends JavaPlugin {
                 UpdateChecker uc = new UpdateChecker(ShopChest.this);
                 UpdateCheckerResult result = uc.check();
 
-                Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CHECKING));
+                Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(Message.UPDATE_CHECKING));
                 if (result == UpdateCheckerResult.TRUE) {
                     latestVersion = uc.getVersion();
                     downloadLink = uc.getLink();
                     isUpdateNeeded = true;
-                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedPlaceholder(Placeholder.VERSION, latestVersion)));
+                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, latestVersion)));
 
                     for (Player p : getServer().getOnlinePlayers()) {
                         if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
-                            JsonBuilder jb = new JsonBuilder(ShopChest.this, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedPlaceholder(Placeholder.VERSION, latestVersion)), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
+                            JsonBuilder jb = new JsonBuilder(ShopChest.this, LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, latestVersion)), LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
                             jb.sendJson(p);
                         }
                     }
@@ -357,12 +342,12 @@ public class ShopChest extends JavaPlugin {
                     latestVersion = "";
                     downloadLink = "";
                     isUpdateNeeded = false;
-                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_NO_UPDATE));
+                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(Message.UPDATE_NO_UPDATE));
                 } else {
                     latestVersion = "";
                     downloadLink = "";
                     isUpdateNeeded = false;
-                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_ERROR));
+                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(Message.UPDATE_ERROR));
                 }
             }
         }.runTaskAsynchronously(this);
@@ -409,7 +394,7 @@ public class ShopChest extends JavaPlugin {
      * @param message Message to print
      */
     public void debug(String message) {
-        if (config.enable_debug_log && fw != null) {
+        if (Config.enableDebugLog && fw != null) {
             try {
                 Calendar c = Calendar.getInstance();
                 String timestamp = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(c.getTime());
@@ -427,7 +412,7 @@ public class ShopChest extends JavaPlugin {
      * @param throwable {@link Throwable} whose stacktrace will be printed
      */
     public void debug(Throwable throwable) {
-        if (config.enable_debug_log && fw != null) {
+        if (Config.enableDebugLog && fw != null) {
             PrintWriter pw = new PrintWriter(fw);
             throwable.printStackTrace(pw);
             pw.flush();

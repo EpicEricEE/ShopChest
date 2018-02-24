@@ -1,17 +1,19 @@
 package de.epiceric.shopchest.listeners;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.LocalizedMessage;
-import de.epiceric.shopchest.nms.JsonBuilder;
-import de.epiceric.shopchest.utils.Callback;
-import de.epiceric.shopchest.utils.Permissions;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Placeholder;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
+import de.epiceric.shopchest.nms.JsonBuilder;
+import de.epiceric.shopchest.utils.Callback;
+import de.epiceric.shopchest.utils.Permissions;
 
 public class NotifyPlayerOnJoinListener implements Listener {
 
@@ -27,7 +29,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
 
         if (plugin.isUpdateNeeded()) {
             if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
-                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_AVAILABLE, new LocalizedMessage.ReplacedPlaceholder(Placeholder.VERSION, plugin.getLatestVersion())), LanguageUtils.getMessage(LocalizedMessage.Message.UPDATE_CLICK_TO_DOWNLOAD), plugin.getDownloadLink());
+                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, plugin.getLatestVersion())), LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD), plugin.getDownloadLink());
                 jb.sendJson(p);
             }
         }
@@ -36,8 +38,8 @@ public class NotifyPlayerOnJoinListener implements Listener {
             @Override
             public void onResult(Long result) {
                 if (result < 0) {
-                    p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.ERROR_OCCURRED,
-                            new LocalizedMessage.ReplacedPlaceholder(Placeholder.ERROR, "Could not get last time you logged out")));
+                    p.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
+                            new Replacement(Placeholder.ERROR, "Could not get last time you logged out")));
                     return;
                 }
 
@@ -45,8 +47,8 @@ public class NotifyPlayerOnJoinListener implements Listener {
                     @Override
                     public void onResult(Double result) {
                         if (result != 0) {
-                            p.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.REVENUE_WHILE_OFFLINE,
-                                    new LocalizedMessage.ReplacedPlaceholder(Placeholder.REVENUE, String.valueOf(result))));
+                            p.sendMessage(LanguageUtils.getMessage(Message.REVENUE_WHILE_OFFLINE,
+                                    new Replacement(Placeholder.REVENUE, String.valueOf(result))));
                         }
                     }
                 });

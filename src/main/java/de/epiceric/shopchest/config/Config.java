@@ -20,198 +20,301 @@ import java.util.Set;
 
 public class Config {
 
-    private ShopChest plugin;
+    /**
+     * The quality of hologram and item updating (performance saving, or better quality)
+     **/
+    public static ShopUpdater.UpdateQuality updateQuality;
 
-    private LanguageConfiguration langConfig;
+    /**
+     * The item with which a player can click a shop to retrieve information
+     **/
+    public static ItemStack shopInfoItem;
 
-    /** The quality of hologram and item updating (performance saving, or better quality) **/
-    public ShopUpdater.UpdateQuality update_quality;
+    /**
+     * The default value for the custom WorldGuard flag 'create-shop'
+     **/
+    public static boolean wgAllowCreateShopDefault;
 
-    /** The item with which a player can click a shop to retrieve information **/
-    public ItemStack shop_info_item;
+    /**
+     * The default value for the custom WorldGuard flag 'use-admin-shop'
+     **/
+    public static boolean wgAllowUseAdminShopDefault;
 
-    /** The default value for the custom WorldGuard flag 'create-shop' **/
-    public boolean wg_allow_create_shop_default;
+    /**
+     * The default value for the custom WorldGuard flag 'use-shop'
+     **/
+    public static boolean wgAllowUseShopDefault;
 
-    /** The default value for the custom WorldGuard flag 'use-admin-shop' **/
-    public boolean wg_allow_use_admin_shop_default;
+    /**
+     * The types of town plots residents are allowed to create shops in
+     **/
+    public static List<String> townyShopPlotsResidents;
 
-    /** The default value for the custom WorldGuard flag 'use-shop' **/
-    public boolean wg_allow_use_shop_default;
+    /**
+     * The types of town plots the mayor is allowed to create shops in
+     **/
+    public static List<String> townyShopPlotsMayor;
 
-    /** The types of town plots residents are allowed to create shops in **/
-    public List<String> towny_shop_plots_residents;
+    /**
+     * The types of town plots the king is allowed to create shops in
+     **/
+    public static List<String> townyShopPlotsKing;
 
-    /** The types of town plots the mayor is allowed to create shops in **/
-    public List<String> towny_shop_plots_mayor;
+    /**
+     * The events of AreaShop when shops in that region should be removed
+     **/
+    public static List<String> areashopRemoveShopEvents;
 
-    /** The types of town plots the king is allowed to create shops in **/
-    public List<String> towny_shop_plots_king;
+    /**
+     * The hostname used in ShopChest's MySQL database
+     **/
+    public static String databaseMySqlHost;
 
-    /** The events of AreaShop when shops in that region should be removed **/
-    public List<String> areashop_remove_shop_events;
+    /**
+     * The port used for ShopChest's MySQL database
+     **/
+    public static int databaseMySqlPort;
 
-    /** The hostname used in ShopChest's MySQL database **/
-    public String database_mysql_host;
+    /**
+     * The database used for ShopChest's MySQL database
+     **/
+    public static String databaseMySqlDatabase;
 
-    /** The port used for ShopChest's MySQL database **/
-    public int database_mysql_port;
+    /**
+     * The username used in ShopChest's MySQL database
+     **/
+    public static String databaseMySqlUsername;
 
-    /** The database used for ShopChest's MySQL database **/
-    public String database_mysql_database;
+    /**
+     * The password used in ShopChest's MySQL database
+     **/
+    public static String databaseMySqlPassword;
 
-    /** The username used in ShopChest's MySQL database **/
-    public String database_mysql_username;
+    /**
+     * The database type used for ShopChest.
+     **/
+    public static Database.DatabaseType databaseType;
 
-    /** The password used in ShopChest's MySQL database **/
-    public String database_mysql_password;
-
-    /** The database type used for ShopChest. **/
-    public Database.DatabaseType database_type;
-
-    /** The interval in seconds, a ping is sent to the MySQL server **/
-    public int database_mysql_ping_interval;
+    /**
+     * The interval in seconds, a ping is sent to the MySQL server
+     **/
+    public static int databaseMySqlPingInterval;
 
     /**
      * <p>The minimum prices for certain items</p>
      * This returns a key set, which contains e.g "STONE", "STONE:1", of the <i>minimum-prices</i> section in ShopChest's config.
      * To actually retrieve the minimum price for an item, you have to get the double {@code minimum-prices.<key>}.
      **/
-    public Set<String> minimum_prices;
+    public static Set<String> minimumPrices;
 
     /**
      * <p>The maximum prices for certain items</p>
      * This returns a key set, which contains e.g "STONE", "STONE:1", of the {@code maximum-prices} section in ShopChest's config.
      * To actually retrieve the maximum price for an item, you have to get the double {@code maximum-prices.<key>}.
      **/
-    public Set<String> maximum_prices;
+    public static Set<String> maximumPrices;
 
     /**
      * <p>List containing items, of which players can't create a shop</p>
      * If this list contains an item (e.g "STONE", "STONE:1"), it's in the blacklist.
      **/
-    public List<String> blacklist;
+    public static List<String> blacklist;
 
-    /** Whether prices may contain decimals **/
-    public boolean allow_decimals_in_price;
+    /**
+     * Whether prices may contain decimals
+     **/
+    public static boolean allowDecimalsInPrice;
 
-    /** Whether the buy price of a shop must be greater than or equal the sell price **/
-    public boolean buy_greater_or_equal_sell;
+    /**
+     * Whether the buy price of a shop must be greater than or equal the sell price
+     **/
+    public static boolean buyGreaterOrEqualSell;
 
-    /** Whether shops should be protected by hoppers **/
-    public boolean hopper_protection;
+    /**
+     * Whether shops should be protected by hoppers
+     **/
+    public static boolean hopperProtection;
 
-    /** Whether shops should be protected by explosions **/
-    public boolean explosion_protection;
+    /**
+     * Whether shops should be protected by explosions
+     **/
+    public static boolean explosionProtection;
 
-    /** Whether buys and sells must be confirmed **/
-    public boolean confirm_shopping;
+    /**
+     * Whether buys and sells must be confirmed
+     **/
+    public static boolean confirmShopping;
 
-    /** Whether quality mode should be enabled **/
-    public boolean enable_quality_mode;
+    /**
+     * Whether quality mode should be enabled
+     **/
+    public static boolean enableQualityMode;
 
-    /** Whether hologram interaction should be enabled **/
-    public boolean enable_hologram_interaction;
+    /**
+     * Whether hologram interaction should be enabled
+     **/
+    public static boolean enableHologramInteraction;
 
-    /** Whether the debug log file should be created **/
-    public boolean enable_debug_log;
+    /**
+     * Whether the debug log file should be created
+     **/
+    public static boolean enableDebugLog;
 
-    /** Whether buys and sells should be logged in the database **/
-    public boolean enable_ecomomy_log;
+    /**
+     * Whether buys and sells should be logged in the database
+     **/
+    public static boolean enableEcomomyLog;
 
-    /** Whether WorldGuard integration should be enabled **/
-    public boolean enable_worldguard_integration;
+    /**
+     * Whether WorldGuard integration should be enabled
+     **/
+    public static boolean enableWorldGuardIntegration;
 
-    /** Whether Towny integration should be enabled **/
-    public boolean enable_towny_integration;
+    /**
+     * Whether Towny integration should be enabled
+     **/
+    public static boolean enableTownyIntegration;
 
-    /** Whether AuthMe integration should be enabled **/
-    public boolean enable_authme_integration;
+    /**
+     * Whether AuthMe integration should be enabled
+     **/
+    public static boolean enableAuthMeIntegration;
 
-    /** Whether PlotSquared integration should be enabled **/
-    public boolean enable_plotsquared_integration;
+    /**
+     * Whether PlotSquared integration should be enabled
+     **/
+    public static boolean enablePlotsquaredIntegration;
 
-    /** Whether uSkyBlock integration should be enabled **/
-    public boolean enable_uskyblock_integration;
+    /**
+     * Whether uSkyBlock integration should be enabled
+     **/
+    public static boolean enableUSkyblockIntegration;
 
-    /** Whether ASkyBlock integration should be enabled **/
-    public boolean enable_askyblock_integration;
+    /**
+     * Whether ASkyBlock integration should be enabled
+     **/
+    public static boolean enableASkyblockIntegration;
 
-    /** Whether IslandWorld integration should be enabled **/
-    public boolean enable_islandworld_integration;
+    /**
+     * Whether IslandWorld integration should be enabled
+     **/
+    public static boolean enableIslandWorldIntegration;
 
-    /** Whether GriefPrevention integration should be enabled **/
-    public boolean enable_griefprevention_integration;
+    /**
+     * Whether GriefPrevention integration should be enabled
+     **/
+    public static boolean enableGriefPreventionIntegration;
 
-    /** Whether AreaShop integration should be enabled **/
-    public boolean enable_areashop_integration;
+    /**
+     * Whether AreaShop integration should be enabled
+     **/
+    public static boolean enableAreaShopIntegration;
 
-    /** Whether the vendor of the shop should get messages about buys and sells **/
-    public boolean enable_vendor_messages;
+    /**
+     * Whether the vendor of the shop should get messages about buys and sells
+     **/
+    public static boolean enableVendorMessages;
 
-    /** Whether admin shops should be excluded of the shop limits **/
-    public boolean exclude_admin_shops;
+    /**
+     * Whether admin shops should be excluded of the shop limits
+     **/
+    public static boolean excludeAdminShops;
 
-    /** Whether the extension of a potion or tipped arrow (if available) should be appended to the item name. **/
-    public boolean append_potion_level_to_item_name;
+    /**
+     * Whether the extension of a potion or tipped arrow (if available) should be appended to the item name.
+     **/
+    public static boolean appendPotionLevelToItemName;
 
-    /** Whether the shop items should be shown **/
-    public boolean show_shop_items;
+    /**
+     * Whether the shop items should be shown
+     **/
+    public static boolean showShopItems;
 
-    /** Whether players are allowed to sell/buy broken items **/
-    public boolean allow_broken_items;
+    /**
+     * Whether players are allowed to sell/buy broken items
+     **/
+    public static boolean allowBrokenItems;
 
-    /** Whether only the shops a player has in sight should be shown to him **/
-    public boolean only_show_shops_in_sight;
+    /**
+     * Whether only the shops a player has in sight should be shown to him
+     **/
+    public static boolean onlyShowShopsInSight;
 
-    /** Whether only the shop a player is looking at should be shown to him **/
-    public boolean only_show_first_shop_in_sight;
+    /**
+     * Whether only the shop a player is looking at should be shown to him
+     **/
+    public static boolean onlyShowFirstShopInSight;
 
     /**
      * <p>Whether shops should automatically be removed from the database if an error occurred while loading</p>
      * (e.g. when no chest is found at a shop's location)
      */
-    public boolean remove_shop_on_error;
+    public static boolean removeShopOnError;
 
-    /** Whether the item amount should be calculated to fit the available money or inventory space **/
-    public boolean auto_calculate_item_amount;
+    /**
+     * Whether the item amount should be calculated to fit the available money or inventory space
+     **/
+    public static boolean autoCalculateItemAmount;
 
     /**
      * <p>Whether the mouse buttons are inverted</p>
-     *
      * <b>Default:</b><br>
      * Right-Click: Buy<br>
      * Left-Click: Sell
      **/
-    public boolean invert_mouse_buttons;
+    public static boolean invertMouseButtons;
 
-    /** Whether the hologram's location should be fixed at the bottom **/
-    public boolean hologram_fixed_bottom;
+    /**
+     * Whether the hologram's location should be fixed at the bottom
+     **/
+    public static boolean hologramFixedBottom;
 
-    /** Amount every hologram should be lifted **/
-    public double hologram_lift;
+    /**
+     * Amount every hologram should be lifted
+     **/
+    public static double hologramLift;
 
-    /** The maximum distance between a player and a shop to see the hologram **/
-    public double maximal_distance;
+    /**
+     * The maximum distance between a player and a shop to see the hologram
+     **/
+    public static double maximalDistance;
 
-    /** The maximum distance between a player and a shop to see the shop item **/
-    public double maximal_item_distance;
+    /**
+     * The maximum distance between a player and a shop to see the shop item
+     **/
+    public static double maximalItemDistance;
 
-    /** The price a player has to pay in order to create a normal shop **/
-    public double shop_creation_price_normal;
+    /**
+     * The price a player has to pay in order to create a normal shop
+     **/
+    public static double shopCreationPriceNormal;
 
-    /** The price a player has to pay in order to create an admin shop **/
-    public double shop_creation_price_admin;
+    /**
+     * The price a player has to pay in order to create an admin shop
+     **/
+    public static double shopCreationPriceAdmin;
 
-    /** The default shop limit for players whose limit is not set via a permission **/
-    public int default_limit;
+    /**
+     * The default shop limit for players whose limit is not set via a permission
+     **/
+    public static int defaultLimit;
 
-    /** The main command of ShopChest <i>(default: shop)</i> **/
-    public String main_command_name;
+    /**
+     * The main command of ShopChest <i>(default: shop)</i>
+     **/
+    public static String mainCommandName;
 
-    /** The language file to use (e.g <i>en_US</i>, <i>de_DE</i>) **/
-    public String language_file;
+    /**
+     * The language file to use (e.g <i>en_US</i>, <i>de_DE</i>)
+     **/
+    public static String languageFile;
 
+    /**
+     * The language configuration of the currently selected language file
+     */
+    public static LanguageConfiguration langConfig;
+
+    private ShopChest plugin;
 
     public Config(ShopChest plugin) {
         this.plugin = plugin;
@@ -226,7 +329,7 @@ public class Config {
      * <i>Config is automatically reloaded</i>
      *
      * @param property Property to change
-     * @param value Value to set
+     * @param value    Value to set
      */
     public void set(String property, String value) {
         boolean langChange = (property.equalsIgnoreCase("language-file"));
@@ -265,8 +368,9 @@ public class Config {
     /**
      * Add a value to a list in the config.yml.
      * If the list does not exist, a new list with the given value will be created
+     *
      * @param property Location of the list
-     * @param value Value to add
+     * @param value    Value to add
      */
     public void add(String property, String value) {
         List list = (plugin.getConfig().getList(property) == null) ? new ArrayList<>() : plugin.getConfig().getList(property);
@@ -344,62 +448,62 @@ public class Config {
     public void reload(boolean firstLoad, boolean langReload, boolean showMessages) {
         plugin.reloadConfig();
 
-        update_quality = ShopUpdater.UpdateQuality.valueOf(plugin.getConfig().getString("update-quality"));
-        shop_info_item = ItemUtils.getItemStack(plugin.getConfig().getString("shop-info-item"));
-        wg_allow_create_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.create-shop");
-        wg_allow_use_admin_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-admin-shop");
-        wg_allow_use_shop_default = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-shop");
-        towny_shop_plots_residents = plugin.getConfig().getStringList("towny-shop-plots.residents");
-        towny_shop_plots_mayor = plugin.getConfig().getStringList("towny-shop-plots.mayor");
-        towny_shop_plots_king = plugin.getConfig().getStringList("towny-shop-plots.king");
-        areashop_remove_shop_events = plugin.getConfig().getStringList("areashop-remove-shops");
-        database_mysql_ping_interval = plugin.getConfig().getInt("database.mysql.ping-interval");
-        database_mysql_host = plugin.getConfig().getString("database.mysql.hostname");
-        database_mysql_port = plugin.getConfig().getInt("database.mysql.port");
-        database_mysql_database = plugin.getConfig().getString("database.mysql.database");
-        database_mysql_username = plugin.getConfig().getString("database.mysql.username");
-        database_mysql_password = plugin.getConfig().getString("database.mysql.password");
-        database_type = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
-        minimum_prices = (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);
-        maximum_prices = (plugin.getConfig().getConfigurationSection("maximum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("maximum-prices").getKeys(true);
-        allow_decimals_in_price = plugin.getConfig().getBoolean("allow-decimals-in-price");
-        allow_broken_items = plugin.getConfig().getBoolean("allow-broken-items");
-        auto_calculate_item_amount = (allow_decimals_in_price && plugin.getConfig().getBoolean("auto-calculate-item-amount"));
+        updateQuality = ShopUpdater.UpdateQuality.valueOf(plugin.getConfig().getString("update-quality"));
+        shopInfoItem = ItemUtils.getItemStack(plugin.getConfig().getString("shop-info-item"));
+        wgAllowCreateShopDefault = plugin.getConfig().getBoolean("worldguard-default-flag-values.create-shop");
+        wgAllowUseAdminShopDefault = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-admin-shop");
+        wgAllowUseShopDefault = plugin.getConfig().getBoolean("worldguard-default-flag-values.use-shop");
+        townyShopPlotsResidents = plugin.getConfig().getStringList("towny-shop-plots.residents");
+        townyShopPlotsMayor = plugin.getConfig().getStringList("towny-shop-plots.mayor");
+        townyShopPlotsKing = plugin.getConfig().getStringList("towny-shop-plots.king");
+        areashopRemoveShopEvents = plugin.getConfig().getStringList("areashop-remove-shops");
+        databaseMySqlPingInterval = plugin.getConfig().getInt("database.mysql.ping-interval");
+        databaseMySqlHost = plugin.getConfig().getString("database.mysql.hostname");
+        databaseMySqlPort = plugin.getConfig().getInt("database.mysql.port");
+        databaseMySqlDatabase = plugin.getConfig().getString("database.mysql.database");
+        databaseMySqlUsername = plugin.getConfig().getString("database.mysql.username");
+        databaseMySqlPassword = plugin.getConfig().getString("database.mysql.password");
+        databaseType = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
+        minimumPrices = (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);
+        maximumPrices = (plugin.getConfig().getConfigurationSection("maximum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("maximum-prices").getKeys(true);
+        allowDecimalsInPrice = plugin.getConfig().getBoolean("allow-decimals-in-price");
+        allowBrokenItems = plugin.getConfig().getBoolean("allow-broken-items");
+        autoCalculateItemAmount = (allowDecimalsInPrice && plugin.getConfig().getBoolean("auto-calculate-item-amount"));
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
-        buy_greater_or_equal_sell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
-        hopper_protection = plugin.getConfig().getBoolean("hopper-protection");
-        explosion_protection = plugin.getConfig().getBoolean("explosion-protection");
-        confirm_shopping = plugin.getConfig().getBoolean("confirm-shopping");
-        enable_quality_mode = plugin.getConfig().getBoolean("enable-quality-mode");
-        enable_hologram_interaction = plugin.getConfig().getBoolean("enable-hologram-interaction");
-        enable_debug_log = plugin.getConfig().getBoolean("enable-debug-log");
-        enable_ecomomy_log = plugin.getConfig().getBoolean("enable-economy-log");
-        enable_worldguard_integration = plugin.getConfig().getBoolean("enable-worldguard-integration");
-        enable_towny_integration = plugin.getConfig().getBoolean("enable-towny-integration");
-        enable_authme_integration = plugin.getConfig().getBoolean("enable-authme-integration");
-        enable_plotsquared_integration = plugin.getConfig().getBoolean("enable-plotsquared-integration");
-        enable_uskyblock_integration = plugin.getConfig().getBoolean("enable-uskyblock-integration");
-        enable_askyblock_integration = plugin.getConfig().getBoolean("enable-askyblock-integration");
-        enable_islandworld_integration = plugin.getConfig().getBoolean("enable-islandworld-integration");
-        enable_griefprevention_integration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
-        enable_areashop_integration = plugin.getConfig().getBoolean("enable-areashop-integration");
-        enable_vendor_messages = plugin.getConfig().getBoolean("enable-vendor-messages");
-        only_show_shops_in_sight = plugin.getConfig().getBoolean("only-show-shops-in-sight");
-        only_show_first_shop_in_sight = plugin.getConfig().getBoolean("only-show-first-shop-in-sight");
-        exclude_admin_shops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
-        append_potion_level_to_item_name = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
-        show_shop_items = plugin.getConfig().getBoolean("show-shop-items");
-        remove_shop_on_error = plugin.getConfig().getBoolean("remove-shop-on-error");
-        invert_mouse_buttons = plugin.getConfig().getBoolean("invert-mouse-buttons");
-        hologram_fixed_bottom = plugin.getConfig().getBoolean("hologram-fixed-bottom");
-        hologram_lift = plugin.getConfig().getDouble("hologram-lift");
-        maximal_distance = plugin.getConfig().getDouble("maximal-distance");
-        maximal_item_distance = plugin.getConfig().getDouble("maximal-item-distance");
-        shop_creation_price_normal = plugin.getConfig().getDouble("shop-creation-price.normal");
-        shop_creation_price_admin = plugin.getConfig().getDouble("shop-creation-price.admin");
-        default_limit = plugin.getConfig().getInt("shop-limits.default");
-        main_command_name = plugin.getConfig().getString("main-command-name");
-        language_file = plugin.getConfig().getString("language-file");
+        buyGreaterOrEqualSell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
+        hopperProtection = plugin.getConfig().getBoolean("hopper-protection");
+        explosionProtection = plugin.getConfig().getBoolean("explosion-protection");
+        confirmShopping = plugin.getConfig().getBoolean("confirm-shopping");
+        enableQualityMode = plugin.getConfig().getBoolean("enable-quality-mode");
+        enableHologramInteraction = plugin.getConfig().getBoolean("enable-hologram-interaction");
+        enableDebugLog = plugin.getConfig().getBoolean("enable-debug-log");
+        enableEcomomyLog = plugin.getConfig().getBoolean("enable-economy-log");
+        enableWorldGuardIntegration = plugin.getConfig().getBoolean("enable-worldguard-integration");
+        enableTownyIntegration = plugin.getConfig().getBoolean("enable-towny-integration");
+        enableAuthMeIntegration = plugin.getConfig().getBoolean("enable-authme-integration");
+        enablePlotsquaredIntegration = plugin.getConfig().getBoolean("enable-plotsquared-integration");
+        enableUSkyblockIntegration = plugin.getConfig().getBoolean("enable-uskyblock-integration");
+        enableASkyblockIntegration = plugin.getConfig().getBoolean("enable-askyblock-integration");
+        enableIslandWorldIntegration = plugin.getConfig().getBoolean("enable-islandworld-integration");
+        enableGriefPreventionIntegration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
+        enableAreaShopIntegration = plugin.getConfig().getBoolean("enable-areashop-integration");
+        enableVendorMessages = plugin.getConfig().getBoolean("enable-vendor-messages");
+        onlyShowShopsInSight = plugin.getConfig().getBoolean("only-show-shops-in-sight");
+        onlyShowFirstShopInSight = plugin.getConfig().getBoolean("only-show-first-shop-in-sight");
+        excludeAdminShops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
+        appendPotionLevelToItemName = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
+        showShopItems = plugin.getConfig().getBoolean("show-shop-items");
+        removeShopOnError = plugin.getConfig().getBoolean("remove-shop-on-error");
+        invertMouseButtons = plugin.getConfig().getBoolean("invert-mouse-buttons");
+        hologramFixedBottom = plugin.getConfig().getBoolean("hologram-fixed-bottom");
+        hologramLift = plugin.getConfig().getDouble("hologram-lift");
+        maximalDistance = plugin.getConfig().getDouble("maximal-distance");
+        maximalItemDistance = plugin.getConfig().getDouble("maximal-item-distance");
+        shopCreationPriceNormal = plugin.getConfig().getDouble("shop-creation-price.normal");
+        shopCreationPriceAdmin = plugin.getConfig().getDouble("shop-creation-price.admin");
+        defaultLimit = plugin.getConfig().getInt("shop-limits.default");
+        mainCommandName = plugin.getConfig().getString("main-command-name");
+        languageFile = plugin.getConfig().getString("language-file");
 
         if (firstLoad || langReload) loadLanguageConfig(showMessages);
         if (!firstLoad && langReload) LanguageUtils.load();
@@ -434,7 +538,7 @@ public class Config {
         if (!(new File(langFolder, "de_DE.lang")).exists())
             plugin.saveResource("lang/de_DE.lang", false);
 
-        File langConfigFile = new File(langFolder, language_file + ".lang");
+        File langConfigFile = new File(langFolder, languageFile + ".lang");
         File langDefaultFile = new File(langFolder, "en_US.lang");
 
         if (!langConfigFile.exists()) {
@@ -446,7 +550,8 @@ public class Config {
                         r = getTextResource("lang/en_US.lang", showMessages);
                         if (showMessages) plugin.getLogger().info("Using locale \"en_US\" (Streamed from jar file)");
                     } else {
-                        if (showMessages) plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\" (Streamed from jar file)");
+                        if (showMessages)
+                            plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\" (Streamed from jar file)");
                     }
 
                     if (r == null) {
@@ -489,7 +594,8 @@ public class Config {
             }
         } else {
             try {
-                if (showMessages) plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\"");
+                if (showMessages)
+                    plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\"");
                 langConfig.load(langConfigFile);
             } catch (IOException | InvalidConfigurationException e) {
                 if (showMessages) {

@@ -8,7 +8,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
 
 public class LanguageConfiguration extends FileConfiguration {
 

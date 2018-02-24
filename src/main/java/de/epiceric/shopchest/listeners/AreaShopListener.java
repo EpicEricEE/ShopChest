@@ -16,37 +16,35 @@ import org.bukkit.event.Listener;
 public class AreaShopListener implements Listener {
 
     private ShopChest plugin;
-    private Config config;
 
     public AreaShopListener(ShopChest plugin) {
         this.plugin = plugin;
-        this.config = plugin.getShopChestConfig();
     }
 
     @EventHandler
     public void onRegionDeleted(DeletedRegionEvent e) {
-        if (config.enable_areashop_integration && config.areashop_remove_shop_events.contains("DELETE")) {
+        if (Config.enableAreaShopIntegration && Config.areashopRemoveShopEvents.contains("DELETE")) {
             removeShopsInRegion(e.getRegion());
         }
     }
 
     @EventHandler
     public void onRegionUnrented(UnrentedRegionEvent e) {
-        if (config.enable_areashop_integration && config.areashop_remove_shop_events.contains("UNRENT")) {
+        if (Config.enableAreaShopIntegration && Config.areashopRemoveShopEvents.contains("UNRENT")) {
             removeShopsInRegion(e.getRegion());
         }
     }
 
     @EventHandler
     public void onRegionResold(ResoldRegionEvent e) {
-        if (config.enable_areashop_integration && config.areashop_remove_shop_events.contains("RESELL")) {
+        if (Config.enableAreaShopIntegration && Config.areashopRemoveShopEvents.contains("RESELL")) {
             removeShopsInRegion(e.getRegion());
         }
     }
 
     @EventHandler
     public void onRegionSold(SoldRegionEvent e) {
-        if (config.enable_areashop_integration && config.areashop_remove_shop_events.contains("SELL")) {
+        if (Config.enableAreaShopIntegration && Config.areashopRemoveShopEvents.contains("SELL")) {
             removeShopsInRegion(e.getRegion());
         }
     }
