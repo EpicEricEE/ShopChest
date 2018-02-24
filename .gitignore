@@ -11,6 +11,7 @@
 /ShopChest NMS-v1_10_R1/target/
 /.idea/
 /.settings/
+/.vscode/
 .classpath
 .project
 *.iml
