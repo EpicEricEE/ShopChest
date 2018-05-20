@@ -60,7 +60,7 @@ public class AreaShopListener implements Listener {
             if (!shop.getLocation().getWorld().getName().equals(generalRegion.getWorldName())) continue;
 
             for (ProtectedRegion r : regionManager.getApplicableRegions(shop.getLocation())) {
-                if (generalRegion.getName().equals(r.getId())) {
+                if (generalRegion.getLowerCaseName().equals(r.getId())) {
                     plugin.getShopUtils().removeShop(shop, true);
                     break;
                 }
