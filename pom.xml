@@ -158,8 +158,9 @@
         <dependency>
             <groupId>fr.xephi</groupId>
             <artifactId>authme</artifactId>
-            <version>5.2</version>
-            <scope>provided</scope>
+            <version>5.4.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/AuthMe-5.4.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.plotsquared</groupId>
