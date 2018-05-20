@@ -135,6 +135,10 @@
             <id>jitpack-repo</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>nlthijs48-repo</id>
+            <url>https://jenkins.wiefferink.me</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -211,8 +215,7 @@
             <groupId>me.wiefferink</groupId>
             <artifactId>areashop</artifactId>
             <version>2.4.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/AreaShop-2.4.0.jar</systemPath>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
