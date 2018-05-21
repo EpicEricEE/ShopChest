@@ -137,7 +137,7 @@
         </repository>
         <repository>
             <id>nlthijs48-repo</id>
-            <url>https://jenkins.wiefferink.me</url>
+            <url>http://maven.wiefferink.me</url>
         </repository>
     </repositories>
 
