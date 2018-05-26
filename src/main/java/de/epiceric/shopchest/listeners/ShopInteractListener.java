@@ -725,6 +725,12 @@ public class ShopInteractListener implements Listener {
     private void create(final Player executor, final Location location, final ItemStack product, final double buyPrice, final double sellPrice, final ShopType shopType) {
         plugin.debug(executor.getName() + " is creating new shop...");
 
+        if (!executor.hasPermission(Permissions.CREATE)) {
+            executor.sendMessage(LanguageUtils.getMessage(LocalizedMessage.Message.NO_PERMISSION_CREATE));
+            plugin.debug(executor.getName() + " is not permitted to create the shop");
+            return;
+        }
+
         double creationPrice = (shopType == ShopType.NORMAL) ? config.shop_creation_price_normal : config.shop_creation_price_admin;
         Shop shop = new Shop(plugin, executor, product, location, buyPrice, sellPrice, shopType);
 
