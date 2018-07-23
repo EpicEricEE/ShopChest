@@ -18,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -166,6 +167,7 @@ public class Shop {
 
         Chest[] chests = new Chest[2];
         boolean doubleChest;
+        BlockFace face;
 
         if (ih instanceof DoubleChest) {
             DoubleChest dc = (DoubleChest) ih;
@@ -180,8 +182,10 @@ public class Shop {
             doubleChest = false;
         }
 
+        face = ((Directional) chests[0].getBlockData()).getFacing();
+
         String[] holoText = getHologramText();
-        Location holoLocation = getHologramLocation(doubleChest, chests);
+        Location holoLocation = getHologramLocation(doubleChest, chests, face);
 
         hologram = new Hologram(plugin, holoText, holoLocation);
     }
@@ -270,7 +274,7 @@ public class Shop {
         return lines.toArray(new String[0]);
     }
 
-    private Location getHologramLocation(boolean doubleChest, Chest[] chests) {
+    private Location getHologramLocation(boolean doubleChest, Chest[] chests, BlockFace face) {
         Block b = location.getBlock();
         Location holoLocation;
 
@@ -284,21 +288,21 @@ public class Shop {
         if (Config.hologramFixedBottom) subtractY = 0.85;
 
         if (doubleChest) {
-            Chest r = chests[0];
-            Chest l = chests[1];
+            Chest c1 = face == BlockFace.NORTH || face == BlockFace.EAST ? chests[1] : chests[0];
+            Chest c2 = face == BlockFace.NORTH || face == BlockFace.EAST ? chests[0] : chests[1];
 
-            if (b.getLocation().equals(l.getLocation())) {
-                if (r.getX() != l.getX()) {
+            if (b.getLocation().equals(c1.getLocation())) {
+                if (c1.getX() != c2.getX()) {
                     holoLocation = new Location(w, x, y - subtractY, z + 0.5);
-                } else if (r.getZ() != l.getZ()) {
+                } else if (c1.getZ() != c2.getZ()) {
                     holoLocation = new Location(w, x + 0.5, y - subtractY, z);
                 } else {
                     holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
                 }
             } else {
-                if (r.getX() != l.getX()) {
+                if (c1.getX() != c2.getX()) {
                     holoLocation = new Location(w, x + 1, y - subtractY, z + 0.5);
-                } else if (r.getZ() != l.getZ()) {
+                } else if (c1.getZ() != c2.getZ()) {
                     holoLocation = new Location(w, x + 0.5, y - subtractY, z + 1);
                 } else {
                     holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
