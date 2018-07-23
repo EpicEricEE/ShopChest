@@ -14,6 +14,8 @@ public class ArmorStandWrapper {
     private Class<?> worldClass = Utils.getNMSClass("World");
     private Class<?> worldServerClass = Utils.getNMSClass("WorldServer");
     private Class<?> dataWatcherClass = Utils.getNMSClass("DataWatcher");
+    private Class<?> iChatBaseComponentClass = Utils.getNMSClass("IChatBaseComponent");
+    private Class<?> chatMessageClass = Utils.getNMSClass("ChatMessage");
     private Class<?> entityClass = Utils.getNMSClass("Entity");
     private Class<?> entityArmorStandClass = Utils.getNMSClass("EntityArmorStand");
     private Class<?> entityLivingClass = Utils.getNMSClass("EntityLiving");
@@ -45,7 +47,10 @@ public class ArmorStandWrapper {
                     .newInstance(nmsWorld, location.getX(), location.getY(), location.getZ());
 
             if (customName != null && !customName.trim().isEmpty()) {
-                entityArmorStandClass.getMethod("setCustomName", String.class).invoke(entity, customName);
+                Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class)
+                        .newInstance(customName, new Object[0]);
+
+                entityArmorStandClass.getMethod("setCustomName", iChatBaseComponentClass).invoke(entity, chatMessage);
                 entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class).invoke(entity, true);
             }
 
@@ -112,7 +117,10 @@ public class ArmorStandWrapper {
 
         try {
             if (customName != null && !customName.isEmpty()) {
-                entityClass.getMethod("setCustomName", String.class).invoke(entity, customName);
+                Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class)
+                        .newInstance(customName, new Object[0]);
+
+                entityClass.getMethod("setCustomName", iChatBaseComponentClass).invoke(entity, chatMessage);
                 entityClass.getMethod("setCustomNameVisible", boolean.class).invoke(entity, true);
             } else {
                 entityClass.getMethod("setCustomName", String.class).invoke(entity, "");
