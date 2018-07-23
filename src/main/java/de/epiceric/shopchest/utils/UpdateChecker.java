@@ -26,7 +26,7 @@ public class UpdateChecker {
         try {
             plugin.debug("Checking for updates...");
 
-            URL url = new URL("http://textuploader.com/all1l/raw");
+            URL url = new URL("https://textuploader.com/all1l/raw");
             URLConnection conn = url.openConnection();
             conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
             conn.connect();
