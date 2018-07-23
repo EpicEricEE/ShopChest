@@ -21,7 +21,8 @@ public class ArmorStandWrapper {
     private Class<?> packetPlayOutEntityDestroyClass = Utils.getNMSClass("PacketPlayOutEntityDestroy");
     private Class<?> packetPlayOutEntityMetadataClass = Utils.getNMSClass("PacketPlayOutEntityMetadata");
     private Class<?> packetPlayOutEntityTeleportClass = Utils.getNMSClass("PacketPlayOutEntityTeleport");
-
+    private Class<?> chatMessageClass = Utils.getNMSClass("ChatMessage");
+    private Class<?> ichatBase = Utils.getNMSClass("IChatBaseComponent");
     private ShopChest plugin;
 
     private Object nmsWorld;
@@ -45,7 +46,8 @@ public class ArmorStandWrapper {
                     .newInstance(nmsWorld, location.getX(), location.getY(), location.getZ());
 
             if (customName != null && !customName.trim().isEmpty()) {
-                entityArmorStandClass.getMethod("setCustomName", String.class).invoke(entity, customName);
+                Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class).newInstance(customName, new Object[0]);
+                entityClass.getMethod("setCustomName", ichatBase).invoke(entity, chatMessage);
                 entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class).invoke(entity, true);
             }
 
@@ -69,6 +71,7 @@ public class ArmorStandWrapper {
             entityId = (int) entityArmorStandClass.getMethod("getId").invoke(entity);
         } catch (ReflectiveOperationException e) {
             plugin.getLogger().severe("Failed to create line for hologram");
+            e.printStackTrace();
             plugin.debug("Failed to create armor stand");
             plugin.debug(e);
         }
@@ -117,7 +120,8 @@ public class ArmorStandWrapper {
 
         try {
             if (customName != null && !customName.isEmpty()) {
-                entityClass.getMethod("setCustomName", String.class).invoke(entity, customName);
+                Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class).newInstance(customName, new Object[0]);
+                entityClass.getMethod("setCustomName", ichatBase).invoke(entity, chatMessage);
                 entityClass.getMethod("setCustomNameVisible", boolean.class).invoke(entity, true);
             } else {
                 entityClass.getMethod("setCustomName", String.class).invoke(entity, "");

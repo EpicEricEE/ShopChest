@@ -8,6 +8,7 @@ public class ItemName {
     private int subID;
     private String localizedName;
 
+    @Deprecated // Deprecated for 1.13
     public ItemName(Material material, int subID, String localizedName) {
         this.material = material;
         this.subID = subID;
