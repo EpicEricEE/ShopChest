@@ -1,13 +1,13 @@
 package de.epiceric.shopchest.language;
 
-import de.epiceric.shopchest.nms.CustomBookMeta;
+import org.bukkit.inventory.meta.BookMeta;
 
 public class BookGenerationName {
 
     private String localizedName;
-    private CustomBookMeta.Generation generation;
+    private BookMeta.Generation generation;
 
-    public BookGenerationName(CustomBookMeta.Generation generation, String localizedName) {
+    public BookGenerationName(BookMeta.Generation generation, String localizedName) {
         this.generation = generation;
         this.localizedName = localizedName;
     }
@@ -15,7 +15,7 @@ public class BookGenerationName {
     /**
      * @return Generation linked to the name
      */
-    public CustomBookMeta.Generation getGeneration() {
+    public BookMeta.Generation getGeneration() {
         return generation;
     }
 

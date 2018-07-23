@@ -64,6 +64,7 @@ public class WorldGuardListener implements Listener {
                     return query.testState(location, localPlayer, WorldGuardShopFlag.CREATE_SHOP);
                 case REMOVE:
                 case INFO:
+                case OPEN:
                     return true;
             }
         } else {

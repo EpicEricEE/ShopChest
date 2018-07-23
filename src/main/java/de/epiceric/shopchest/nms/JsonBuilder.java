@@ -17,22 +17,16 @@ public class JsonBuilder {
 
     private Class<?> iChatBaseComponentClass = Utils.getNMSClass("IChatBaseComponent");
     private Class<?> packetPlayOutChatClass = Utils.getNMSClass("PacketPlayOutChat");
-    private Class<?> chatSerializerClass;
+    private Class<?> chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");;
 
     public JsonBuilder(ShopChest plugin, String text, String hoverText, String downloadLink) {
         this.plugin = plugin;
 
-        if (Utils.getServerVersion().equals("v1_8_R1")) {
-            chatSerializerClass = Utils.getNMSClass("ChatSerializer");
-        } else {
-            chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");
-        }
-
-        Class[] requiredClasses = new Class[] {
+        Class<?>[] requiredClasses = new Class<?>[] {
           iChatBaseComponentClass, packetPlayOutChatClass, chatSerializerClass
         };
 
-        for (Class c : requiredClasses) {
+        for (Class<?> c : requiredClasses) {
             if (c == null) {
                 plugin.debug("Failed to instantiate JsonBuilder: Could not find all required classes");
                 return;

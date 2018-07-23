@@ -51,7 +51,7 @@ public class UpdateChecker {
                 return UpdateCheckerResult.TRUE;
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             plugin.debug("Failed to check for updates");
             plugin.debug(e);
             return UpdateCheckerResult.ERROR;
