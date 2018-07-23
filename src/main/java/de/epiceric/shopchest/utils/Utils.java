@@ -14,11 +14,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
 
-import javax.xml.bind.DatatypeConverter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 
@@ -360,7 +360,7 @@ public class Utils {
     public static String encode(ItemStack itemStack) {
         YamlConfiguration config = new YamlConfiguration();
         config.set("i", itemStack);
-        return DatatypeConverter.printBase64Binary(config.saveToString().getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(config.saveToString().getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -371,7 +371,7 @@ public class Utils {
     public static ItemStack decode(String string) {
         YamlConfiguration config = new YamlConfiguration();
         try {
-            config.loadFromString(new String(DatatypeConverter.parseBase64Binary(string), StandardCharsets.UTF_8));
+            config.loadFromString(new String(Base64.getDecoder().decode(string), StandardCharsets.UTF_8));
         } catch (IllegalArgumentException | InvalidConfigurationException e) {
             e.printStackTrace();
             return null;
