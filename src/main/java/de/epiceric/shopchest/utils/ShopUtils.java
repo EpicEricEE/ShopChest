@@ -378,6 +378,10 @@ public class ShopUtils {
                                 nearestShop = shop;
                                 nearestDistance = distance;
                                 continue;
+                            } else if (nearestShop.getLocation().equals(shop.getLocation())) {
+                                // shops are the same (double chest)
+                                // => skip since it's already been handled
+                                continue;
                             }
                             // else: hologram is farther than nearest, so we hide it
                         }

@@ -287,7 +287,7 @@ public class Shop {
             Chest r = chests[0];
             Chest l = chests[1];
 
-            if (b.getLocation().equals(r.getLocation())) {
+            if (b.getLocation().equals(l.getLocation())) {
                 if (r.getX() != l.getX()) {
                     holoLocation = new Location(w, x, y - subtractY, z + 0.5);
                 } else if (r.getZ() != l.getZ()) {

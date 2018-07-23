@@ -28,6 +28,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.data.type.Chest.Type;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,7 +40,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.InventoryHolder;
+
 import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
 
@@ -71,6 +72,9 @@ public class ChestProtectListener implements Listener {
                 public void onResult(Void result) {
                     newShop.create(true);
                     shopUtils.addShop(newShop, true);
+                    for (Player player : shop.getLocation().getWorld().getPlayers()) {
+                        shopUtils.updateShops(player, true);
+                    }
                 }
             });
         } else {
@@ -125,30 +129,37 @@ public class ChestProtectListener implements Listener {
         }
     }
 
+    private BlockFace getNeighborFacing(Type chestType, BlockFace facing) {
+        switch (facing) {
+            case NORTH:
+                return chestType == Type.LEFT ? BlockFace.EAST : BlockFace.WEST;
+            case EAST:
+                return chestType == Type.LEFT ? BlockFace.SOUTH : BlockFace.NORTH;
+            case SOUTH:
+                return chestType == Type.LEFT ? BlockFace.WEST : BlockFace.EAST;
+            case WEST:
+                return chestType == Type.LEFT ? BlockFace.NORTH : BlockFace.SOUTH;
+            default:
+                return null;
+        }
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent e) {
         final Player p = e.getPlayer();
-        Block b = e.getBlockPlaced();
+        final Block b = e.getBlockPlaced();
+
         if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
 
             Chest c = (Chest) b.getState();
-            InventoryHolder ih = c.getInventory().getHolder();
+            org.bukkit.block.data.type.Chest data = (org.bukkit.block.data.type.Chest) c.getBlockData();
 
-            if (ih instanceof DoubleChest) {
-                DoubleChest dc = (DoubleChest) ih;
-                Chest r = (Chest) dc.getRightSide();
-                Chest l = (Chest) dc.getLeftSide();
+            if (data.getType() != Type.SINGLE) {
+                BlockFace neighborFacing = getNeighborFacing(data.getType(), data.getFacing());
+                Block b2 = b.getRelative(neighborFacing);
 
-                if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) {
-                    final Shop shop;
-
-                    if (b.getLocation().equals(r.getLocation())) {
-                        shop = shopUtils.getShop(l.getLocation());
-                    } else if (b.getLocation().equals(l.getLocation())) {
-                        shop = shopUtils.getShop(r.getLocation());
-                    } else {
-                        return;
-                    }
+                if (shopUtils.isShop(b.getLocation()) || shopUtils.isShop(b2.getLocation())) {
+                    final Shop shop = shopUtils.getShop(b2.getLocation());
 
                     plugin.debug(String.format("%s tries to extend %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
 
@@ -232,6 +243,9 @@ public class ChestProtectListener implements Listener {
                                         newShop.create(true);
                                         shopUtils.addShop(newShop, true);
                                         plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+                                        for (Player player : shop.getLocation().getWorld().getPlayers()) {
+                                            shopUtils.updateShops(player, true);
+                                        }
                                     }
                                 });
                             } else {
