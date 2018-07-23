@@ -44,7 +44,7 @@ public class ShopItem {
         Class<?> craftWorldClass = Utils.getCraftClass("CraftWorld");
         Class<?> nmsWorldClass = Utils.getNMSClass("World");
 
-        Class<?>[] requiredClasses = new Class[] {
+        Class<?>[] requiredClasses = new Class<?>[] {
                 nmsWorldClass, craftWorldClass, nmsItemStackClass, craftItemStackClass, entityItemClass,
                 packetPlayOutSpawnEntityClass, packetPlayOutEntityMetadataClass, dataWatcherClass,
                 packetPlayOutEntityDestroyClass, entityClass, packetPlayOutEntityVelocityClass,
