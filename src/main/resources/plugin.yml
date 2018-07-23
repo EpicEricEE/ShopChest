@@ -8,6 +8,7 @@ website: ${project.url}
 description: Create your own nice-looking chest shops and sell your stuff to other players!
 softdepend: [WorldGuard, Towny, AuthMe, PlotSquared, uSkyBlock, ASkyBlock, IslandWorld, GriefPrevention, AreaShop, Multiverse-Core, MultiWorld]
 depend: [Vault]
+api-version: 1.13
 
 permissions:
   shopchest.*:

@@ -49,18 +49,13 @@ public class ArmorStandWrapper {
                 entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class).invoke(entity, true);
             }
 
-            if (Utils.getMajorVersion() < 10) {
-                entityArmorStandClass.getMethod("setGravity", boolean.class).invoke(entity, false);
-            } else {
-                entityArmorStandClass.getMethod("setNoGravity", boolean.class).invoke(entity, true);
-            }
-
+            entityArmorStandClass.getMethod("setNoGravity", boolean.class).invoke(entity, true);
             entityArmorStandClass.getMethod("setInvisible", boolean.class).invoke(entity, true);
 
             // Adds the entity to some lists so it can call interact events
             // It will also automatically load/unload it when far away
             if (interactable) {
-                Method addEntityMethod = worldServerClass.getDeclaredMethod((Utils.getMajorVersion() == 8 ? "a" : "b"), entityClass);
+                Method addEntityMethod = worldServerClass.getDeclaredMethod("b", entityClass);
                 addEntityMethod.setAccessible(true);
                 addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
             }
@@ -147,7 +142,7 @@ public class ArmorStandWrapper {
 
         try {
             // Removes the entity from the lists it was added to for interaction
-            Method addEntityMethod = worldServerClass.getDeclaredMethod((Utils.getMajorVersion() == 8 ? "b" : "c"), entityClass);
+            Method addEntityMethod = worldServerClass.getDeclaredMethod("c", entityClass);
             addEntityMethod.setAccessible(true);
             addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
         } catch (ReflectiveOperationException e) {

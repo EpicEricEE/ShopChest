@@ -216,9 +216,9 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.BUY_PRICE, getBuyPrice());
         requirements.put(HologramFormat.Requirement.SELL_PRICE, getSellPrice());
         requirements.put(HologramFormat.Requirement.HAS_POTION_EFFECT, ItemUtils.getPotionEffect(getProduct()) != null);
-        requirements.put(HologramFormat.Requirement.IS_MUSIC_DISC, ItemUtils.isMusicDisc(getProduct()));
+        requirements.put(HologramFormat.Requirement.IS_MUSIC_DISC, getProduct().getType().isRecord());
         requirements.put(HologramFormat.Requirement.IS_POTION_EXTENDED, ItemUtils.isExtendedPotion(getProduct()));
-        requirements.put(HologramFormat.Requirement.IS_WRITTEN_BOOK, ItemUtils.getBookGeneration(getProduct()) != null);
+        requirements.put(HologramFormat.Requirement.IS_WRITTEN_BOOK, getProduct().getType() == Material.WRITTEN_BOOK);
         requirements.put(HologramFormat.Requirement.ADMIN_SHOP, getShopType() == ShopType.ADMIN);
         requirements.put(HologramFormat.Requirement.NORMAL_SHOP, getShopType() == ShopType.NORMAL);
         requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
@@ -235,7 +235,7 @@ public class Shop {
         placeholders.put(Placeholder.SELL_PRICE, getSellPrice());
         placeholders.put(Placeholder.POTION_EFFECT, LanguageUtils.getPotionEffectName(getProduct()));
         placeholders.put(Placeholder.MUSIC_TITLE, LanguageUtils.getMusicDiscName(getProduct().getType()));
-        placeholders.put(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(ItemUtils.getBookGeneration(getProduct())));
+        placeholders.put(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(getProduct()));
         placeholders.put(Placeholder.STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
         placeholders.put(Placeholder.MAX_STACK, getProduct().getMaxStackSize());
         placeholders.put(Placeholder.CHEST_SPACE, Utils.getFreeSpaceForItem(getInventoryHolder().getInventory(), getProduct()));

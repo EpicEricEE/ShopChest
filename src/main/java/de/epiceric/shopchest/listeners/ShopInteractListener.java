@@ -25,7 +25,6 @@ import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
-import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
@@ -65,7 +64,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
@@ -346,6 +344,9 @@ public class ShopInteractListener implements Listener {
                         Shop shop = shopUtils.getShop(b.getLocation());
                         if (shop != null || ClickType.getPlayerClickType(p).getClickType() == ClickType.EnumClickType.CREATE) {
                             switch (ClickType.getPlayerClickType(p).getClickType()) {
+                                case CREATE:
+                                    break;
+                                    
                                 case INFO:
                                     e.setCancelled(true);
 
@@ -868,22 +869,8 @@ public class ShopInteractListener implements Listener {
         }
 
         if (type == Material.WRITTEN_BOOK) {
-            BookMeta meta = (BookMeta) shop.getProduct().getItemMeta();
-            CustomBookMeta.Generation generation = CustomBookMeta.Generation.TATTERED;
-
-            if ((Utils.getMajorVersion() == 9 && Utils.getRevision() == 1) || Utils.getMajorVersion() == 8) {
-                CustomBookMeta.Generation gen = CustomBookMeta.getGeneration(shop.getProduct());
-                generation = (gen == null ? CustomBookMeta.Generation.ORIGINAL : gen);
-            } else if (Utils.getMajorVersion() >= 10) {
-                if (meta.hasGeneration()) {
-                    generation = CustomBookMeta.Generation.valueOf(meta.getGeneration().toString());
-                } else {
-                    generation = CustomBookMeta.Generation.ORIGINAL;
-                }
-            }
-
             bookGenerationString = LanguageUtils.getMessage(Message.SHOP_INFO_BOOK_GENERATION,
-                    new Replacement(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(generation)));
+                    new Replacement(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(shop.getProduct())));
         }
 
         String musicDiscName = LanguageUtils.getMusicDiscName(type);

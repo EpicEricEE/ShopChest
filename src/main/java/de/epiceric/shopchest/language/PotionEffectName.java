@@ -1,13 +1,13 @@
 package de.epiceric.shopchest.language;
 
-import org.bukkit.potion.PotionType;
+import org.bukkit.potion.PotionEffectType;
 
 public class PotionEffectName {
 
-    private PotionType effect;
+    private PotionEffectType effect;
     private String localizedName;
 
-    public PotionEffectName(PotionType effect, String localizedName) {
+    public PotionEffectName(PotionEffectType effect, String localizedName) {
         this.effect = effect;
         this.localizedName = localizedName;
     }
@@ -15,7 +15,7 @@ public class PotionEffectName {
     /**
      * @return Potion Effect linked to the name
      */
-    public PotionType getEffect() {
+    public PotionEffectType getEffect() {
         return effect;
     }
 
