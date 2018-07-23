@@ -211,7 +211,7 @@ public class Utils {
      * @return Whether a player has an axe in one of his hands
      */
     public static boolean hasAxeInHand(Player p) {
-        List<Material> axes = Arrays.asList(Material.WOOD_AXE, Material.STONE_AXE, Material.IRON_AXE, Material.GOLD_AXE, Material.DIAMOND_AXE);
+        List<Material> axes = Arrays.asList(Material.WOODEN_AXE, Material.STONE_AXE, Material.IRON_AXE, Material.GOLDEN_AXE, Material.DIAMOND_AXE);
 
         ItemStack item = getItemInMainHand(p);
         if (item == null || !axes.contains(item.getType())) {
