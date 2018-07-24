@@ -171,6 +171,13 @@ public class Config {
     public static boolean enableWorldGuardIntegration;
 
     /**
+     * <p>Sets the time limit for cleaning up the economy log in days</p>
+     * 
+     * If this equals to {@code 0}, the economy log will not be cleaned.
+     **/
+    public static int cleanupEconomyLogDays;
+
+    /**
      * Whether Towny integration should be enabled
      **/
     public static boolean enableTownyIntegration;
@@ -478,6 +485,7 @@ public class Config {
         enableHologramInteraction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enableDebugLog = plugin.getConfig().getBoolean("enable-debug-log");
         enableEcomomyLog = plugin.getConfig().getBoolean("enable-economy-log");
+        cleanupEconomyLogDays = plugin.getConfig().getInt("cleanup-ecomomy-log-days");
         enableWorldGuardIntegration = plugin.getConfig().getBoolean("enable-worldguard-integration");
         enableTownyIntegration = plugin.getConfig().getBoolean("enable-towny-integration");
         enableAuthMeIntegration = plugin.getConfig().getBoolean("enable-authme-integration");

@@ -155,6 +155,11 @@ public abstract class Database {
                     s4.executeUpdate(queryCreateTablePlayerLogout);
                     s4.close();
 
+                    // Clean up economy log
+                    if (Config.cleanupEconomyLogDays > 0) {
+                        cleanUpEconomy(false);
+                    }
+
                     // Count entries in table "shops"
                     PreparedStatement ps = connection.prepareStatement("SELECT * FROM shops");
                     ResultSet rs2 = ps.executeQuery();
@@ -421,6 +426,52 @@ public abstract class Database {
             }.runTaskAsynchronously(plugin);
         } else {
             if (callback != null) callback.callSyncResult(null);
+        }
+    }
+
+    /**
+     * Cleans up the economy log to reduce file size
+     * @param async Whether the call should be executed asynchronously
+     */
+    public void cleanUpEconomy(boolean async) {
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Statement s = null;
+                Statement s2 = null;
+
+                Calendar cal = Calendar.getInstance();
+                long time = System.currentTimeMillis();
+                cal.add(Calendar.DATE, -Config.cleanupEconomyLogDays);
+                time -= Config.cleanupEconomyLogDays * 86400000L;
+                String logPurgeLimit = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+                String queryCleanUpLog = "DELETE FROM shop_log WHERE timestamp < '" + logPurgeLimit + "'";
+                String queryCleanUpPlayers = "DELETE FROM player_logout WHERE time < " + String.valueOf(time);
+
+                try {
+                    s = connection.createStatement();
+                    s.executeUpdate(queryCleanUpLog);
+
+                    s2 = connection.createStatement();
+                    s2.executeUpdate(queryCleanUpPlayers);
+
+                    plugin.getLogger().info("Cleaned up economy log");
+                    plugin.debug("Cleaned up economy log");
+                } catch (final SQLException ex) {
+                    plugin.getLogger().severe("Failed to clean up economy log");
+                    plugin.debug("Failed to clean up economy log");
+                    plugin.debug(ex);
+                } finally {
+                    close(s, null);
+                    close(s2, null);
+                }
+            }
+        };
+
+        if (async) {
+            runnable.runTaskAsynchronously(plugin);
+        } else {
+            runnable.run();
         }
     }
 
