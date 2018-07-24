@@ -156,7 +156,7 @@ public abstract class Database {
                     s4.close();
 
                     // Clean up economy log
-                    if (plugin.getShopChestConfig().cleanup_ecomomy_log) {
+                    if (Config.cleanupEconomyLogDays > 0) {
                         cleanUpEconomy(false);
                     }
 
@@ -442,8 +442,8 @@ public abstract class Database {
 
                 Calendar cal = Calendar.getInstance();
                 long time = System.currentTimeMillis();
-                cal.add(Calendar.DATE, (plugin.getShopChestConfig().cleanup_ecomomy_log_days * -1));
-                time -= plugin.getShopChestConfig().cleanup_ecomomy_log_days * 86400000L;
+                cal.add(Calendar.DATE, -Config.cleanupEconomyLogDays);
+                time -= Config.cleanupEconomyLogDays * 86400000L;
                 String logPurgeLimit = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
                 String queryCleanUpLog = "DELETE FROM shop_log WHERE timestamp < '" + logPurgeLimit + "'";
                 String queryCleanUpPlayers = "DELETE FROM player_logout WHERE time < " + String.valueOf(time);
