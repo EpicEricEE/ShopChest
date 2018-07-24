@@ -43,7 +43,7 @@ enable-economy-log: false
 # Sets the time limit for cleaning up the economy log in days.
 # All log entries older than this will be deleted on server start.
 # Set this to 0 in order to disable this feature.
-cleanup-ecomomy-log-days: 30
+cleanup-economy-log-days: 30
 
 # Set whether a debug log file should be created.
 # The file may get large! Please enable this setting when reporting bugs.
