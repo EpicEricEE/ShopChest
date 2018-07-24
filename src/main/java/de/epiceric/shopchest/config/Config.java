@@ -163,7 +163,7 @@ public class Config {
     /**
      * Whether buys and sells should be logged in the database
      **/
-    public static boolean enableEcomomyLog;
+    public static boolean enableEconomyLog;
 
     /**
      * Whether WorldGuard integration should be enabled
@@ -484,8 +484,8 @@ public class Config {
         enableQualityMode = plugin.getConfig().getBoolean("enable-quality-mode");
         enableHologramInteraction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enableDebugLog = plugin.getConfig().getBoolean("enable-debug-log");
-        enableEcomomyLog = plugin.getConfig().getBoolean("enable-economy-log");
-        cleanupEconomyLogDays = plugin.getConfig().getInt("cleanup-ecomomy-log-days");
+        enableEconomyLog = plugin.getConfig().getBoolean("enable-economy-log");
+        cleanupEconomyLogDays = plugin.getConfig().getInt("cleanup-economy-log-days");
         enableWorldGuardIntegration = plugin.getConfig().getBoolean("enable-worldguard-integration");
         enableTownyIntegration = plugin.getConfig().getBoolean("enable-towny-integration");
         enableAuthMeIntegration = plugin.getConfig().getBoolean("enable-authme-integration");
