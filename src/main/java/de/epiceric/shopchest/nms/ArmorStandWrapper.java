@@ -47,20 +47,29 @@ public class ArmorStandWrapper {
                     .newInstance(nmsWorld, location.getX(), location.getY(), location.getZ());
 
             if (customName != null && !customName.trim().isEmpty()) {
-                Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class)
-                        .newInstance(customName, new Object[0]);
+                if (Utils.getMajorVersion() < 13) {
+                    entityArmorStandClass.getMethod("setCustomName", String.class).invoke(entity, customName);
+                } else {
+                    Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class)
+                            .newInstance(customName, new Object[0]);
 
-                entityArmorStandClass.getMethod("setCustomName", iChatBaseComponentClass).invoke(entity, chatMessage);
+                    entityArmorStandClass.getMethod("setCustomName", iChatBaseComponentClass).invoke(entity, chatMessage);
+                }
                 entityArmorStandClass.getMethod("setCustomNameVisible", boolean.class).invoke(entity, true);
             }
 
-            entityArmorStandClass.getMethod("setNoGravity", boolean.class).invoke(entity, true);
+            if (Utils.getMajorVersion() < 10) {
+                entityArmorStandClass.getMethod("setGravity", boolean.class).invoke(entity, false);
+            } else {
+                entityArmorStandClass.getMethod("setNoGravity", boolean.class).invoke(entity, true);
+            }
+
             entityArmorStandClass.getMethod("setInvisible", boolean.class).invoke(entity, true);
 
             // Adds the entity to some lists so it can call interact events
             // It will also automatically load/unload it when far away
             if (interactable) {
-                Method addEntityMethod = worldServerClass.getDeclaredMethod("b", entityClass);
+                Method addEntityMethod = worldServerClass.getDeclaredMethod(Utils.getMajorVersion() == 8 ? "a" : "b", entityClass);
                 addEntityMethod.setAccessible(true);
                 addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
             }
@@ -117,13 +126,24 @@ public class ArmorStandWrapper {
 
         try {
             if (customName != null && !customName.isEmpty()) {
-                Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class)
-                        .newInstance(customName, new Object[0]);
+                if (Utils.getMajorVersion() < 13) {
+                    entityClass.getMethod("setCustomName", String.class).invoke(entity, customName);
+                } else {
+                    Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class)
+                            .newInstance(customName, new Object[0]);
 
-                entityClass.getMethod("setCustomName", iChatBaseComponentClass).invoke(entity, chatMessage);
+                    entityClass.getMethod("setCustomName", iChatBaseComponentClass).invoke(entity, chatMessage);
+                }
                 entityClass.getMethod("setCustomNameVisible", boolean.class).invoke(entity, true);
             } else {
-                entityClass.getMethod("setCustomName", String.class).invoke(entity, "");
+                if (Utils.getMajorVersion() < 13) {
+                    entityClass.getMethod("setCustomName", String.class).invoke(entity, "");
+                } else {
+                    Object chatMessage = chatMessageClass.getConstructor(String.class, Object[].class)
+                            .newInstance("", new Object[0]);
+
+                    entityClass.getMethod("setCustomName", iChatBaseComponentClass).invoke(entity, chatMessage);
+                }
                 entityClass.getMethod("setCustomNameVisible", boolean.class).invoke(entity, false);
             }
 
@@ -150,7 +170,7 @@ public class ArmorStandWrapper {
 
         try {
             // Removes the entity from the lists it was added to for interaction
-            Method addEntityMethod = worldServerClass.getDeclaredMethod("c", entityClass);
+            Method addEntityMethod = worldServerClass.getDeclaredMethod(Utils.getMajorVersion() == 8 ? "b" : "c", entityClass);
             addEntityMethod.setAccessible(true);
             addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
         } catch (ReflectiveOperationException e) {

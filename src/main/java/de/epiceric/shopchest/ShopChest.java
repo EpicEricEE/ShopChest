@@ -151,6 +151,14 @@ public class ShopChest extends JavaPlugin {
         }
 
         switch (Utils.getServerVersion()) {
+            case "v1_8_R1":
+            case "v1_8_R2":
+            case "v1_8_R3":
+            case "v1_9_R1":
+            case "v1_9_R2":
+            case "v1_10_R1":
+            case "v1_11_R1":
+            case "v1_12_R1":
             case "v1_13_R1":
                 break;
             default:
@@ -353,7 +361,10 @@ public class ShopChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyPlayerOnJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new ChestProtectListener(this, worldGuard), this);
-        getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);
+
+        if (!Utils.getServerVersion().equals("v1_8_R1")) {
+            getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);
+        }
 
         if (hasWorldGuard()) {
             getServer().getPluginManager().registerEvents(new WorldGuardListener(this), this);

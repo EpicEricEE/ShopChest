@@ -182,7 +182,11 @@ public class Shop {
             doubleChest = false;
         }
 
-        face = ((Directional) chests[0].getBlockData()).getFacing();
+        if (Utils.getMajorVersion() < 13) {
+            face = ((org.bukkit.material.Directional) chests[0].getData()).getFacing();
+        } else {
+            face = ((Directional) chests[0].getBlockData()).getFacing();
+        }
 
         String[] holoText = getHologramText();
         Location holoLocation = getHologramLocation(doubleChest, chests, face);
