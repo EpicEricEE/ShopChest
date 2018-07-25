@@ -12,7 +12,6 @@ import de.epiceric.shopchest.event.ShopRemoveAllEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
-import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.ClickType;
@@ -155,8 +154,7 @@ class ShopCommandExecutor implements CommandExecutor {
             plugin.setUpdateNeeded(true);
 
             if (sender instanceof Player) {
-                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, uc.getVersion())), LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD), uc.getLink());
-                jb.sendJson((Player) sender);
+                Utils.sendUpdateMessage(plugin, (Player) sender);
             } else {
                 sender.sendMessage(LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, uc.getVersion())));
             }
