@@ -5,6 +5,8 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.ShopUpdater;
+import de.epiceric.shopchest.utils.Utils;
+
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.inventory.ItemStack;
 
@@ -543,14 +545,16 @@ public class Config {
         langConfig = new LanguageConfiguration(plugin, showMessages);
         File langFolder = new File(plugin.getDataFolder(), "lang");
 
-        if (!(new File(langFolder, "en_US.lang")).exists())
-            plugin.saveResource("lang/en_US.lang", false);
+        String legacy = Utils.getMajorVersion() < 13 ? "-legacy" : "";
 
-        if (!(new File(langFolder, "de_DE.lang")).exists())
-            plugin.saveResource("lang/de_DE.lang", false);
+        if (!(new File(langFolder, "en_US" + legacy + ".lang")).exists())
+            plugin.saveResource("lang/en_US" + legacy + ".lang", false);
+    
+        if (!(new File(langFolder, "de_DE" + legacy + ".lang")).exists())
+            plugin.saveResource("lang/de_DE" + legacy + ".lang", false);
 
-        File langConfigFile = new File(langFolder, languageFile + ".lang");
-        File langDefaultFile = new File(langFolder, "en_US.lang");
+        File langConfigFile = new File(langFolder, languageFile + legacy + ".lang");
+        File langDefaultFile = new File(langFolder, "en_US" + legacy + ".lang");
 
         if (!langConfigFile.exists()) {
             if (!langDefaultFile.exists()) {
@@ -558,8 +562,8 @@ public class Config {
                     Reader r = getTextResource("lang/" + langConfigFile.getName(), showMessages);
 
                     if (r == null) {
-                        r = getTextResource("lang/en_US.lang", showMessages);
-                        if (showMessages) plugin.getLogger().info("Using locale \"en_US\" (Streamed from jar file)");
+                        r = getTextResource("lang/en_US" + legacy + ".lang", showMessages);
+                        if (showMessages) plugin.getLogger().info("Using locale \"en_US" + legacy + "\" (Streamed from jar file)");
                     } else {
                         if (showMessages)
                             plugin.getLogger().info("Using locale \"" + langConfigFile.getName().substring(0, langConfigFile.getName().length() - 5) + "\" (Streamed from jar file)");
@@ -593,7 +597,7 @@ public class Config {
             } else {
                 try {
                     langConfig.load(langDefaultFile);
-                    if (showMessages) plugin.getLogger().info("Using locale \"en_US\"");
+                    if (showMessages) plugin.getLogger().info("Using locale \"en_US" + legacy + "\"");
                 } catch (IOException | InvalidConfigurationException e) {
                     if (showMessages) {
                         plugin.getLogger().warning("Using default language values");

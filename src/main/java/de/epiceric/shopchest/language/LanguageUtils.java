@@ -4,14 +4,20 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.LanguageConfiguration;
 import de.epiceric.shopchest.config.Placeholder;
+import de.epiceric.shopchest.nms.CustomBookMeta;
+import de.epiceric.shopchest.nms.SpawnEggMeta;
+import de.epiceric.shopchest.utils.Utils;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
@@ -34,6 +40,951 @@ public class LanguageUtils {
     private static ArrayList<LocalizedMessage> messages = new ArrayList<>();
 
 
+    private static void loadLegacy() {
+        // Add Block Names
+        itemNames.add(new ItemName(Material.valueOf("STONE"), langConfig.getString("tile.stone.stone.name", "Stone")));
+        itemNames.add(new ItemName(Material.valueOf("STONE"), 1, langConfig.getString("tile.stone.granite.name", "Granite")));
+        itemNames.add(new ItemName(Material.valueOf("STONE"), 2, langConfig.getString("tile.stone.graniteSmooth.name", "Polished Granite")));
+        itemNames.add(new ItemName(Material.valueOf("STONE"), 3, langConfig.getString("tile.stone.diorite.name", "Diorite")));
+        itemNames.add(new ItemName(Material.valueOf("STONE"), 4, langConfig.getString("tile.stone.dioriteSmooth.name", "Polished Diorite")));
+        itemNames.add(new ItemName(Material.valueOf("STONE"), 5, langConfig.getString("tile.stone.andesite.name", "Andesite")));
+        itemNames.add(new ItemName(Material.valueOf("STONE"), 6, langConfig.getString("tile.stone.andesiteSmooth.name", "Polished Andesite")));
+        itemNames.add(new ItemName(Material.valueOf("GRASS"), langConfig.getString("tile.grass.name", "Grass Block")));
+        itemNames.add(new ItemName(Material.valueOf("DIRT"), langConfig.getString("tile.dirt.default.name", "Dirt")));
+        itemNames.add(new ItemName(Material.valueOf("DIRT"), 1, langConfig.getString("tile.dirt.coarse.name", "Coarse Dirt")));
+        itemNames.add(new ItemName(Material.valueOf("DIRT"), 2, langConfig.getString("tile.dirt.podzol.name", "Podzol")));
+        itemNames.add(new ItemName(Material.valueOf("COBBLESTONE"), langConfig.getString("tile.stonebrick.name", "Cobblestone")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD"), langConfig.getString("tile.wood.oak.name", "Oak Wood Planks")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD"), 1, langConfig.getString("tile.wood.spruce.name", "Spruce Wood Planks")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD"), 2, langConfig.getString("tile.wood.birch.name", "Birch Wood Planks")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD"), 3, langConfig.getString("tile.wood.jungle.name", "Jungle Wood Planks")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD"), 4, langConfig.getString("tile.wood.acacia.name", "Acacia Wood Planks")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD"), 5, langConfig.getString("tile.wood.big_oak.name", "Dark Oak Wood Planks")));
+        itemNames.add(new ItemName(Material.valueOf("SAPLING"), langConfig.getString("tile.sapling.oak.name", "Oak Sapling")));
+        itemNames.add(new ItemName(Material.valueOf("SAPLING"), 1, langConfig.getString("tile.sapling.spruce.name", "Spruce Sapling")));
+        itemNames.add(new ItemName(Material.valueOf("SAPLING"), 2, langConfig.getString("tile.sapling.birch.name", "Birch Sapling")));
+        itemNames.add(new ItemName(Material.valueOf("SAPLING"), 3, langConfig.getString("tile.sapling.jungle.name", "Jungle Sapling")));
+        itemNames.add(new ItemName(Material.valueOf("SAPLING"), 4, langConfig.getString("tile.sapling.acacia.name", "Acacia Sapling")));
+        itemNames.add(new ItemName(Material.valueOf("SAPLING"), 5, langConfig.getString("tile.sapling.big_oak.name", "Dark Oak Sapling")));
+        itemNames.add(new ItemName(Material.valueOf("BEDROCK"), langConfig.getString("tile.bedrock.name", "Bedrock")));
+        itemNames.add(new ItemName(Material.valueOf("WATER"), langConfig.getString("tile.water.name", "Water")));
+        itemNames.add(new ItemName(Material.valueOf("LAVA"), langConfig.getString("tile.lava.name", "Lava")));
+        itemNames.add(new ItemName(Material.valueOf("SAND"), langConfig.getString("tile.sand.default.name", "Sand")));
+        itemNames.add(new ItemName(Material.valueOf("SAND"), 1, langConfig.getString("tile.sand.red.name", "Red Sand")));
+        itemNames.add(new ItemName(Material.valueOf("GRAVEL"), langConfig.getString("tile.gravel.name", "Gravel")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_ORE"), langConfig.getString("tile.oreGold.name", "Gold Ore")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_ORE"), langConfig.getString("tile.oreIron.name", "Iron Ore")));
+        itemNames.add(new ItemName(Material.valueOf("COAL_ORE"), langConfig.getString("tile.oreCoal.name", "Coal Ore")));
+        itemNames.add(new ItemName(Material.valueOf("LOG"), langConfig.getString("tile.log.oak.name", "Oak Wood")));
+        itemNames.add(new ItemName(Material.valueOf("LOG"), 1, langConfig.getString("tile.log.spruce.name", "Spruce Wood")));
+        itemNames.add(new ItemName(Material.valueOf("LOG"), 2, langConfig.getString("tile.log.birch.name", "Birch Wood")));
+        itemNames.add(new ItemName(Material.valueOf("LOG"), 3, langConfig.getString("tile.log.jungle.name", "Jungle Wood")));
+        itemNames.add(new ItemName(Material.valueOf("LEAVES"), langConfig.getString("tile.leaves.oak.name", "Oak Leaves")));
+        itemNames.add(new ItemName(Material.valueOf("LEAVES"), 1, langConfig.getString("tile.leaves.spruce.name", "Spruce Leaves")));
+        itemNames.add(new ItemName(Material.valueOf("LEAVES"), 2, langConfig.getString("tile.leaves.birch.name", "Birch Leaves")));
+        itemNames.add(new ItemName(Material.valueOf("LEAVES"), 3, langConfig.getString("tile.leaves.jungle.name", "Jungle Leaves")));
+        itemNames.add(new ItemName(Material.valueOf("SPONGE"), langConfig.getString("tile.sponge.dry.name", "Sponge")));
+        itemNames.add(new ItemName(Material.valueOf("SPONGE"), 1, langConfig.getString("tile.sponge.wet.name", "Wet Sponge")));
+        itemNames.add(new ItemName(Material.valueOf("GLASS"), langConfig.getString("tile.glass.name", "Glass")));
+        itemNames.add(new ItemName(Material.valueOf("LAPIS_ORE"), langConfig.getString("tile.oreLapis.name", "Lapis Lazuli Ore")));
+        itemNames.add(new ItemName(Material.valueOf("LAPIS_BLOCK"), langConfig.getString("tile.blockLapis.name", "Lapis Lazuli Block")));
+        itemNames.add(new ItemName(Material.valueOf("DISPENSER"), langConfig.getString("tile.dispenser.name", "Dispenser")));
+        itemNames.add(new ItemName(Material.valueOf("SANDSTONE"), langConfig.getString("tile.sandStone.default.name", "Sandstone")));
+        itemNames.add(new ItemName(Material.valueOf("SANDSTONE"), 1, langConfig.getString("tile.sandStone.chiseled.name", "Chiseled Sandstone")));
+        itemNames.add(new ItemName(Material.valueOf("SANDSTONE"), 2, langConfig.getString("tile.sandStone.smooth.name", "Smooth Sandstone")));
+        itemNames.add(new ItemName(Material.valueOf("NOTE_BLOCK"), langConfig.getString("tile.musicBlock.name", "Note Block")));
+        itemNames.add(new ItemName(Material.valueOf("POWERED_RAIL"), langConfig.getString("tile.goldenRail.name", "Powered Rail")));
+        itemNames.add(new ItemName(Material.valueOf("DETECTOR_RAIL"), langConfig.getString("tile.detectorRail.name", "Detector Rail")));
+        itemNames.add(new ItemName(Material.valueOf("PISTON_STICKY_BASE"), langConfig.getString("tile.pistonStickyBase.name", "Sticky Piston")));
+        itemNames.add(new ItemName(Material.valueOf("WEB"), langConfig.getString("tile.web.name", "Web")));
+        itemNames.add(new ItemName(Material.valueOf("LONG_GRASS"), langConfig.getString("tile.tallgrass.shrub.name", "Shrub")));
+        itemNames.add(new ItemName(Material.valueOf("LONG_GRASS"), 1, langConfig.getString("tile.tallgrass.grass.name", "Grass")));
+        itemNames.add(new ItemName(Material.valueOf("LONG_GRASS"), 2, langConfig.getString("tile.tallgrass.fern.name", "Fern")));
+        itemNames.add(new ItemName(Material.valueOf("DEAD_BUSH"), langConfig.getString("tile.deadbush.name", "Dead Bush")));
+        itemNames.add(new ItemName(Material.valueOf("PISTON_BASE"), langConfig.getString("tile.pistonBase.name", "Piston")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), langConfig.getString("tile.cloth.white.name", "White Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 1, langConfig.getString("tile.cloth.orange.name", "Orange Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 2, langConfig.getString("tile.cloth.magenta.name", "Magenta Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 3, langConfig.getString("tile.cloth.lightBlue.name", "Light Blue Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 4, langConfig.getString("tile.cloth.yellow.name", "Yellow Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 5, langConfig.getString("tile.cloth.lime.name", "Lime Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 6, langConfig.getString("tile.cloth.pink.name", "Pink Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 7, langConfig.getString("tile.cloth.gray.name", "Gray Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 8, langConfig.getString("tile.cloth.silver.name", "Light Gray Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 9, langConfig.getString("tile.cloth.cyan.name", "Cyan Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 10, langConfig.getString("tile.cloth.purple.name", "Purple Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 11, langConfig.getString("tile.cloth.blue.name", "Blue Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 12, langConfig.getString("tile.cloth.brown.name", "Brown Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 13, langConfig.getString("tile.cloth.green.name", "Green Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 14, langConfig.getString("tile.cloth.red.name", "Red Wool")));
+        itemNames.add(new ItemName(Material.valueOf("WOOL"), 15, langConfig.getString("tile.cloth.black.name", "Black Wool")));
+        itemNames.add(new ItemName(Material.valueOf("YELLOW_FLOWER"), langConfig.getString("tile.flower1.dandelion.name", "Dandelion")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), langConfig.getString("tile.flower2.poppy.name", "Poppy")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), 1, langConfig.getString("tile.flower2.blueOrchid.name", "Blue Orchid")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), 2, langConfig.getString("tile.flower2.allium.name", "Allium")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), 3, langConfig.getString("tile.flower2.houstonia.name", "Azure Bluet")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), 4, langConfig.getString("tile.flower2.tulipRed.name", "Red Tulip")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), 5, langConfig.getString("tile.flower2.tulipOrange.name", "Orange Tulip")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), 6, langConfig.getString("tile.flower2.tulipWhite.name", "White Tulip")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), 7, langConfig.getString("tile.flower2.tulipPink.name", "Pink Tulip")));
+        itemNames.add(new ItemName(Material.valueOf("RED_ROSE"), 8, langConfig.getString("tile.flower2.oxeyeDaisy.name", "Oxeye Daisy")));
+        itemNames.add(new ItemName(Material.valueOf("BROWN_MUSHROOM"), langConfig.getString("tile.mushroom.name", "Mushroom")));
+        itemNames.add(new ItemName(Material.valueOf("RED_MUSHROOM"), langConfig.getString("tile.mushroom.name", "Mushroom")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_BLOCK"), langConfig.getString("tile.blockGold.name", "Block of Gold")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_BLOCK"), langConfig.getString("tile.blockIron.name", "Block of Iron")));
+        itemNames.add(new ItemName(Material.valueOf("STEP"), langConfig.getString("tile.stoneSlab.stone.name", "Stone Slab")));
+        itemNames.add(new ItemName(Material.valueOf("STEP"), 1, langConfig.getString("tile.stoneSlab.sand.name", "Sandstone Slab")));
+        itemNames.add(new ItemName(Material.valueOf("STEP"), 2, langConfig.getString("tile.stoneSlab.wood.name", "Wooden Slab")));
+        itemNames.add(new ItemName(Material.valueOf("STEP"), 3, langConfig.getString("tile.stoneSlab.cobble.name", "Cobblestone Slab")));
+        itemNames.add(new ItemName(Material.valueOf("STEP"), 4, langConfig.getString("tile.stoneSlab.brick.name", "Brick Slab")));
+        itemNames.add(new ItemName(Material.valueOf("STEP"), 5, langConfig.getString("tile.stoneSlab.smoothStoneBrick.name", "Stone Brick Slab")));
+        itemNames.add(new ItemName(Material.valueOf("STEP"), 6, langConfig.getString("tile.stoneSlab.netherBrick.name", "Nether Brick Slab")));
+        itemNames.add(new ItemName(Material.valueOf("STEP"), 7, langConfig.getString("tile.stoneSlab.quartz.name", "Quartz Slab")));
+        itemNames.add(new ItemName(Material.valueOf("BRICK"), langConfig.getString("tile.brick.name", "Brick")));
+        itemNames.add(new ItemName(Material.valueOf("TNT"), langConfig.getString("tile.tnt.name", "TNT")));
+        itemNames.add(new ItemName(Material.valueOf("BOOKSHELF"), langConfig.getString("tile.bookshelf.name", "Bookshelf")));
+        itemNames.add(new ItemName(Material.valueOf("MOSSY_COBBLESTONE"), langConfig.getString("tile.stoneMoss.name", "Moss Stone")));
+        itemNames.add(new ItemName(Material.valueOf("OBSIDIAN"), langConfig.getString("tile.obsidian.name", "Obsidian")));
+        itemNames.add(new ItemName(Material.valueOf("TORCH"), langConfig.getString("tile.torch.name", "Torch")));
+        itemNames.add(new ItemName(Material.valueOf("FIRE"), langConfig.getString("tile.fire.name", "Fire")));
+        itemNames.add(new ItemName(Material.valueOf("MOB_SPAWNER"), langConfig.getString("tile.mobSpawner.name", "Mob Spawner")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_STAIRS"), langConfig.getString("tile.stairsWood.name", "Oak Wood Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("CHEST"), langConfig.getString("tile.chest.name", "Chest")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_ORE"), langConfig.getString("tile.oreDiamond.name", "Diamond Ore")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_BLOCK"), langConfig.getString("tile.blockDiamond.name", "Block of Diamond")));
+        itemNames.add(new ItemName(Material.valueOf("WORKBENCH"), langConfig.getString("tile.workbench.name", "Crafting Table")));
+        itemNames.add(new ItemName(Material.valueOf("SOIL"), langConfig.getString("tile.farmland.name", "Farmland")));
+        itemNames.add(new ItemName(Material.valueOf("FURNACE"), langConfig.getString("tile.furnace.name", "Furnace")));
+        itemNames.add(new ItemName(Material.valueOf("LADDER"), langConfig.getString("tile.ladder.name", "Ladder")));
+        itemNames.add(new ItemName(Material.valueOf("RAILS"), langConfig.getString("tile.rail.name", "Rail")));
+        itemNames.add(new ItemName(Material.valueOf("COBBLESTONE_STAIRS"), langConfig.getString("tile.stairsStone.name", "Stone Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("LEVER"), langConfig.getString("tile.lever.name", "Lever")));
+        itemNames.add(new ItemName(Material.valueOf("STONE_PLATE"), langConfig.getString("tile.pressurePlateStone.name", "Stone Pressure Plate")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_PLATE"), langConfig.getString("tile.pressurePlateWood.name", "Wooden Pressure Plate")));
+        itemNames.add(new ItemName(Material.valueOf("REDSTONE_ORE"), langConfig.getString("tile.oreRedstone.name", "Redstone Ore")));
+        itemNames.add(new ItemName(Material.valueOf("REDSTONE_TORCH_ON"), langConfig.getString("tile.notGate.name", "Redstone Torch")));
+        itemNames.add(new ItemName(Material.valueOf("SNOW"), langConfig.getString("tile.snow.name", "Snow")));
+        itemNames.add(new ItemName(Material.valueOf("ICE"), langConfig.getString("tile.ice.name", "Ice")));
+        itemNames.add(new ItemName(Material.valueOf("SNOW_BLOCK"), langConfig.getString("tile.snow.name", "Snow")));
+        itemNames.add(new ItemName(Material.valueOf("CACTUS"), langConfig.getString("tile.cactus.name", "Cactus")));
+        itemNames.add(new ItemName(Material.valueOf("CLAY"), langConfig.getString("tile.clay.name", "Clay")));
+        itemNames.add(new ItemName(Material.valueOf("JUKEBOX"), langConfig.getString("tile.jukebox.name", "Jukebox")));
+        itemNames.add(new ItemName(Material.valueOf("FENCE"), langConfig.getString("tile.fence.name", "Oak Fence")));
+        itemNames.add(new ItemName(Material.valueOf("PUMPKIN"), langConfig.getString("tile.pumpkin.name", "Pumpkin")));
+        itemNames.add(new ItemName(Material.valueOf("NETHERRACK"), langConfig.getString("tile.hellrock.name", "Netherrack")));
+        itemNames.add(new ItemName(Material.valueOf("SOUL_SAND"), langConfig.getString("tile.hellsand.name", "Soul Sand")));
+        itemNames.add(new ItemName(Material.valueOf("GLOWSTONE"), langConfig.getString("tile.lightgem.name", "Glowstone")));
+        itemNames.add(new ItemName(Material.valueOf("PORTAL"), langConfig.getString("tile.portal.name", "Portal")));
+        itemNames.add(new ItemName(Material.valueOf("JACK_O_LANTERN"), langConfig.getString("tile.litpumpkin.name", "Jack o'Lantern")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), langConfig.getString("tile.stainedGlass.white.name", "White Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 1, langConfig.getString("tile.stainedGlass.orange.name", "Orange Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 2, langConfig.getString("tile.stainedGlass.magenta.name", "Magenta Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 3, langConfig.getString("tile.stainedGlass.lightBlue.name", "Light Blue Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 4, langConfig.getString("tile.stainedGlass.yellow.name", "Yellow Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 5, langConfig.getString("tile.stainedGlass.lime.name", "Lime Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 6, langConfig.getString("tile.stainedGlass.pink.name", "Pink Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 7, langConfig.getString("tile.stainedGlass.gray.name", "Gray Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 8, langConfig.getString("tile.stainedGlass.silver.name", "Light Gray Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 9, langConfig.getString("tile.stainedGlass.cyan.name", "Cyan Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 10, langConfig.getString("tile.stainedGlass.purple.name", "Purple Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 11, langConfig.getString("tile.stainedGlass.blue.name", "Blue Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 12, langConfig.getString("tile.stainedGlass.brown.name", "Brown Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 13, langConfig.getString("tile.stainedGlass.green.name", "Green Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 14, langConfig.getString("tile.stainedGlass.red.name", "Red Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS"), 15, langConfig.getString("tile.stainedGlass.black.name", "Black Stained Glass")));
+        itemNames.add(new ItemName(Material.valueOf("TRAP_DOOR"), langConfig.getString("tile.trapdoor.name", "Wooden Trapdoor")));
+        itemNames.add(new ItemName(Material.valueOf("MONSTER_EGGS"), langConfig.getString("tile.monsterStoneEgg.stone.name", "Stone Monster Egg")));
+        itemNames.add(new ItemName(Material.valueOf("MONSTER_EGGS"), 1, langConfig.getString("tile.monsterStoneEgg.cobble.name", "Cobblestone Monster Egg")));
+        itemNames.add(new ItemName(Material.valueOf("MONSTER_EGGS"), 2, langConfig.getString("tile.monsterStoneEgg.brick.name", "Stone Brick Monster Egg")));
+        itemNames.add(new ItemName(Material.valueOf("MONSTER_EGGS"), 3, langConfig.getString("tile.monsterStoneEgg.mossybrick.name", "Mossy Stone Brick Monster Egg")));
+        itemNames.add(new ItemName(Material.valueOf("MONSTER_EGGS"), 4, langConfig.getString("tile.monsterStoneEgg.crackedbrick.name", "Cracked Stone Brick Monster Egg")));
+        itemNames.add(new ItemName(Material.valueOf("MONSTER_EGGS"), 5, langConfig.getString("tile.monsterStoneEgg.chiseledbrick.name", "Chiseled Stone Brick Monster Egg")));
+        itemNames.add(new ItemName(Material.valueOf("SMOOTH_BRICK"), langConfig.getString("tile.stonebricksmooth.default.name", "Stone Bricks")));
+        itemNames.add(new ItemName(Material.valueOf("SMOOTH_BRICK"), 1, langConfig.getString("tile.stonebricksmooth.mossy.name", "Mossy Stone Bricks")));
+        itemNames.add(new ItemName(Material.valueOf("SMOOTH_BRICK"), 2, langConfig.getString("tile.stonebricksmooth.cracked.name", "Cracked Stone Bricks")));
+        itemNames.add(new ItemName(Material.valueOf("SMOOTH_BRICK"), 3, langConfig.getString("tile.stonebricksmooth.chiseled.name", "Chiseled Stone Bricks")));
+        itemNames.add(new ItemName(Material.valueOf("HUGE_MUSHROOM_1"), langConfig.getString("tile.mushroom.name", "Mushroom")));
+        itemNames.add(new ItemName(Material.valueOf("HUGE_MUSHROOM_2"), langConfig.getString("tile.mushroom.name", "Mushroom")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_FENCE"), langConfig.getString("tile.fenceIron.name", "Iron Bars")));
+        itemNames.add(new ItemName(Material.valueOf("THIN_GLASS"), langConfig.getString("tile.thinGlass.name", "Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("MELON_BLOCK"), langConfig.getString("tile.melon.name", "Melon")));
+        itemNames.add(new ItemName(Material.valueOf("VINE"), langConfig.getString("tile.vine.name", "Vines")));
+        itemNames.add(new ItemName(Material.valueOf("FENCE_GATE"), langConfig.getString("tile.fenceGate.name", "Oak Fence Gate")));
+        itemNames.add(new ItemName(Material.valueOf("BRICK_STAIRS"), langConfig.getString("tile.stairsBrick.name", "Brick Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("SMOOTH_STAIRS"), langConfig.getString("tile.stairsStoneBrickSmooth.name", "Stone Brick Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("MYCEL"), langConfig.getString("tile.mycel.name", "Mycelium")));
+        itemNames.add(new ItemName(Material.valueOf("WATER_LILY"), langConfig.getString("tile.waterlily.name", "Lily Pad")));
+        itemNames.add(new ItemName(Material.valueOf("NETHER_BRICK"), langConfig.getString("tile.netherBrick.name", "Nether Brick")));
+        itemNames.add(new ItemName(Material.valueOf("NETHER_FENCE"), langConfig.getString("tile.netherFence.name", "Nether Brick Fence")));
+        itemNames.add(new ItemName(Material.valueOf("NETHER_BRICK_STAIRS"), langConfig.getString("tile.stairsNetherBrick.name", "Nether Brick Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("ENCHANTMENT_TABLE"), langConfig.getString("tile.enchantmentTable.name", "Enchantment Table")));
+        itemNames.add(new ItemName(Material.valueOf("ENDER_PORTAL_FRAME"), langConfig.getString("tile.endPortalFrame.name", "End Portal Frame")));
+        itemNames.add(new ItemName(Material.valueOf("ENDER_STONE"), langConfig.getString("tile.whiteStone.name", "End Stone")));
+        itemNames.add(new ItemName(Material.valueOf("DRAGON_EGG"), langConfig.getString("tile.dragonEgg.name", "Dragon Egg")));
+        itemNames.add(new ItemName(Material.valueOf("REDSTONE_LAMP_OFF"), langConfig.getString("tile.redstoneLight.name", "Redstone Lamp")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_STEP"), langConfig.getString("tile.woodSlab.oak.name", "Oak Wood Slab")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_STEP"), 1, langConfig.getString("tile.woodSlab.spruce.name", "Spruce Wood Slab")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_STEP"), 2, langConfig.getString("tile.woodSlab.birch.name", "Birch Wood Slab")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_STEP"), 3, langConfig.getString("tile.woodSlab.jungle.name", "Jungle Wood Slab")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_STEP"), 4, langConfig.getString("tile.woodSlab.acacia.name", "Acacia Wood Slab")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_STEP"), 5, langConfig.getString("tile.woodSlab.big_oak.name", "Dark Oak Wood Slab")));
+        itemNames.add(new ItemName(Material.valueOf("SANDSTONE_STAIRS"), langConfig.getString("tile.stairsSandStone.name", "Mycelium")));
+        itemNames.add(new ItemName(Material.valueOf("EMERALD_ORE"), langConfig.getString("tile.oreEmerald.name", "Emerald Ore")));
+        itemNames.add(new ItemName(Material.valueOf("ENDER_CHEST"), langConfig.getString("tile.enderChest.name", "Ender Chest")));
+        itemNames.add(new ItemName(Material.valueOf("TRIPWIRE_HOOK"), langConfig.getString("tile.tripWireSource.name", "Tripwire Hook")));
+        itemNames.add(new ItemName(Material.valueOf("EMERALD_BLOCK"), langConfig.getString("tile.blockEmerald.name", "Block of Emerald")));
+        itemNames.add(new ItemName(Material.valueOf("SPRUCE_WOOD_STAIRS"), langConfig.getString("tile.stairsWoodSpruce.name", "Spruce Wood Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("BIRCH_WOOD_STAIRS"), langConfig.getString("tile.stairsWoodBirch.name", "Birch Wood Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("JUNGLE_WOOD_STAIRS"), langConfig.getString("tile.stairsWoodJungle.name", "Jungle Wood Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("COMMAND"), langConfig.getString("tile.commandBlock.name", "Command Block")));
+        itemNames.add(new ItemName(Material.valueOf("BEACON"), langConfig.getString("tile.beacon.name", "Beacon")));
+        itemNames.add(new ItemName(Material.valueOf("COBBLE_WALL"), langConfig.getString("tile.cobbleWall.normal.name", "Cobblestone Wall")));
+        itemNames.add(new ItemName(Material.valueOf("COBBLE_WALL"), 1, langConfig.getString("tile.cobbleWall.mossy.name", "Mossy Cobblestone Wall")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_BUTTON"), langConfig.getString("tile.button.name", "Button")));
+        itemNames.add(new ItemName(Material.valueOf("NETHER_STALK"), langConfig.getString("tile.netherStalk.name", "Nether Wart")));
+        itemNames.add(new ItemName(Material.valueOf("ANVIL"), langConfig.getString("tile.anvil.intact.name", "Anvil")));
+        itemNames.add(new ItemName(Material.valueOf("ANVIL"), 1, langConfig.getString("tile.anvil.slightlyDamaged.name", "Slightly Damaged Anvil")));
+        itemNames.add(new ItemName(Material.valueOf("ANVIL"), 2, langConfig.getString("tile.anvil.veryDamaged.name", "Very Damaged Anvil")));
+        itemNames.add(new ItemName(Material.valueOf("TRAPPED_CHEST"), langConfig.getString("tile.chestTrap.name", "Trapped Chest")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_PLATE"), langConfig.getString("tile.weightedPlate_light.name", "Weighted Pressure Plate (Light)")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_PLATE"), langConfig.getString("tile.weightedPlate_heavy.name", "Weighted Pressure Plate (Heavy)")));
+        itemNames.add(new ItemName(Material.valueOf("DAYLIGHT_DETECTOR"), langConfig.getString("tile.daylightDetector.name", "Daylight Sensor")));
+        itemNames.add(new ItemName(Material.valueOf("REDSTONE_BLOCK"), langConfig.getString("tile.blockRedstone.name", "Block of Redstone")));
+        itemNames.add(new ItemName(Material.valueOf("QUARTZ_ORE"), langConfig.getString("tile.netherquartz.name", "Nether Quartz Ore")));
+        itemNames.add(new ItemName(Material.valueOf("HOPPER"), langConfig.getString("tile.hopper.name", "Hopper")));
+        itemNames.add(new ItemName(Material.valueOf("QUARTZ_BLOCK"), langConfig.getString("tile.quartzBlock.default.name", "Block of Quartz")));
+        itemNames.add(new ItemName(Material.valueOf("QUARTZ_BLOCK"), langConfig.getString("tile.quartzBlock.chiseled.name", "Chiseled Quartz Block")));
+        itemNames.add(new ItemName(Material.valueOf("QUARTZ_BLOCK"), langConfig.getString("tile.quartzBlock.lines.name", "Pillar Quartz Block")));
+        itemNames.add(new ItemName(Material.valueOf("QUARTZ_STAIRS"), langConfig.getString("tile.stairsQuartz.name", "Quartz Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("ACTIVATOR_RAIL"), langConfig.getString("tile.activatorRail.name", "Activator Rail")));
+        itemNames.add(new ItemName(Material.valueOf("DROPPER"), langConfig.getString("tile.dropper.name", "Dropper")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), langConfig.getString("tile.clayHardenedStained.white.name", "White Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 1, langConfig.getString("tile.clayHardenedStained.orange.name", "Orange Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 2, langConfig.getString("tile.clayHardenedStained.magenta.name", "Magenta Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 3, langConfig.getString("tile.clayHardenedStained.lightBlue.name", "Light Blue Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 4, langConfig.getString("tile.clayHardenedStained.yellow.name", "Yellow Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 5, langConfig.getString("tile.clayHardenedStained.lime.name", "Lime Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 6, langConfig.getString("tile.clayHardenedStained.pink.name", "Pink Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 7, langConfig.getString("tile.clayHardenedStained.gray.name", "Gray Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 8, langConfig.getString("tile.clayHardenedStained.silver.name", "Light Gray Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 9, langConfig.getString("tile.clayHardenedStained.cyan.name", "Cyan Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 10, langConfig.getString("tile.clayHardenedStained.purple.name", "Purple Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 11, langConfig.getString("tile.clayHardenedStained.blue.name", "Blue Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 12, langConfig.getString("tile.clayHardenedStained.brown.name", "Brown Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 13, langConfig.getString("tile.clayHardenedStained.green.name", "Green Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 14, langConfig.getString("tile.clayHardenedStained.red.name", "Red Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_CLAY"), 15, langConfig.getString("tile.clayHardenedStained.black.name", "Black Terracotta")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), langConfig.getString("tile.thinStainedGlass.white.name", "White Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 1, langConfig.getString("tile.thinStainedGlass.orange.name", "Orange Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 2, langConfig.getString("tile.thinStainedGlass.magenta.name", "Magenta Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 3, langConfig.getString("tile.thinStainedGlass.lightBlue.name", "Light Blue Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 4, langConfig.getString("tile.thinStainedGlass.yellow.name", "Yellow Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 5, langConfig.getString("tile.thinStainedGlass.lime.name", "Lime Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 6, langConfig.getString("tile.thinStainedGlass.pink.name", "Pink Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 7, langConfig.getString("tile.thinStainedGlass.gray.name", "Gray Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 8, langConfig.getString("tile.thinStainedGlass.silver.name", "Light Gray Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 9, langConfig.getString("tile.thinStainedGlass.cyan.name", "Cyan Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 10, langConfig.getString("tile.thinStainedGlass.purple.name", "Purple Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 11, langConfig.getString("tile.thinStainedGlass.blue.name", "Blue Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 12, langConfig.getString("tile.thinStainedGlass.brown.name", "Brown Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 13, langConfig.getString("tile.thinStainedGlass.green.name", "Green Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 14, langConfig.getString("tile.thinStainedGlass.red.name", "Red Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("STAINED_GLASS_PANE"), 15, langConfig.getString("tile.thinStainedGlass.black.name", "Black Stained Glass Pane")));
+        itemNames.add(new ItemName(Material.valueOf("LEAVES_2"), langConfig.getString("tile.leaves.acacia.name", "Acacia Leaves")));
+        itemNames.add(new ItemName(Material.valueOf("LEAVES_2"), 1, langConfig.getString("tile.leaves.big_oak.name", "Dark Oak Leaves")));
+        itemNames.add(new ItemName(Material.valueOf("LOG_2"), langConfig.getString("tile.log.acacia.name", "Acacia Wood")));
+        itemNames.add(new ItemName(Material.valueOf("LOG_2"), 1, langConfig.getString("tile.log.big_oak.name", "Dark Oak Wood")));
+        itemNames.add(new ItemName(Material.valueOf("ACACIA_STAIRS"), langConfig.getString("tile.stairsWoodAcacia.name", "Acacia Wood Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("DARK_OAK_STAIRS"), langConfig.getString("tile.stairsWoodDarkOak.name", "Dark Oak Wood Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("SLIME_BLOCK"), langConfig.getString("tile.slime.name", "Slime Block")));
+        itemNames.add(new ItemName(Material.valueOf("BARRIER"), langConfig.getString("tile.barrier.name", "Barrier")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_TRAPDOOR"), langConfig.getString("tile.ironTrapdoor.name", "Iron Trapdoor")));
+        itemNames.add(new ItemName(Material.valueOf("PRISMARINE"), langConfig.getString("tile.prismarine.rough.name", "Prismarine")));
+        itemNames.add(new ItemName(Material.valueOf("PRISMARINE"), 1, langConfig.getString("tile.prismarine.bricks.name", "Prismarine Bricks")));
+        itemNames.add(new ItemName(Material.valueOf("PRISMARINE"), 2, langConfig.getString("tile.prismarine.dark.name", "Dark Prismarine")));
+        itemNames.add(new ItemName(Material.valueOf("SEA_LANTERN"), langConfig.getString("tile.seaLantern.name", "Sea Lantern")));
+        itemNames.add(new ItemName(Material.valueOf("HAY_BLOCK"), langConfig.getString("tile.hayBlock.name", "Hay Bale")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), langConfig.getString("tile.woolCarpet.white.name", "White Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 1, langConfig.getString("tile.woolCarpet.orange.name", "Orange Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 2, langConfig.getString("tile.woolCarpet.magenta.name", "Magenta Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 3, langConfig.getString("tile.woolCarpet.lightBlue.name", "Light Blue Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 4, langConfig.getString("tile.woolCarpet.yellow.name", "Yellow Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 5, langConfig.getString("tile.woolCarpet.lime.name", "Lime Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 6, langConfig.getString("tile.woolCarpet.pink.name", "Pink Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 7, langConfig.getString("tile.woolCarpet.gray.name", "Gray Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 8, langConfig.getString("tile.woolCarpet.silver.name", "Light Gray Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 9, langConfig.getString("tile.woolCarpet.cyan.name", "Cyan Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 10, langConfig.getString("tile.woolCarpet.purple.name", "Purple Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 11, langConfig.getString("tile.woolCarpet.blue.name", "Blue Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 12, langConfig.getString("tile.woolCarpet.brown.name", "Brown Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 13, langConfig.getString("tile.woolCarpet.green.name", "Green Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 14, langConfig.getString("tile.woolCarpet.red.name", "Red Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("CARPET"), 15, langConfig.getString("tile.woolCarpet.black.name", "Black Carpet")));
+        itemNames.add(new ItemName(Material.valueOf("HARD_CLAY"), langConfig.getString("tile.clayHardened.name", "Hardened Clay")));
+        itemNames.add(new ItemName(Material.valueOf("COAL_BLOCK"), langConfig.getString("tile.blockCoal.name", "Block of Coal")));
+        itemNames.add(new ItemName(Material.valueOf("PACKED_ICE"), langConfig.getString("tile.icePacked.name", "Packed Ice")));
+        itemNames.add(new ItemName(Material.valueOf("DOUBLE_PLANT"), langConfig.getString("tile.doublePlant.sunflower.name", "Sunflower")));
+        itemNames.add(new ItemName(Material.valueOf("DOUBLE_PLANT"), 1, langConfig.getString("tile.doublePlant.syringa.name", "Lilac")));
+        itemNames.add(new ItemName(Material.valueOf("DOUBLE_PLANT"), 2, langConfig.getString("tile.doublePlant.grass.name", "Double Tallgrass")));
+        itemNames.add(new ItemName(Material.valueOf("DOUBLE_PLANT"), 3, langConfig.getString("tile.doublePlant.fern.name", "Large Fern")));
+        itemNames.add(new ItemName(Material.valueOf("DOUBLE_PLANT"), 4, langConfig.getString("tile.doublePlant.rose.name", "Rose Bush")));
+        itemNames.add(new ItemName(Material.valueOf("DOUBLE_PLANT"), 5, langConfig.getString("tile.doublePlant.paeonia.name", "Peony")));
+        itemNames.add(new ItemName(Material.valueOf("RED_SANDSTONE"), langConfig.getString("tile.redSandStone.default.name", "Red Sandstone")));
+        itemNames.add(new ItemName(Material.valueOf("RED_SANDSTONE"), 1, langConfig.getString("tile.redSandStone.chiseled.name", "Chiseled Red Sandstone")));
+        itemNames.add(new ItemName(Material.valueOf("RED_SANDSTONE"), 2, langConfig.getString("tile.redSandStone.smooth.name", "Smooth Red Sandstone")));
+        itemNames.add(new ItemName(Material.valueOf("RED_SANDSTONE_STAIRS"), langConfig.getString("tile.stairsRedSandStone.name", "Red Sandstone Stairs")));
+        itemNames.add(new ItemName(Material.valueOf("STONE_SLAB2"), langConfig.getString("tile.stoneSlab2.red_sandstone.name", "Red Sandstone Slab")));
+        itemNames.add(new ItemName(Material.valueOf("SPRUCE_FENCE_GATE"), langConfig.getString("tile.spruceFenceGate.name", "Spruce Fence Gate")));
+        itemNames.add(new ItemName(Material.valueOf("BIRCH_FENCE_GATE"), langConfig.getString("tile.birchFenceGate.name", "Birch Fence Gate")));
+        itemNames.add(new ItemName(Material.valueOf("JUNGLE_FENCE_GATE"), langConfig.getString("tile.jungleFenceGate.name", "Jungle Fence Gate")));
+        itemNames.add(new ItemName(Material.valueOf("DARK_OAK_FENCE_GATE"), langConfig.getString("tile.darkOakFenceGate.name", "Dark Oak Fence Gate")));
+        itemNames.add(new ItemName(Material.valueOf("ACACIA_FENCE_GATE"), langConfig.getString("tile.acaciaFenceGate.name", "Acacia Fence Gate")));
+        itemNames.add(new ItemName(Material.valueOf("SPRUCE_FENCE"), langConfig.getString("tile.spruceFence.name", "Spruce Fence")));
+        itemNames.add(new ItemName(Material.valueOf("BIRCH_FENCE"), langConfig.getString("tile.birchFence.name", "Birch Fence")));
+        itemNames.add(new ItemName(Material.valueOf("JUNGLE_FENCE"), langConfig.getString("tile.jungleFence.name", "Jungle Fence")));
+        itemNames.add(new ItemName(Material.valueOf("DARK_OAK_FENCE"), langConfig.getString("tile.darkOakFence.name", "Dark Oak Fence")));
+        itemNames.add(new ItemName(Material.valueOf("ACACIA_FENCE"), langConfig.getString("tile.acaciaFence.name", "Acacia Fence")));
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Block Names of 1.9
+            itemNames.add(new ItemName(Material.valueOf("END_ROD"), langConfig.getString("tile.endRod.name", "End Rod")));
+            itemNames.add(new ItemName(Material.valueOf("CHORUS_PLANT"), langConfig.getString("tile.chorusPlant.name", "Chorus Plant")));
+            itemNames.add(new ItemName(Material.valueOf("CHORUS_FLOWER"), langConfig.getString("tile.chorusFlower.name", "Chorus Flower")));
+            itemNames.add(new ItemName(Material.valueOf("PURPUR_BLOCK"), langConfig.getString("tile.purpurBlock.name", "Purpur Block")));
+            itemNames.add(new ItemName(Material.valueOf("PURPUR_PILLAR"), langConfig.getString("tile.purpurPillar.name", "Purpur Pillar")));
+            itemNames.add(new ItemName(Material.valueOf("PURPUR_STAIRS"), langConfig.getString("tile.stairsPurpur.name", "Purpur Stairs")));
+            itemNames.add(new ItemName(Material.valueOf("PURPUR_SLAB"), langConfig.getString("tile.purpurSlab.name", "Purpur Slab")));
+            itemNames.add(new ItemName(Material.valueOf("END_BRICKS"), langConfig.getString("tile.endBricks.name", "End Stone Bricks")));
+            itemNames.add(new ItemName(Material.valueOf("GRASS_PATH"), langConfig.getString("tile.grassPath.name", "Grass Path")));
+            itemNames.add(new ItemName(Material.valueOf("COMMAND_REPEATING"), langConfig.getString("tile.repeatingCommandBlock.name", "Repeating Command Block")));
+            itemNames.add(new ItemName(Material.valueOf("COMMAND_CHAIN"), langConfig.getString("tile.chainCommandBlock.name", "Chain Command Block")));
+            itemNames.add(new ItemName(Material.valueOf("STRUCTURE_BLOCK"), langConfig.getString("tile.structureBlock.name", "Structure Block")));
+        }
+
+        if (Utils.getMajorVersion() >= 10) {
+            // Add Block Names of 1.10
+            itemNames.add(new ItemName(Material.valueOf("MAGMA"), langConfig.getString("tile.magma.name", "Magma Block")));
+            itemNames.add(new ItemName(Material.valueOf("NETHER_WART_BLOCK"), langConfig.getString("tile.netherWartBlock.name", "Nether Wart Block")));
+            itemNames.add(new ItemName(Material.valueOf("RED_NETHER_BRICK"), langConfig.getString("tile.redNetherBrick.name", "Red Nether Brick")));
+            itemNames.add(new ItemName(Material.valueOf("BONE_BLOCK"), langConfig.getString("tile.boneBlock.name", "Bone Block")));
+            itemNames.add(new ItemName(Material.valueOf("STRUCTURE_VOID"), langConfig.getString("tile.structureVoid.name", "Structure Void")));
+        }
+
+        if (Utils.getMajorVersion() >= 11) {
+            // Add Block Names of 1.11
+            itemNames.add(new ItemName(Material.valueOf("OBSERVER"), langConfig.getString("tile.observer.name", "Observer")));
+            itemNames.add(new ItemName(Material.valueOf("WHITE_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxWhite.name", "White Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("ORANGE_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxOrange.name", "Orange Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("MAGENTA_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxMagenta.name", "Magenta Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("LIGHT_BLUE_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxLightBlue.name", "Light Blue Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("YELLOW_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxYellow.name", "Yellow Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("LIME_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxLime.name", "Lime Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("PINK_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxPink.name", "Pink Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("GRAY_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxGray.name", "Gray Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("SILVER_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxSilver.name", "Light Gray Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("CYAN_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxCyan.name", "Cyan Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("PURPLE_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxPurple.name", "Purple Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("BLUE_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxBlue.name", "Blue Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("BROWN_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxBrown.name", "Brown Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("GREEN_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxGreen.name", "Green Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("RED_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxRed.name", "Red Shulker Box")));
+            itemNames.add(new ItemName(Material.valueOf("BLACK_SHULKER_BOX"), langConfig.getString("tile.shulkerBoxBlack.name", "Black Shulker Box")));
+        }
+
+        if (Utils.getMajorVersion() >= 12) {
+            // Add Block Names of 1.12
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), langConfig.getString("tile.concrete.white.name", "White Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 1, langConfig.getString("tile.concrete.orange.name", "Orange Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 2, langConfig.getString("tile.concrete.magenta.name", "Magenta Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 3, langConfig.getString("tile.concrete.lightBlue.name", "Light Blue Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 4, langConfig.getString("tile.concrete.yellow.name", "Yellow Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 5, langConfig.getString("tile.concrete.lime.name", "Lime Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 6, langConfig.getString("tile.concrete.pink.name", "Pink Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 7, langConfig.getString("tile.concrete.gray.name", "Gray Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 8, langConfig.getString("tile.concrete.silver.name", "Light Gray Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 9, langConfig.getString("tile.concrete.cyan.name", "Cyan Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 10, langConfig.getString("tile.concrete.purple.name", "Purple Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 11, langConfig.getString("tile.concrete.blue.name", "Blue Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 12, langConfig.getString("tile.concrete.brown.name", "Brown Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 13, langConfig.getString("tile.concrete.green.name", "Green Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 14, langConfig.getString("tile.concrete.red.name", "Red Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE"), 15, langConfig.getString("tile.concrete.black.name", "Black Concrete")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), langConfig.getString("tile.concretePowder.white.name", "White Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 1, langConfig.getString("tile.concretePowder.orange.name", "Orange Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 2, langConfig.getString("tile.concretePowder.magenta.name", "Magenta Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 3, langConfig.getString("tile.concretePowder.lightBlue.name", "Light Blue Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 4, langConfig.getString("tile.concretePowder.yellow.name", "Yellow Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 5, langConfig.getString("tile.concretePowder.lime.name", "Lime Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 6, langConfig.getString("tile.concretePowder.pink.name", "Pink Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 7, langConfig.getString("tile.concretePowder.gray.name", "Gray Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 8, langConfig.getString("tile.concretePowder.silver.name", "Light Gray Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 9, langConfig.getString("tile.concretePowder.cyan.name", "Cyan Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 10, langConfig.getString("tile.concretePowder.purple.name", "Purple Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 11, langConfig.getString("tile.concretePowder.blue.name", "Blue Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 12, langConfig.getString("tile.concretePowder.brown.name", "Brown Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 13, langConfig.getString("tile.concretePowder.green.name", "Green Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 14, langConfig.getString("tile.concretePowder.red.name", "Red Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("CONCRETE_POWDER"), 15, langConfig.getString("tile.concretePowder.black.name", "Black Concrete Powder")));
+            itemNames.add(new ItemName(Material.valueOf("WHITE_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaWhite.name", "White Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("ORANGE_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaOrange.name", "Orange Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("MAGENTA_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaMagenta.name", "Magenta Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("LIGHT_BLUE_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaLightBlue.name", "Light Blue Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("YELLOW_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaYellow.name", "Yellow Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("LIME_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaLime.name", "Lime Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("PINK_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaPink.name", "Pink Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("GRAY_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaGray.name", "Gray Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("SILVER_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaSilver.name", "Light Gray Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("CYAN_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaCyan.name", "Cyan Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("PURPLE_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaPurple.name", "Purple Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("BLUE_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaBlue.name", "Blue Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("BROWN_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaBrown.name", "Brown Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("GREEN_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaGreen.name", "Green Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("RED_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaRed.name", "Red Glazed Terracotta")));
+            itemNames.add(new ItemName(Material.valueOf("BLACK_GLAZED_TERRACOTTA"), langConfig.getString("tile.glazedTerracottaBlack.name", "Black Glazed Terracotta")));
+        }
+
+        // Add Item Names
+        itemNames.add(new ItemName(Material.valueOf("IRON_SPADE"), langConfig.getString("item.shovelIron.name", "Iron Shovel")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_PICKAXE"), langConfig.getString("item.pickaxeIron.name", "Iron Pickaxe")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_AXE"), langConfig.getString("item.hatchetIron.name", "Iron Axe")));
+        itemNames.add(new ItemName(Material.valueOf("FLINT_AND_STEEL"), langConfig.getString("item.flintAndSteel.name", "Flint and Steel")));
+        itemNames.add(new ItemName(Material.valueOf("APPLE"), langConfig.getString("item.apple.name", "Apple")));
+        itemNames.add(new ItemName(Material.valueOf("BOW"), langConfig.getString("item.bow.name", "Bow")));
+        itemNames.add(new ItemName(Material.valueOf("ARROW"), langConfig.getString("item.arrow.name", "Arrow")));
+        itemNames.add(new ItemName(Material.valueOf("COAL"), langConfig.getString("item.coal.name", "Coal")));
+        itemNames.add(new ItemName(Material.valueOf("COAL"), 1, langConfig.getString("item.charcoal.name", "Charcoal")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND"), langConfig.getString("item.diamond.name", "Diamond")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_INGOT"), langConfig.getString("item.ingotIron.name", "Iron Ingot")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_INGOT"), langConfig.getString("item.ingotGold.name", "Gold Ingot")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_SWORD"), langConfig.getString("item.swordIron.name", "Iron Sword")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_SWORD"), langConfig.getString("item.swordWood.name", "Wooden Sword")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_SPADE"), langConfig.getString("item.shovelWood.name", "Wooden Shovel")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_PICKAXE"), langConfig.getString("item.pickaxeWood.name", "Wooden Pickaxe")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_AXE"), langConfig.getString("item.hatchetWood.name", "Wooden Axe")));
+        itemNames.add(new ItemName(Material.valueOf("STONE_SWORD"), langConfig.getString("item.swordStone.name", "Stone Sword")));
+        itemNames.add(new ItemName(Material.valueOf("STONE_SPADE"), langConfig.getString("item.shovelStone.name", "Stone Shovel")));
+        itemNames.add(new ItemName(Material.valueOf("STONE_PICKAXE"), langConfig.getString("item.pickaxeStone.name", "Stone Pickaxe")));
+        itemNames.add(new ItemName(Material.valueOf("STONE_AXE"), langConfig.getString("item.hatchetStone.name", "Stone Axe")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_SWORD"), langConfig.getString("item.swordDiamond.name", "Diamond Sword")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_SPADE"), langConfig.getString("item.shovelDiamond.name", "Diamond Shovel")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_PICKAXE"), langConfig.getString("item.pickaxeDiamond.name", "Diamond Pickaxe")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_AXE"), langConfig.getString("item.hatchetDiamond.name", "Diamond Axe")));
+        itemNames.add(new ItemName(Material.valueOf("STICK"), langConfig.getString("item.stick.name", "Stick")));
+        itemNames.add(new ItemName(Material.valueOf("BOWL"), langConfig.getString("item.bowl.name", "Bowl")));
+        itemNames.add(new ItemName(Material.valueOf("MUSHROOM_SOUP"), langConfig.getString("item.mushroomStew.name", "Mushroom Stew")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_SWORD"), langConfig.getString("item.swordGold.name", "Golden Sword")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_SPADE"), langConfig.getString("item.shovelGold.name", "Golden Shovel")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_PICKAXE"), langConfig.getString("item.pickaxeGold.name", "Golden Pickaxe")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_AXE"), langConfig.getString("item.hatchetGold.name", "Golden Axe")));
+        itemNames.add(new ItemName(Material.valueOf("STRING"), langConfig.getString("item.string.name", "String")));
+        itemNames.add(new ItemName(Material.valueOf("FEATHER"), langConfig.getString("item.feather.name", "Feather")));
+        itemNames.add(new ItemName(Material.valueOf("SULPHUR"), langConfig.getString("item.sulphur.name", "Gunpowder")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_HOE"), langConfig.getString("item.hoeWood.name", "Wooden Hoe")));
+        itemNames.add(new ItemName(Material.valueOf("STONE_HOE"), langConfig.getString("item.hoeStone.name", "Stone Hoe")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_HOE"), langConfig.getString("item.hoeIron.name", "Iron Hoe")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_HOE"), langConfig.getString("item.hoeDiamond.name", "Diamond Hoe")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_HOE"), langConfig.getString("item.hoeGold.name", "Golden Hoe")));
+        itemNames.add(new ItemName(Material.valueOf("SEEDS"), langConfig.getString("item.seeds.name", "Seeds")));
+        itemNames.add(new ItemName(Material.valueOf("WHEAT"), langConfig.getString("item.wheat.name", "Wheat")));
+        itemNames.add(new ItemName(Material.valueOf("BREAD"), langConfig.getString("item.bread.name", "Bread")));
+        itemNames.add(new ItemName(Material.valueOf("LEATHER_HELMET"), langConfig.getString("item.helmetCloth.name", "Leather Cap")));
+        itemNames.add(new ItemName(Material.valueOf("LEATHER_CHESTPLATE"), langConfig.getString("item.chestplateCloth.name", "Leather Tunic")));
+        itemNames.add(new ItemName(Material.valueOf("LEATHER_LEGGINGS"), langConfig.getString("item.leggingsCloth.name", "Leather Pants")));
+        itemNames.add(new ItemName(Material.valueOf("LEATHER_BOOTS"), langConfig.getString("item.bootsCloth.name", "Leather Boots")));
+        itemNames.add(new ItemName(Material.valueOf("CHAINMAIL_HELMET"), langConfig.getString("item.helmetChain.name", "Chain Helmet")));
+        itemNames.add(new ItemName(Material.valueOf("CHAINMAIL_CHESTPLATE"), langConfig.getString("item.chestplateChain.name", "Chain Chestplate")));
+        itemNames.add(new ItemName(Material.valueOf("CHAINMAIL_LEGGINGS"), langConfig.getString("item.leggingsChain.name", "Chain Leggings")));
+        itemNames.add(new ItemName(Material.valueOf("CHAINMAIL_BOOTS"), langConfig.getString("item.bootsChain.name", "Chain Boots")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_HELMET"), langConfig.getString("item.helmetIron.name", "Iron Helmet")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_CHESTPLATE"), langConfig.getString("item.chestplateIron.name", "Iron Chestplate")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_LEGGINGS"), langConfig.getString("item.leggingsIron.name", "Iron Leggings")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_BOOTS"), langConfig.getString("item.bootsIron.name", "Iron Boots")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_HELMET"), langConfig.getString("item.helmetDiamond.name", "Diamond Helmet")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_CHESTPLATE"), langConfig.getString("item.chestplateDiamond.name", "Diamond Chestplate")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_LEGGINGS"), langConfig.getString("item.leggingsDiamond.name", "Diamond Leggings")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_BOOTS"), langConfig.getString("item.bootsDiamond.name", "Diamond Boots")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_HELMET"), langConfig.getString("item.helmetGold.name", "Golden Helmet")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_CHESTPLATE"), langConfig.getString("item.chestplateGold.name", "Golden Chestplate")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_LEGGINGS"), langConfig.getString("item.leggingsGold.name", "Golden Leggings")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_BOOTS"), langConfig.getString("item.bootsGold.name", "Golden Boots")));
+        itemNames.add(new ItemName(Material.valueOf("FLINT"), langConfig.getString("item.flint.name", "Flint")));
+        itemNames.add(new ItemName(Material.valueOf("PORK"), langConfig.getString("item.porkchopRaw.name", "Raw Porkchop")));
+        itemNames.add(new ItemName(Material.valueOf("GRILLED_PORK"), langConfig.getString("item.porkchopCooked.name", "Cooked Porkchop")));
+        itemNames.add(new ItemName(Material.valueOf("PAINTING"), langConfig.getString("item.painting.name", "Painting")));
+        itemNames.add(new ItemName(Material.valueOf("GOLDEN_APPLE"), langConfig.getString("item.appleGold.name", "Golden Apple")));
+        itemNames.add(new ItemName(Material.valueOf("GOLDEN_APPLE"), 1, langConfig.getString("item.appleGold.name", "Golden Apple")));
+        itemNames.add(new ItemName(Material.valueOf("SIGN"), langConfig.getString("item.sign.name", "Sign")));
+        itemNames.add(new ItemName(Material.valueOf("WOOD_DOOR"), langConfig.getString("item.doorOak.name", "Oak Door")));
+        itemNames.add(new ItemName(Material.valueOf("BUCKET"), langConfig.getString("item.bucket.name", "Bucket")));
+        itemNames.add(new ItemName(Material.valueOf("WATER_BUCKET"), langConfig.getString("item.bucketWater.name", "Water Bucket")));
+        itemNames.add(new ItemName(Material.valueOf("LAVA_BUCKET"), langConfig.getString("item.bucketLava.name", "Lava Bucket")));
+        itemNames.add(new ItemName(Material.valueOf("MINECART"), langConfig.getString("item.minecart.name", "Minecart")));
+        itemNames.add(new ItemName(Material.valueOf("SADDLE"), langConfig.getString("item.saddle.name", "Saddle")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_DOOR"), langConfig.getString("item.doorIron.name", "Iron Door")));
+        itemNames.add(new ItemName(Material.valueOf("REDSTONE"), langConfig.getString("item.redstone.name", "Redstone")));
+        itemNames.add(new ItemName(Material.valueOf("SNOW_BALL"), langConfig.getString("item.snowball.name", "Snowball")));
+        itemNames.add(new ItemName(Material.valueOf("BOAT"), langConfig.getString("item.boat.oak.name", "Oak Boat")));
+        itemNames.add(new ItemName(Material.valueOf("LEATHER"), langConfig.getString("item.leather.name", "Leather")));
+        itemNames.add(new ItemName(Material.valueOf("MILK_BUCKET"), langConfig.getString("item.milk.name", "Milk")));
+        itemNames.add(new ItemName(Material.valueOf("BRICK"), langConfig.getString("item.brick.name", "Brick")));
+        itemNames.add(new ItemName(Material.valueOf("CLAY_BALL"), langConfig.getString("item.clay.name", "Clay")));
+        itemNames.add(new ItemName(Material.valueOf("SUGAR_CANE"), langConfig.getString("item.reeds.name", "Sugar Canes")));
+        itemNames.add(new ItemName(Material.valueOf("PAPER"), langConfig.getString("item.paper.name", "Paper")));
+        itemNames.add(new ItemName(Material.valueOf("BOOK"), langConfig.getString("item.book.name", "Book")));
+        itemNames.add(new ItemName(Material.valueOf("SLIME_BALL"), langConfig.getString("item.slimeball.name", "Slimeball")));
+        itemNames.add(new ItemName(Material.valueOf("STORAGE_MINECART"), langConfig.getString("item.minecartChest.name", "Minecart with Chest")));
+        itemNames.add(new ItemName(Material.valueOf("POWERED_MINECART"), langConfig.getString("item.minecartFurnace.name", "Minecart with Furnace")));
+        itemNames.add(new ItemName(Material.valueOf("EGG"), langConfig.getString("item.egg.name", "Egg")));
+        itemNames.add(new ItemName(Material.valueOf("COMPASS"), langConfig.getString("item.compass.name", "Compass")));
+        itemNames.add(new ItemName(Material.valueOf("FISHING_ROD"), langConfig.getString("item.fishingRod.name", "Fishing Rod")));
+        itemNames.add(new ItemName(Material.valueOf("WATCH"), langConfig.getString("item.clock.name", "Clock")));
+        itemNames.add(new ItemName(Material.valueOf("GLOWSTONE_DUST"), langConfig.getString("item.yellowDust.name", "Glowstone Dust")));
+        itemNames.add(new ItemName(Material.valueOf("RAW_FISH"), langConfig.getString("item.fish.cod.raw.name", "Raw Fish")));
+        itemNames.add(new ItemName(Material.valueOf("RAW_FISH"), 1, langConfig.getString("item.fish.salmon.raw.name", "Raw Salmon")));
+        itemNames.add(new ItemName(Material.valueOf("RAW_FISH"), 2, langConfig.getString("item.fish.clownfish.raw.name", "Clownfish")));
+        itemNames.add(new ItemName(Material.valueOf("RAW_FISH"), 3, langConfig.getString("item.fish.pufferfish.raw.name", "Pufferfish")));
+        itemNames.add(new ItemName(Material.valueOf("COOKED_FISH"), langConfig.getString("item.fish.cod.cooked.name", "Cooked Fish")));
+        itemNames.add(new ItemName(Material.valueOf("COOKED_FISH"), 1, langConfig.getString("item.fish.salmon.cooked.name", "Cooked Salmon")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), langConfig.getString("item.dyePowder.black.name", "Ink Sac")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 1, langConfig.getString("item.dyePowder.red.name", "Rose Red")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 2, langConfig.getString("item.dyePowder.green.name", "Cactus Green")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 3, langConfig.getString("item.dyePowder.brown.name", "Cocoa Beans")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 4, langConfig.getString("item.dyePowder.blue.name", "Lapis Lazuli")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 5, langConfig.getString("item.dyePowder.purple.name", "Purple Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 6, langConfig.getString("item.dyePowder.cyan.name", "Cyan Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 7, langConfig.getString("item.dyePowder.silver.name", "Light Gray Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 8, langConfig.getString("item.dyePowder.gray.name", "Gray Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 9, langConfig.getString("item.dyePowder.pink.name", "Pink Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 10, langConfig.getString("item.dyePowder.lime.name", "Lime Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 11, langConfig.getString("item.dyePowder.yellow.name", "Dandelion Yellow")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 12, langConfig.getString("item.dyePowder.lightBlue.name", "Light Blue Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 13, langConfig.getString("item.dyePowder.magenta.name", "Magenta Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 14, langConfig.getString("item.dyePowder.orange.name", "Orange Dye")));
+        itemNames.add(new ItemName(Material.valueOf("INK_SACK"), 15, langConfig.getString("item.dyePowder.white.name", "Bone Meal")));
+        itemNames.add(new ItemName(Material.valueOf("BONE"), langConfig.getString("item.bone.name", "Bone")));
+        itemNames.add(new ItemName(Material.valueOf("SUGAR"), langConfig.getString("item.sugar.name", "Sugar")));
+        itemNames.add(new ItemName(Material.valueOf("CAKE"), langConfig.getString("item.cake.name", "Cake")));
+        itemNames.add(new ItemName(Material.valueOf("DIODE"), langConfig.getString("item.diode.name", "Redstone Repeater")));
+        itemNames.add(new ItemName(Material.valueOf("COOKIE"), langConfig.getString("item.cookie.name", "Cookie")));
+        itemNames.add(new ItemName(Material.valueOf("MAP"), langConfig.getString("item.map.name", "Map")));
+        itemNames.add(new ItemName(Material.valueOf("SHEARS"), langConfig.getString("item.shears.name", "Shears")));
+        itemNames.add(new ItemName(Material.valueOf("MELON"), langConfig.getString("item.melon.name", "Melon")));
+        itemNames.add(new ItemName(Material.valueOf("PUMPKIN_SEEDS"), langConfig.getString("item.seeds_pumpkin.name", "Pumpkin Seeds")));
+        itemNames.add(new ItemName(Material.valueOf("MELON_SEEDS"), langConfig.getString("item.seeds_melon.name", "Melon Seeds")));
+        itemNames.add(new ItemName(Material.valueOf("RAW_BEEF"), langConfig.getString("item.beefRaw.name", "Raw Beef")));
+        itemNames.add(new ItemName(Material.valueOf("COOKED_BEEF"), langConfig.getString("item.beefCooked.name", "Steak")));
+        itemNames.add(new ItemName(Material.valueOf("RAW_CHICKEN"), langConfig.getString("item.chickenRaw.name", "Raw Chicken")));
+        itemNames.add(new ItemName(Material.valueOf("COOKED_CHICKEN"), langConfig.getString("item.chickenCooked.name", "Cooked Chicken")));
+        itemNames.add(new ItemName(Material.valueOf("ROTTEN_FLESH"), langConfig.getString("item.rottenFlesh.name", "Rotten Flesh")));
+        itemNames.add(new ItemName(Material.valueOf("ENDER_PEARL"), langConfig.getString("item.enderPearl.name", "Ender Pearl")));
+        itemNames.add(new ItemName(Material.valueOf("BLAZE_ROD"), langConfig.getString("item.blazeRod.name", "Blaze Rod")));
+        itemNames.add(new ItemName(Material.valueOf("GHAST_TEAR"), langConfig.getString("item.ghastTear.name", "Ghast Tear")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_NUGGET"), langConfig.getString("item.goldNugget.name", "Gold Nugget")));
+        itemNames.add(new ItemName(Material.valueOf("NETHER_WARTS"), langConfig.getString("item.netherStalkSeeds.name", "Nether Wart")));
+        itemNames.add(new ItemName(Material.valueOf("POTION"), langConfig.getString("item.potion.name", "Potion")));
+        itemNames.add(new ItemName(Material.valueOf("GLASS_BOTTLE"), langConfig.getString("item.glassBottle.name", "Glass Bottle")));
+        itemNames.add(new ItemName(Material.valueOf("SPIDER_EYE"), langConfig.getString("item.spiderEye.name", "Spider Eye")));
+        itemNames.add(new ItemName(Material.valueOf("FERMENTED_SPIDER_EYE"), langConfig.getString("item.fermentedSpiderEye.name", "Fermented Spider Eye")));
+        itemNames.add(new ItemName(Material.valueOf("BLAZE_POWDER"), langConfig.getString("item.blazePowder.name", "Blaze Powder")));
+        itemNames.add(new ItemName(Material.valueOf("MAGMA_CREAM"), langConfig.getString("item.magmaCream.name", "Magma Cream")));
+        itemNames.add(new ItemName(Material.valueOf("BREWING_STAND_ITEM"), langConfig.getString("item.brewingStand.name", "Brewing Stand")));
+        itemNames.add(new ItemName(Material.valueOf("CAULDRON_ITEM"), langConfig.getString("item.cauldron.name", "Cauldron")));
+        itemNames.add(new ItemName(Material.valueOf("EYE_OF_ENDER"), langConfig.getString("item.eyeOfEnder.name", "Eye of Ender")));
+        itemNames.add(new ItemName(Material.valueOf("SPECKLED_MELON"), langConfig.getString("item.speckledMelon.name", "Glistering Melon")));
+        itemNames.add(new ItemName(Material.valueOf("MONSTER_EGG"), langConfig.getString("item.monsterPlacer.name", "Spawn")));
+        itemNames.add(new ItemName(Material.valueOf("EXP_BOTTLE"), langConfig.getString("item.expBottle.name", "Bottle o' Enchanting")));
+        itemNames.add(new ItemName(Material.valueOf("FIREWORK_CHARGE"), langConfig.getString("item.fireball.name", "Fire Charge")));
+        itemNames.add(new ItemName(Material.valueOf("BOOK_AND_QUILL"), langConfig.getString("item.writingBook.name", "Book and Quill")));
+        itemNames.add(new ItemName(Material.valueOf("WRITTEN_BOOK"), langConfig.getString("item.writtenBook.name", "Written Book")));
+        itemNames.add(new ItemName(Material.valueOf("EMERALD"), langConfig.getString("item.emerald.name", "Emerald")));
+        itemNames.add(new ItemName(Material.valueOf("ITEM_FRAME"), langConfig.getString("item.frame.name", "Item Frame")));
+        itemNames.add(new ItemName(Material.valueOf("FLOWER_POT_ITEM"), langConfig.getString("item.flowerPot.name", "Flower Pot")));
+        itemNames.add(new ItemName(Material.valueOf("CARROT_ITEM"), langConfig.getString("item.carrots.name", "Carrot")));
+        itemNames.add(new ItemName(Material.valueOf("POTATO_ITEM"), langConfig.getString("item.potato.name", "Potato")));
+        itemNames.add(new ItemName(Material.valueOf("BAKED_POTATO"), langConfig.getString("item.potatoBaked.name", "Baked Potato")));
+        itemNames.add(new ItemName(Material.valueOf("POISONOUS_POTATO"), langConfig.getString("item.potatoPoisonous.name", "Poisonous Potato")));
+        itemNames.add(new ItemName(Material.valueOf("EMPTY_MAP"), langConfig.getString("item.emptyMap.name", "Empty Map")));
+        itemNames.add(new ItemName(Material.valueOf("GOLDEN_CARROT"), langConfig.getString("item.carrotGolden.name", "Golden Carrot")));
+        itemNames.add(new ItemName(Material.valueOf("SKULL_ITEM"), langConfig.getString("item.skull.skeleton.name", "Skeleton Skull")));
+        itemNames.add(new ItemName(Material.valueOf("SKULL_ITEM"), 1, langConfig.getString("item.skull.wither.name", "Wither Skeleton Skull")));
+        itemNames.add(new ItemName(Material.valueOf("SKULL_ITEM"), 2, langConfig.getString("item.skull.zombie.name", "Zombie Head")));
+        itemNames.add(new ItemName(Material.valueOf("SKULL_ITEM"), 3, langConfig.getString("item.skull.char.name", "Head")));
+        itemNames.add(new ItemName(Material.valueOf("SKULL_ITEM"), 4, langConfig.getString("item.skull.creeper.name", "Creeper Head")));
+        itemNames.add(new ItemName(Material.valueOf("SKULL_ITEM"), 5, langConfig.getString("item.skull.dragon.name", "Creeper Head")));
+        itemNames.add(new ItemName(Material.valueOf("CARROT_STICK"), langConfig.getString("item.carrotOnAStick.name", "Carrot on a Stick")));
+        itemNames.add(new ItemName(Material.valueOf("NETHER_STAR"), langConfig.getString("item.netherStar.name", "Nether Star")));
+        itemNames.add(new ItemName(Material.valueOf("PUMPKIN_PIE"), langConfig.getString("item.pumpkinPie.name", "Pumpkin Pie")));
+        itemNames.add(new ItemName(Material.valueOf("FIREWORK"), langConfig.getString("item.fireworks.name", "Firework Rocket")));
+        itemNames.add(new ItemName(Material.valueOf("FIREWORK_CHARGE"), langConfig.getString("item.fireworksCharge.name", "Firework Star")));
+        itemNames.add(new ItemName(Material.valueOf("ENCHANTED_BOOK"), langConfig.getString("item.enchantedBook.name", "Enchanted Book")));
+        itemNames.add(new ItemName(Material.valueOf("REDSTONE_COMPARATOR"), langConfig.getString("item.comparator.name", "Redstone Comparator")));
+        itemNames.add(new ItemName(Material.valueOf("NETHER_BRICK_ITEM"), langConfig.getString("item.netherbrick.name", "Nether Brick")));
+        itemNames.add(new ItemName(Material.valueOf("QUARTZ"), langConfig.getString("item.netherquartz.name", "Nether Quartz")));
+        itemNames.add(new ItemName(Material.valueOf("EXPLOSIVE_MINECART"), langConfig.getString("item.minecartTnt.name", "Minecart with TNT")));
+        itemNames.add(new ItemName(Material.valueOf("HOPPER_MINECART"), langConfig.getString("item.minecartHopper.name", "Minecart with Hopper")));
+        itemNames.add(new ItemName(Material.valueOf("PRISMARINE_SHARD"), langConfig.getString("item.prismarineShard.name", "Prismarine Shard")));
+        itemNames.add(new ItemName(Material.valueOf("PRISMARINE_CRYSTALS"), langConfig.getString("item.prismarineCrystals.name", "Prismarine Crystals")));
+        itemNames.add(new ItemName(Material.valueOf("RABBIT"), langConfig.getString("item.rabbitRaw.name", "Raw Rabbit")));
+        itemNames.add(new ItemName(Material.valueOf("COOKED_RABBIT"), langConfig.getString("item.rabbitCooked.name", "Cooked Rabbit")));
+        itemNames.add(new ItemName(Material.valueOf("RABBIT_STEW"), langConfig.getString("item.rabbitStew.name", "Rabbit Stew")));
+        itemNames.add(new ItemName(Material.valueOf("RABBIT_FOOT"), langConfig.getString("item.rabbitFoot.name", "Rabbit's Foot")));
+        itemNames.add(new ItemName(Material.valueOf("RABBIT_HIDE"), langConfig.getString("item.rabbitHide.name", "Rabbit Hide")));
+        itemNames.add(new ItemName(Material.valueOf("ARMOR_STAND"), langConfig.getString("item.armorStand.name", "Armor Stand")));
+        itemNames.add(new ItemName(Material.valueOf("IRON_BARDING"), langConfig.getString("item.horsearmormetal.name", "Iron Horse Armor")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_BARDING"), langConfig.getString("item.horsearmorgold.name", "Gold Horse Armor")));
+        itemNames.add(new ItemName(Material.valueOf("DIAMOND_BARDING"), langConfig.getString("item.horsearmordiamond.name", "Diamond Horse Armor")));
+        itemNames.add(new ItemName(Material.valueOf("LEASH"), langConfig.getString("item.leash.name", "Lead")));
+        itemNames.add(new ItemName(Material.valueOf("NAME_TAG"), langConfig.getString("item.nameTag.name", "Name Tag")));
+        itemNames.add(new ItemName(Material.valueOf("COMMAND_MINECART"), langConfig.getString("item.minecartCommandBlock.name", "Minecart with Command Block")));
+        itemNames.add(new ItemName(Material.valueOf("MUTTON"), langConfig.getString("item.muttonRaw.name", "Raw Mutton")));
+        itemNames.add(new ItemName(Material.valueOf("COOKED_MUTTON"), langConfig.getString("item.muttonCooked.name", "Cooked Mutton")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), langConfig.getString("item.banner.black.name", "Black Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 1, langConfig.getString("item.banner.red.name", "Red Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 2, langConfig.getString("item.banner.green.name", "Green Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 3, langConfig.getString("item.banner.brown.name", "Brown Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 4, langConfig.getString("item.banner.blue.name", "Blue Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 5, langConfig.getString("item.banner.purple.name", "Purple Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 6, langConfig.getString("item.banner.cyan.name", "Cyan Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 7, langConfig.getString("item.banner.silver.name", "Light Gray Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 8, langConfig.getString("item.banner.gray.name", "Gray Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 9, langConfig.getString("item.banner.pink.name", "Pink Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 10, langConfig.getString("item.banner.lime.name", "Lime Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 11, langConfig.getString("item.banner.yellow.name", "Yellow Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 12, langConfig.getString("item.banner.lightBlue.name", "Light Blue Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 13, langConfig.getString("item.banner.magenta.name", "Magenta Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 14, langConfig.getString("item.banner.orange.name", "Orange Banner")));
+        itemNames.add(new ItemName(Material.valueOf("BANNER"), 15, langConfig.getString("item.banner.white.name", "White Banner")));
+        itemNames.add(new ItemName(Material.valueOf("SPRUCE_DOOR_ITEM"), langConfig.getString("item.doorSpruce.name", "Spruce Door")));
+        itemNames.add(new ItemName(Material.valueOf("BIRCH_DOOR_ITEM"), langConfig.getString("item.doorBirch.name", "Birch Door")));
+        itemNames.add(new ItemName(Material.valueOf("JUNGLE_DOOR_ITEM"), langConfig.getString("item.doorJungle.name", "Jungle Door")));
+        itemNames.add(new ItemName(Material.valueOf("ACACIA_DOOR_ITEM"), langConfig.getString("item.doorAcacia.name", "Acacia Door")));
+        itemNames.add(new ItemName(Material.valueOf("DARK_OAK_DOOR_ITEM"), langConfig.getString("item.doorDarkOak.name", "Dark Oak Door")));
+        itemNames.add(new ItemName(Material.valueOf("GOLD_RECORD"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("GREEN_RECORD"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_3"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_4"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_5"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_6"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_7"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_8"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_9"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_10"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_11"), langConfig.getString("item.record.name", "Music Disc")));
+        itemNames.add(new ItemName(Material.valueOf("RECORD_12"), langConfig.getString("item.record.name", "Music Disc")));
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Item names of 1.9
+            itemNames.add(new ItemName(Material.valueOf("END_CRYSTAL"), langConfig.getString("item.end_crystal.name", "End Crystal")));
+            itemNames.add(new ItemName(Material.valueOf("CHORUS_FRUIT"), langConfig.getString("item.chorusFruit.name", "Chorus Fruit")));
+            itemNames.add(new ItemName(Material.valueOf("CHORUS_FRUIT_POPPED"), langConfig.getString("item.chorusFruitPopped.name", "Popped Chorus Fruit")));
+            itemNames.add(new ItemName(Material.valueOf("BEETROOT"), langConfig.getString("item.beetroot.name", "Beetroot")));
+            itemNames.add(new ItemName(Material.valueOf("BEETROOT_SEEDS"), langConfig.getString("item.beetroot_seeds.name", "Beetroot Seeds")));
+            itemNames.add(new ItemName(Material.valueOf("BEETROOT_SOUP"), langConfig.getString("item.beetroot_soup.name", "Beetroot Soup")));
+            itemNames.add(new ItemName(Material.valueOf("DRAGONS_BREATH"), langConfig.getString("item.dragon_breath.name", "Dragon's Breath")));
+            itemNames.add(new ItemName(Material.valueOf("SPECTRAL_ARROW"), langConfig.getString("item.spectral_arrow.name", "Spectral Arrow")));
+            itemNames.add(new ItemName(Material.valueOf("TIPPED_ARROW"), langConfig.getString("item.tipped_arrow.name", "Tipped Arrow")));
+            itemNames.add(new ItemName(Material.valueOf("SHIELD"), langConfig.getString("item.shield.name", "Shield")));
+            itemNames.add(new ItemName(Material.valueOf("ELYTRA"), langConfig.getString("item.elytra.name", "Elytra")));
+            itemNames.add(new ItemName(Material.valueOf("BOAT_SPRUCE"), langConfig.getString("item.boat.spruce.name", "Spruce Boat")));
+            itemNames.add(new ItemName(Material.valueOf("BOAT_BIRCH"), langConfig.getString("item.boat.birch.name", "Birch Boat")));
+            itemNames.add(new ItemName(Material.valueOf("BOAT_JUNGLE"), langConfig.getString("item.boat.jungle.name", "Jungle Boat")));
+            itemNames.add(new ItemName(Material.valueOf("BOAT_ACACIA"), langConfig.getString("item.boat.acacia.name", "Acacia Boat")));
+            itemNames.add(new ItemName(Material.valueOf("BOAT_DARK_OAK"), langConfig.getString("item.boat.dark_oak.name", "Dark Oak Boat")));
+        }
+
+        if (Utils.getMajorVersion() >= 11) {
+            // Add Item Names of 1.11
+            itemNames.add(new ItemName(Material.valueOf("TOTEM"), langConfig.getString("item.totem.name", "Totem of Undying")));
+            itemNames.add(new ItemName(Material.valueOf("SHULKER_SHELL"), langConfig.getString("item.shulkerShell.name", "Shulker Shell")));
+
+            if (Utils.getRevision() >= 2 || Utils.getMajorVersion() > 11) {
+                // Add Item Name of 1.11.2
+                itemNames.add(new ItemName(Material.valueOf("IRON_NUGGET"), langConfig.getString("item.ironNugget.name", "Iron Nugget")));
+            }
+        }
+
+        if (Utils.getMajorVersion() >= 12) {
+            // Add Item Name of 1.12
+            itemNames.add(new ItemName(Material.valueOf("KNOWLEDGE_BOOK"), langConfig.getString("item.knowledgeBook.name", "Knowledge Book")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), langConfig.getString("item.bed.white.name", "White Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 1, langConfig.getString("item.bed.orange.name", "Orange Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 2, langConfig.getString("item.bed.magenta.name", "Magenta Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 3, langConfig.getString("item.bed.lightBlue.name", "Light Blue Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 4, langConfig.getString("item.bed.yellow.name", "Yellow Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 5, langConfig.getString("item.bed.lime.name", "Lime Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 6, langConfig.getString("item.bed.pink.name", "Pink Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 7, langConfig.getString("item.bed.gray.name", "Gray Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 8, langConfig.getString("item.bed.silver.name", "Light Gray Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 9, langConfig.getString("item.bed.cyan.name", "Cyan Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 10, langConfig.getString("item.bed.purple.name", "Purple Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 11, langConfig.getString("item.bed.blue.name", "Blue Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 12, langConfig.getString("item.bed.brown.name", "Brown Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 13, langConfig.getString("item.bed.green.name", "Green Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 14, langConfig.getString("item.bed.red.name", "Red Bed")));
+            itemNames.add(new ItemName(Material.valueOf("BED"), 15, langConfig.getString("item.bed.black.name", "Black Bed")));
+        } else {
+            // Before 1.12, bed is just called "Bed" without colors
+            itemNames.add(new ItemName(Material.valueOf("BED"), langConfig.getString("item.bed.name", "Bed")));
+        }
+
+        // Add Enchantment Names
+        enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_DAMAGE, langConfig.getString("enchantment.arrowDamage", "Power")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_FIRE, langConfig.getString("enchantment.arrowFire", "Flame")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_INFINITE, langConfig.getString("enchantment.arrowInfinite", "Infinity")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.ARROW_KNOCKBACK, langConfig.getString("enchantment.arrowKnockback", "Punch")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_ALL, langConfig.getString("enchantment.damage.all", "Sharpness")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_ARTHROPODS, langConfig.getString("enchantment.damage.arthropods", "Bane of Arthropods")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_UNDEAD, langConfig.getString("enchantment.damage.undead", "Smite")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.DIG_SPEED, langConfig.getString("enchantment.digging", "Efficiency")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.DURABILITY, langConfig.getString("enchantment.durability", "Unbreaking")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.FIRE_ASPECT, langConfig.getString("enchantment.fire", "Fire Aspect")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.LURE, langConfig.getString("enchantment.fishingSpeed", "Lure")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.KNOCKBACK, langConfig.getString("enchantment.knockback", "Knockback")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.LOOT_BONUS_MOBS, langConfig.getString("enchantment.lootBonus", "Looting")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.LOOT_BONUS_BLOCKS, langConfig.getString("enchantment.lootBonusDigger", "Fortune")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.LUCK, langConfig.getString("enchantment.lootBonusFishing", "Luck of the Sea")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.OXYGEN, langConfig.getString("enchantment.oxygen", "Respiration")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.PROTECTION_ENVIRONMENTAL, langConfig.getString("enchantment.protect.all", "Protection")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.PROTECTION_EXPLOSIONS, langConfig.getString("enchantment.protect.explosion", "Blast Protection")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.PROTECTION_FALL, langConfig.getString("enchantment.protect.fall", "Feather Falling")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.PROTECTION_FIRE, langConfig.getString("enchantment.protect.fire", "Fire Protection")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.PROTECTION_PROJECTILE, langConfig.getString("enchantment.protect.projectile", "Projectile Protection")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.THORNS, langConfig.getString("enchantment.thorns", "Thorns")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.SILK_TOUCH, langConfig.getString("enchantment.untouching", "Silk Touch")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.DEPTH_STRIDER, langConfig.getString("enchantment.waterWalker", "Depth Strider")));
+        enchantmentNames.add(new EnchantmentName(Enchantment.WATER_WORKER, langConfig.getString("enchantment.waterWorker", "Aqua Affinity")));
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Enchantment Names of 1.9
+            enchantmentNames.add(new EnchantmentName(Enchantment.FROST_WALKER, langConfig.getString("enchantment.frostWalker", "Frost Walker")));
+            enchantmentNames.add(new EnchantmentName(Enchantment.MENDING, langConfig.getString("enchantment.mending", "Mending")));
+        }
+
+        if (Utils.getMajorVersion() >= 11) {
+            // Add Enchantment Names of 1.11
+            enchantmentNames.add(new EnchantmentName(Enchantment.BINDING_CURSE, langConfig.getString("enchantment.binding_curse", "Curse of Binding")));
+            enchantmentNames.add(new EnchantmentName(Enchantment.VANISHING_CURSE, langConfig.getString("enchantment.vanishing_curse", "Curse of Vanishing")));
+
+            if (Utils.getRevision() >= 2 || Utils.getMajorVersion() > 11) {
+                // Add Enchantment Name of 1.11.2
+                enchantmentNames.add(new EnchantmentName(Enchantment.SWEEPING_EDGE, langConfig.getString("enchantment.sweeping", "Sweeping Edge")));
+            }
+        }
+
+        // Add Enchantment Level Names
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(1, langConfig.getString("enchantment.level.1", "I")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(2, langConfig.getString("enchantment.level.2", "II")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(3, langConfig.getString("enchantment.level.3", "II")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(4, langConfig.getString("enchantment.level.4", "IV")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(5, langConfig.getString("enchantment.level.5", "V")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(6, langConfig.getString("enchantment.level.6", "VI")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(7, langConfig.getString("enchantment.level.7", "VII")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(8, langConfig.getString("enchantment.level.8", "VIII")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(9, langConfig.getString("enchantment.level.9", "IX")));
+        enchantmentLevelNames.add(new EnchantmentName.EnchantmentLevelName(10, langConfig.getString("enchantment.level.10", "X")));
+
+        // Add Entity Names
+        String horseName = (Utils.getMajorVersion() >= 11 ? "entity.Horse.name" : "entity.EntityHorse.name");
+        entityNames.add(new EntityName(EntityType.CREEPER, langConfig.getString("entity.Creeper.name", "Creeper")));
+        entityNames.add(new EntityName(EntityType.SKELETON, langConfig.getString("entity.Skeleton.name", "Skeleton")));
+        entityNames.add(new EntityName(EntityType.SPIDER, langConfig.getString("entity.Spider.name", "Spider")));
+        entityNames.add(new EntityName(EntityType.ZOMBIE, langConfig.getString("entity.Zombie.name", "Zombie")));
+        entityNames.add(new EntityName(EntityType.SLIME, langConfig.getString("entity.Slime.name", "Slime")));
+        entityNames.add(new EntityName(EntityType.GHAST, langConfig.getString("entity.Ghast.name", "Ghast")));
+        entityNames.add(new EntityName(EntityType.PIG_ZOMBIE, langConfig.getString("entity.PigZombie.name", "Zombie Pigman")));
+        entityNames.add(new EntityName(EntityType.ENDERMAN, langConfig.getString("entity.Enderman.name", "Enderman")));
+        entityNames.add(new EntityName(EntityType.CAVE_SPIDER, langConfig.getString("entity.CaveSpider.name", "Cave Spider")));
+        entityNames.add(new EntityName(EntityType.SILVERFISH, langConfig.getString("entity.Silverfish.name", "Silverfish")));
+        entityNames.add(new EntityName(EntityType.BLAZE, langConfig.getString("entity.Blaze.name", "Blaze")));
+        entityNames.add(new EntityName(EntityType.MAGMA_CUBE, langConfig.getString("entity.LavaSlime.name", "Magma Cube")));
+        entityNames.add(new EntityName(EntityType.BAT, langConfig.getString("entity.Bat.name", "Bat")));
+        entityNames.add(new EntityName(EntityType.WITCH, langConfig.getString("entity.Witch.name", "Witch")));
+        entityNames.add(new EntityName(EntityType.ENDERMITE, langConfig.getString("entity.Endermite.name", "Endermite")));
+        entityNames.add(new EntityName(EntityType.GUARDIAN, langConfig.getString("entity.Guardian.name", "Guardian")));
+        entityNames.add(new EntityName(EntityType.PIG, langConfig.getString("entity.Pig.name", "Pig")));
+        entityNames.add(new EntityName(EntityType.SHEEP, langConfig.getString("entity.Sheep.name", "Sheep")));
+        entityNames.add(new EntityName(EntityType.COW, langConfig.getString("entity.Cow.name", "Cow")));
+        entityNames.add(new EntityName(EntityType.CHICKEN, langConfig.getString("entity.Chicken.name", "Chicken")));
+        entityNames.add(new EntityName(EntityType.SQUID, langConfig.getString("entity.Squid.name", "Squid")));
+        entityNames.add(new EntityName(EntityType.WOLF, langConfig.getString("entity.Wolf.name", "Wolf")));
+        entityNames.add(new EntityName(EntityType.MUSHROOM_COW, langConfig.getString("entity.MushroomCow.name", "Mooshroom")));
+        entityNames.add(new EntityName(EntityType.OCELOT, langConfig.getString("entity.Ozelot.name", "Ocelot")));
+        entityNames.add(new EntityName(EntityType.HORSE, langConfig.getString(horseName, "Horse")));
+        entityNames.add(new EntityName(EntityType.RABBIT, langConfig.getString("entity.Rabbit.name", "Rabbit")));
+        entityNames.add(new EntityName(EntityType.VILLAGER, langConfig.getString("entity.Villager.name", "Villager")));
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Entity Names of 1.9
+            entityNames.add(new EntityName(EntityType.SHULKER, langConfig.getString("entity.Shulker.name", "Shulker")));
+        }
+
+        if (Utils.getMajorVersion() >= 10) {
+            // Add Entity Names of 1.10
+            entityNames.add(new EntityName(EntityType.POLAR_BEAR, langConfig.getString("entity.PolarBear.name", "Polar Bear")));
+        }
+
+        if (Utils.getMajorVersion() >= 11) {
+            // Add Entity Names of 1.11
+            entityNames.add(new EntityName(EntityType.ZOMBIE_VILLAGER, langConfig.getString("entity.ZombieVillager.name", "Zombie Villager")));
+            entityNames.add(new EntityName(EntityType.ELDER_GUARDIAN, langConfig.getString("entity.ElderGuardian.name", "Elder Guardian")));
+            entityNames.add(new EntityName(EntityType.EVOKER, langConfig.getString("entity.EvocationIllager.name", "Evoker")));
+            entityNames.add(new EntityName(EntityType.VEX, langConfig.getString("entity.Vex.name", "Vex")));
+            entityNames.add(new EntityName(EntityType.VINDICATOR, langConfig.getString("entity.VindicationIllager.name", "Vindicator")));
+            entityNames.add(new EntityName(EntityType.LLAMA, langConfig.getString("entity.Llama.name", "Llama")));
+            entityNames.add(new EntityName(EntityType.WITHER_SKELETON, langConfig.getString("entity.WitherSkeleton.name", "Wither Skeleton")));
+            entityNames.add(new EntityName(EntityType.STRAY, langConfig.getString("entity.Stray.name", "Stray")));
+            entityNames.add(new EntityName(EntityType.ZOMBIE_HORSE, langConfig.getString("entity.ZombieHorse.name", "Zombie Horse")));
+            entityNames.add(new EntityName(EntityType.SKELETON_HORSE, langConfig.getString("entity.SkeletonHorse.name", "Skeleton Horse")));
+            entityNames.add(new EntityName(EntityType.DONKEY, langConfig.getString("entity.Donkey.name", "Donkey")));
+            entityNames.add(new EntityName(EntityType.MULE, langConfig.getString("entity.Mule.name", "Mule")));
+            entityNames.add(new EntityName(EntityType.HUSK, langConfig.getString("entity.Husk.name", "Husk")));
+        }
+
+        if (Utils.getMajorVersion() >= 12) {
+            // Add Entity Names of 1.12
+            entityNames.add(new EntityName(EntityType.PARROT, langConfig.getString("entity.Parrot.name", "Parrot")));
+            entityNames.add(new EntityName(EntityType.ILLUSIONER, langConfig.getString("entity.IllusionIllager.name", "Illusioner")));
+        }
+
+        // Add Potion Effect Names
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.FIRE_RESISTANCE, langConfig.getString("effect.fireResistance", "Fire Resistance")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.HARM, langConfig.getString("effect.harm", "Instant Damage")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.HEAL, langConfig.getString("effect.heal", "Instant Health")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.INVISIBILITY, langConfig.getString("effect.invisibility", "Invisibility")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.JUMP, langConfig.getString("effect.jump", "Jump Boost")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.NIGHT_VISION, langConfig.getString("effect.nightVision", "Night Vision")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.POISON, langConfig.getString("effect.poison", "Poison")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.REGENERATION, langConfig.getString("effect.regeneration", "Regeneration")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.SLOW, langConfig.getString("effect.moveSlowdown", "Slowness")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.SPEED, langConfig.getString("effect.moveSpeed", "Speed")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.INCREASE_DAMAGE, langConfig.getString("effect.damageBoost", "Strength")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.WATER_BREATHING, langConfig.getString("effect.waterBreathing", "Water Breathing")));
+        potionEffectNames.add(new PotionEffectName(PotionEffectType.WEAKNESS, langConfig.getString("effect.weakness", "Weakness")));
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Potion Effect Names of 1.9
+            potionEffectNames.add(new PotionEffectName(PotionEffectType.LUCK, langConfig.getString("effect.luck", "Luck")));
+        }
+
+        // Add Potion Names
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.FIRE_RESISTANCE, langConfig.getString("potion.effect.fire_resistance", "Potion of Fire Resistance")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.INSTANT_DAMAGE, langConfig.getString("potion.effect.harming", "Potion of Harming")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.INSTANT_HEAL, langConfig.getString("potion.effect.healing", "Potion of Healing")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.INVISIBILITY, langConfig.getString("potion.effect.invisibility", "Potion of Invisibility")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.JUMP, langConfig.getString("potion.effect.leaping", "Potion of Leaping")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.NIGHT_VISION, langConfig.getString("potion.effect.night_vision", "Potion of Night Vision")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.POISON, langConfig.getString("potion.effect.poison", "Potion of Poison")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.REGEN, langConfig.getString("potion.effect.regeneration", "Potion of Regeneration")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.SLOWNESS, langConfig.getString("potion.effect.slowness", "Potion of Slowness")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.SPEED, langConfig.getString("potion.effect.swiftness", "Potion of Swiftness")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.STRENGTH, langConfig.getString("potion.effect.strength", "Potion of Strength")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.WATER_BREATHING, langConfig.getString("potion.effect.water_breathing", "Potion of Water Breathing")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.WEAKNESS, langConfig.getString("potion.effect.weakness", "Potion of Weakness")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.WATER, langConfig.getString("potion.effect.water", "Water Bottle")));
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Potion Names of 1.9
+            potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.AWKWARD, langConfig.getString("potion.effect.awkward", "Awkward Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.LUCK, langConfig.getString("potion.effect.luck", "Potion of Luck")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.MUNDANE, langConfig.getString("potion.effect.mundane", "Mundane Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.THICK, langConfig.getString("potion.effect.thick", "Thick Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.POTION, PotionType.UNCRAFTABLE, langConfig.getString("potion.effect.empty", "Uncraftable Potion")));
+        }
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Tipped Arrow Names (implemented in Minecraft since 1.9)
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.AWKWARD, langConfig.getString("tipped_arrow.effect.awkward", "Tipped Arrow")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.FIRE_RESISTANCE, langConfig.getString("tipped_arrow.effect.fire_resistance", "Arrow of Fire Resistance")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.INSTANT_DAMAGE, langConfig.getString("tipped_arrow.effect.harming", "Arrow of Harming")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.INSTANT_HEAL, langConfig.getString("tipped_arrow.effect.healing", "Arrow of Healing")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.INVISIBILITY, langConfig.getString("tipped_arrow.effect.invisibility", "Arrow of Invisibility")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.JUMP, langConfig.getString("tipped_arrow.effect.leaping", "Arrow of Leaping")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.NIGHT_VISION, langConfig.getString("tipped_arrow.effect.night_vision", "Arrow of Night Vision")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.POISON, langConfig.getString("tipped_arrow.effect.poison", "Arrow of Poison")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.REGEN, langConfig.getString("tipped_arrow.effect.regeneration", "Arrow of Regeneration")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.SLOWNESS, langConfig.getString("tipped_arrow.effect.slowness", "Arrow of Slowness")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.SPEED, langConfig.getString("tipped_arrow.effect.swiftness", "Arrow of Swiftness")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.STRENGTH, langConfig.getString("tipped_arrow.effect.strength", "Arrow of Strength")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.WATER_BREATHING, langConfig.getString("tipped_arrow.effect.water_breathing", "Arrow of Water Breathing")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.WEAKNESS, langConfig.getString("tipped_arrow.effect.weakness", "Arrow of Weakness")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.WATER, langConfig.getString("tipped_arrow.effect.water", "Arrow of Splashing")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.LUCK, langConfig.getString("tipped_arrow.effect.luck", "Arrow of Luck")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.MUNDANE, langConfig.getString("tipped_arrow.effect.mundane", "Tipped Arrow")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.THICK, langConfig.getString("tipped_arrow.effect.thick", "Tipped Arrow")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.TIPPED_ARROW, PotionType.UNCRAFTABLE, langConfig.getString("tipped_arrow.effect.empty", "Uncraftable Tipped Arrow")));
+        }
+
+        // Add Splash Potion Names
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.FIRE_RESISTANCE, langConfig.getString("splash_potion.effect.fire_resistance", "Splash Potion of Fire Resistance")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.INSTANT_DAMAGE, langConfig.getString("splash_potion.effect.harming", "Splash Potion of Harming")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.INSTANT_HEAL, langConfig.getString("splash_potion.effect.healing", "Splash Potion of Healing")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.INVISIBILITY, langConfig.getString("splash_potion.effect.invisibility", "Splash Potion of Invisibility")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.JUMP, langConfig.getString("splash_potion.effect.leaping", "Splash Potion of Leaping")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.NIGHT_VISION, langConfig.getString("splash_potion.effect.night_vision", "Splash Potion of Night Vision")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.POISON, langConfig.getString("splash_potion.effect.poison", "Splash Potion of Poison")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.REGEN, langConfig.getString("splash_potion.effect.regeneration", "Splash Potion of Regeneration")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.SLOWNESS, langConfig.getString("splash_potion.effect.slowness", "Splash Potion of Slowness")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.SPEED, langConfig.getString("splash_potion.effect.swiftness", "Splash Potion of Swiftness")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.STRENGTH, langConfig.getString("splash_potion.effect.strength", "Splash Potion of Strength")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.WATER_BREATHING, langConfig.getString("splash_potion.effect.water_breathing", "Splash Potion of Water Breathing")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.WEAKNESS, langConfig.getString("splash_potion.effect.weakness", "Splash Potion of Weakness")));
+        potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.WATER, langConfig.getString("splash_potion.effect.water", "Splash Water Bottle")));
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Splash Potion Names of 1.9
+            potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.AWKWARD, langConfig.getString("splash_potion.effect.awkward", "Awkward Splash Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.LUCK, langConfig.getString("splash_potion.effect.luck", "Splash Potion of Luck")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.MUNDANE, langConfig.getString("splash_potion.effect.mundane", "Mundane Splash Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.THICK, langConfig.getString("splash_potion.effect.thick", "Thick Splash Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.SPLASH_POTION, PotionType.UNCRAFTABLE, langConfig.getString("splash_potion.effect.empty", "Splash Uncraftable Potion")));
+        }
+
+        if (Utils.getMajorVersion() >= 9) {
+            // Add Lingering Potion Names (implemented in Minecraft since 1.9)
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.AWKWARD, langConfig.getString("lingering_potion.effect.awkward", "Awkward Lingering Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.FIRE_RESISTANCE, langConfig.getString("lingering_potion.effect.fire_resistance", "Lingering Potion of Fire Resistance")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.INSTANT_DAMAGE, langConfig.getString("lingering_potion.effect.harming", "Lingering Potion of Harming")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.INSTANT_HEAL, langConfig.getString("lingering_potion.effect.healing", "Lingering Potion of Healing")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.INVISIBILITY, langConfig.getString("lingering_potion.effect.invisibility", "Lingering Potion of Invisibility")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.JUMP, langConfig.getString("lingering_potion.effect.leaping", "Lingering Potion of Leaping")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.NIGHT_VISION, langConfig.getString("lingering_potion.effect.night_vision", "Lingering Potion of Night Vision")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.POISON, langConfig.getString("lingering_potion.effect.poison", "Lingering Potion of Poison")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.REGEN, langConfig.getString("lingering_potion.effect.regeneration", "Lingering Potion of Regeneration")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.SLOWNESS, langConfig.getString("lingering_potion.effect.slowness", "Lingering Potion of Slowness")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.SPEED, langConfig.getString("lingering_potion.effect.swiftness", "Lingering Potion of Swiftness")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.STRENGTH, langConfig.getString("lingering_potion.effect.strength", "Lingering Potion of Strength")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.WATER_BREATHING, langConfig.getString("lingering_potion.effect.water_breathing", "Lingering Potion of Water Breathing")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.WEAKNESS, langConfig.getString("lingering_potion.effect.weakness", "Lingering Potion of Weakness")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.WATER, langConfig.getString("lingering_potion.effect.water", "Lingering Water Bottle")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.LUCK, langConfig.getString("lingering_potion.effect.luck", "Lingering Potion of Luck")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.MUNDANE, langConfig.getString("lingering_potion.effect.mundane", "Mundane Lingering Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.THICK, langConfig.getString("lingering_potion.effect.thick", "Thick Lingering Potion")));
+            potionNames.add(new PotionName(PotionName.PotionItemType.LINGERING_POTION, PotionType.UNCRAFTABLE, langConfig.getString("lingering_potion.effect.empty", "Lingering Uncraftable Potion")));
+        }
+
+        // Add Music Disc Titles
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("GOLD_RECORD"), langConfig.getString("item.record.13.desc", "C418 - 13")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("GREEN_RECORD"), langConfig.getString("item.record.cat.desc", "C418 - cat")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_3"), langConfig.getString("item.record.blocks.desc", "C418 - blocks")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_4"), langConfig.getString("item.record.chirp.desc", "C418 - chirp")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_5"), langConfig.getString("item.record.far.desc", "C418 - far")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_6"), langConfig.getString("item.record.mall.desc", "C418 - mall")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_7"), langConfig.getString("item.record.mellohi.desc", "C418 - mellohi")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_8"), langConfig.getString("item.record.stal.desc", "C418 - stal")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_9"), langConfig.getString("item.record.strad.desc", "C418 - strad")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_10"), langConfig.getString("item.record.ward.desc", "C418 - ward")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_11"), langConfig.getString("item.record.11.desc", "C418 - 11")));
+        musicDiscNames.add(new MusicDiscName(Material.valueOf("RECORD_12"), langConfig.getString("item.record.wait.desc", "C418 - wait")));
+
+        // Add Book Generation Names
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.ORIGINAL, langConfig.getString("book.generation.0", "Original")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.COPY_OF_ORIGINAL, langConfig.getString("book.generation.1", "Copy of original")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.COPY_OF_COPY, langConfig.getString("book.generation.2", "Copy of a copy")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.TATTERED, langConfig.getString("book.generation.3", "Tattered")));
+
+        loadMessages();
+    }
+
     public static void load() {
         langConfig = Config.langConfig;
 
@@ -46,6 +997,11 @@ public class LanguageUtils {
         musicDiscNames.clear();
         generationNames.clear();
         messages.clear();
+
+        if (Utils.getMajorVersion() < 13) {
+            loadLegacy();
+            return;
+        }
 
         // Add Block/Item Names
         itemNames.add(new ItemName(Material.AIR, langConfig.getString("block.minecraft.air", "Air")));
@@ -1068,11 +2024,15 @@ public class LanguageUtils {
         musicDiscNames.add(new MusicDiscName(Material.MUSIC_DISC_WAIT, langConfig.getString("item.minecraft.music_disc_wait.desc", "C418 - wait")));
 
         // Add Book Generation Names
-        generationNames.add(new BookGenerationName(BookMeta.Generation.ORIGINAL, langConfig.getString("book.generation.0", "Original")));
-        generationNames.add(new BookGenerationName(BookMeta.Generation.COPY_OF_ORIGINAL, langConfig.getString("book.generation.1", "Copy of original")));
-        generationNames.add(new BookGenerationName(BookMeta.Generation.COPY_OF_COPY, langConfig.getString("book.generation.2", "Copy of a copy")));
-        generationNames.add(new BookGenerationName(BookMeta.Generation.TATTERED, langConfig.getString("book.generation.3", "Tattered")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.ORIGINAL, langConfig.getString("book.generation.0", "Original")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.COPY_OF_ORIGINAL, langConfig.getString("book.generation.1", "Copy of original")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.COPY_OF_COPY, langConfig.getString("book.generation.2", "Copy of a copy")));
+        generationNames.add(new BookGenerationName(CustomBookMeta.Generation.TATTERED, langConfig.getString("book.generation.3", "Tattered")));
 
+        loadMessages();
+    }
+
+    private static void loadMessages() {
         // Add ShopChest Messages
         messages.add(new LocalizedMessage(Message.SHOP_CREATED, langConfig.getString("message.shop-created", "&6You were withdrawn &c%CREATION-PRICE% &6to create this shop.")));
         messages.add(new LocalizedMessage(Message.ADMIN_SHOP_CREATED, langConfig.getString("message.admin-shop-created", "&6You were withdrawn &c%CREATION-PRICE% &6to create this admin shop.")));
@@ -1187,7 +2147,11 @@ public class LanguageUtils {
                 return ((BookMeta) meta).getTitle();
             } else if (meta instanceof SkullMeta) {
                 if (((SkullMeta) meta).hasOwner()) {
-                    return String.format(langConfig.getString("block.minecraft.player_head.named", "%s's Head"), ((SkullMeta) meta).getOwningPlayer().getName());
+                    if (Utils.getMajorVersion() >= 13) {
+                        return String.format(langConfig.getString("block.minecraft.player_head.named", "%s's Head"), ((SkullMeta) meta).getOwningPlayer().getName());
+                    } else {
+                        return String.format(langConfig.getString("item.skull.player.name", "%s's Head"), ((SkullMeta) meta).getOwner());
+                    }
                 }
             }
         }
@@ -1199,33 +2163,74 @@ public class LanguageUtils {
             PotionType potionType;
             String upgradeString;
 
-            potionType = meta.getBasePotionData().getType();
-            upgradeString = (meta.getBasePotionData().isUpgraded() && Config.appendPotionLevelToItemName ? " II" : "");
-            
+            if (Utils.getMajorVersion() < 9) {
+                Potion potion = Potion.fromItemStack(stack);
+                potionType = potion.getType();
+                upgradeString = potion.getLevel() == 2 && Config.appendPotionLevelToItemName ? " II" : "";
+            } else {
+                potionType = meta.getBasePotionData().getType();
+                upgradeString = (meta.getBasePotionData().isUpgraded() && Config.appendPotionLevelToItemName ? " II" : "");
+            }
 
             for (PotionName potionName : potionNames) {
                 if (material == Material.POTION) {
-                    if (potionName.getPotionItemType() == PotionName.PotionItemType.POTION && potionName.getPotionType() == potionType) {
-                        return potionName.getLocalizedName() + upgradeString;
+                    if (Utils.getMajorVersion() < 9) {
+                        if (Potion.fromItemStack(stack).isSplash()) {
+                            if (potionName.getPotionItemType() == PotionName.PotionItemType.SPLASH_POTION && potionName.getPotionType() == potionType) {
+                                return potionName.getLocalizedName() + upgradeString;
+                            }
+                        } else {
+                            if (potionName.getPotionItemType() == PotionName.PotionItemType.POTION && potionName.getPotionType() == potionType) {
+                                return potionName.getLocalizedName() + upgradeString;
+                            }
+                        }
+                    } else {
+                        if (potionName.getPotionItemType() == PotionName.PotionItemType.POTION && potionName.getPotionType() == potionType) {
+                            return potionName.getLocalizedName() + upgradeString;
+                        }
                     }
-                } else if (material == Material.LINGERING_POTION) {
-                    if (potionName.getPotionItemType() == PotionName.PotionItemType.LINGERING_POTION && potionName.getPotionType() == potionType) {
-                        return potionName.getLocalizedName() + upgradeString;
-                    }
-                } else if (material == Material.TIPPED_ARROW) {
-                    if (potionName.getPotionItemType() == PotionName.PotionItemType.TIPPED_ARROW && potionName.getPotionType() == potionType) {
-                        return potionName.getLocalizedName() + upgradeString;
-                    }
-                } else if (material == Material.SPLASH_POTION) {
-                    if (potionName.getPotionItemType() == PotionName.PotionItemType.SPLASH_POTION && potionName.getPotionType() == potionType) {
-                        return potionName.getLocalizedName() + upgradeString;
+                } else {
+                    if (Utils.getMajorVersion() >= 9) {
+                        if (material == Material.LINGERING_POTION) {
+                            if (potionName.getPotionItemType() == PotionName.PotionItemType.LINGERING_POTION && potionName.getPotionType() == potionType) {
+                                return potionName.getLocalizedName() + upgradeString;
+                            }
+                        } else if (material == Material.TIPPED_ARROW) {
+                            if (potionName.getPotionItemType() == PotionName.PotionItemType.TIPPED_ARROW && potionName.getPotionType() == potionType) {
+                                return potionName.getLocalizedName() + upgradeString;
+                            }
+                        } else if (material == Material.SPLASH_POTION) {
+                            if (potionName.getPotionItemType() == PotionName.PotionItemType.SPLASH_POTION && potionName.getPotionType() == potionType) {
+                                return potionName.getLocalizedName() + upgradeString;
+                            }
+                        }
                     }
                 }
             }
         }
 
         for (ItemName itemName : itemNames) {
-            if (itemName.getMaterial() == material) {
+            if (itemName.getMaterial() != material) {
+                continue;
+            }
+
+            if (Utils.getMajorVersion() < 13) {
+                if (material.toString().equals("MONSTER_EGG")) {
+                    EntityType spawnedType = SpawnEggMeta.getEntityTypeFromItemStack(plugin, stack);
+
+                    for (EntityName entityName : entityNames) {
+                        if (entityName.getEntityType() == spawnedType) {
+                            return itemName.getLocalizedName() + " " + entityName.getLocalizedName();
+                        }
+                    }
+
+                    return itemName.getLocalizedName() + " " + formatDefaultString(spawnedType.toString());
+                } 
+            
+                if (itemName.getSubId() == stack.getDurability()) {
+                    return itemName.getLocalizedName();
+                }
+            } else {
                 return itemName.getLocalizedName();
             }
         }
@@ -1240,8 +2245,10 @@ public class LanguageUtils {
      */
     public static String getEnchantmentName(Enchantment enchantment, int level) {
         if (enchantment == null) return null;
-        String enchantmentString = formatDefaultString(enchantment.getKey().getKey());
+
         String levelString = langConfig.getString("enchantment.level." + level, String.valueOf(level));
+        String enchantmentString = formatDefaultString(Utils.getMajorVersion() < 13
+                ? enchantment.getName() : enchantment.getKey().getKey());
 
         for (EnchantmentName enchantmentName : enchantmentNames) {
             if (enchantmentName.getEnchantment().equals(enchantment)) {
@@ -1293,8 +2300,14 @@ public class LanguageUtils {
         PotionEffectType potionEffect;
         boolean upgraded;
 
-        potionEffect = potionMeta.getBasePotionData().getType().getEffectType();
-        upgraded = potionMeta.getBasePotionData().isUpgraded();
+        if (Utils.getMajorVersion() < 9) {
+            Potion potion = Potion.fromItemStack(itemStack);
+            potionEffect = potion.getType().getEffectType();
+            upgraded = potion.getLevel() == 2;
+        } else {
+            potionEffect = potionMeta.getBasePotionData().getType().getEffectType();
+            upgraded = potionMeta.getBasePotionData().isUpgraded();
+        }
 
         String potionEffectString = formatDefaultString(potionEffect.toString());
 
@@ -1332,13 +2345,18 @@ public class LanguageUtils {
         }
 
         BookMeta meta = (BookMeta) is.getItemMeta();
-        BookMeta.Generation generation = BookMeta.Generation.ORIGINAL;
+        CustomBookMeta.Generation generation = null;
 
-        if (meta.hasGeneration()) {
-            generation = meta.getGeneration();
+        if ((Utils.getMajorVersion() == 9 && Utils.getRevision() == 1) || Utils.getMajorVersion() == 8) {
+            generation = CustomBookMeta.getGeneration(is);
+        } else  if (meta.getGeneration() != null) {
+            generation = CustomBookMeta.Generation.valueOf(meta.getGeneration().toString());
         }
 
-        if (generation == null) return null;
+        if (generation == null) {
+            generation = CustomBookMeta.Generation.ORIGINAL;
+        }
+
         for (BookGenerationName generationName : generationNames) {
             if (generation == generationName.getGeneration()) {
                 return generationName.getLocalizedName();
