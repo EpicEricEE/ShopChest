@@ -34,7 +34,7 @@ import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
-import fr.xephi.authme.AuthMe;
+import fr.xephi.authme.api.v3.AuthMeApi;
 import me.ryanhamshire.GriefPrevention.Claim;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -133,7 +133,7 @@ public class ShopInteractListener implements Listener {
         Player p = e.getPlayer();
         Block b = e.getClickedBlock();
 
-        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(p)) return;
 
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
@@ -642,7 +642,7 @@ public class ShopInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(e.getPlayer())) return;
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(e.getPlayer())) return;
         handleInteractEvent(e);
     }
 
@@ -652,7 +652,7 @@ public class ShopInteractListener implements Listener {
 
         Entity entity = e.getRightClicked();
         Player p = e.getPlayer();
-        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(p)) return;
 
         if (Utils.getMajorVersion() == 8 || e.getHand() == EquipmentSlot.HAND) {
             if (entity instanceof ArmorStand) {
@@ -687,7 +687,7 @@ public class ShopInteractListener implements Listener {
 
         if (!(damager instanceof Player)) return;
         Player p = (Player) damager;
-        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMe.getApi().isAuthenticated(p)) return;
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(p)) return;
 
         if (entity instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) entity;
