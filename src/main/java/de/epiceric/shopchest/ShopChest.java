@@ -21,7 +21,6 @@ import de.epiceric.shopchest.listeners.ShopInteractListener;
 import de.epiceric.shopchest.listeners.ShopItemListener;
 import de.epiceric.shopchest.listeners.ShopUpdateListener;
 import de.epiceric.shopchest.listeners.WorldGuardListener;
-import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
@@ -334,8 +333,7 @@ public class ShopChest extends JavaPlugin {
 
                     for (Player p : getServer().getOnlinePlayers()) {
                         if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
-                            JsonBuilder jb = new JsonBuilder(ShopChest.this, LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, latestVersion)), LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD), downloadLink);
-                            jb.sendJson(p);
+                            Utils.sendUpdateMessage(ShopChest.this, p);
                         }
                     }
 

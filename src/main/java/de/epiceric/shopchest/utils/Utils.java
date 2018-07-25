@@ -3,8 +3,13 @@ package de.epiceric.shopchest.utils;
 import com.intellectualcrafters.plot.flag.Flag;
 import com.intellectualcrafters.plot.object.Plot;
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.nms.CustomBookMeta;
+import de.epiceric.shopchest.nms.JsonBuilder;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,6 +28,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -305,6 +311,31 @@ public class Utils {
         }
 
         return true;
+    }
+
+    /**
+     * Send a clickable update notification to the given player.
+     * @param plugin An instance of the {@link ShopChest} plugin
+     * @param p The player to receive the notification
+     */
+    public static void sendUpdateMessage(ShopChest plugin, Player p) {
+        JsonBuilder jb = new JsonBuilder(plugin);
+        Map<String, JsonBuilder.Part> hoverEvent = new HashMap<>();
+        hoverEvent.put("action", new JsonBuilder.Part("show_text"));
+        hoverEvent.put("value", new JsonBuilder.Part(LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD)));
+
+        Map<String, JsonBuilder.Part> clickEvent = new HashMap<>();
+        clickEvent.put("action", new JsonBuilder.Part("open_url"));
+        clickEvent.put("value", new JsonBuilder.Part(plugin.getDownloadLink()));
+
+        jb.parse(LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, plugin.getLatestVersion())));
+
+        JsonBuilder.PartMap rootPart = jb.getRootPart().toMap();
+        rootPart.setValue("hoverEvent", new JsonBuilder.PartMap(hoverEvent));
+        rootPart.setValue("clickEvent", new JsonBuilder.PartMap(clickEvent));
+        
+        jb.setRootPart(rootPart);
+        jb.sendJson(p);
     }
 
     /**

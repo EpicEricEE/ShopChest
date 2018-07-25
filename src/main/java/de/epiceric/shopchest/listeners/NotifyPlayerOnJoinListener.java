@@ -11,9 +11,9 @@ import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
-import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.Permissions;
+import de.epiceric.shopchest.utils.Utils;
 
 public class NotifyPlayerOnJoinListener implements Listener {
 
@@ -29,8 +29,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
 
         if (plugin.isUpdateNeeded()) {
             if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
-                JsonBuilder jb = new JsonBuilder(plugin, LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, plugin.getLatestVersion())), LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD), plugin.getDownloadLink());
-                jb.sendJson(p);
+                Utils.sendUpdateMessage(plugin, p);
             }
         }
 

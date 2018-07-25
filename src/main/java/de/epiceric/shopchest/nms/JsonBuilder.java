@@ -7,19 +7,113 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JsonBuilder {
 
-    private List<String> extras = new ArrayList<>();
+    public static class Part {
+        private String value;
+
+        public Part() {
+            this("");
+        }
+
+        public Part(Object value) {
+            if (value instanceof CharSequence) {
+                this.value = "\"" + value + "\"";
+            } else {
+                this.value = String.valueOf(value);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        public PartArray toArray() {
+            return new PartArray(this);
+        }
+
+        public PartMap toMap() {
+            PartMap map = new PartMap();
+            map.setValue("text", new Part());
+            map.setValue("extra", toArray());
+            return map;
+        }
+    }
+
+    public static class PartMap extends Part {
+        private Map<String, Part> values = new HashMap<>();
+
+        public PartMap() {
+        }
+
+        public PartMap(Map<String, Part> values) {
+            this.values.putAll(values);
+        }
+
+        public void setValue(String key, Part value) {
+            values.put(key, value);
+        }
+
+        public void removeValue(String key) {
+            values.remove(key);
+        }
+
+        @Override
+        public String toString() {
+            StringJoiner joiner = new StringJoiner(",", "{", "}");
+            values.forEach((key, value) -> joiner.add("\"" + key + "\":" + value.toString()));
+            return joiner.toString();
+        }
+
+        @Override
+        public PartMap toMap() {
+            return this;
+        }
+    }
+
+    public static class PartArray extends Part {
+        private List<Part> parts = new ArrayList<>();
+
+        public PartArray(Part... parts) {
+            this.parts.addAll(Arrays.asList(parts));
+        }
+
+        public void addPart(Part part) {
+            parts.add(part);
+        }
+
+        @Override
+        public String toString() {
+            StringJoiner joiner = new StringJoiner(",", "[", "]");
+            parts.forEach(part -> joiner.add(part.toString()));
+            return joiner.toString();
+        }
+
+        @Override
+        public PartArray toArray() {
+            return this;
+        }
+    }
+    
+    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fl-oL-OkK0-9])+)([^§]*)");
+
+    private Part rootPart;
     private ShopChest plugin;
 
     private Class<?> iChatBaseComponentClass = Utils.getNMSClass("IChatBaseComponent");
     private Class<?> packetPlayOutChatClass = Utils.getNMSClass("PacketPlayOutChat");
     private Class<?> chatSerializerClass;
 
-    public JsonBuilder(ShopChest plugin, String text, String hoverText, String downloadLink) {
+    public JsonBuilder(ShopChest plugin) {
         this.plugin = plugin;
 
         if (Utils.getServerVersion().equals("v1_8_R1")) {
@@ -38,87 +132,99 @@ public class JsonBuilder {
                 return;
             }
         }
-
-        parse(text, hoverText, downloadLink);
     }
 
-    private JsonBuilder parse(String text, String hoverText, String downloadLink) {
-        String regex = "[&§]{1}([a-fA-Fl-oL-O0-9]){1}";
-        text = text.replaceAll(regex, "§$1");
-        if (!Pattern.compile(regex).matcher(text).find()) {
-            withText(text).withHoverEvent(hoverText).withClickEvent(downloadLink);
-            return this;
+    public void parse(String text) {
+        Matcher matcher = PART_PATTERN.matcher(text);
+        
+        if (!matcher.find()) {
+            rootPart = new Part(text);
+            return;
         }
-        String[] words = text.split(regex);
 
-        int index = words[0].length();
-        for (String word : words) {
-            try {
-                if (index != words[0].length())
-                    withText(word).withColor("§" + text.charAt(index - 1)).withHoverEvent(hoverText).withClickEvent(downloadLink);
-            } catch (Exception e) {}
-            index += word.length() + 2;
+        matcher.reset();
+
+        PartArray array = new PartArray();
+        int lastEndIndex = 0;
+
+        while (matcher.find()) {
+            int startIndex = matcher.start();
+            int endIndex = matcher.end();
+
+            if (lastEndIndex != startIndex) {
+                String betweenMatches = text.substring(lastEndIndex, startIndex);
+                array.addPart(new Part(betweenMatches));
+            }
+
+            String format = matcher.group(1);
+            String value = matcher.group(3);
+
+            PartMap part = new PartMap();
+            part.setValue("text", new Part(value));
+
+            String[] formats = format.split("§");
+            for (String f : formats) {
+                switch (f.toLowerCase()) {
+                    case "":
+                        break;
+                    case "k":
+                        part.setValue("obuscated", new Part(true));
+                        break;
+                    case "l":
+                        part.setValue("bold", new Part(true));
+                        break;
+                    case "m":
+                        part.setValue("strikethrough", new Part(true));
+                        break;
+                    case "n":
+                        part.setValue("underlined", new Part(true));
+                        break;
+                    case "o":
+                        part.setValue("italic", new Part(true));
+                        break;
+                    case "r":
+                        part.removeValue("obfuscated");
+                        part.removeValue("bold");
+                        part.removeValue("strikethrough");
+                        part.removeValue("underlined");
+                        part.removeValue("italic");
+                        part.removeValue("color");
+                        break;
+                    default:
+                        part.setValue("color", new Part(ChatColor.getByChar(f).name().toLowerCase()));
+                }
+            }
+
+            array.addPart(part);
+            lastEndIndex = endIndex;
         }
-        return this;
+
+        rootPart = array;
     }
 
-    private JsonBuilder withText(String text) {
-        extras.add("{\"text\":\"" + text + "\"}");
-        return this;
-    }
-
-    private JsonBuilder withColor(ChatColor color) {
-        String c = color.name().toLowerCase();
-        addSegment(color.isColor() ? "\"color\":\"" + c + "\"" : "\"" + c + "\"" + ":true");
-        return this;
-    }
-
-    private JsonBuilder withColor(String color) {
-        while (color.length() != 1) color = color.substring(1).trim();
-        withColor(ChatColor.getByChar(color));
-        return this;
-    }
-
-    private JsonBuilder withClickEvent(String value) {
-        addSegment("\"clickEvent\":{\"action\":\"open_url"
-                + "\",\"value\":\"" + value + "\"}");
-        return this;
-    }
-
-    private JsonBuilder withHoverEvent(String value) {
-        addSegment("\"hoverEvent\":{\"action\":\"show_text"
-                + "\",\"value\":\"" + value + "\"}");
-        return this;
-    }
-
-    private void addSegment(String segment) {
-        String lastText = extras.get(extras.size() - 1);
-        lastText = lastText.substring(0, lastText.length() - 1)
-                + "," + segment + "}";
-        extras.remove(extras.size() - 1);
-        extras.add(lastText);
-    }
-
+    @Override
     public String toString() {
-        if (extras.size() <= 1) return extras.size() == 0 ? "{\"text\":\"\"}" : extras.get(0);
-        String text = extras.get(0).substring(0, extras.get(0).length() - 1) + ",\"extra\":[";
-        extras.remove(0);
-        for (String extra : extras)
-            text = text + extra + ",";
-        text = text.substring(0, text.length() - 1) + "]}";
-        return text;
+        return rootPart.toString();
     }
 
-    public void sendJson(Player p) {
+    public Part getRootPart() {
+        return rootPart;
+    }
+    
+    public void setRootPart(Part rootPart) {
+        this.rootPart = rootPart;
+    }
+
+    public void sendJson(Player p) {        
         try {
             Object iChatBaseComponent = chatSerializerClass.getMethod("a", String.class).invoke(null, toString());
             Object packetPlayOutChat = packetPlayOutChatClass.getConstructor(iChatBaseComponentClass).newInstance(iChatBaseComponent);
-
+            
             Utils.sendPacket(plugin, packetPlayOutChat, p);
         } catch (InstantiationException | InvocationTargetException |
                 IllegalAccessException | NoSuchMethodException e) {
             plugin.getLogger().severe("Failed to send JSON with reflection");
-            plugin.debug("Failed to send JSON with reflection");
+            plugin.debug("Failed to send JSON with reflection: " + toString());
             plugin.debug(e);
         }
     }
