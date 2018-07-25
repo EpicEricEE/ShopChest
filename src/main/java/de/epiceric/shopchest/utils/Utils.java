@@ -298,6 +298,7 @@ public class Utils {
 
     /**
      * Send a packet to a player
+     * @param plugin An instance of the {@link ShopChest} plugin
      * @param packet Packet to send
      * @param player Player to which the packet should be sent
      * @return {@code true} if the packet was sent, or {@code false} if an exception was thrown

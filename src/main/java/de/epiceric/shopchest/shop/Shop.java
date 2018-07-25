@@ -325,8 +325,9 @@ public class Shop {
     }
 
     /**
-     * Assign an ID to the shop. <br/>
+     * <p>Assign an ID to the shop.</p>
      * Only works for the first time!
+     * @param id ID to set for this shop
      */
     public void setId(int id) {
         if (this.id == -1) {
