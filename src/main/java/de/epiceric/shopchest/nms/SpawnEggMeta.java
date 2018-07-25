@@ -39,6 +39,7 @@ public class SpawnEggMeta {
     }	
 	
     /**	
+     * @param plugin An instance of the {@link ShopChest} plugin
      * @param stack {@link ItemStack} (Spawn Egg) of which the Entity should be gotten	
      * @return The {@link EntityType} the Spawn Egg will spawn or <b>null</b> if <i>nbtEntityID</i> is null	
      */	
