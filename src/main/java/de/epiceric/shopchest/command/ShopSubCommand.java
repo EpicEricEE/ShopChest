@@ -26,7 +26,7 @@ public abstract class ShopSubCommand {
     }
 
     /**
-     * Returns whether the command can only be used by players, not by the console
+     * @return Whether the command can only be used by players, not by the console
      */
     public boolean isPlayerCommand() {
         return playerCommand;
@@ -35,7 +35,10 @@ public abstract class ShopSubCommand {
     /**
      * Execute the sub command
      * @param sender Sender of the command
+     * @param command Command which was executed
      * @param args Arguments of the command ({@code args[0]} is the sub command's name)
+     * @param label Alias of the command which was used
+     * @param args Passed command arguments
      * @return Whether the sender should be sent the help message
      */
     public boolean execute(CommandSender sender, Command command, String label, String[] args) {
@@ -43,11 +46,11 @@ public abstract class ShopSubCommand {
     }
 
     /**
-     * <p>Returns a list of tab completions for the sub command</p>
-     * The main sub command will be tab completed by ShopChest
      * @param sender Sender of the command
+     * @param command Command which was executed
+     * @param label Alias of the command which was used
      * @param args Arguments of the command ({@code args[0]} is the sub command's name)
-     * @return A list of tab completions (may be an empty list)
+     * @return A list of tab completions for the sub command (may be an empty list)
      */
     public List<String> getTabCompletions(CommandSender sender, Command command, String label, String[] args) {
         if (tabCompleter == null) {
@@ -58,8 +61,8 @@ public abstract class ShopSubCommand {
     }
 
     /**
-     * Returns the help message for the command.
      * @param sender Sender to receive the help message
+     * @return The help message for the command.
      */
     public abstract String getHelpMessage(CommandSender sender);
 }

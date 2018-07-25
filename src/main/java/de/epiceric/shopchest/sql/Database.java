@@ -383,8 +383,9 @@ public abstract class Database {
     /**
      * Log an economy transaction to the database
      * @param executor Player who bought/sold something
-     * @param product ItemStack that was bought/sold
+     * @param product {@link ItemStack} that was bought/sold
      * @param vendor Vendor of the shop
+     * @param shopType {@link ShopType} of the shop
      * @param location Location of the shop
      * @param price Price (buyprice or sellprice, depends on {@code type})
      * @param type Whether the player bought or sold something

@@ -451,6 +451,9 @@ public class Config {
 
     /**
      * Reload the configuration values from config.yml
+     * @param firstLoad Whether the config values have not been loaded before
+     * @param langReload Whether the language configuration should be reloaded
+     * @param showMessages Whether console (error) messages should be shown
      */
     public void reload(boolean firstLoad, boolean langReload, boolean showMessages) {
         plugin.reloadConfig();

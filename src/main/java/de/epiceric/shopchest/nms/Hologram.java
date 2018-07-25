@@ -93,12 +93,16 @@ public class Hologram {
         return interactArmorStandWrapper != null && interactArmorStandWrapper.getUuid().equals(armorStand.getUniqueId());
     }
 
-    /** Returns the ArmorStandWrappers of this hologram */
+    /**
+     * @return A list of {@link ArmorStandWrapper}s of this hologram
+     */
     public List<ArmorStandWrapper> getArmorStandWrappers() {
         return wrappers;
     }
 
-    /** Returns the ArmorStandWrapper of this hologram that is positioned higher to be used for interaction */
+    /**
+     * @return The {@link ArmorStandWrapper} of this hologram that is positioned higher to be used for interaction
+     */
     public ArmorStandWrapper getInteractArmorStandWrapper() {
         return interactArmorStandWrapper;
     }
@@ -120,7 +124,7 @@ public class Hologram {
 
     /**
      * @param p Player to which the hologram should be shown
-     * @param force whether to force or not
+     * @param force Whether to force showing the hologram
      */
     public void showPlayer(Player p, boolean force) {
         if (viewers.add(p.getUniqueId()) || force) {
@@ -137,7 +141,7 @@ public class Hologram {
 
     /**
      * @param p Player from which the hologram should be hidden
-     * @param force whether to force or not
+     * @param force Whether to force hiding the hologram
      */
     public void hidePlayer(Player p, boolean force) {
         if (viewers.remove(p.getUniqueId()) || force) {
@@ -146,8 +150,10 @@ public class Hologram {
     }
 
     /**
-     * Removes the hologram. <br>
-     * Hologram will be hidden from all players and will be killed
+     * <p>Removes the hologram.</p>
+     * 
+     * Hologram will be hidden from all players and all
+     * ArmorStand entities will be killed.
      */
     public void remove() {
         viewers.clear();
@@ -166,6 +172,11 @@ public class Hologram {
         HOLOGRAMS.remove(this);
     }
 
+    /**
+     * Remove the player from the list of viewers. The hologram is
+     * then counted as hidden, but no packets are sent to the player.
+     * @param p Player whose visibility status will be reset
+     */
     public void resetVisible(Player p) {
         viewers.remove(p.getUniqueId());
     }

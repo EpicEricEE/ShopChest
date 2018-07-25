@@ -298,8 +298,10 @@ public class ShopUtils {
     }
 
     /**
-     * Remove a player from the {@code playerLocation} map.
+     * Remove a saved location of a player to force a recalculation
+     * of whether the hologram should be visible.
      * This should only be called when really needed
+     * @param player Player whose saved location will be reset
      */
     public void resetPlayerLocation(Player player) {
         playerLocation.remove(player.getUniqueId());

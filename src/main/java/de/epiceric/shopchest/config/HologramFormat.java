@@ -43,6 +43,7 @@ public class HologramFormat {
      * Get the format for the given line of the hologram
      * @param line Line of the hologram
      * @param reqMap Values of the requirements that might be needed by the format (contains {@code null} if not comparable)
+     * @param plaMap Values of the placeholders that might be needed by the format
      * @return  The format of the first working option, or an empty String if no option is working
      *          because of not fulfilled requirements
      */
@@ -76,7 +77,9 @@ public class HologramFormat {
         config = YamlConfiguration.loadConfiguration(configFile);
     }
 
-    /** Returns whether the hologram text has to change dynamically without reloading */
+    /**
+     * @return Whether the hologram text has to change dynamically without reloading
+     */
     public boolean isDynamic() {
         int count = getLineCount();
         for (int i = 0; i < count; i++) {
@@ -101,12 +104,16 @@ public class HologramFormat {
         return false;
     }
 
-    /** Returns the amount of lines in a hologram */
+    /**
+     * @return Amount of lines in a hologram
+     */
     public int getLineCount() {
         return config.getConfigurationSection("lines").getKeys(false).size();
     }
 
-    /** Returns the configuration of the "hologram-format.yml" file */
+    /** 
+     * @return Configuration of the "hologram-format.yml" file
+     */
     public YamlConfiguration getConfig() {
         return config;
     }
