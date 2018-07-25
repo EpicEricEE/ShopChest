@@ -6,97 +6,21 @@
 
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest</artifactId>
-    <version>${version.final}</version>
+    <version>1.13-SNAPSHOT</version>
 
-    <name>${project.artifactId}</name>
+    <name>ShopChest</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
     <description>Let your players create their own nice-looking shops to sell their stuff to other players!</description>
-    <packaging>jar</packaging>
 
     <properties>
-        <!-- Project Properties -->
-        <projectEncoding>UTF-8</projectEncoding>
-        <project.build.sourceEncoding>${projectEncoding}</project.build.sourceEncoding>
-        <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
+        <!-- Encoding Properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
 
         <!-- JDK Version -->
-        <jdkVersion>1.8</jdkVersion>
-        <maven.compiler.source>${jdkVersion}</maven.compiler.source>
-        <maven.compiler.target>${jdkVersion}</maven.compiler.target>
-
-        <!-- Versioning -->
-        <version.number>1.12.4</version.number>
-        <version.final>${version.number}-${version.git}</version.final>
-
-        <!-- Others -->
-        <github.global.server>github</github.global.server>
-        <javadoc.opts><!-- Only jdk 1.8 and later --></javadoc.opts>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>net.md-5</groupId>
-                        <artifactId>scriptus</artifactId>
-                        <version>0.2</version>
-                        <executions>
-                            <execution>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>describe</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <descriptionProperty>version.git</descriptionProperty>
-                            <format>%s</format>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>doclint-java8</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.opts>-Xdoclint:none</javadoc.opts>
-            </properties>
-        </profile>
-        <profile>
-            <id>release</id>
-            <properties>
-                <version.final>${version.number}</version.final>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
-                        <configuration>
-                            <additionalparam>${javadoc.opts}</additionalparam>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                                <phase>package</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <repositories>
         <repository>
@@ -218,13 +142,6 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>internal-maven-repo</id>
-            <url>file://${project.build.directory}/gh-pages/maven</url>
-        </repository>
-    </distributionManagement>
-
     <build>
         <resources>
             <resource>
@@ -233,25 +150,12 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <artifactSet>
-                        <includes>
-                            <include>org.bstats:*</include>
-                        </includes>
-                    </artifactSet>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>de.epiceric.shopchest.utils</shadedPattern>
-                        </relocation>
-                    </relocations>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                </configuration>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -260,39 +164,39 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>de.epiceric.shopchest.utils</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <altDeploymentRepository>internal-maven-repo::default::file://${project.build.directory}/gh-pages/maven</altDeploymentRepository>
-                    <javadoc>${project.build.directory}/${project.build.finalName}-javadoc.jar</javadoc>
-                </configuration>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.12</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
                 <configuration>
-                    <message>
-Updated Maven Artifact
-
-Artifact: ${project.artifactId}
-Version: ${project.version}
-Timestamp: ${maven.build.timestamp}
-                    </message>
-                    <outputDirectory>${project.build.directory}/gh-pages</outputDirectory>
-                    <branch>refs/heads/gh-pages</branch>
-                    <merge>true</merge>
-                    <repositoryName>ShopChest</repositoryName>
-                    <repositoryOwner>EpicEricEE</repositoryOwner>
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>deploy</phase>
                         <goals>
-                            <goal>site</goal>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
