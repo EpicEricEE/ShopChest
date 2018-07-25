@@ -223,7 +223,7 @@ message.use-in-creative=&cYou cannot use a shop in creative mode.
 
 # Set the message when an update is available.
 # Usable Placeholders: %VERSION%
-message.update.update-available=&6&lVersion &c%VERSION% &6of &cShopChest &6is available &chere.
+message.update.update-available=&6&lVersion &c&l%VERSION% &6&lof &c&lShopChest &6&lis available &c&lhere.
 
 # Set the message you get when hovering over the available message.
 message.update.click-to-download=Click to download
