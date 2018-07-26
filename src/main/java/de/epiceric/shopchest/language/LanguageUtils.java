@@ -2141,7 +2141,7 @@ public class LanguageUtils {
         
         if (stack.hasItemMeta()) {
             ItemMeta meta = stack.getItemMeta();
-            if (meta.getDisplayName() != null) {
+            if (meta.getDisplayName() != null && !meta.getDisplayName().isEmpty()) {
                 return meta.getDisplayName();
             } else if (meta instanceof BookMeta && ((BookMeta) meta).hasTitle()) {
                 return ((BookMeta) meta).getTitle();
