@@ -42,25 +42,6 @@ message.shopInfo.product=&6Product: &e%AMOUNT% x %ITEMNAME%
 # Usable Placeholders=%STOCK%
 message.shopInfo.stock=&6In Stock: &e%STOCK%
 
-# Set the enchantments message the player gets after entering '/shop info' if the product is enchanted
-# Usable Placeholders: %ENCHANTMENT%
-message.shopInfo.enchantments=&6Enchantments: &e%ENCHANTMENT%
-
-# Set the potion effect message the player gets after entering '/shop info' if the product has a potion effect
-# Usable Placeholders: %POTION-EFFECT%, %EXTENDED%
-message.shopInfo.potion-effect=&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%
-
-# Set the music disc title message the player gets after entering '/shop info' if the product is a music disc
-# Usable Placeholders: %MUSIC-TITLE%
-message.shopInfo.music-disc-title=&6Music Disc Title: &e%MUSIC-TITLE%
-
-# Set the generation message the player gets after entering '/shop info' if the product is a written book
-# Usable Placeholders: %GENERATION%
-message.shopInfo.book-generation=&6Generation: &e%GENERATION%
-
-# If the product is a tipped arrow but it doesn't have an effect, this gets displayed instead of the arrow effect
-message.shopInfo.none=&7None
-
 # Set the price message the player gets after entering '/shop info'.
 # Usable Placeholders: %BUY-PRICE%, %SELL-PRICE%
 message.shopInfo.price=&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%
@@ -74,10 +55,6 @@ message.shopInfo.is-normal=&6Type: &eNormal
 
 # ... when the shop is an admin shop.
 message.shopInfo.is-admin=&6Type: &eAdmin
-
-# If the potion effect it extended, %EXTENDED% will be replaced by this.
-# If not, this will be empty.
-message.shopInfo.extended=(Extended)
 
 # Set the message when the player tries to create a shop with sell price and buy price set to 0
 message.buy-and-sell-disabled=&cYou can't create a shop with buying and selling disabled.

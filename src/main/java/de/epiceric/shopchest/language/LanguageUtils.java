@@ -2046,16 +2046,10 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(Message.SHOP_INFO_VENDOR, langConfig.getString("message.shopInfo.vendor", "&6Vendor: &e%VENDOR%")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_PRODUCT, langConfig.getString("message.shopInfo.product", "&6Product: &e%AMOUNT% x %ITEMNAME%")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_STOCK, langConfig.getString("message.shopInfo.stock", "&6In Stock: &e%STOCK%")));
-        messages.add(new LocalizedMessage(Message.SHOP_INFO_ENCHANTMENTS, langConfig.getString("message.shopInfo.enchantments", "&6Enchantments: &e%ENCHANTMENT%")));
-        messages.add(new LocalizedMessage(Message.SHOP_INFO_POTION_EFFECT, langConfig.getString("message.shopInfo.potion-effect", "&6Potion Effect: &e%POTION-EFFECT% %EXTENDED%")));
-        messages.add(new LocalizedMessage(Message.SHOP_INFO_MUSIC_TITLE, langConfig.getString("message.shopInfo.music-disc-title", "&6Music Disc Title: &e%MUSIC-TITLE%")));
-        messages.add(new LocalizedMessage(Message.SHOP_INFO_BOOK_GENERATION, langConfig.getString("message.shopInfo.book-generation", "&6Generation: &e%GENERATION%")));
-        messages.add(new LocalizedMessage(Message.SHOP_INFO_NONE, langConfig.getString("message.shopInfo.none", "&7None")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_PRICE, langConfig.getString("message.shopInfo.price", "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_DISABLED, langConfig.getString("message.shopInfo.disabled", "&7Disabled")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_NORMAL, langConfig.getString("message.shopInfo.is-normal", "&6Type: &eNormal")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_ADMIN, langConfig.getString("message.shopInfo.is-admin", "&6Type: &eAdmin")));
-        messages.add(new LocalizedMessage(Message.SHOP_INFO_EXTENDED, langConfig.getString("message.shopInfo.extended", "(Extended)")));
         messages.add(new LocalizedMessage(Message.BUY_SELL_DISABLED, langConfig.getString("message.buy-and-sell-disabled", "&cYou can't create a shop with buying and selling disabled.")));
         messages.add(new LocalizedMessage(Message.BUY_SUCCESS, langConfig.getString("message.buy-success", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a from &6%VENDOR%&a.")));
         messages.add(new LocalizedMessage(Message.BUY_SUCCESS_ADMIN, langConfig.getString("message.buy-success-admin", "&aYou bought &6%AMOUNT% x %ITEMNAME%&a for &6%BUY-PRICE%&a.")));
