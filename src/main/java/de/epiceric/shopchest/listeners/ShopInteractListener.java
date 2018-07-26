@@ -1120,8 +1120,12 @@ public class ShopInteractListener implements Listener {
 
         String worldName = shop.getLocation().getWorld().getName();
 
-        if (econ.getBalance(shop.getVendor(), worldName) >= price || shop.getShopType() == ShopType.ADMIN || Config.autoCalculateItemAmount) {
-            int amountForMoney = (int) (amount / price * econ.getBalance(shop.getVendor(), worldName));
+        if (shop.getShopType() == ShopType.ADMIN || econ.getBalance(shop.getVendor(), worldName) >= price || Config.autoCalculateItemAmount) {
+            int amountForMoney = 1;
+            
+            if (shop.getShopType() != ShopType.ADMIN) {
+                 amountForMoney = (int) (amount / price * econ.getBalance(shop.getVendor(), worldName));
+            }
 
             plugin.debug("Vendor has enough money for " + amountForMoney + " item(s) (#" + shop.getID() + ")");
 
