@@ -1,5 +1,6 @@
 package de.epiceric.shopchest.listeners;
 
+import com.google.gson.JsonPrimitive;
 import com.intellectualcrafters.plot.flag.Flag;
 import com.intellectualcrafters.plot.object.Plot;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -26,11 +27,11 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.nms.Hologram;
+import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.ClickType;
-import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
@@ -38,6 +39,7 @@ import fr.xephi.authme.api.v3.AuthMeApi;
 import me.ryanhamshire.GriefPrevention.Claim;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -46,7 +48,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -73,8 +74,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ShopInteractListener implements Listener {
+
+    private static final Pattern COLOR_CODE_PATTERN = Pattern.compile(".*([§]([a-fA-F0-9]))");
+    private static final Pattern FORMAT_CODE_PATTERN = Pattern.compile(".*([§]([l-oL-OkK]))");
 
     private ShopChest plugin;
     private Economy econ;
@@ -826,9 +832,7 @@ public class ShopInteractListener implements Listener {
         }
 
         Chest c = (Chest) shop.getLocation().getBlock().getState();
-
         int amount = Utils.getAmount(c.getInventory(), shop.getProduct());
-        Material type = shop.getProduct().getType();
 
         String vendorName = (shop.getVendor().getName() == null ?
                 shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
@@ -836,14 +840,8 @@ public class ShopInteractListener implements Listener {
         String vendorString = LanguageUtils.getMessage(Message.SHOP_INFO_VENDOR,
                 new Replacement(Placeholder.VENDOR, vendorName));
 
-        String productString = LanguageUtils.getMessage(Message.SHOP_INFO_PRODUCT,
-                new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
-                new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct())));
-
-        String enchantmentString = "";
-        String potionEffectString = "";
-        String bookGenerationString = "";
-        String musicDiscTitleString = "";
+        // Make JSON message with item preview
+        JsonBuilder jb = getProductJson(shop.getProduct());
 
         String disabled = LanguageUtils.getMessage(Message.SHOP_INFO_DISABLED);
 
@@ -857,47 +855,91 @@ public class ShopInteractListener implements Listener {
         String stock = LanguageUtils.getMessage(Message.SHOP_INFO_STOCK,
                 new Replacement(Placeholder.STOCK, String.valueOf(amount)));
 
-        String potionEffectName = LanguageUtils.getPotionEffectName(shop.getProduct());
-
-        if (potionEffectName.length() > 0) {
-            boolean potionExtended = ItemUtils.isExtendedPotion(shop.getProduct());
-
-            String extended = potionExtended ? LanguageUtils.getMessage(Message.SHOP_INFO_EXTENDED) : "";
-            potionEffectString = LanguageUtils.getMessage(Message.SHOP_INFO_POTION_EFFECT,
-                    new Replacement(Placeholder.POTION_EFFECT, potionEffectName),
-                    new Replacement(Placeholder.EXTENDED, extended));
-        }
-
-        if (type == Material.WRITTEN_BOOK) {
-            bookGenerationString = LanguageUtils.getMessage(Message.SHOP_INFO_BOOK_GENERATION,
-                    new Replacement(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(shop.getProduct())));
-        }
-
-        String musicDiscName = LanguageUtils.getMusicDiscName(type);
-        if (musicDiscName.length() > 0) {
-            musicDiscTitleString = LanguageUtils.getMessage(Message.SHOP_INFO_MUSIC_TITLE,
-                    new Replacement(Placeholder.MUSIC_TITLE, musicDiscName));
-        }
-
-        Map<Enchantment, Integer> enchantmentMap = ItemUtils.getEnchantments(shop.getProduct());
-        String enchantmentList = LanguageUtils.getEnchantmentString(enchantmentMap);
-
-        if (enchantmentList.length() > 0) {
-            enchantmentString = LanguageUtils.getMessage(Message.SHOP_INFO_ENCHANTMENTS,
-                    new Replacement(Placeholder.ENCHANTMENT, enchantmentList));
-        }
-
         executor.sendMessage(" ");
         if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(vendorString);
-        executor.sendMessage(productString);
+        jb.sendJson(executor);
         if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(stock);
-        if (enchantmentString.length() > 0) executor.sendMessage(enchantmentString);
-        if (potionEffectString.length() > 0) executor.sendMessage(potionEffectString);
-        if (musicDiscTitleString.length() > 0) executor.sendMessage(musicDiscTitleString);
-        if (bookGenerationString.length() > 0) executor.sendMessage(bookGenerationString);
         executor.sendMessage(priceString);
         executor.sendMessage(shopType);
         executor.sendMessage(" ");
+    }
+
+    /**
+     * Create a {@link JsonBuilder} containing the shop info message for the product
+     * in which you can hover the item name to get a preview.
+     * @param product The product of the shop
+     * @return A {@link JsonBuilder} that can send the message via {@link JsonBuilder#sendJson(Player)}
+     */
+    private JsonBuilder getProductJson(ItemStack product) {
+        // Add spaces at start and end, so there will always be a part before and after
+        // the item name after splitting at Placeholder.ITEM_NAME
+        String productString = " " + LanguageUtils.getMessage(Message.SHOP_INFO_PRODUCT,
+                new Replacement(Placeholder.AMOUNT, String.valueOf(product.getAmount()))) + " ";
+
+        String[] parts = productString.split(Placeholder.ITEM_NAME.toString());
+        String productName = LanguageUtils.getItemName(product);
+        String jsonItem = "";
+        JsonBuilder jb = new JsonBuilder(plugin);
+        JsonBuilder.PartArray rootArray = new JsonBuilder.PartArray();
+        
+        try {
+            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");	
+            Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, product);	
+            Class<?> nbtTagCompoundClass = Utils.getNMSClass("NBTTagCompound");
+            Object nbtTagCompound = nbtTagCompoundClass.getConstructor().newInstance();
+            nmsStack.getClass().getMethod("save", nbtTagCompoundClass).invoke(nmsStack, nbtTagCompound);
+            jsonItem = new JsonPrimitive(nbtTagCompound.toString()).toString();
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to create JSON from item. Product preview will not be available.");
+            plugin.debug("Failed to create JSON from item:");
+            plugin.debug(e);
+            jb.setRootPart(new JsonBuilder.Part(productString.replace(Placeholder.ITEM_NAME.toString(), productName)));
+            return jb;
+        }
+
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+
+            // Remove spaces at start and end that were added before
+            if (i == 0 && part.startsWith(" ")) {
+                part = part.substring(1);
+            } else if (i == parts.length - 1 && part.endsWith(" ")) {
+                part = part.substring(0, part.length() - 1);
+            }
+
+            String formatPrefix = "";
+
+            // A color code resets all format codes, so only format codes
+            // after the last color code have to be found.
+            int lastColorGroupEndIndex = 0;
+
+            Matcher colorMatcher = COLOR_CODE_PATTERN.matcher(part);
+            if (colorMatcher.find()) {
+                formatPrefix = colorMatcher.group(1);
+                lastColorGroupEndIndex = colorMatcher.end();
+            }
+            
+            Matcher formatMatcher = FORMAT_CODE_PATTERN.matcher(part);
+            while (formatMatcher.find(lastColorGroupEndIndex)) {
+                formatPrefix += formatMatcher.group(1);
+            }
+
+            rootArray.addPart(new JsonBuilder.Part(part));
+
+            if (i < parts.length - 1) {
+                JsonBuilder.PartMap hoverEvent = new JsonBuilder.PartMap();
+                hoverEvent.setValue("action", new JsonBuilder.Part("show_item"));
+                hoverEvent.setValue("value", new JsonBuilder.Part(jsonItem, false));
+
+                JsonBuilder.PartMap itemNameMap = JsonBuilder.parse(formatPrefix + productName).toMap();
+                itemNameMap.setValue("hoverEvent", hoverEvent);
+
+                rootArray.addPart(itemNameMap);
+            }
+        }
+
+        jb.setRootPart(rootArray);
+        return jb;
     }
 
     /**
