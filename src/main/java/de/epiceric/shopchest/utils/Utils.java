@@ -63,6 +63,9 @@ public class Utils {
 
             itemStack1.setItemMeta(bookMeta1);
             itemStack2.setItemMeta(bookMeta2);
+
+            itemStack1 = decode(encode(itemStack1));
+            itemStack2 = decode(encode(itemStack2));
         }
 
         return itemStack1.isSimilar(itemStack2);
