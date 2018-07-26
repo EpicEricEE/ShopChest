@@ -134,12 +134,11 @@ public class JsonBuilder {
         }
     }
 
-    public void parse(String text) {
+    public static Part parse(String text) {
         Matcher matcher = PART_PATTERN.matcher(text);
         
         if (!matcher.find()) {
-            rootPart = new Part(text);
-            return;
+            return new Part(text);
         }
 
         matcher.reset();
@@ -199,7 +198,7 @@ public class JsonBuilder {
             lastEndIndex = endIndex;
         }
 
-        rootPart = array;
+        return array;
     }
 
     @Override
