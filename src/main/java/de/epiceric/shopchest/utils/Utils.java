@@ -328,9 +328,9 @@ public class Utils {
         clickEvent.put("action", new JsonBuilder.Part("open_url"));
         clickEvent.put("value", new JsonBuilder.Part(plugin.getDownloadLink()));
 
-        jb.parse(LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, plugin.getLatestVersion())));
-
-        JsonBuilder.PartMap rootPart = jb.getRootPart().toMap();
+        JsonBuilder.PartMap rootPart = JsonBuilder.parse(LanguageUtils.getMessage(Message.UPDATE_AVAILABLE,
+                new Replacement(Placeholder.VERSION, plugin.getLatestVersion()))).toMap();
+                
         rootPart.setValue("hoverEvent", new JsonBuilder.PartMap(hoverEvent));
         rootPart.setValue("clickEvent", new JsonBuilder.PartMap(clickEvent));
         
