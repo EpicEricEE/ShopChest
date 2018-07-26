@@ -21,11 +21,15 @@ public class JsonBuilder {
         private String value;
 
         public Part() {
-            this("");
+            this("", true);
         }
 
         public Part(Object value) {
-            if (value instanceof CharSequence) {
+            this(value, value instanceof CharSequence);
+        }
+
+        public Part(Object value, boolean appendQuotes) {
+            if (appendQuotes) {
                 this.value = "\"" + value + "\"";
             } else {
                 this.value = String.valueOf(value);
@@ -220,6 +224,7 @@ public class JsonBuilder {
             Object packetPlayOutChat = packetPlayOutChatClass.getConstructor(iChatBaseComponentClass).newInstance(iChatBaseComponent);
             
             Utils.sendPacket(plugin, packetPlayOutChat, p);
+            plugin.debug("Sent JSON: " + toString());
         } catch (InstantiationException | InvocationTargetException |
                 IllegalAccessException | NoSuchMethodException e) {
             plugin.getLogger().severe("Failed to send JSON with reflection");
