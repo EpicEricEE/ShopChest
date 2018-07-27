@@ -7,8 +7,8 @@ To use the API, you need to add the following repository and dependency in your 
 ```xml
 <repositories>
   <repository>
-    <id>shopchest-repo</id>
-    <url>https://epicericee.github.io/ShopChest/maven/</url>
+    <id>codemc-repo</id>
+    <url>https://repo.codemc.org/repository/maven-public/</url>
   </repository>
 </repositories>
 
@@ -16,13 +16,13 @@ To use the API, you need to add the following repository and dependency in your 
   <dependency>
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest</artifactId>
-    <version>1.11.1</version>
+    <version>1.13-SNAPSHOT</version>
     <scope>provided</scope>
   </dependency>
 </dependencies>
 ```
 
-You can find the javadoc here: https://epicericee.github.io/ShopChest/javadoc/
+You can find the javadoc here: https://ci.codemc.org/job/EpicEricEE/job/ShopChest/javadoc/
 
 ## Build
 Clone this repository and use ``mvn clean package`` or ``mvn clean install``.
@@ -34,5 +34,4 @@ If you find any issues, please provide them in the [Issues Section](https://gith
 
 ## Download
 This resource/plugin is found on the official spigot page [here](https://www.spigotmc.org/resources/shopchest.11431/).
-You can also download the latest unstable builds on [this page](http://epiceric.square7.de/bukkit/plugins/).
-
+You can also download the latest unstable builds on [this page](https://ci.codemc.org/job/EpicEricEE/job/ShopChest/).
