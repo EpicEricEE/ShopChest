@@ -2120,7 +2120,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_UPDATE, langConfig.getString("message.commandDescription.update", "&a/%COMMAND% update - Check for Updates.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_LIMITS, langConfig.getString("message.commandDescription.limits", "&a/%COMMAND% limits - View shop limits.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_OPEN, langConfig.getString("message.commandDescription.open", "&a/%COMMAND% open - Open a shop.")));
-        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "&a/%COMMAND% config <set|get|remove> <property> <value> - Change configuration values.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CONFIG, langConfig.getString("message.commandDescription.config", "&a/%COMMAND% config <set|add|remove> <property> <value> - Change configuration values.")));
         messages.add(new LocalizedMessage(Message.CHANGED_CONFIG_SET, langConfig.getString("message.config.set", "&6Changed &a%PROPERTY% &6to &a%VALUE%&6.")));
         messages.add(new LocalizedMessage(Message.CHANGED_CONFIG_REMOVED, langConfig.getString("message.config.removed", "&6Removed &a%VALUE% &6from &a%PROPERTY%&6.")));
         messages.add(new LocalizedMessage(Message.CHANGED_CONFIG_ADDED, langConfig.getString("message.config.added", "&6Added &a%VALUE% &6to &a%PROPERTY%&6.")));
