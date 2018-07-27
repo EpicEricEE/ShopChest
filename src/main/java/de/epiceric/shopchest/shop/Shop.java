@@ -292,8 +292,8 @@ public class Shop {
         if (Config.hologramFixedBottom) subtractY = 0.85;
 
         if (doubleChest) {
-            Chest c1 = face == BlockFace.NORTH || face == BlockFace.EAST ? chests[1] : chests[0];
-            Chest c2 = face == BlockFace.NORTH || face == BlockFace.EAST ? chests[0] : chests[1];
+            Chest c1 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[1] : chests[0];
+            Chest c2 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[0] : chests[1];
 
             if (b.getLocation().equals(c1.getLocation())) {
                 if (c1.getX() != c2.getX()) {
