@@ -23,16 +23,24 @@ public class ShopUpdateListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        for (Shop shop : plugin.getShopUtils().getShops()) {
-            if (shop.hasItem()) {
-                shop.getItem().resetVisible(e.getPlayer());
+        // If done without delay, Bukkit#getOnlinePlayers() would still
+        // contain the player even though he left, so the shop updater
+        // would show the shop again.
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (Shop shop : plugin.getShopUtils().getShops()) {
+                    if (shop.hasItem()) {
+                        shop.getItem().resetVisible(e.getPlayer());
+                    }
+                    if (shop.hasHologram()) {
+                        shop.getHologram().resetVisible(e.getPlayer());
+                    }
+                }
+        
+                plugin.getShopUtils().resetPlayerLocation(e.getPlayer());
             }
-            if (shop.hasHologram()) {
-                shop.getHologram().resetVisible(e.getPlayer());
-            }
-        }
-
-        plugin.getShopUtils().resetPlayerLocation(e.getPlayer());
+        }.runTaskLater(plugin, 1L);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
