@@ -16,13 +16,6 @@ language-file: "en_US"
 # Set whether the floating shop items on top of the chest should be shown
 show-shop-items: true
 
-# Set the quality (speed) for hologram and item updating.
-# Valid values are (from slowest to fastest):
-# 'SLOWEST', 'SLOWER', 'SLOW', 'NORMAL', 'FAST', 'FASTER', 'FASTEST'
-# The faster the value, the more performance will be used, which
-# may lead to TPS loss.
-update-quality: NORMAL
-
 # Set the item with which a player can click a shop to retrieve information.
 # You can set this to an empty string to disable this feature.
 shop-info-item: "STICK"

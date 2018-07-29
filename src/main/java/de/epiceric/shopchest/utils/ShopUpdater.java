@@ -1,40 +1,18 @@
 package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ShopUpdater {
-
-    public enum UpdateQuality {
-        SLOWEST(31L),
-        SLOWER(24L),
-        SLOW(17L),
-        NORMAL(10L),
-        FAST(7L),
-        FASTER(4L),
-        FASTEST(1L);
-
-        private final long interval;
-
-        UpdateQuality(long interval) {
-            this.interval = interval;
-        }
-
-        public long getInterval() {
-            return interval;
-        }
-    }
-
+    
     private final ShopChest plugin;
     private final Queue<Runnable> beforeNext = new ConcurrentLinkedQueue<>();
 
-    private volatile BukkitTask running;
+    private volatile Thread thread;
 
     public ShopUpdater(ShopChest plugin) {
         this.plugin = plugin;
@@ -45,8 +23,19 @@ public class ShopUpdater {
      */
     public void start() {
         if (!isRunning()) {
-            long interval = Config.updateQuality.getInterval();
-            running = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new ShopUpdaterTask(), interval, interval);
+            thread = new Thread(() -> {
+                while (!Thread.interrupted()) {
+                    for (Runnable runnable : beforeNext) {
+                        runnable.run();
+                    }
+                    beforeNext.clear();
+        
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        plugin.getShopUtils().updateShops(p);
+                    }
+                }
+            }, "Shop Updater");
+            thread.start();
         }
     }
 
@@ -62,9 +51,9 @@ public class ShopUpdater {
      * Stop task properly
      */
     public void stop() {
-        if (running != null) {
-            running.cancel();
-            running = null;
+        if (thread != null) {
+            thread.interrupt();
+            thread = null;
         }
     }
 
@@ -72,7 +61,7 @@ public class ShopUpdater {
      * @return whether task is running or not
      */
     public boolean isRunning() {
-        return running != null;
+        return thread != null;
     }
 
     /**
@@ -82,22 +71,5 @@ public class ShopUpdater {
      */
     public void beforeNext(Runnable runnable) {
         beforeNext.add(runnable);
-    }
-
-    private class ShopUpdaterTask implements Runnable {
-
-        @Override
-        public void run() {
-            if (!beforeNext.isEmpty()) {
-                for (Runnable runnable : beforeNext) {
-                    runnable.run();
-                }
-                beforeNext.clear();
-            }
-
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                plugin.getShopUtils().updateShops(p);
-            }
-        }
     }
 }

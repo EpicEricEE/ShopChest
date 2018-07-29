@@ -307,104 +307,77 @@ public class ShopUtils {
         playerLocation.remove(player.getUniqueId());
     }
 
-    private static final double TARGET_THRESHOLD = 1;
-
     private void updateVisibleShops(Player player) {
         double itemDistSquared = Math.pow(Config.maximalItemDistance, 2);
-        double hologramDistSquared = Math.pow(Config.maximalDistance, 2);
+        boolean firstShopInSight = Config.onlyShowFirstShopInSight;
+        double maxDist = Config.maximalDistance;
 
-        boolean firstShopInSight =Config.onlyShowFirstShopInSight;
-
-        // used if onlyShowFirstShopInSight
-        List<Shop> otherShopsInSight = firstShopInSight ? new ArrayList<Shop>() : null;
-        double nearestDistance = 0;
+        List<Shop> shopsInSight = new ArrayList<>();
+        double nearestDistSquared = Double.MAX_VALUE;
         Shop nearestShop = null;
 
         Location pLoc = player.getEyeLocation();
-        double pX = pLoc.getX();
-        double pY = pLoc.getY();
-        double pZ = pLoc.getZ();
         Vector pDir = pLoc.getDirection();
-        double dirLength = pDir.length();
+
+        // Display holograms based on sight
+        for (double i = 0; i <= maxDist; i++) {
+            Location loc = pLoc.clone();
+            Vector dir = pDir.clone();
+            double factor = Math.min(i, maxDist);
+            
+            loc.add(dir.multiply(factor));
+            Location locBelow = loc.clone().subtract(0, 1, 0);
+
+            // Check block below as player may look at hologram
+            Shop shop = getShop(loc);
+            if (shop == null) {
+                shop = getShop(locBelow);
+            }
+
+            if (shop != null && shop.hasHologram()) {
+                shopsInSight.add(shop);
+                double distSquared = pLoc.distanceSquared(loc);
+                if (distSquared < nearestDistSquared) {
+                    nearestDistSquared = distSquared;
+                    nearestShop = shop;
+                }
+            }
+        }
 
         for (Shop shop : getShops()) {
+            if (firstShopInSight) {
+                if (!shop.equals(nearestShop) && shop.hasHologram()) {
+                    shop.getHologram().hidePlayer(player);
+                }
+            } else {
+                if (!shopsInSight.contains(shop)) {
+                    shop.getHologram().hidePlayer(player);
+                }
+            }
+
+            // Display item based on distance
             Location shopLocation = shop.getLocation();
-
             if (shopLocation.getWorld().getName().equals(player.getWorld().getName())) {
-                double distanceSquared = shop.getLocation().distanceSquared(player.getLocation());
+                double distSquared = shop.getLocation().distanceSquared(player.getLocation());
 
-                // Display item based on distance
                 if (shop.hasItem()) {
-                    if (distanceSquared <= itemDistSquared) {
+                    if (distSquared <= itemDistSquared) {
                         shop.getItem().showPlayer(player);
                     } else {
                         shop.getItem().hidePlayer(player);
                     }
                 }
-
-                // Display hologram based on sight
-                if (shop.hasHologram()) {
-                    if (distanceSquared < hologramDistSquared) {
-                        Location holoLocation = shop.getHologram().getLocation();
-
-                        double x = holoLocation.getX() - pX;
-                        double y = shopLocation.getY() - pY + 1.15; // chest block + item offset
-                        double z = holoLocation.getZ() - pZ;
-
-                        // See: org.bukkit.util.Vector#angle(Vector)
-                        double angle = FastMath.acos(
-                                (x * pDir.getX() + y * pDir.getY() + z * pDir.getZ())
-                                        / (FastMath.sqrt(x * x + y * y + z * z) * dirLength)
-                        );
-
-                        double distance = FastMath.sqrt(distanceSquared);
-
-                        // Check if is targeted
-                        if (angle * distance < TARGET_THRESHOLD) {
-                            // Display even if not the nearest
-                            if (!firstShopInSight) {
-                                shop.getHologram().showPlayer(player);
-                                continue;
-                            }
-
-                            if (nearestShop == null) {
-                                // nearestShop is null
-                                // => we guess this one will be the nearest
-                                nearestShop = shop;
-                                nearestDistance = distance;
-                                continue;
-                            } else if (distance < nearestDistance) {
-                                // nearestShop is NOT null && this shop is nearest
-                                // => we'll hide nearestShop, and guess this one will be the nearest
-                                otherShopsInSight.add(nearestShop);
-                                nearestShop = shop;
-                                nearestDistance = distance;
-                                continue;
-                            } else if (nearestShop.getLocation().equals(shop.getLocation())) {
-                                // shops are the same (double chest)
-                                // => skip since it's already been handled
-                                continue;
-                            }
-                            // else: hologram is farther than nearest, so we hide it
-                        }
-                    }
-
-                    // If not in sight
-                    shop.getHologram().hidePlayer(player);
-                }
             }
         }
 
-        if (firstShopInSight) {
-            // we hide other shop as we wan't to display only the first
-            for (Shop shop : otherShopsInSight) {
-                // we already checked hasHologram() before adding it
-                shop.getHologram().hidePlayer(player);
-            }
-        }
-
-        if (nearestShop != null && nearestShop.hasHologram()) {
+        if (nearestShop != null) {
             nearestShop.getHologram().showPlayer(player);
+        }
+
+        if (!firstShopInSight) {
+            for (Shop otherShop : shopsInSight) {
+                otherShop.getHologram().showPlayer(player);
+            }
         }
     }
 
