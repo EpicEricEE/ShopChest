@@ -2218,7 +2218,7 @@ public class LanguageUtils {
                         }
                     }
 
-                    return itemName.getLocalizedName() + " " + formatDefaultString(spawnedType.toString());
+                    return itemName.getLocalizedName() + " " + formatDefaultString(String.valueOf(spawnedType));
                 } 
             
                 if (itemName.getSubId() == stack.getDurability()) {
@@ -2229,7 +2229,7 @@ public class LanguageUtils {
             }
         }
 
-        return formatDefaultString(material.toString());
+        return formatDefaultString(String.valueOf(material));
     }
 
     /**
@@ -2303,7 +2303,7 @@ public class LanguageUtils {
             upgraded = potionMeta.getBasePotionData().isUpgraded();
         }
 
-        String potionEffectString = formatDefaultString(potionEffect.toString());
+        String potionEffectString = formatDefaultString(String.valueOf(potionEffect));
 
         for (PotionEffectName potionEffectName : potionEffectNames) {
             if (potionEffectName.getEffect() == potionEffect) {
@@ -2357,7 +2357,7 @@ public class LanguageUtils {
             }
         }
 
-        return formatDefaultString(generation.toString());
+        return formatDefaultString(String.valueOf(generation));
     }
 
     /**
