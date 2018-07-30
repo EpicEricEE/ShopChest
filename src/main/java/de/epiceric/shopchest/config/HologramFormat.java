@@ -29,6 +29,9 @@ public class HologramFormat {
     // e.g.: "STONE" == "DIAMOND_SWORD"
     private static final Pattern SIMPLE_STRING_CONDITION = Pattern.compile("^\"([^\"]*)\" ([=!]=) \"([^\"]*)\"$");
 
+    private ScriptEngineManager manager = new ScriptEngineManager();
+    private ScriptEngine engine = manager.getEngineByName("JavaScript");
+
     private ShopChest plugin;
     private File configFile;
     private YamlConfiguration config;
@@ -188,8 +191,6 @@ public class HologramFormat {
 
             // complex comparison
             try {
-                ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine engine = manager.getEngineByName("JavaScript");
                 return (boolean) engine.eval(cond);
             } catch (ScriptException e) {
                 plugin.debug("Failed to eval condition: " + condition);
@@ -207,9 +208,6 @@ public class HologramFormat {
      */
     public String evalPlaceholder(String string, Map<Placeholder, Object> values) {
         try {
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("JavaScript");
-
             Matcher matcher = Pattern.compile("\\{([^}]+)}").matcher(string);
             String newString = string;
 
