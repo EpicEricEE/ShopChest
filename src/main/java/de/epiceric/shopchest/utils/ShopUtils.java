@@ -251,10 +251,6 @@ public class ShopUtils {
                             }
                         }
 
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            updateShops(player, true);
-                        }
-
                         if (callback != null) callback.callSyncResult(result.size());
                     }
 
