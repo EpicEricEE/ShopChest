@@ -73,6 +73,9 @@ public class ChestProtectListener implements Listener {
                 public void onResult(Void result) {
                     newShop.create(true);
                     shopUtils.addShop(newShop, true);
+                    for (Player player : shop.getLocation().getWorld().getPlayers()) {
+                        shopUtils.updateShops(player, true);
+                    }
                 }
             });
         } else {
@@ -268,6 +271,9 @@ public class ChestProtectListener implements Listener {
                                 newShop.create(true);
                                 shopUtils.addShop(newShop, true);
                                 plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+                                for (Player player : shop.getLocation().getWorld().getPlayers()) {
+                                    shopUtils.updateShops(player, true);
+                                }
                             }
                         });
                     } else {

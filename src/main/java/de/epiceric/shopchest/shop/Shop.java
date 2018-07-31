@@ -10,8 +10,6 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Utils;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -21,10 +19,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.data.Directional;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -113,14 +109,8 @@ public class Shop {
             return false;
         }
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (hologram == null || !hologram.exists()) {
-                    createHologram();
-                }
-            }
-        }.runTaskAsynchronously(plugin);
+        if (hologram == null || !hologram.exists()) createHologram();
+        if (item == null) createItem();
 
         created = true;
         return true;
@@ -162,13 +152,6 @@ public class Shop {
             itemStack.setAmount(1);
 
             item = new ShopItem(plugin, itemStack, itemLocation);
-
-            // Shop done loading, update shops for everyone
-            plugin.getUpdater().beforeNext(() -> {
-                for (Player player : location.getWorld().getPlayers()) {
-                    plugin.getShopUtils().resetPlayerLocation(player);
-                }
-            });
         }
     }
 
@@ -205,18 +188,10 @@ public class Shop {
             face = ((Directional) chests[0].getBlockData()).getFacing();
         }
 
-        final String[] holoText = getHologramText();
-        final Location holoLocation = getHologramLocation(doubleChest, chests, face);
+        String[] holoText = getHologramText();
+        Location holoLocation = getHologramLocation(doubleChest, chests, face);
 
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                // Create hologram synchronously because the
-                // constructor is modifying world lists
-                hologram = new Hologram(plugin, holoText, holoLocation);
-                if (item == null) createItem();
-            }
-        }.runTask(plugin);
+        hologram = new Hologram(plugin, holoText, holoLocation);
     }
 
     /**
@@ -304,40 +279,41 @@ public class Shop {
     }
 
     private Location getHologramLocation(boolean doubleChest, Chest[] chests, BlockFace face) {
-        World w = location.getWorld();
-        int x = location.getBlockX();
-        int y  = location.getBlockY();
-        int z = location.getBlockZ();
+        Block b = location.getBlock();
+        Location holoLocation;
 
-        Location holoLocation = new Location(w, x, y, z);
+        World w = b.getWorld();
+        int x = b.getX();
+        int y  = b.getY();
+        int z = b.getZ();
 
-        double deltaY = -0.6;
+        double subtractY = 0.6;
 
-        if (Config.hologramFixedBottom) deltaY = -0.85;
+        if (Config.hologramFixedBottom) subtractY = 0.85;
 
         if (doubleChest) {
             Chest c1 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[1] : chests[0];
             Chest c2 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[0] : chests[1];
 
-            if (holoLocation.equals(c1.getLocation())) {
+            if (b.getLocation().equals(c1.getLocation())) {
                 if (c1.getX() != c2.getX()) {
-                    holoLocation.add(0, deltaY, 0.5);
+                    holoLocation = new Location(w, x, y - subtractY, z + 0.5);
                 } else if (c1.getZ() != c2.getZ()) {
-                    holoLocation.add(0.5, deltaY, 0);
+                    holoLocation = new Location(w, x + 0.5, y - subtractY, z);
                 } else {
-                    holoLocation.add(0.5, deltaY, 0.5);
+                    holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
                 }
             } else {
                 if (c1.getX() != c2.getX()) {
-                    holoLocation.add(1, deltaY, 0.5);
+                    holoLocation = new Location(w, x + 1, y - subtractY, z + 0.5);
                 } else if (c1.getZ() != c2.getZ()) {
-                    holoLocation.add(0.5, deltaY, 1);
+                    holoLocation = new Location(w, x + 0.5, y - subtractY, z + 1);
                 } else {
-                    holoLocation.add(0.5, deltaY, 0.5);
+                    holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
                 }
             }
         } else {
-            holoLocation.add(0.5, deltaY, 0.5);
+            holoLocation = new Location(w, x + 0.5, y - subtractY, z + 0.5);
         }
 
         holoLocation.add(0, Config.hologramLift, 0);
