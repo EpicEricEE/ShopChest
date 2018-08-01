@@ -54,6 +54,10 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ShopChest extends JavaPlugin {
 
@@ -78,6 +82,7 @@ public class ShopChest extends JavaPlugin {
     private GriefPrevention griefPrevention;
     private AreaShop areaShop;
     private ShopUpdater updater;
+    private ExecutorService shopCreationThreadPool;
 
     /**
      * @return An instance of ShopChest
@@ -186,6 +191,8 @@ public class ShopChest extends JavaPlugin {
 
         shopUtils = new ShopUtils(this);
         shopCommand = new ShopCommand(this);
+        shopCreationThreadPool = new ThreadPoolExecutor(0, 8,
+                5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
         registerListeners();
         initializeShops();
@@ -201,6 +208,10 @@ public class ShopChest extends JavaPlugin {
         if (updater != null) {
             debug("Stopping updater");
             updater.stop();
+        }
+
+        if (shopCreationThreadPool != null) {
+            shopCreationThreadPool.shutdown();
         }
 
         if (database != null) {
@@ -416,6 +427,13 @@ public class ShopChest extends JavaPlugin {
             throwable.printStackTrace(pw);
             pw.flush();
         }
+    }
+
+    /**
+     * @return A thread pool for executing shop creation tasks
+     */
+    public ExecutorService getShopCreationThreadPool() {
+        return shopCreationThreadPool;
     }
 
     public HologramFormat getHologramFormat() {
