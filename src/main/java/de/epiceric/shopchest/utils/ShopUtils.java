@@ -3,7 +3,6 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
@@ -249,10 +248,6 @@ public class ShopUtils {
                             if (shop.create(showConsoleMessages)) {
                                 addShop(shop, false);
                             }
-                        }
-
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            updateShops(player, true);
                         }
 
                         if (callback != null) callback.callSyncResult(result.size());
