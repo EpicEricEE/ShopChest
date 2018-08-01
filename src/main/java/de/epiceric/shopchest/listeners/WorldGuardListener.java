@@ -52,10 +52,6 @@ public class WorldGuardListener implements Listener {
             if (shop.getVendor().getUniqueId().equals(player.getUniqueId()) && shop.getShopType() != Shop.ShopType.ADMIN) {
                 return true;
             }
-
-            if (!shop.getVendor().getUniqueId().equals(player.getUniqueId()) && player.isSneaking()) {
-                return player.hasPermission(Permissions.OPEN_OTHER);
-            }
         }
 
         if (ClickType.getPlayerClickType(player) != null) {
