@@ -1028,7 +1028,7 @@ public class ShopInteractListener implements Listener {
                                 return;
                             }
 
-                            database.logEconomy(executor, newProduct, shop.getVendor(), shop.getShopType(), shop.getLocation(), newPrice, ShopBuySellEvent.Type.BUY, null);
+                            database.logEconomy(executor, shop, newProduct, newPrice, ShopBuySellEvent.Type.BUY, null);
 
                             addToInventory(inventory, newProduct);
                             removeFromInventory(c.getInventory(), newProduct);
@@ -1072,7 +1072,7 @@ public class ShopInteractListener implements Listener {
                             return;
                         }
 
-                        database.logEconomy(executor, newProduct, shop.getVendor(), shop.getShopType(), shop.getLocation(), newPrice, ShopBuySellEvent.Type.BUY, null);
+                        database.logEconomy(executor, shop, newProduct, newPrice, ShopBuySellEvent.Type.BUY, null);
 
                         addToInventory(inventory, newProduct);
                         executor.updateInventory();
@@ -1192,7 +1192,7 @@ public class ShopInteractListener implements Listener {
                                 return;
                             }
 
-                            database.logEconomy(executor, newProduct, shop.getVendor(), shop.getShopType(), shop.getLocation(), newPrice, ShopBuySellEvent.Type.SELL, null);
+                            database.logEconomy(executor, shop, newProduct, newPrice, ShopBuySellEvent.Type.SELL, null);
 
                             addToInventory(inventory, newProduct);
                             removeFromInventory(executor.getInventory(), newProduct);
@@ -1237,7 +1237,7 @@ public class ShopInteractListener implements Listener {
                             return;
                         }
 
-                        database.logEconomy(executor, newProduct, shop.getVendor(), shop.getShopType(), shop.getLocation(), newPrice, ShopBuySellEvent.Type.SELL, null);
+                        database.logEconomy(executor, shop, newProduct, newPrice, ShopBuySellEvent.Type.SELL, null);
 
                         removeFromInventory(executor.getInventory(), newProduct);
                         executor.updateInventory();

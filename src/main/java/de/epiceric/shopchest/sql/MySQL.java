@@ -5,9 +5,11 @@ import de.epiceric.shopchest.config.Config;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class MySQL extends Database {
 
@@ -16,36 +18,27 @@ public class MySQL extends Database {
     }
 
     @Override
-    public Connection getConnection() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                return connection;
-            }
+    HikariDataSource getDataSource() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(String.format("jdbc:mysql://%s:%d/%s?autoReconnect=true&useSSL=false",
+                Config.databaseMySqlHost, Config.databaseMySqlPort, Config.databaseMySqlDatabase));
+        config.setUsername(Config.databaseMySqlUsername);
+        config.setPassword(Config.databaseMySqlPassword);
 
-            Class.forName("com.mysql.jdbc.Driver");
-
-            String connectUrl = "jdbc:mysql://" + Config.databaseMySqlHost + ":" + Config.databaseMySqlPort + "/" + Config.databaseMySqlDatabase + "?autoReconnect=true&useSSL=false";
-            plugin.debug("Connecting to MySQL Server \"" + connectUrl + "\" as user \"" + Config.databaseMySqlUsername + "\"");
-
-            connection = DriverManager.getConnection(connectUrl, Config.databaseMySqlUsername, Config.databaseMySqlPassword);
-
-            return connection;
-        } catch (Exception ex) {
-            plugin.getLogger().severe("Failed to get database connection");
-            plugin.debug("Failed to get database connection");
-            plugin.debug(ex);
-        }
-
-        return null;
+        return new HikariDataSource(config);
     }
 
+    /**
+     * Sends an asynchronous ping to the database
+     */
     public void ping() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                try (PreparedStatement ps = connection.prepareStatement("/* ping */ SELECT 1")) {
+                try (Connection con = dataSource.getConnection();
+                        Statement s = con.createStatement()) {
                     plugin.debug("Pinging to MySQL server...");
-                    ps.executeQuery();
+                    s.execute("/* ping */ SELECT 1");
                 } catch (SQLException ex) {
                     plugin.getLogger().severe("Failed to ping to MySQL server. Trying to reconnect...");
                     plugin.debug("Failed to ping to MySQL server. Trying to reconnect...");
