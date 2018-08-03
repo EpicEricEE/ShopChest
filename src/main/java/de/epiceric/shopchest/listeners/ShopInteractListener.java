@@ -7,10 +7,6 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.RegionQuery;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import com.wasteofplastic.askyblock.Island;
 import de.epiceric.shopchest.ShopChest;
@@ -22,7 +18,6 @@ import de.epiceric.shopchest.event.ShopInfoEvent;
 import de.epiceric.shopchest.event.ShopOpenEvent;
 import de.epiceric.shopchest.event.ShopRemoveEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
-import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
@@ -66,6 +61,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+
 import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
 
@@ -86,14 +83,12 @@ public class ShopInteractListener implements Listener {
     private Economy econ;
     private Database database;
     private ShopUtils shopUtils;
-    private WorldGuardPlugin worldGuard;
 
     public ShopInteractListener(ShopChest plugin) {
         this.plugin = plugin;
         this.econ = plugin.getEconomy();
         this.database = plugin.getShopDatabase();
         this.shopUtils = plugin.getShopUtils();
-        this.worldGuard = plugin.getWorldGuard();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -163,12 +158,10 @@ public class ShopInteractListener implements Listener {
 
                                 if (plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
                                     plugin.debug("Checking if WorldGuard allows shop creation...");
-                                    RegionContainer container = worldGuard.getRegionContainer();
-                                    RegionQuery query = container.createQuery();
 
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
-                                            externalPluginsAllowed &= query.testState(loc, p, WorldGuardShopFlag.CREATE_SHOP);
+                                            externalPluginsAllowed &= WorldGuardWrapper.getInstance().queryStateFlag(p, loc, "create-shop").orElse(false);
                                         }
                                     }
 
@@ -463,10 +456,8 @@ public class ShopInteractListener implements Listener {
                                         }
 
                                         if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
-                                            StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? WorldGuardShopFlag.USE_ADMIN_SHOP : WorldGuardShopFlag.USE_SHOP);
-                                            RegionContainer container = worldGuard.getRegionContainer();
-                                            RegionQuery query = container.createQuery();
-                                            externalPluginsAllowed = query.testState(b.getLocation(), p, flag);
+                                            String flagName = (shop.getShopType() == ShopType.ADMIN ? "use-admin-shop" : "use-shop");
+                                            externalPluginsAllowed = WorldGuardWrapper.getInstance().queryStateFlag(p, b.getLocation(), flagName).orElse(false);
                                         }
 
                                         if (shop.getShopType() == ShopType.ADMIN) {
@@ -574,11 +565,8 @@ public class ShopInteractListener implements Listener {
                                         }
 
                                         if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
-                                            RegionContainer container = worldGuard.getRegionContainer();
-                                            RegionQuery query = container.createQuery();
-
-                                            StateFlag flag = (shop.getShopType() == ShopType.ADMIN ? WorldGuardShopFlag.USE_ADMIN_SHOP : WorldGuardShopFlag.USE_SHOP);
-                                            externalPluginsAllowed = query.testState(b.getLocation(), p, flag);
+                                            String flagName = (shop.getShopType() == ShopType.ADMIN ? "use-admin-shop" : "use-shop");
+                                            externalPluginsAllowed = WorldGuardWrapper.getInstance().queryStateFlag(p, b.getLocation(), flagName).orElse(false);
                                         }
 
                                         if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {

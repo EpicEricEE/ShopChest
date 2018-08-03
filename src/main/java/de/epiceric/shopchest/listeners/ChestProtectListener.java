@@ -4,15 +4,11 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.RegionQuery;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import com.wasteofplastic.askyblock.Island;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
-import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.nms.Hologram;
@@ -41,6 +37,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
 
 import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
@@ -51,12 +48,10 @@ public class ChestProtectListener implements Listener {
 
     private ShopChest plugin;
     private ShopUtils shopUtils;
-    private WorldGuardPlugin worldGuard;
 
-    public ChestProtectListener(ShopChest plugin, WorldGuardPlugin worldGuard) {
+    public ChestProtectListener(ShopChest plugin) {
         this.plugin = plugin;
         this.shopUtils = plugin.getShopUtils();
-        this.worldGuard = worldGuard;
     }
 
     private void remove(final Shop shop, final Block b, final Player p) {
@@ -191,9 +186,7 @@ public class ChestProtectListener implements Listener {
             boolean externalPluginsAllowed = true;
 
             if (plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
-                RegionContainer container = worldGuard.getRegionContainer();
-                RegionQuery query = container.createQuery();
-                externalPluginsAllowed = query.testState(b.getLocation(), p, WorldGuardShopFlag.CREATE_SHOP);
+                externalPluginsAllowed = WorldGuardWrapper.getInstance().queryStateFlag(p, b.getLocation(), "create-shop").orElse(false);
             }
 
             if (externalPluginsAllowed && plugin.hasTowny() && Config.enableTownyIntegration) {
