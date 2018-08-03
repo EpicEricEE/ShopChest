@@ -19,7 +19,7 @@ public class ShopUtils {
 
     // concurrent since it is updated in async task
     private final Map<UUID, Location> playerLocation = new ConcurrentHashMap<>();
-    private final Map<Location, Shop> shopLocation = new HashMap<>();
+    private final Map<Location, Shop> shopLocation = new ConcurrentHashMap<>();
     private final Collection<Shop> shopLocationValues = Collections.unmodifiableCollection(shopLocation.values());
     private final ShopChest plugin;
 
