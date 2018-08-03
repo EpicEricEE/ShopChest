@@ -1,7 +1,6 @@
 package de.epiceric.shopchest;
 
 import com.palmergames.bukkit.towny.Towny;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.wasteofplastic.askyblock.ASkyBlock;
 import de.epiceric.shopchest.command.ShopCommand;
 import de.epiceric.shopchest.config.Config;
@@ -44,6 +43,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+
 import pl.islandworld.IslandWorld;
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
@@ -73,7 +74,7 @@ public class ShopChest extends JavaPlugin {
     private String downloadLink = "";
     private ShopUtils shopUtils;
     private FileWriter fw;
-    private WorldGuardPlugin worldGuard;
+    private Plugin worldGuard;
     private Towny towny;
     private AuthMe authMe;
     private uSkyBlockAPI uSkyBlock;
@@ -129,9 +130,8 @@ public class ShopChest extends JavaPlugin {
 
         debug("Loading ShopChest version " + getDescription().getVersion());
 
-        Plugin worldGuardPlugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-        if (worldGuardPlugin instanceof WorldGuardPlugin) {
-            worldGuard = (WorldGuardPlugin) worldGuardPlugin;
+        worldGuard = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+        if (worldGuard != null) {
             WorldGuardShopFlag.register(this);
         }
     }
@@ -273,6 +273,10 @@ public class ShopChest extends JavaPlugin {
             areaShop = (AreaShop) areaShopPlugin;
         }
 
+        if (hasWorldGuard()) {
+            WorldGuardWrapper.getInstance().registerEvents(this);
+        }
+
         if (hasPlotSquared()) {
             new PlotSquaredShopFlag().register(this);
         }
@@ -369,7 +373,7 @@ public class ShopChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopItemListener(this), this);
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyPlayerOnJoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new ChestProtectListener(this, worldGuard), this);
+        getServer().getPluginManager().registerEvents(new ChestProtectListener(this), this);
 
         if (!Utils.getServerVersion().equals("v1_8_R1")) {
             getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);
@@ -525,13 +529,6 @@ public class ShopChest extends JavaPlugin {
      */
     public boolean hasWorldGuard() {
         return worldGuard != null && worldGuard.isEnabled();
-    }
-
-    /**
-     * @return An instance of {@link WorldGuardPlugin} or {@code null} if WorldGuard is not enabled
-     */
-    public WorldGuardPlugin getWorldGuard() {
-        return worldGuard;
     }
 
     /**

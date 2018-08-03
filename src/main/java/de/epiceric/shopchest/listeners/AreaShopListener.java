@@ -1,7 +1,5 @@
 package de.epiceric.shopchest.listeners;
 
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
@@ -12,6 +10,8 @@ import me.wiefferink.areashop.events.notify.UnrentedRegionEvent;
 import me.wiefferink.areashop.regions.GeneralRegion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+import org.codemc.worldguardwrapper.implementation.AbstractRegion;
 
 public class AreaShopListener implements Listener {
 
@@ -52,12 +52,10 @@ public class AreaShopListener implements Listener {
     private void removeShopsInRegion(GeneralRegion generalRegion) {
         if (!plugin.hasWorldGuard()) return;
 
-        RegionManager regionManager = plugin.getWorldGuard().getRegionManager(generalRegion.getWorld());
-
         for (Shop shop : plugin.getShopUtils().getShops()) {
             if (!shop.getLocation().getWorld().getName().equals(generalRegion.getWorldName())) continue;
 
-            for (ProtectedRegion r : regionManager.getApplicableRegions(shop.getLocation())) {
+            for (AbstractRegion r : WorldGuardWrapper.getInstance().getRegions(shop.getLocation())) {
                 if (generalRegion.getLowerCaseName().equals(r.getId())) {
                     plugin.getShopUtils().removeShop(shop, true);
                     break;
