@@ -1,7 +1,6 @@
 package de.epiceric.shopchest.listeners;
 
 import com.google.gson.JsonPrimitive;
-import com.intellectualcrafters.plot.flag.Flag;
 import com.intellectualcrafters.plot.object.Plot;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -18,6 +17,7 @@ import de.epiceric.shopchest.event.ShopInfoEvent;
 import de.epiceric.shopchest.event.ShopOpenEvent;
 import de.epiceric.shopchest.event.ShopRemoveEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.external.PlotSquaredShopFlag.GroupFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
@@ -216,7 +216,7 @@ public class ShopInteractListener implements Listener {
                                                     loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
                                             Plot plot = plotLocation.getOwnedPlot();
-                                            externalPluginsAllowed &= Utils.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, p);
+                                            externalPluginsAllowed &= PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, p);
                                         }
                                     }
 
@@ -450,9 +450,9 @@ public class ShopInteractListener implements Listener {
                                                     new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
                                             Plot plot = plotLocation.getOwnedPlot();
-                                            Flag flag = (shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP);
+                                            GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
 
-                                            externalPluginsAllowed = Utils.isFlagAllowedOnPlot(plot, flag, p);
+                                            externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
                                         }
 
                                         if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
@@ -559,9 +559,9 @@ public class ShopInteractListener implements Listener {
                                                     new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
                                             Plot plot = plotLocation.getOwnedPlot();
-                                            Flag flag = (shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP);
-
-                                            externalPluginsAllowed = Utils.isFlagAllowedOnPlot(plot, flag, p);
+                                            GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
+                                            
+                                            externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
                                         }
 
                                         if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
