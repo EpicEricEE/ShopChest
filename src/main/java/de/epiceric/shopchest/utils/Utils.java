@@ -1,10 +1,7 @@
 package de.epiceric.shopchest.utils;
 
-import com.intellectualcrafters.plot.flag.Flag;
-import com.intellectualcrafters.plot.object.Plot;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
@@ -223,42 +220,6 @@ public class Utils {
         }
 
         return item != null && axes.contains(item.getType().toString());
-    }
-
-    /**
-     * Check if a flag is allowed for a player on a plot from PlotSquared
-     * @param plot Plot from PlotSquared
-     * @param flag Flag to check
-     * @param p Player to check
-     * @return Whether the flag is allowed for the player
-     */
-    public static boolean isFlagAllowedOnPlot(Plot plot, Flag flag, Player p) {
-        if (plot != null && flag != null) {
-            Object o = plot.getFlag(flag, PlotSquaredShopFlag.Group.NONE);
-
-            if (o instanceof PlotSquaredShopFlag.Group) {
-                PlotSquaredShopFlag.Group group = (PlotSquaredShopFlag.Group) o;
-
-                ShopChest.getInstance().debug("Flag " + flag.getName() + " is set to " + group);
-
-                switch (group) {
-                    case OWNERS:
-                        return plot.getOwners().contains(p.getUniqueId());
-                    case TRUSTED:
-                        return plot.getOwners().contains(p.getUniqueId()) || plot.getTrusted().contains(p.getUniqueId());
-                    case MEMBERS:
-                        return plot.getOwners().contains(p.getUniqueId()) || plot.getTrusted().contains(p.getUniqueId()) || plot.getMembers().contains(p.getUniqueId());
-                    case EVERYONE:
-                        return true;
-                    case NONE:
-                        return false;
-                }
-            }
-        }
-
-        ShopChest.getInstance().debug("Flag or plot is null, or value of flag is not a group");
-
-        return true;
     }
 
     /**

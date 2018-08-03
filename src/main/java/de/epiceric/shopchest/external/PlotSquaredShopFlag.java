@@ -2,6 +2,10 @@ package de.epiceric.shopchest.external;
 
 import com.intellectualcrafters.plot.flag.Flag;
 import com.intellectualcrafters.plot.flag.Flags;
+import com.intellectualcrafters.plot.object.Plot;
+
+import org.bukkit.entity.Player;
+
 import de.epiceric.shopchest.ShopChest;
 
 import java.util.Locale;
@@ -14,30 +18,53 @@ public class PlotSquaredShopFlag {
         OWNERS, MEMBERS, TRUSTED, EVERYONE, NONE
     }
 
-    public static Flag CREATE_SHOP;
-    public static Flag USE_SHOP;
-    public static Flag USE_ADMIN_SHOP;
+    public static GroupFlag CREATE_SHOP = new GroupFlag("create-shop");
+    public static GroupFlag USE_SHOP = new GroupFlag("use-shop");
+    public static GroupFlag USE_ADMIN_SHOP = new GroupFlag("use-admin-shop");
 
-    private GroupFlag createShop = new GroupFlag("create-shop");
-    private GroupFlag useShop = new GroupFlag("use-shop");
-    private GroupFlag useAdminShop = new GroupFlag("use-admin-shop");
-
-    public void register(ShopChest plugin) {
+    public static void register(ShopChest plugin) {
         if (registered) return;
 
-        CREATE_SHOP = createShop;
-        USE_SHOP = useShop;
-        USE_ADMIN_SHOP = useAdminShop;
-
-        Flags.registerFlag(createShop);
-        Flags.registerFlag(useShop);
-        Flags.registerFlag(useAdminShop);
+        Flags.registerFlag(CREATE_SHOP);
+        Flags.registerFlag(USE_SHOP);
+        Flags.registerFlag(USE_ADMIN_SHOP);
         registered = true;
 
         plugin.debug("Registered custom PlotSquared flags");
     }
 
-    public class GroupFlag extends Flag<Group> {
+    /**
+     * Check if a flag is allowed for a player on a plot from PlotSquared
+     * @param plot Plot from PlotSquared
+     * @param flag Flag to check
+     * @param p Player to check
+     * @return Whether the flag is allowed for the player
+     */
+    public static boolean isFlagAllowedOnPlot(Plot plot, GroupFlag flag, Player p) {
+        if (plot != null && flag != null) {
+            Group group = plot.getFlag(flag, PlotSquaredShopFlag.Group.NONE);
+            ShopChest.getInstance().debug("Flag " + flag.getName() + " is set to " + group);
+
+            switch (group) {
+                case OWNERS:
+                    return plot.getOwners().contains(p.getUniqueId());
+                case TRUSTED:
+                    return plot.getOwners().contains(p.getUniqueId()) || plot.getTrusted().contains(p.getUniqueId());
+                case MEMBERS:
+                    return plot.getOwners().contains(p.getUniqueId()) || plot.getTrusted().contains(p.getUniqueId()) || plot.getMembers().contains(p.getUniqueId());
+                case EVERYONE:
+                    return true;
+                case NONE:
+                    return false;
+            }
+        }
+
+        ShopChest.getInstance().debug("Flag or plot is null, or value of flag is not a group");
+
+        return true;
+    }
+
+    public static class GroupFlag extends Flag<Group> {
 
         public GroupFlag(String name) {
             super(name);
