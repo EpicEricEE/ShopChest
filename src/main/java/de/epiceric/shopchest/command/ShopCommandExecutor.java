@@ -28,7 +28,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -382,14 +381,6 @@ class ShopCommandExecutor implements CommandExecutor {
             ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.CREATE, product, buyPrice, sellPrice, shopType));
             plugin.debug(p.getName() + " can now click a chest");
             p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_CREATE));
-
-            // Remove ClickType after 15 seconds if player has not clicked a chest
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    ClickType.removePlayerClickType(p);
-                }
-            }.runTaskLater(plugin, 300);
         } else {
             plugin.debug("Shop pre create event cancelled");
         }
@@ -412,14 +403,6 @@ class ShopCommandExecutor implements CommandExecutor {
         plugin.debug(p.getName() + " can now click a chest");
         p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_REMOVE));
         ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.REMOVE));
-
-        // Remove ClickType after 15 seconds if player has not clicked a chest
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ClickType.removePlayerClickType(p);
-            }
-        }.runTaskLater(plugin, 300);
     }
 
     /**
@@ -439,14 +422,6 @@ class ShopCommandExecutor implements CommandExecutor {
         plugin.debug(p.getName() + " can now click a chest");
         p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_INFO));
         ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.INFO));
-
-        // Remove ClickType after 15 seconds if player has not clicked a chest
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ClickType.removePlayerClickType(p);
-            }
-        }.runTaskLater(plugin, 300);
     }
 
     /**
@@ -466,14 +441,6 @@ class ShopCommandExecutor implements CommandExecutor {
         plugin.debug(p.getName() + " can now click a chest");
         p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_OPEN));
         ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.OPEN));
-
-        // Remove ClickType after 15 seconds if player has not clicked a chest
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ClickType.removePlayerClickType(p);
-            }
-        }.runTaskLater(plugin, 300);
     }
 
     private boolean changeConfig(CommandSender sender, String[] args) {
