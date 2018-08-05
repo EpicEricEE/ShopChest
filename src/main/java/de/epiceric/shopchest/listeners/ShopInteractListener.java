@@ -397,9 +397,9 @@ public class ShopInteractListener implements Listener {
                 } else {
                     Shop shop = shopUtils.getShop(b.getLocation());
 
-                    boolean confirmed = needsConfirmation.containsKey(p.getUniqueId()) && needsConfirmation.get(p.getUniqueId()).contains(shop.getID());
-
                     if (shop != null) {
+                        boolean confirmed = needsConfirmation.containsKey(p.getUniqueId()) && needsConfirmation.get(p.getUniqueId()).contains(shop.getID());
+                        
                         if (e.getAction() == Action.LEFT_CLICK_BLOCK && p.isSneaking() && Utils.hasAxeInHand(p)) {
                             return;
                         }
