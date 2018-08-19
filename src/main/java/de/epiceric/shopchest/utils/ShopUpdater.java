@@ -2,15 +2,16 @@ package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ShopUpdater {
     
     private final ShopChest plugin;
-    private final Queue<Runnable> beforeNext = new ConcurrentLinkedQueue<>();
+    private final BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
 
     private volatile Thread thread;
 
@@ -25,13 +26,10 @@ public class ShopUpdater {
         if (!isRunning()) {
             thread = new Thread(() -> {
                 while (!Thread.interrupted()) {
-                    for (Runnable runnable : beforeNext) {
-                        runnable.run();
-                    }
-                    beforeNext.clear();
-        
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        plugin.getShopUtils().updateShops(p);
+                    try {
+                        queue.take().run();
+                    } catch (InterruptedException e) {
+                        break;
                     }
                 }
             }, "Shop Updater");
@@ -65,11 +63,44 @@ public class ShopUpdater {
     }
 
     /**
+     * Queue a task to update shops for the given player
+     * 
+     * @param player Player to show updates
+     */
+    public void updateShops(Player player) {
+        queue(() -> plugin.getShopUtils().updateShops(player));
+    }
+
+    /**
+     * Queue a task to update shops for players in the given world
+     * 
+     * @param world World in whose players to show updates
+     */
+    public void updateShops(World world) {
+        queue(() -> {
+            for (Player player : world.getPlayers()) {
+                plugin.getShopUtils().updateShops(player);
+            }
+        });
+    }
+
+    /**
+     * Queue a task to update shops for all players
+     */
+    public void updateShops() {
+        queue(() -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                plugin.getShopUtils().updateShops(player);
+            }
+        });
+    }
+
+    /**
      * Register a task to run before next loop
      *
      * @param runnable task to run
      */
-    public void beforeNext(Runnable runnable) {
-        beforeNext.add(runnable);
+    public void queue(Runnable runnable) {
+        queue.add(runnable);
     }
 }

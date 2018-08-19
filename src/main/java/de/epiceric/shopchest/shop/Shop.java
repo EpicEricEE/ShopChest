@@ -119,11 +119,12 @@ public class Shop {
             if (item == null) createItem();
 
             // Update shops for players in the same world after creation has finished
-            plugin.getUpdater().beforeNext(() -> {
+            plugin.getUpdater().queue(() -> {
                 for (Player player : location.getWorld().getPlayers()) {
                     plugin.getShopUtils().resetPlayerLocation(player);
                 }
             });
+            plugin.getUpdater().updateShops(location.getWorld());
         });
 
         created = true;
