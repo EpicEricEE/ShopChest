@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -58,26 +59,29 @@ public class ShopUpdateListener implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    plugin.getUpdater().beforeNext(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (p.isOnline()) {
-                                for (Shop shop : plugin.getShopUtils().getShops()) {
-                                    if (shop.hasItem()) {
-                                        shop.getItem().hidePlayer(p);
-                                    }
-                                    if (shop.hasHologram()) {
-                                        shop.getHologram().hidePlayer(p);
-                                    }
+                    plugin.getUpdater().queue(() -> {
+                        if (p.isOnline()) {
+                            for (Shop shop : plugin.getShopUtils().getShops()) {
+                                if (shop.hasItem()) {
+                                    shop.getItem().hidePlayer(p);
                                 }
-                                // so next update will update correctly
-                                plugin.getShopUtils().resetPlayerLocation(p);
+                                if (shop.hasHologram()) {
+                                    shop.getHologram().hidePlayer(p);
+                                }
                             }
+                            // so next update will update correctly
+                            plugin.getShopUtils().resetPlayerLocation(p);
                         }
                     });
+                    plugin.getUpdater().updateShops(p);
                 }
             }.runTaskLater(plugin, 15L);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent e) {
+        plugin.getUpdater().updateShops(e.getPlayer());
     }
 
     @EventHandler
