@@ -24,6 +24,12 @@ shop-info-item: "STICK"
 # in order to prevent accidental purchases or sells.
 confirm-shopping: false
 
+# Set whether the plugin will check for updates on server start
+# and notify permitted players on join.
+# The command is not affected by this setting and will continue to
+# check for updates.
+enable-update-checker: true
+
 # Set whether interaction with the hologram should be enabled.
 # If set to true, a player can do the exact same thing with the
 # hologram, as with the chest. You can even open the chest if you
