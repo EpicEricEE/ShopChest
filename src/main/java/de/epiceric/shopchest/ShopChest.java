@@ -333,6 +333,10 @@ public class ShopChest extends JavaPlugin {
     }
 
     private void checkForUpdates() {
+        if (!Config.enableUpdateChecker) {
+            return;
+        }
+        
         new BukkitRunnable() {
             @Override
             public void run() {

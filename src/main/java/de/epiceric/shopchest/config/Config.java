@@ -142,9 +142,10 @@ public class Config {
     public static boolean confirmShopping;
 
     /**
-     * Whether quality mode should be enabled
+     * <p>Whether the update checker should run on start and notify players on join.</p>
+     * The command is not affected by this setting and will continue to check for updates.
      **/
-    public static boolean enableQualityMode;
+    public static boolean enableUpdateChecker;
 
     /**
      * Whether hologram interaction should be enabled
@@ -479,7 +480,7 @@ public class Config {
         hopperProtection = plugin.getConfig().getBoolean("hopper-protection");
         explosionProtection = plugin.getConfig().getBoolean("explosion-protection");
         confirmShopping = plugin.getConfig().getBoolean("confirm-shopping");
-        enableQualityMode = plugin.getConfig().getBoolean("enable-quality-mode");
+        enableUpdateChecker = plugin.getConfig().getBoolean("enable-update-checker");
         enableHologramInteraction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enableDebugLog = plugin.getConfig().getBoolean("enable-debug-log");
         enableEconomyLog = plugin.getConfig().getBoolean("enable-economy-log");

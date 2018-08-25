@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
@@ -27,7 +28,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         final Player p = e.getPlayer();
 
-        if (plugin.isUpdateNeeded()) {
+        if (plugin.isUpdateNeeded() && Config.enableUpdateChecker) {
             if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
                 Utils.sendUpdateMessage(plugin, p);
             }
