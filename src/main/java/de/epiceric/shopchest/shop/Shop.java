@@ -20,6 +20,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,6 +32,18 @@ public class Shop {
     public enum ShopType {
         NORMAL,
         ADMIN,
+    }
+
+    private static class PreCreateResult {
+        private final Inventory inventory;
+        private final Chest[] chests;
+        private final BlockFace face;
+
+        private PreCreateResult(Inventory inventory, Chest[] chests, BlockFace face) {
+            this.inventory = inventory;
+            this.chests = chests;
+            this.face = face;
+        }
     }
 
     private final ShopChest plugin;
@@ -114,8 +127,14 @@ public class Shop {
             return false;
         }
 
+        PreCreateResult preResult = preCreateHologram();
+
+        if (preResult == null) {
+            return false;
+        }
+
         plugin.getShopCreationThreadPool().execute(() -> {
-            if (hologram == null || !hologram.exists()) createHologram();
+            if (hologram == null || !hologram.exists()) createHologram(preResult);
             if (item == null) createItem();
 
             // Update shops for players in the same world after creation has finished
@@ -171,17 +190,17 @@ public class Shop {
     }
 
     /**
-     * Creates the hologram of the shop
+     * Runs everything that needs to be called synchronously in order 
+     * to prepare creating the hologram.
      */
-    private void createHologram() {
+    private PreCreateResult preCreateHologram() {
         plugin.debug("Creating hologram (#" + id + ")");
 
         InventoryHolder ih = getInventoryHolder();
 
-        if (ih == null) return;
+        if (ih == null) return null;
 
         Chest[] chests = new Chest[2];
-        boolean doubleChest;
         BlockFace face;
 
         if (ih instanceof DoubleChest) {
@@ -191,10 +210,8 @@ public class Shop {
 
             chests[0] = r;
             chests[1] = l;
-            doubleChest = true;
         } else {
             chests[0] = (Chest) ih;
-            doubleChest = false;
         }
 
         if (Utils.getMajorVersion() < 13) {
@@ -203,8 +220,15 @@ public class Shop {
             face = ((Directional) chests[0].getBlockData()).getFacing();
         }
 
-        String[] holoText = getHologramText();
-        holoLocation = getHologramLocation(doubleChest, chests, face);
+        return new PreCreateResult(ih.getInventory(), chests, face);
+    }
+
+    /**
+     * Acuatlly creates the hologram (async)
+     */
+    private void createHologram(PreCreateResult preResult) {
+        String[] holoText = getHologramText(preResult.inventory);
+        holoLocation = getHologramLocation(preResult.chests, preResult.face);
 
         new BukkitRunnable(){
             @Override
@@ -215,10 +239,11 @@ public class Shop {
     }
 
     /**
-     * Keep hologram text up to date
+     * Keep hologram text up to date.
+     * <p><b>Has to be called synchronously!</b></p>
      */
     public void updateHologramText() {
-        String[] lines = getHologramText();
+        String[] lines = getHologramText(getInventoryHolder().getInventory());
         String[] currentLines = hologram.getLines();
 
         int max = Math.max(lines.length, currentLines.length);
@@ -232,7 +257,7 @@ public class Shop {
         }
     }
 
-    private String[] getHologramText() {
+    private String[] getHologramText(Inventory inventory) {
         List<String> lines = new ArrayList<>();
 
         Map<HologramFormat.Requirement, Object> requirements = new EnumMap<>(HologramFormat.Requirement.class);
@@ -249,9 +274,9 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.IS_WRITTEN_BOOK, getProduct().getType() == Material.WRITTEN_BOOK);
         requirements.put(HologramFormat.Requirement.ADMIN_SHOP, getShopType() == ShopType.ADMIN);
         requirements.put(HologramFormat.Requirement.NORMAL_SHOP, getShopType() == ShopType.NORMAL);
-        requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
+        requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(inventory, getProduct()));
         requirements.put(HologramFormat.Requirement.MAX_STACK, getProduct().getMaxStackSize());
-        requirements.put(HologramFormat.Requirement.CHEST_SPACE, Utils.getFreeSpaceForItem(getInventoryHolder().getInventory(), getProduct()));
+        requirements.put(HologramFormat.Requirement.CHEST_SPACE, Utils.getFreeSpaceForItem(inventory, getProduct()));
         requirements.put(HologramFormat.Requirement.DURABILITY, getProduct().getDurability());
 
         Map<Placeholder, Object> placeholders = new EnumMap<>(Placeholder.class);
@@ -264,9 +289,9 @@ public class Shop {
         placeholders.put(Placeholder.POTION_EFFECT, LanguageUtils.getPotionEffectName(getProduct()));
         placeholders.put(Placeholder.MUSIC_TITLE, LanguageUtils.getMusicDiscName(getProduct().getType()));
         placeholders.put(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(getProduct()));
-        placeholders.put(Placeholder.STOCK, Utils.getAmount(getInventoryHolder().getInventory(), getProduct()));
+        placeholders.put(Placeholder.STOCK, Utils.getAmount(inventory, getProduct()));
         placeholders.put(Placeholder.MAX_STACK, getProduct().getMaxStackSize());
-        placeholders.put(Placeholder.CHEST_SPACE, Utils.getFreeSpaceForItem(getInventoryHolder().getInventory(), getProduct()));
+        placeholders.put(Placeholder.CHEST_SPACE, Utils.getFreeSpaceForItem(inventory, getProduct()));
         placeholders.put(Placeholder.DURABILITY, getProduct().getDurability());
 
         int lineCount = plugin.getHologramFormat().getLineCount();
@@ -298,7 +323,7 @@ public class Shop {
         return lines.toArray(new String[0]);
     }
 
-    private Location getHologramLocation(boolean doubleChest, Chest[] chests, BlockFace face) {
+    private Location getHologramLocation(Chest[] chests, BlockFace face) {
         World w = location.getWorld();
         int x = location.getBlockX();
         int y  = location.getBlockY();
@@ -310,7 +335,7 @@ public class Shop {
 
         if (Config.hologramFixedBottom) deltaY = -0.85;
 
-        if (doubleChest) {
+        if (chests[1] != null) {
             Chest c1 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[1] : chests[0];
             Chest c2 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[0] : chests[1];
 
