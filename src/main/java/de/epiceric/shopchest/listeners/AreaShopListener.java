@@ -11,7 +11,7 @@ import me.wiefferink.areashop.regions.GeneralRegion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
-import org.codemc.worldguardwrapper.implementation.AbstractRegion;
+import org.codemc.worldguardwrapper.region.WrappedRegion;
 
 public class AreaShopListener implements Listener {
 
@@ -55,7 +55,7 @@ public class AreaShopListener implements Listener {
         for (Shop shop : plugin.getShopUtils().getShops()) {
             if (!shop.getLocation().getWorld().getName().equals(generalRegion.getWorldName())) continue;
 
-            for (AbstractRegion r : WorldGuardWrapper.getInstance().getRegions(shop.getLocation())) {
+            for (WrappedRegion r : WorldGuardWrapper.getInstance().getRegions(shop.getLocation())) {
                 if (generalRegion.getLowerCaseName().equals(r.getId())) {
                     plugin.getShopUtils().removeShop(shop, true);
                     break;
