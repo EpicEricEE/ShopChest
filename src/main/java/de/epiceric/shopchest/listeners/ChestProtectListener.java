@@ -8,16 +8,21 @@ import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import com.wasteofplastic.askyblock.Island;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import me.ryanhamshire.GriefPrevention.Claim;
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -71,6 +76,16 @@ public class ChestProtectListener implements Listener {
                 }
             });
         } else {
+            if (p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
+                double creationPrice = shop.getShopType() == ShopType.ADMIN ? Config.shopCreationPriceAdmin : Config.shopCreationPriceNormal;
+                EconomyResponse r = plugin.getEconomy().withdrawPlayer(p, shop.getLocation().getWorld().getName(), creationPrice);
+                if (!r.transactionSuccess()) {
+                    plugin.debug("Economy transaction failed: " + r.errorMessage);
+                    p.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
+                            new Replacement(Placeholder.ERROR, r.errorMessage)));
+                }
+            }   
+
             shopUtils.removeShop(shop, true);
             plugin.debug(String.format("%s broke %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
             p.sendMessage(LanguageUtils.getMessage(Message.SHOP_REMOVED));

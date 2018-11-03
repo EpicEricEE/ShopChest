@@ -773,6 +773,16 @@ public class ShopInteractListener implements Listener {
             return;
         }
 
+        if (executor.getUniqueId().equals(shop.getVendor().getUniqueId())) {
+            double creationPrice = shop.getShopType() == ShopType.ADMIN ? Config.shopCreationPriceAdmin : Config.shopCreationPriceNormal;
+            EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, shop.getLocation().getWorld().getName(), creationPrice);
+            if (!r.transactionSuccess()) {
+                plugin.debug("Economy transaction failed: " + r.errorMessage);
+                executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
+                        new Replacement(Placeholder.ERROR, r.errorMessage)));
+            }
+        }
+
         shopUtils.removeShop(shop, true);
         plugin.debug("Removed shop (#" + shop.getID() + ")");
         executor.sendMessage(LanguageUtils.getMessage(Message.SHOP_REMOVED));

@@ -24,6 +24,16 @@ shop-info-item: "STICK"
 # in order to prevent accidental purchases or sells.
 confirm-shopping: false
 
+# Set whether the shop creation price should be refunded
+# when the shop is removed.
+# This only applies when the creator of the shop removes it himself
+# by command or by breaking it.
+# No refund will be given for automatic shop removals or when
+# the shop is removed by another player.
+# If enabled, the currently set creation price will be refunded,
+# not the one that was paid at creation.
+refund-shop-creation: false
+
 # Set whether the plugin will check for updates on server start
 # and notify permitted players on join.
 # The command is not affected by this setting and will continue to
