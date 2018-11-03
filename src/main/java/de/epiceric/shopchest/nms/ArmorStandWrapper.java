@@ -173,6 +173,8 @@ public class ArmorStandWrapper {
             Method addEntityMethod = worldServerClass.getDeclaredMethod(Utils.getMajorVersion() == 8 ? "b" : "c", entityClass);
             addEntityMethod.setAccessible(true);
             addEntityMethod.invoke(worldServerClass.cast(nmsWorld), entity);
+
+            entityClass.getMethod("die").invoke(entity);
         } catch (ReflectiveOperationException e) {
             plugin.getLogger().severe("Could not remove hologram");
             plugin.debug("Could not remove armor stand from entity lists");
