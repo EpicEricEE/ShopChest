@@ -543,6 +543,7 @@ public abstract class Database {
      * @param player   Player who logged out
      * @param callback Callback that - if succeeded - returns the time in
      *                 milliseconds the player logged out (as {@code long})
+     *                 or {@code -1} if the player has not logged out yet.
      */
     public void getLastLogout(final Player player, final Callback<Long> callback) {
         new BukkitRunnable() {
