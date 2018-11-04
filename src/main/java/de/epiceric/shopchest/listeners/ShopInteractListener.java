@@ -775,7 +775,7 @@ public class ShopInteractListener implements Listener {
 
         if (executor.getUniqueId().equals(shop.getVendor().getUniqueId())) {
             double creationPrice = shop.getShopType() == ShopType.ADMIN ? Config.shopCreationPriceAdmin : Config.shopCreationPriceNormal;
-            EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, shop.getLocation().getWorld().getName(), creationPrice);
+            EconomyResponse r = plugin.getEconomy().depositPlayer(executor, shop.getLocation().getWorld().getName(), creationPrice);
             if (!r.transactionSuccess()) {
                 plugin.debug("Economy transaction failed: " + r.errorMessage);
                 executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,

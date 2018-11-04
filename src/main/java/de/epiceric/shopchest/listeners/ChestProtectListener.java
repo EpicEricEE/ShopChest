@@ -78,7 +78,7 @@ public class ChestProtectListener implements Listener {
         } else {
             if (p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
                 double creationPrice = shop.getShopType() == ShopType.ADMIN ? Config.shopCreationPriceAdmin : Config.shopCreationPriceNormal;
-                EconomyResponse r = plugin.getEconomy().withdrawPlayer(p, shop.getLocation().getWorld().getName(), creationPrice);
+                EconomyResponse r = plugin.getEconomy().depositPlayer(p, shop.getLocation().getWorld().getName(), creationPrice);
                 if (!r.transactionSuccess()) {
                     plugin.debug("Economy transaction failed: " + r.errorMessage);
                     p.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
