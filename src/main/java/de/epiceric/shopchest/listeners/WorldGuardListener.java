@@ -38,16 +38,19 @@ public class WorldGuardListener implements Listener {
     private boolean isAllowed(Player player, Location location, Action action) {
         Shop shop = plugin.getShopUtils().getShop(location);
 
-        if (action == Action.RIGHT_CLICK_BLOCK && shop != null) {
+        if (shop != null) {
             if (shop.getVendor().getUniqueId().equals(player.getUniqueId()) && shop.getShopType() != Shop.ShopType.ADMIN) {
                 return true;
             }
         }
 
+        WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
+
         if (ClickType.getPlayerClickType(player) != null) {
             switch (ClickType.getPlayerClickType(player).getClickType()) {
                 case CREATE:
-                    return WorldGuardWrapper.getInstance().queryStateFlag(player, location, "create-shop").orElse(false);
+                    return wgWrapper.queryStateFlag(player, location, "create-shop").orElse(false)
+                            && wgWrapper.queryStateFlag(player, location, "chest-access").orElse(false);
                 case REMOVE:
                 case INFO:
                 case OPEN:
@@ -56,7 +59,7 @@ public class WorldGuardListener implements Listener {
         } else {
             if (shop != null) {
                 String flagName = (shop.getShopType() == Shop.ShopType.NORMAL ? "use-shop" : "use-admin-shop");
-                return WorldGuardWrapper.getInstance().queryStateFlag(player, location, flagName).orElse(false);
+                return wgWrapper.queryStateFlag(player, location, flagName).orElse(false);
             }
         }
 
@@ -69,8 +72,7 @@ public class WorldGuardListener implements Listener {
             Player player = event.getPlayer();
 
             if (event.getOriginalEvent() instanceof PlayerInteractAtEntityEvent) {
-                PlayerInteractAtEntityEvent orig = (PlayerInteractAtEntityEvent) event.getOriginalEvent();
-                Entity e = orig.getRightClicked();
+                Entity e = event.getEntity();
 
                 if (e.getType() == EntityType.ARMOR_STAND) {
                     if (!Hologram.isPartOfHologram((ArmorStand) e))
@@ -80,7 +82,6 @@ public class WorldGuardListener implements Listener {
                         if (shop.getHologram() != null && shop.getHologram().contains((ArmorStand) e)) {
                             if (isAllowed(player, shop.getLocation(), Action.RIGHT_CLICK_BLOCK)) {
                                 event.setResult(Result.ALLOW);
-                                orig.setCancelled(false);
                             }
 
                             return;
@@ -97,8 +98,7 @@ public class WorldGuardListener implements Listener {
             Player player = event.getPlayer();
 
             if (event.getOriginalEvent() instanceof EntityDamageByEntityEvent) {
-                EntityDamageByEntityEvent orig = (EntityDamageByEntityEvent) event.getOriginalEvent();
-                Entity e = orig.getEntity();
+                Entity e = event.getEntity();
 
                 if (e.getType() == EntityType.ARMOR_STAND) {
                     if (!Hologram.isPartOfHologram((ArmorStand) e))
@@ -108,7 +108,6 @@ public class WorldGuardListener implements Listener {
                         if (shop.getHologram() != null && shop.getHologram().contains((ArmorStand) e)) {
                             if (isAllowed(player, shop.getLocation(), Action.LEFT_CLICK_BLOCK)) {
                                 event.setResult(Result.ALLOW);
-                                orig.setCancelled(false);
                             }
 
                             return;
@@ -132,13 +131,6 @@ public class WorldGuardListener implements Listener {
                     if (type == Material.CHEST || type == Material.TRAPPED_CHEST) {
                         if (isAllowed(player, orig.getClickedBlock().getLocation(), orig.getAction())) {
                             event.setResult(Result.ALLOW);
-
-                            ClickType ct = ClickType.getPlayerClickType(player);
-                            if (!(ct != null && ct.getClickType() == ClickType.EnumClickType.CREATE)) {
-                                // Don't un-cancel original event when trying to create shop.
-                                // Flag "chest-access" has to be allowed too, so the original event won't be cancelled.
-                                orig.setCancelled(false);
-                            }
                         }
                     }
                 }
@@ -146,15 +138,8 @@ public class WorldGuardListener implements Listener {
                 InventoryOpenEvent orig = (InventoryOpenEvent) event.getOriginalEvent();
 
                 if (orig.getInventory().getHolder() instanceof Chest) {
-                    if (isAllowed(player, ((Chest)orig.getInventory().getHolder()).getLocation(), Action.RIGHT_CLICK_BLOCK)) {
+                    if (isAllowed(player, ((Chest) orig.getInventory().getHolder()).getLocation(), Action.RIGHT_CLICK_BLOCK)) {
                         event.setResult(Result.ALLOW);
-
-                        ClickType ct = ClickType.getPlayerClickType(player);
-                        if (!(ct != null && ct.getClickType() == ClickType.EnumClickType.CREATE)) {
-                            // Don't un-cancel original event when trying to create shop.
-                            // Flag "chest-access" has to be allowed too, so the original event won't be cancelled.
-                            orig.setCancelled(false);
-                        }
                     }
                 }
             }
