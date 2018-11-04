@@ -38,8 +38,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
             @Override
             public void onResult(Long result) {
                 if (result < 0) {
-                    p.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
-                            new Replacement(Placeholder.ERROR, "Could not get last time you logged out")));
+                    // No logout saved, probably first time joining.
                     return;
                 }
 
