@@ -211,13 +211,13 @@ public class ShopChest extends JavaPlugin {
         if (shopCreationThreadPool != null) {
             shopCreationThreadPool.shutdown();
         }
+        
+        for (Shop shop : shopUtils.getShopsCopy()) {
+            shopUtils.removeShop(shop, false);
+            debug("Removed shop (#" + shop.getID() + ")");
+        }
 
         if (database != null) {
-            for (Shop shop : shopUtils.getShopsCopy()) {
-                shopUtils.removeShop(shop, false);
-                debug("Removed shop (#" + shop.getID() + ")");
-            }
-
             if (database instanceof SQLite) {
                 ((SQLite) database).vacuum(false);
             }
