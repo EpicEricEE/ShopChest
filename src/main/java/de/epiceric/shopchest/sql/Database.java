@@ -165,7 +165,7 @@ public abstract class Database {
                         callback.callSyncError(ex);
                     }
 
-                    plugin.getLogger().severe("Failed to access database");
+                    plugin.getLogger().severe("Failed to remove shop from database");
                     plugin.debug("Failed to remove shop from database (#" + shop.getID() + ")");
                     plugin.debug(ex);
                 }
@@ -204,7 +204,7 @@ public abstract class Database {
                         callback.callSyncError(ex);
                     }
 
-                    plugin.getLogger().severe("Failed to access database");
+                    plugin.getLogger().severe("Failed to check if shop exists in the database");
                     plugin.debug("Failed to check if shop with ID exists (#" + id + ")");
                     plugin.debug(ex);
                 }
@@ -274,7 +274,7 @@ public abstract class Database {
                         callback.callSyncError(ex);
                     }
 
-                    plugin.getLogger().severe("Failed to access database");
+                    plugin.getLogger().severe("Failed to get shops from database");
                     plugin.debug("Failed to get shops");
                     plugin.debug(ex);
                 }
@@ -338,7 +338,7 @@ public abstract class Database {
                         callback.callSyncError(ex);
                     }
 
-                    plugin.getLogger().severe("Failed to access database");
+                    plugin.getLogger().severe("Failed to add shop to database");
                     plugin.debug("Failed to add shop to database (#" + shop.getID() + ")");
                     plugin.debug(ex);
                 }
@@ -387,7 +387,7 @@ public abstract class Database {
                             callback.callSyncError(ex);
                         }
 
-                        plugin.getLogger().severe("Failed to access database");
+                        plugin.getLogger().severe("Failed to log economy transaction to database");
                         plugin.debug("Failed to log economy transaction to database");
                         plugin.debug(ex);
                     }
@@ -493,7 +493,7 @@ public abstract class Database {
                         callback.callSyncError(ex);
                     }
 
-                    plugin.getLogger().severe("Failed to access database");
+                    plugin.getLogger().severe("Failed to get revenue from database");
                     plugin.debug("Failed to get revenue from player \"" + player.getUniqueId().toString() + "\"");
                     plugin.debug(ex);
                 }
@@ -529,7 +529,7 @@ public abstract class Database {
                         callback.callSyncError(ex);
                     }
 
-                    plugin.getLogger().severe("Failed to access database");
+                    plugin.getLogger().severe("Failed to log last logout to database");
                     plugin.debug("Failed to log logout to database");
                     plugin.debug(ex);
                 }
@@ -573,7 +573,7 @@ public abstract class Database {
                         callback.callSyncError(ex);
                     }
 
-                    plugin.getLogger().severe("Failed to access database");
+                    plugin.getLogger().severe("Failed to get last logout from database");
                     plugin.debug("Failed to get last logout from player \"" + player.getName() + "\"");
                     plugin.debug(ex);
                 }
