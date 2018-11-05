@@ -54,7 +54,7 @@ public class SQLite extends Database {
 
                     plugin.debug("Vacuumed SQLite database");
                 } catch (final SQLException ex) {
-                    plugin.getLogger().severe("Failed to access database");
+                    plugin.getLogger().severe("Failed to vacuum database");
                     plugin.debug("Failed to vacuum database");
                     plugin.debug(ex);
                 }
