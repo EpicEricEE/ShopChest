@@ -2,10 +2,13 @@ package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
 
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class UpdateChecker {
 
@@ -20,27 +23,31 @@ public class UpdateChecker {
     /**
      * Check if an update is needed
      *
-     * @return {@link UpdateCheckerResult#TRUE} if an update is available, {@link UpdateCheckerResult#FALSE} if no update is needed or {@link UpdateCheckerResult#ERROR} if an error occurred
+     * @return {@link UpdateCheckerResult#TRUE} if an update is available,
+     *         {@link UpdateCheckerResult#FALSE} if no update is needed or
+     *         {@link UpdateCheckerResult#ERROR} if an error occurred
      */
     public UpdateCheckerResult check() {
         try {
             plugin.debug("Checking for updates...");
 
-            URL url = new URL("https://textuploader.com/all1l/raw");
+            URL url = new URL("https://api.spiget.org/v2/resources/11431/versions?size=1&page=1&sort=-releaseDate");
             URLConnection conn = url.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
-            conn.connect();
+            conn.setRequestProperty("User-Agent", "ShopChest/UpdateChecker");
 
-            InputStreamReader isr = new InputStreamReader(conn.getInputStream());
-            BufferedReader br = new BufferedReader(isr);
+            InputStreamReader reader = new InputStreamReader(conn.getInputStream());
+            JsonElement element = new JsonParser().parse(reader);
 
-            String line = br.readLine();
-
-            isr.close();
-            br.close();
-
-            version = line.split("\\|")[0];
-            link = "https://www.spigotmc.org/resources/shopchest.11431/download?version=" + line.split("\\|")[1];
+            if (element.isJsonArray()) {
+                JsonObject result = element.getAsJsonArray().get(0).getAsJsonObject();
+                String id = result.get("id").getAsString();
+                version = result.get("name").getAsString();
+                link = "https://www.spigotmc.org/resources/shopchest.11431/download?version=" + id;
+            } else {
+                plugin.debug("Failed to check for updates");
+                plugin.debug("Result: " + element.toString());
+                return UpdateCheckerResult.ERROR;
+            }
 
             if (plugin.getDescription().getVersion().equals(version)) {
                 plugin.debug("No update found");
