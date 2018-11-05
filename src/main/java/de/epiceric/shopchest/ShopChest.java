@@ -5,13 +5,10 @@ import com.wasteofplastic.askyblock.ASkyBlock;
 import de.epiceric.shopchest.command.ShopCommand;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.HologramFormat;
-import de.epiceric.shopchest.config.Placeholder;
 import de.epiceric.shopchest.event.ShopInitializedEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.Message;
-import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.listeners.AreaShopListener;
 import de.epiceric.shopchest.listeners.BlockExplodeListener;
 import de.epiceric.shopchest.listeners.ChestProtectListener;
@@ -344,29 +341,34 @@ public class ShopChest extends JavaPlugin {
                 UpdateChecker uc = new UpdateChecker(ShopChest.this);
                 UpdateCheckerResult result = uc.check();
 
-                Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(Message.UPDATE_CHECKING));
-                if (result == UpdateCheckerResult.TRUE) {
-                    latestVersion = uc.getVersion();
-                    downloadLink = uc.getLink();
-                    isUpdateNeeded = true;
-                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(Message.UPDATE_AVAILABLE, new Replacement(Placeholder.VERSION, latestVersion)));
+                switch (result) {
+                    case TRUE:
+                        latestVersion = uc.getVersion();
+                        downloadLink = uc.getLink();
+                        isUpdateNeeded = true;
 
-                    for (Player p : getServer().getOnlinePlayers()) {
-                        if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
-                            Utils.sendUpdateMessage(ShopChest.this, p);
+                        getLogger().warning(String.format("Version %s is available! You are running version %s.",
+                                latestVersion, getDescription().getVersion()));
+
+                        for (Player p : getServer().getOnlinePlayers()) {
+                            if (p.hasPermission(Permissions.UPDATE_NOTIFICATION)) {
+                                Utils.sendUpdateMessage(ShopChest.this, p);
+                            }
                         }
-                    }
+                        break;
+                
+                    case FALSE:
+                        latestVersion = "";
+                        downloadLink = "";
+                        isUpdateNeeded = false;
+                        break;
 
-                } else if (result == UpdateCheckerResult.FALSE) {
-                    latestVersion = "";
-                    downloadLink = "";
-                    isUpdateNeeded = false;
-                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(Message.UPDATE_NO_UPDATE));
-                } else {
-                    latestVersion = "";
-                    downloadLink = "";
-                    isUpdateNeeded = false;
-                    Bukkit.getConsoleSender().sendMessage("[ShopChest] " + LanguageUtils.getMessage(Message.UPDATE_ERROR));
+                    case ERROR:
+                        latestVersion = "";
+                        downloadLink = "";
+                        isUpdateNeeded = false;
+                        getLogger().severe("An error occurred while checking for updates.");
+                        break;
                 }
             }
         }.runTaskAsynchronously(this);
