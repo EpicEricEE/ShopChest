@@ -57,8 +57,7 @@ public class NotifyPlayerOnJoinListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        long time = System.currentTimeMillis();
-        plugin.getShopDatabase().logLogout(e.getPlayer(), time, null);
+        plugin.getShopDatabase().logLogout(e.getPlayer(), null);
     }
 
 }

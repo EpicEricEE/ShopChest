@@ -87,7 +87,12 @@ public class Config {
     public static String databaseMySqlPassword;
 
     /**
-     * The database type used for ShopChest.
+     * The prefix to be used for database tables
+     */
+    public static String databaseTablePrefix;
+
+    /**
+     * The database type used for ShopChest
      **/
     public static Database.DatabaseType databaseType;
 
@@ -474,6 +479,7 @@ public class Config {
         databaseMySqlDatabase = plugin.getConfig().getString("database.mysql.database");
         databaseMySqlUsername = plugin.getConfig().getString("database.mysql.username");
         databaseMySqlPassword = plugin.getConfig().getString("database.mysql.password");
+        databaseTablePrefix = plugin.getConfig().getString("database.table-prefix");
         databaseType = Database.DatabaseType.valueOf(plugin.getConfig().getString("database.type"));
         minimumPrices = (plugin.getConfig().getConfigurationSection("minimum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("minimum-prices").getKeys(true);
         maximumPrices = (plugin.getConfig().getConfigurationSection("maximum-prices") == null) ? new HashSet<String>() : plugin.getConfig().getConfigurationSection("maximum-prices").getKeys(true);

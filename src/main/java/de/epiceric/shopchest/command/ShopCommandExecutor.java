@@ -13,6 +13,7 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ItemUtils;
@@ -354,11 +355,8 @@ class ShopCommandExecutor implements CommandExecutor {
             }
         }
 
-        ItemStack product = new ItemStack(inHand.getType(), amount, inHand.getDurability());
-        product.setItemMeta(inHand.getItemMeta());
-
-        if (Enchantment.DURABILITY.canEnchantItem(product)) {
-            if (product.getDurability() > 0 && !Config.allowBrokenItems) {
+        if (Enchantment.DURABILITY.canEnchantItem(inHand)) {
+            if (inHand.getDurability() > 0 && !Config.allowBrokenItems) {
                 p.sendMessage(LanguageUtils.getMessage(Message.CANNOT_SELL_BROKEN_ITEM));
                 plugin.debug(p.getName() + "'s item is broken");
                 return;
@@ -374,6 +372,7 @@ class ShopCommandExecutor implements CommandExecutor {
             }
         }
 
+        ShopProduct product = new ShopProduct(inHand, amount);
         ShopPreCreateEvent event = new ShopPreCreateEvent(p, new Shop(plugin, p, product, null, buyPrice, sellPrice, shopType));
         Bukkit.getPluginManager().callEvent(event);
 

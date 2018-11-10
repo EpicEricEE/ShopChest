@@ -24,6 +24,7 @@ import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.ClickType;
@@ -301,7 +302,7 @@ public class ShopInteractListener implements Listener {
 
                                 if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
                                     ClickType clickType = ClickType.getPlayerClickType(p);
-                                    ItemStack product = clickType.getProduct();
+                                    ShopProduct product = clickType.getProduct();
                                     double buyPrice = clickType.getBuyPrice();
                                     double sellPrice = clickType.getSellPrice();
                                     ShopType shopType = clickType.getShopType();
@@ -484,9 +485,10 @@ public class ShopInteractListener implements Listener {
                                         } else {
                                             if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
                                                 Chest c = (Chest) b.getState();
-                                                int amount = (p.isSneaking() ? shop.getProduct().getMaxStackSize() : shop.getProduct().getAmount());
+                                                ItemStack itemStack = shop.getProduct().getItemStack();
+                                                int amount = (p.isSneaking() ? itemStack.getMaxStackSize() : shop.getProduct().getAmount());
 
-                                                if (Utils.getAmount(c.getInventory(), shop.getProduct()) >= amount) {
+                                                if (Utils.getAmount(c.getInventory(), itemStack) >= amount) {
                                                     if (confirmed || !Config.confirmShopping) {
                                                         buy(p, shop, p.isSneaking());
                                                         if (Config.confirmShopping) {
@@ -503,7 +505,7 @@ public class ShopInteractListener implements Listener {
                                                         needsConfirmation.put(p.getUniqueId(), ids);
                                                     }
                                                 } else {
-                                                    if (Config.autoCalculateItemAmount && Utils.getAmount(c.getInventory(), shop.getProduct()) > 0) {
+                                                    if (Config.autoCalculateItemAmount && Utils.getAmount(c.getInventory(), itemStack) > 0) {
                                                         if (confirmed || !Config.confirmShopping) {
                                                             buy(p, shop, p.isSneaking());
                                                             if (Config.confirmShopping) {
@@ -524,7 +526,7 @@ public class ShopInteractListener implements Listener {
                                                         if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
                                                             shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
                                                                     new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
-                                                                            new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(shop.getProduct()))));
+                                                                            new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(itemStack))));
                                                         }
                                                         plugin.debug("Shop is out of stock");
                                                     }
@@ -569,11 +571,13 @@ public class ShopInteractListener implements Listener {
                                             externalPluginsAllowed = WorldGuardWrapper.getInstance().queryStateFlag(p, b.getLocation(), flagName).orElse(false);
                                         }
 
+                                        ItemStack itemStack = shop.getProduct().getItemStack();
+
                                         if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
                                             boolean stack = p.isSneaking() && !Utils.hasAxeInHand(p);
-                                            int amount = stack ? shop.getProduct().getMaxStackSize() : shop.getProduct().getAmount();
+                                            int amount = stack ? itemStack.getMaxStackSize() : shop.getProduct().getAmount();
 
-                                            if (Utils.getAmount(p.getInventory(), shop.getProduct()) >= amount) {
+                                            if (Utils.getAmount(p.getInventory(), itemStack) >= amount) {
                                                 if (confirmed || !Config.confirmShopping) {
                                                     sell(p, shop, stack);
                                                     if (Config.confirmShopping) {
@@ -590,7 +594,7 @@ public class ShopInteractListener implements Listener {
                                                     needsConfirmation.put(p.getUniqueId(), ids);
                                                 }
                                             } else {
-                                                if (Config.autoCalculateItemAmount && Utils.getAmount(p.getInventory(), shop.getProduct()) > 0) {
+                                                if (Config.autoCalculateItemAmount && Utils.getAmount(p.getInventory(), itemStack) > 0) {
                                                     if (confirmed || !Config.confirmShopping) {
                                                         sell(p, shop, stack);
                                                         if (Config.confirmShopping) {
@@ -716,7 +720,7 @@ public class ShopInteractListener implements Listener {
      * @param sellPrice Sell price
      * @param shopType  Type of the shop
      */
-    private void create(final Player executor, final Location location, final ItemStack product, final double buyPrice, final double sellPrice, final ShopType shopType) {
+    private void create(final Player executor, final Location location, final ShopProduct product, final double buyPrice, final double sellPrice, final ShopType shopType) {
         plugin.debug(executor.getName() + " is creating new shop...");
 
         if (!executor.hasPermission(Permissions.CREATE)) {
@@ -825,7 +829,8 @@ public class ShopInteractListener implements Listener {
         }
 
         Chest c = (Chest) shop.getLocation().getBlock().getState();
-        int amount = Utils.getAmount(c.getInventory(), shop.getProduct());
+        ItemStack itemStack = shop.getProduct().getItemStack();
+        int amount = Utils.getAmount(c.getInventory(), itemStack);
 
         String vendorName = (shop.getVendor().getName() == null ?
                 shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
@@ -863,21 +868,21 @@ public class ShopInteractListener implements Listener {
      * @param product The product of the shop
      * @return A {@link JsonBuilder} that can send the message via {@link JsonBuilder#sendJson(Player)}
      */
-    private JsonBuilder getProductJson(ItemStack product) {
+    private JsonBuilder getProductJson(ShopProduct product) {
         // Add spaces at start and end, so there will always be a part before and after
         // the item name after splitting at Placeholder.ITEM_NAME
         String productString = " " + LanguageUtils.getMessage(Message.SHOP_INFO_PRODUCT,
                 new Replacement(Placeholder.AMOUNT, String.valueOf(product.getAmount()))) + " ";
 
         String[] parts = productString.split(Placeholder.ITEM_NAME.toString());
-        String productName = LanguageUtils.getItemName(product);
+        String productName = LanguageUtils.getItemName(product.getItemStack());
         String jsonItem = "";
         JsonBuilder jb = new JsonBuilder(plugin);
         JsonBuilder.PartArray rootArray = new JsonBuilder.PartArray();
         
         try {
             Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");	
-            Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, product);	
+            Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, product.getItemStack());	
             Class<?> nbtTagCompoundClass = Utils.getNMSClass("NBTTagCompound");
             Object nbtTagCompound = nbtTagCompoundClass.getConstructor().newInstance();
             nmsStack.getClass().getMethod("save", nbtTagCompoundClass).invoke(nmsStack, nbtTagCompound);
@@ -944,8 +949,9 @@ public class ShopInteractListener implements Listener {
     private void buy(Player executor, final Shop shop, boolean stack) {
         plugin.debug(executor.getName() + " is buying (#" + shop.getID() + ")");
 
+        ItemStack itemStack = shop.getProduct().getItemStack();
         int amount = shop.getProduct().getAmount();
-        if (stack) amount = shop.getProduct().getMaxStackSize();
+        if (stack) amount = itemStack.getMaxStackSize();
 
         String worldName = shop.getLocation().getWorld().getName();
 
@@ -966,14 +972,14 @@ public class ShopInteractListener implements Listener {
             Block b = shop.getLocation().getBlock();
             Chest c = (Chest) b.getState();
 
-            int amountForChestItems = Utils.getAmount(c.getInventory(), shop.getProduct());
+            int amountForChestItems = Utils.getAmount(c.getInventory(), itemStack);
 
             if (amountForChestItems == 0 && shop.getShopType() != ShopType.ADMIN) {
                 executor.sendMessage(LanguageUtils.getMessage(Message.OUT_OF_STOCK));
                 return;
             }
 
-            ItemStack product = new ItemStack(shop.getProduct());
+            ItemStack product = new ItemStack(itemStack);
             if (stack) product.setAmount(amount);
 
             Inventory inventory = executor.getInventory();
@@ -996,13 +1002,11 @@ public class ShopInteractListener implements Listener {
 
             if (newAmount > amount) newAmount = amount;
 
+            ShopProduct newProduct = new ShopProduct(product, newAmount);
             double newPrice = (price / amount) * newAmount;
 
             if (freeSpace >= newAmount) {
                 plugin.debug(executor.getName() + " has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
-
-                ItemStack newProduct = new ItemStack(product);
-                newProduct.setAmount(newAmount);
 
                 EconomyResponse r = econ.withdrawPlayer(executor, worldName, newPrice);
 
@@ -1105,8 +1109,9 @@ public class ShopInteractListener implements Listener {
     private void sell(Player executor, final Shop shop, boolean stack) {
         plugin.debug(executor.getName() + " is selling (#" + shop.getID() + ")");
 
+        ItemStack itemStack = shop.getProduct().getItemStack();
         int amount = shop.getProduct().getAmount();
-        if (stack) amount = shop.getProduct().getMaxStackSize();
+        if (stack) amount = itemStack.getMaxStackSize();
 
         double price = shop.getSellPrice();
         if (stack) price = (price / shop.getProduct().getAmount()) * amount;
@@ -1130,14 +1135,14 @@ public class ShopInteractListener implements Listener {
             Block block = shop.getLocation().getBlock();
             Chest chest = (Chest) block.getState();
 
-            int amountForItemCount = Utils.getAmount(executor.getInventory(), shop.getProduct());
+            int amountForItemCount = Utils.getAmount(executor.getInventory(), itemStack);
 
             if (amountForItemCount == 0) {
                 executor.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_ITEMS));
                 return;
             }
 
-            ItemStack product = new ItemStack(shop.getProduct());
+            ItemStack product = new ItemStack(itemStack);
             if (stack) product.setAmount(amount);
 
             Inventory inventory = chest.getInventory();
@@ -1160,13 +1165,11 @@ public class ShopInteractListener implements Listener {
 
             if (newAmount > amount) newAmount = amount;
 
+            ShopProduct newProduct = new ShopProduct(product, newAmount);
             double newPrice = (price / amount) * newAmount;
 
             if (freeSpace >= newAmount || shop.getShopType() == ShopType.ADMIN) {
                 plugin.debug("Chest has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
-
-                ItemStack newProduct = new ItemStack(product);
-                newProduct.setAmount(newAmount);
 
                 EconomyResponse r = econ.depositPlayer(executor, worldName, newPrice);
 
@@ -1271,11 +1274,12 @@ public class ShopInteractListener implements Listener {
      * @param itemStack Items to add
      * @return Whether all items were added to the inventory
      */
-    private boolean addToInventory(Inventory inventory, ItemStack itemStack) {
+    private boolean addToInventory(Inventory inventory, ShopProduct product) {
         plugin.debug("Adding items to inventory...");
 
         HashMap<Integer, ItemStack> inventoryItems = new HashMap<>();
-        int amount = itemStack.getAmount();
+        ItemStack itemStack = product.getItemStack();
+        int amount = product.getAmount();
         int added = 0;
 
         if (inventory instanceof PlayerInventory) {
@@ -1329,11 +1333,12 @@ public class ShopInteractListener implements Listener {
      * @param itemStack Items to remove
      * @return Whether all items were removed from the inventory
      */
-    private boolean removeFromInventory(Inventory inventory, ItemStack itemStack) {
+    private boolean removeFromInventory(Inventory inventory, ShopProduct product) {
         plugin.debug("Removing items from inventory...");
 
         HashMap<Integer, ItemStack> inventoryItems = new HashMap<>();
-        int amount = itemStack.getAmount();
+        ItemStack itemStack = product.getItemStack();
+        int amount = product.getAmount();
         int removed = 0;
 
         if (inventory instanceof PlayerInventory) {

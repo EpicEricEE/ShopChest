@@ -7,6 +7,7 @@ import de.epiceric.shopchest.event.ShopBuySellEvent.Type;
 import de.epiceric.shopchest.exceptions.WorldNotFoundException;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.Utils;
@@ -18,11 +19,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,6 +38,10 @@ import com.zaxxer.hikari.HikariDataSource;
 public abstract class Database {
 
     private static Set<String> notFoundWorlds = new HashSet<>();
+
+    private String tableShops;
+    private String tableLogs;
+    private String tableLogouts;
 
     ShopChest plugin;
     HikariDataSource dataSource;
@@ -52,18 +60,31 @@ public abstract class Database {
      *                 that were found (as {@code int})
      */
     public void connect(final Callback<Integer> callback) {
+        if (!Config.databaseTablePrefix.matches("^([a-zA-Z0-9\\-\\_]+)?$")) {
+            // Only letters, numbers dashes and underscores are allowed
+            plugin.getLogger().severe("Database table prefix contains illegal letters, using 'shopchest_' prefix.");
+            Config.databaseTablePrefix = "shopchest_";
+        }
+
+        this.tableShops = Config.databaseTablePrefix + "shops";
+        this.tableLogs = Config.databaseTablePrefix + "economy_logs";
+        this.tableLogouts = Config.databaseTablePrefix + "player_logouts";
+
         new BukkitRunnable() {
             @Override
             public void run() {
                 disconnect();
 
                 dataSource = getDataSource();
+                
+                String autoIncrement = Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT";
 
                 String queryCreateTableShopList = 
-                        "CREATE TABLE IF NOT EXISTS shops ("
-                        + "id INTEGER PRIMARY KEY " + (Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT") + ","
+                        "CREATE TABLE IF NOT EXISTS " + tableShops + " ("
+                        + "id INTEGER PRIMARY KEY " + autoIncrement + ","
                         + "vendor TINYTEXT NOT NULL,"
                         + "product TEXT NOT NULL,"
+                        + "amount INTEGER NOT NULL,"
                         + "world TINYTEXT NOT NULL,"
                         + "x INTEGER NOT NULL,"
                         + "y INTEGER NOT NULL,"
@@ -73,12 +94,19 @@ public abstract class Database {
                         + "shoptype TINYTEXT NOT NULL)";
 
                 String queryCreateTableShopLog = 
-                        "CREATE TABLE IF NOT EXISTS `shop_log` ("
-                        + "id INTEGER PRIMARY KEY " + (Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT") + ","
+                        "CREATE TABLE IF NOT EXISTS " + tableLogs + " ("
+                        + "id INTEGER PRIMARY KEY " + autoIncrement + ","
+                        + "shop_id INTEGER NOT NULL,"
                         + "timestamp TINYTEXT NOT NULL,"
-                        + "executor TINYTEXT NOT NULL,"
-                        + "product TINYTEXT NOT NULL,"
-                        + "vendor TINYTEXT NOT NULL,"
+                        + "time LONG NOT NULL,"
+                        + "player_name TINYTEXT NOT NULL,"
+                        + "player_uuid TINYTEXT NOT NULL,"
+                        + "product_name TINYTEXT NOT NULL,"
+                        + "product TEXT NOT NULL,"
+                        + "amount INTEGER NOT NULL,"
+                        + "vendor_name TINYTEXT NOT NULL,"
+                        + "vendor_uuid TINYTEXT NOT NULL,"
+                        + "admin BIT NOT NULL,"
                         + "world TINYTEXT NOT NULL,"
                         + "x INTEGER NOT NULL,"
                         + "y INTEGER NOT NULL,"
@@ -87,23 +115,127 @@ public abstract class Database {
                         + "type TINYTEXT NOT NULL)";
 
                 String queryCreateTablePlayerLogout = 
-                        "CREATE TABLE IF NOT EXISTS player_logout ("
+                        "CREATE TABLE IF NOT EXISTS " + tableLogouts + " ("
                         + "player VARCHAR(36) PRIMARY KEY NOT NULL,"
                         + "time LONG NOT NULL)";
 
-                try {
-                    // Create table "shops"
-                    try (Connection con = dataSource.getConnection(); Statement s = con.createStatement()) {
+                String queryCheckIfOldFormat =
+                        Database.this instanceof SQLite ?
+                                "SELECT name FROM sqlite_master WHERE type='table' AND name='shop_log'" :
+                                "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='shop_log'";
+
+                String queryRenameTableLogouts = "ALTER TABLE player_logout RENAME TO " + tableLogouts;
+                String queryRenameTableLogs = "ALTER TABLE shop_log RENAME TO backup_shop_log"; // for backup
+                String queryRenameTableShops = "ALTER TABLE shops RENAME TO backup_shops"; // for backup
+                        
+                try (Connection con = dataSource.getConnection()) {
+                    // Check if database is in old format
+                    try (Statement s = con.createStatement()) {
+                        ResultSet rs = s.executeQuery(queryCheckIfOldFormat);
+                        if (rs.next()) {
+                            plugin.getLogger().warning("Database is using old format and will be converted.");
+
+                            try (Statement s2 = con.createStatement()) {
+                                s.executeUpdate(queryRenameTableShops);
+
+                                // Create new shops table
+                                try (Statement s3 = con.createStatement()) {
+                                    s3.executeUpdate(queryCreateTableShopList);
+                                }
+
+                                // Create new log table
+                                try (Statement s4 = con.createStatement()) {
+                                    s4.executeUpdate(queryCreateTableShopLog);
+                                }
+
+                                // Convert shop table
+                                try (Statement s3 = con.createStatement()) {
+                                    ResultSet rs2 = s3.executeQuery("SELECT id,product FROM backup_shops");
+                                    while (rs2.next()) {
+                                        ItemStack is = Utils.decode(rs2.getString("product"));
+                                        int amount = is.getAmount();
+                                        is.setAmount(1);
+                                        String product = Utils.encode(is);
+                                        
+                                        String insertQuery = "INSERT INTO " + tableShops + " SELECT id,vendor,?,?,world,x,y,z,buyprice,sellprice,shoptype FROM backup_shops WHERE id = ?";
+                                        try (PreparedStatement ps = con.prepareStatement(insertQuery)) {
+                                            ps.setString(1, product);
+                                            ps.setInt(2, amount);
+                                            ps.setInt(3, rs2.getInt("id"));
+                                            ps.executeUpdate();
+                                        }
+                                    }
+                                }
+
+                                // Convert log table
+                                try (Statement s3 = con.createStatement()) {
+                                    ResultSet rs2 = s3.executeQuery("SELECT id,timestamp,executor,product,vendor FROM shop_log");
+                                    while (rs2.next()) {
+                                        String timestamp = rs2.getString("timestamp");
+                                        long time = 0L;
+
+                                        try {
+                                            time = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(timestamp).getTime();
+                                        } catch (ParseException e) {
+                                            plugin.debug("Failed to parse timestamp '" + timestamp + "': Time is set to 0");
+                                            plugin.debug(e);
+                                        }
+
+                                        String player = rs2.getString("executor");
+                                        String playerUuid = player.substring(0, 36);
+                                        String playerName = player.substring(38, player.length() - 1);
+
+                                        String oldProduct = rs2.getString("product");
+                                        String product = oldProduct.split(" x ")[1];
+                                        int amount = Integer.valueOf(oldProduct.split(" x ")[0]);
+
+                                        String vendor = rs2.getString("vendor");
+                                        String vendorUuid = vendor.substring(0, 36);
+                                        String vendorName = vendor.substring(38).replaceAll("\\)( \\(ADMIN\\))?", "");
+                                        boolean admin = vendor.endsWith("(ADMIN)");
+                                        
+                                        String insertQuery = "INSERT INTO " + tableLogs + " SELECT id,-1,timestamp,?,?,?,?,'Unknown',?,?,?,?,world,x,y,z,price,type FROM shop_log WHERE id = ?";
+                                        try (PreparedStatement ps = con.prepareStatement(insertQuery)) {
+                                            ps.setLong(1, time);
+                                            ps.setString(2, playerName);
+                                            ps.setString(3, playerUuid);
+                                            ps.setString(4, product);
+                                            ps.setInt(5, amount);
+                                            ps.setString(6, vendorName);
+                                            ps.setString(7, vendorUuid);
+                                            ps.setBoolean(8, admin);
+                                            ps.setInt(9, rs2.getInt("id"));
+                                            ps.executeUpdate();
+                                        }
+                                    }
+                                }
+
+                                // Rename log table
+                                try (Statement s3 = con.createStatement()) {
+                                    s3.executeUpdate(queryRenameTableLogs);
+                                }
+
+                                // Rename logout table
+                                try (Statement s3 = con.createStatement()) {
+                                    s3.executeUpdate(queryRenameTableLogouts);
+                                }
+                            }
+                        }
+                    }
+                    
+
+                    // Create shop table
+                    try (Statement s = con.createStatement()) {
                         s.executeUpdate(queryCreateTableShopList);
                     }
 
-                    // Create table "shop_log"
-                    try (Connection con = dataSource.getConnection(); Statement s = con.createStatement()) {
+                    // Create log table
+                    try (Statement s = con.createStatement()) {
                         s.executeUpdate(queryCreateTableShopLog);
                     }
 
-                    // Create table "player_logout"
-                    try (Connection con = dataSource.getConnection(); Statement s = con.createStatement()) {
+                    // Create logout table
+                    try (Statement s = con.createStatement()) {
                         s.executeUpdate(queryCreateTablePlayerLogout);
                     }
 
@@ -112,19 +244,19 @@ public abstract class Database {
                         cleanUpEconomy(false);
                     }
 
-                    // Count entries in table "shops"
-                    try (Connection con = dataSource.getConnection(); Statement s = con.createStatement();) {
-                        ResultSet rs = s.executeQuery("SELECT id FROM shops");
+                    // Count shops entries in database
+                    try (Statement s = con.createStatement();) {
+                        ResultSet rs = s.executeQuery("SELECT COUNT(id) FROM " + tableShops);
+                        if (rs.next()) {
+                            int count = rs.getInt(1);
+                            
+                            plugin.debug("Initialized database with " + count + " entries");
 
-                        int count = 0;
-                        while (rs.next()) {
-                            count++;
-                        }
-
-                        plugin.debug("Initialized database with " + count + " entries");
-
-                        if (callback != null) {
-                            callback.callSyncResult(count);
+                            if (callback != null) {
+                                callback.callSyncResult(count);
+                            }
+                        } else {
+                            throw new SQLException("Count result set has no entries");
                         }
                     }
                 } catch (SQLException e) {
@@ -151,7 +283,7 @@ public abstract class Database {
             @Override
             public void run() {
                 try (Connection con = dataSource.getConnection();
-                        PreparedStatement ps = con.prepareStatement("DELETE FROM shops WHERE id = ?")) {
+                        PreparedStatement ps = con.prepareStatement("DELETE FROM " + tableShops + " WHERE id = ?")) {
                     ps.setInt(1, shop.getID());
                     ps.executeUpdate();
 
@@ -174,52 +306,13 @@ public abstract class Database {
     }
 
     /**
-     * @param id       ID of the shop
-     * @param callback Callback that - if succeeded - returns whether a shop with
-     *                 the given ID exists (as {@code boolean})
-     */
-    public void isShop(final int id, final Callback<Boolean> callback) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                try (Connection con = dataSource.getConnection();
-                        PreparedStatement ps = con.prepareStatement("SELECT * FROM shops WHERE id = ?")) {
-                    ps.setInt(1, id);
-                    ResultSet rs = ps.executeQuery();
-
-                    while (rs.next()) {
-                        if (rs.getInt("id") == id) {
-                            if (callback != null) {
-                                callback.callSyncResult(true);
-                            }
-                            return;
-                        }
-                    }
-
-                    if (callback != null) {
-                        callback.callSyncResult(false);
-                    }
-                } catch (SQLException ex) {
-                    if (callback != null) {
-                        callback.callSyncError(ex);
-                    }
-
-                    plugin.getLogger().severe("Failed to check if shop exists in the database");
-                    plugin.debug("Failed to check if shop with ID exists (#" + id + ")");
-                    plugin.debug(ex);
-                }
-            }
-        }.runTaskAsynchronously(plugin);
-    }
-
-    /**
      * Get all shops from the database
      * 
+     * @param showConsoleMessages Whether console messages (errors or warnings)
+     *                            should be shown
      * @param callback            Callback that - if succeeded - returns a read-only
      *                            collection of all shops (as
      *                            {@code Collection<Shop>})
-     * @param showConsoleMessages Whether console messages (errors or warnings)
-     *                            should be shown
      */
     public void getShops(final boolean showConsoleMessages, final Callback<Collection<Shop>> callback) {
         new BukkitRunnable() {
@@ -228,7 +321,7 @@ public abstract class Database {
                 ArrayList<Shop> shops = new ArrayList<>();
 
                 try (Connection con = dataSource.getConnection();
-                        PreparedStatement ps = con.prepareStatement("SELECT * FROM shops")) {
+                        PreparedStatement ps = con.prepareStatement("SELECT * FROM " + tableShops + "")) {
                     ResultSet rs = ps.executeQuery();
 
                     while (rs.next()) {
@@ -238,9 +331,6 @@ public abstract class Database {
 
                         String worldName = rs.getString("world");
                         World world = Bukkit.getWorld(worldName);
-                        int x = rs.getInt("x");
-                        int y = rs.getInt("y");
-                        int z = rs.getInt("z");
 
                         if (world == null) {
                             WorldNotFoundException ex = new WorldNotFoundException(worldName);
@@ -253,15 +343,19 @@ public abstract class Database {
                             continue;
                         }
 
+                        int x = rs.getInt("x");
+                        int y = rs.getInt("y");
+                        int z = rs.getInt("z");
                         Location location = new Location(world, x, y, z);
-
-                        plugin.debug("Initializing new shop... (#" + id + ")");
-
                         OfflinePlayer vendor = Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
-                        ItemStack product = Utils.decode(rs.getString("product"));
+                        ItemStack itemStack = Utils.decode(rs.getString("product"));
+                        int amount = rs.getInt("amount");
+                        ShopProduct product = new ShopProduct(itemStack, amount);
                         double buyPrice = rs.getDouble("buyprice");
                         double sellPrice = rs.getDouble("sellprice");
                         ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
+
+                        plugin.debug("Initializing new shop... (#" + id + ")");
 
                         shops.add(new Shop(id, plugin, vendor, product, location, buyPrice, sellPrice, shopType));
                     }
@@ -291,8 +385,8 @@ public abstract class Database {
      *                 given (as {@code int})
      */
     public void addShop(final Shop shop, final Callback<Integer> callback) {
-        final String queryNoId = "REPLACE INTO shops (vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?)";
-        final String queryWithId = "REPLACE INTO shops (id,vendor,product,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        final String queryNoId = "REPLACE INTO " + tableShops + " (vendor,product,amount,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        final String queryWithId = "REPLACE INTO " + tableShops + " (id,vendor,product,amount,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
         new BukkitRunnable() {
             @Override
@@ -308,14 +402,15 @@ public abstract class Database {
                     }
 
                     ps.setString(i+1, shop.getVendor().getUniqueId().toString());
-                    ps.setString(i+2, Utils.encode(shop.getProduct()));
-                    ps.setString(i+3, shop.getLocation().getWorld().getName());
-                    ps.setInt(i+4, shop.getLocation().getBlockX());
-                    ps.setInt(i+5, shop.getLocation().getBlockY());
-                    ps.setInt(i+6, shop.getLocation().getBlockZ());
-                    ps.setDouble(i+7, shop.getBuyPrice());
-                    ps.setDouble(i+8, shop.getSellPrice());
-                    ps.setString(i+9, shop.getShopType().toString());
+                    ps.setString(i+2, Utils.encode(shop.getProduct().getItemStack()));
+                    ps.setInt(i+3, shop.getProduct().getAmount());
+                    ps.setString(i+4, shop.getLocation().getWorld().getName());
+                    ps.setInt(i+5, shop.getLocation().getBlockX());
+                    ps.setInt(i+6, shop.getLocation().getBlockY());
+                    ps.setInt(i+7, shop.getLocation().getBlockZ());
+                    ps.setDouble(i+8, shop.getBuyPrice());
+                    ps.setDouble(i+9, shop.getSellPrice());
+                    ps.setString(i+10, shop.getShopType().toString());
                     ps.executeUpdate();
 
                     if (!shop.hasId()) {
@@ -356,8 +451,10 @@ public abstract class Database {
      * @param type Whether the executor bought or sold
      * @param callback Callback that - if succeeded - returns {@code null}
      */
-    public void logEconomy(final Player executor, Shop shop, ItemStack product, double price, Type type, final Callback<Void> callback) {
-        final String query = "INSERT INTO shop_log (timestamp,executor,product,vendor,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?)";
+    public void logEconomy(final Player executor, Shop shop, ShopProduct product, double price, Type type, final Callback<Void> callback) {
+        final String query = "INSERT INTO " + tableLogs + " (shop_id,timestamp,time,player_name,player_uuid,product_name,product,amount,"
+                + "vendor_name,vendor_uuid,admin,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
         if (Config.enableEconomyLog) {
             new BukkitRunnable() {
                 @Override
@@ -365,16 +462,25 @@ public abstract class Database {
                     try (Connection con = dataSource.getConnection();
                             PreparedStatement ps = con.prepareStatement(query)) {
 
-                        ps.setString(1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
-                        ps.setString(2, executor.getUniqueId().toString() + " (" + executor.getName() + ")");
-                        ps.setString(3, product.getAmount() + " x " + LanguageUtils.getItemName(product));
-                        ps.setString(4, shop.getVendor().getUniqueId().toString() + " (" + shop.getVendor().getName() + ")" + (shop.getShopType() == ShopType.ADMIN ? " (ADMIN)" : ""));
-                        ps.setString(5, shop.getLocation().getWorld().getName());
-                        ps.setInt(6, shop.getLocation().getBlockX());
-                        ps.setInt(7, shop.getLocation().getBlockY());
-                        ps.setInt(8, shop.getLocation().getBlockZ());
-                        ps.setDouble(9, price);
-                        ps.setString(10, type.toString());
+                        long millis = System.currentTimeMillis();
+
+                        ps.setInt(1, shop.getID());
+                        ps.setString(2, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(millis));
+                        ps.setLong(3, millis);
+                        ps.setString(4, executor.getName());
+                        ps.setString(5, executor.getUniqueId().toString());
+                        ps.setString(6, LanguageUtils.getItemName(product.getItemStack()));
+                        ps.setString(7, Utils.encode(product.getItemStack()));
+                        ps.setInt(8, product.getAmount());
+                        ps.setString(9, shop.getVendor().getName());
+                        ps.setString(10, shop.getVendor().getUniqueId().toString());
+                        ps.setBoolean(11, shop.getShopType() == ShopType.ADMIN);
+                        ps.setString(12, shop.getLocation().getWorld().getName());
+                        ps.setInt(13, shop.getLocation().getBlockX());
+                        ps.setInt(14, shop.getLocation().getBlockY());
+                        ps.setInt(15, shop.getLocation().getBlockZ());
+                        ps.setDouble(16, price);
+                        ps.setString(17, type.toString());
                         ps.executeUpdate();
 
                         if (callback != null) {
@@ -409,13 +515,9 @@ public abstract class Database {
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
-                Calendar cal = Calendar.getInstance();
-                long time = System.currentTimeMillis();
-                cal.add(Calendar.DATE, -Config.cleanupEconomyLogDays);
-                time -= Config.cleanupEconomyLogDays * 86400000L;
-                String logPurgeLimit = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
-                String queryCleanUpLog = "DELETE FROM shop_log WHERE timestamp < '" + logPurgeLimit + "'";
-                String queryCleanUpPlayers = "DELETE FROM player_logout WHERE time < " + String.valueOf(time);
+                long time = System.currentTimeMillis() - Config.cleanupEconomyLogDays * 86400000L;
+                String queryCleanUpLog = "DELETE FROM " + tableLogs + " WHERE time < " + time;
+                String queryCleanUpPlayers = "DELETE FROM " + tableLogouts + " WHERE time < " + time;
 
                 try (Connection con = dataSource.getConnection();
                         Statement s = con.createStatement();
@@ -452,36 +554,24 @@ public abstract class Database {
         new BukkitRunnable() {
             @Override
             public void run() {
-                String vendor = String.format("%s (%s)", player.getUniqueId().toString(), player.getName());
                 double revenue = 0;
 
                 try (Connection con = dataSource.getConnection();
-                        PreparedStatement ps = con.prepareStatement("SELECT * FROM shop_log WHERE vendor = ?")) {
-                    ps.setString(1, vendor);
+                        PreparedStatement ps = con.prepareStatement("SELECT * FROM " + tableLogs + " WHERE vendor_uuid = ?")) {
+                    ps.setString(1, player.getUniqueId().toString());
                     ResultSet rs = ps.executeQuery();
 
                     while (rs.next()) {
-                        if (rs.getString("vendor").equals(vendor)) {
-                            double singleRevenue = rs.getDouble("price");
-                            ShopBuySellEvent.Type type = ShopBuySellEvent.Type.valueOf(rs.getString("type"));
+                        long timestamp = rs.getLong("time");
+                        double singleRevenue = rs.getDouble("price");
+                        ShopBuySellEvent.Type type = ShopBuySellEvent.Type.valueOf(rs.getString("type"));
 
-                            if (type == ShopBuySellEvent.Type.SELL) {
-                                singleRevenue = -singleRevenue;
-                            }
+                        if (type == ShopBuySellEvent.Type.SELL) {
+                            singleRevenue = -singleRevenue;
+                        }
 
-                            long timestamp;
-
-                            try {
-                                timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("timestamp")).getTime();
-                            } catch (ParseException ex) {
-                                plugin.debug("Failed to get revenue from player \"" + player.getUniqueId().toString() + "\"");
-                                plugin.debug(ex);
-                                continue;
-                            }
-
-                            if (timestamp > logoutTime) {
-                                revenue += singleRevenue;
-                            }
+                        if (timestamp > logoutTime) {
+                            revenue += singleRevenue;
                         }
                     }
 
@@ -505,18 +595,16 @@ public abstract class Database {
      * Log a logout to the database
      * 
      * @param player    Player who logged out
-     * @param timestamp Time in milliseconds when the player logged out
      * @param callback  Callback that - if succeeded - returns {@code null}
      */
-    public void logLogout(final Player player, final long timestamp, final Callback<Void> callback) {
+    public void logLogout(final Player player, final Callback<Void> callback) {
         new BukkitRunnable() {
             @Override
             public void run() {
-
                 try (Connection con = dataSource.getConnection();
-                        PreparedStatement ps = con.prepareStatement("REPLACE INTO player_logout (player,time) VALUES(?,?)")) {
+                        PreparedStatement ps = con.prepareStatement("REPLACE INTO " + tableLogouts + " (player,time) VALUES(?,?)")) {
                     ps.setString(1, player.getUniqueId().toString());
-                    ps.setLong(2, timestamp);
+                    ps.setLong(2, System.currentTimeMillis());
                     ps.executeUpdate();
 
                     if (callback != null) {
@@ -549,19 +637,14 @@ public abstract class Database {
         new BukkitRunnable() {
             @Override
             public void run() {
-                String uuid = player.getUniqueId().toString();
-
                 try (Connection con = dataSource.getConnection();
-                        PreparedStatement ps = con.prepareStatement("SELECT * FROM player_logout WHERE player = ?")) {
-                    ps.setString(1, uuid);
+                        PreparedStatement ps = con.prepareStatement("SELECT * FROM " + tableLogouts + " WHERE player = ?")) {
+                    ps.setString(1, player.getUniqueId().toString());
                     ResultSet rs = ps.executeQuery();
 
-                    while (rs.next()) {
-                        if (rs.getString("player").equals(uuid)) {
-                            if (callback != null) {
-                                callback.callSyncResult(rs.getLong("time"));
-                            }
-                            return;
+                    if (rs.next()) {
+                        if (callback != null) {
+                            callback.callSyncResult(rs.getLong("time"));
                         }
                     }
 
