@@ -1,9 +1,9 @@
 package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -18,7 +18,7 @@ public class ClickType {
     private static Map<UUID, BukkitTask> playerTimers = new HashMap<>();
 
     private EnumClickType enumClickType;
-    private ItemStack product;
+    private ShopProduct product;
     private double buyPrice;
     private double sellPrice;
     private ShopType shopType;
@@ -27,7 +27,7 @@ public class ClickType {
         this.enumClickType = enumClickType;
     }
 
-    public ClickType(EnumClickType enumClickType, ItemStack product, double buyPrice, double sellPrice, ShopType shopType) {
+    public ClickType(EnumClickType enumClickType, ShopProduct product, double buyPrice, double sellPrice, ShopType shopType) {
         this.enumClickType = enumClickType;
         this.product = product;
         this.sellPrice = sellPrice;
@@ -90,7 +90,7 @@ public class ClickType {
     /**
      * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the item, the player has hold in his hands, else <b>null</b>.
      */
-    public ItemStack getProduct() {
+    public ShopProduct getProduct() {
         return product;
     }
 
