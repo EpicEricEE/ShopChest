@@ -380,9 +380,11 @@ public class ShopUtils {
         double holoDistSqr = Math.pow(Config.maximalDistance, 2);
         double itemDistSqr = Math.pow(Config.maximalItemDistance, 2);
 
+        Location playerLocation = p.getLocation();
+
         for (Shop shop : getShops()) {
-            if (p.getLocation().getWorld().getName().equals(shop.getLocation().getWorld().getName())) {
-                double distSqr = shop.getLocation().distanceSquared(p.getLocation());
+            if (playerLocation.getWorld().getName().equals(shop.getLocation().getWorld().getName())) {
+                double distSqr = shop.getLocation().distanceSquared(playerLocation);
 
                 if (shop.hasHologram()) {
                     if (distSqr <= holoDistSqr) {
