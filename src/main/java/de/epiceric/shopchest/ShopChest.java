@@ -276,7 +276,9 @@ public class ShopChest extends JavaPlugin {
         }
 
         if (hasPlotSquared()) {
-            PlotSquaredShopFlag.register(this);
+			if (Config.enablePlotsquaredIntegration) {
+				PlotSquaredShopFlag.register(this);
+			}
         }
     }
 
