@@ -286,6 +286,7 @@ public class Shop {
         placeholders.put(Placeholder.SELL_PRICE, getSellPrice());
         placeholders.put(Placeholder.POTION_EFFECT, LanguageUtils.getPotionEffectName(itemStack));
         placeholders.put(Placeholder.MUSIC_TITLE, LanguageUtils.getMusicDiscName(itemStack.getType()));
+        placeholders.put(Placeholder.BANNER_PATTERN_NAME, LanguageUtils.getBannerPatternName(itemStack.getType()));
         placeholders.put(Placeholder.GENERATION, LanguageUtils.getBookGenerationName(itemStack));
         placeholders.put(Placeholder.STOCK, Utils.getAmount(inventory, itemStack));
         placeholders.put(Placeholder.MAX_STACK, itemStack.getMaxStackSize());

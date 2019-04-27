@@ -24,8 +24,8 @@
 #
 # Valid placeholders are:
 # %VENDOR%, %AMOUNT%, %ITEM-NAME%, %ENCHANTMENT%, %BUY-PRICE%,
-# %SELL-PRICE%, %POTION-EFFECT%, %MUSIC-TITLE%, %GENERATION%,
-# %STOCK%, %MAX-STACK%, %CHEST-SPACE%, %DURABILITY%
+# %SELL-PRICE%, %POTION-EFFECT%, %MUSIC-TITLE%, %BANNER-PATTERN-NAME%,
+# %GENERATION%, %STOCK%, %MAX-STACK%, %CHEST-SPACE%, %DURABILITY%
 #
 # In the format, placeholders can also be used for scripts.
 # Examples:
