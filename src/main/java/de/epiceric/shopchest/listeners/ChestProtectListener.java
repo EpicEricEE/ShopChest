@@ -43,11 +43,14 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
+import org.codemc.worldguardwrapper.flag.IWrappedFlag;
+import org.codemc.worldguardwrapper.flag.WrappedState;
 
 import pl.islandworld.api.IslandWorldApi;
 import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ChestProtectListener implements Listener {
 
@@ -201,7 +204,11 @@ public class ChestProtectListener implements Listener {
             boolean externalPluginsAllowed = true;
 
             if (plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
-                externalPluginsAllowed = WorldGuardWrapper.getInstance().queryStateFlag(p, b.getLocation(), "create-shop").orElse(false);
+                WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
+                Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag("create-shop", WrappedState.class);
+                if (!flag.isPresent()) plugin.debug("WorldGuard flag 'create-shop' is not present!");
+                WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
+                externalPluginsAllowed = state == WrappedState.ALLOW;
             }
 
             if (externalPluginsAllowed && plugin.hasTowny() && Config.enableTownyIntegration) {

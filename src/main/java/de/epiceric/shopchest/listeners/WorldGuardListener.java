@@ -25,9 +25,13 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.event.AbstractWrappedEvent;
-import org.codemc.worldguardwrapper.event.DamageEntityEvent;
-import org.codemc.worldguardwrapper.event.UseBlockEvent;
-import org.codemc.worldguardwrapper.event.UseEntityEvent;
+import org.codemc.worldguardwrapper.event.WrappedDamageEntityEvent;
+import org.codemc.worldguardwrapper.event.WrappedUseBlockEvent;
+import org.codemc.worldguardwrapper.event.WrappedUseEntityEvent;
+import org.codemc.worldguardwrapper.flag.IWrappedFlag;
+import org.codemc.worldguardwrapper.flag.WrappedState;
+
+import java.util.Optional;
 
 public class WorldGuardListener implements Listener {
 
@@ -46,7 +50,11 @@ public class WorldGuardListener implements Listener {
             // access to the chest, show the 'permission denied' message
             // (if not previously set to allowed by another plugin).
             // If the player can open the chest, that message should be hidden.
-            return WorldGuardWrapper.getInstance().queryStateFlag(player, location, "chest-access").orElse(false);
+            WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
+            Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag("chest-access", WrappedState.class);
+            if (!flag.isPresent()) plugin.debug("WorldGuard flag 'chest-access' is not present!");
+            WrappedState state = flag.map(f -> wgWrapper.queryFlag(player, location, f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
+            return state == WrappedState.ALLOW;
         }
 
         Shop shop = plugin.getShopUtils().getShop(location);
@@ -78,7 +86,7 @@ public class WorldGuardListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    public void onUseEntity(UseEntityEvent event) {
+    public void onUseEntity(WrappedUseEntityEvent event) {
         if (Config.enableWorldGuardIntegration) {
             Player player = event.getPlayer();
 
@@ -89,7 +97,7 @@ public class WorldGuardListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    public void onDamageEntity(DamageEntityEvent event) {
+    public void onDamageEntity(WrappedDamageEntityEvent event) {
         if (Config.enableWorldGuardIntegration) {
             Player player = event.getPlayer();
 
@@ -100,7 +108,7 @@ public class WorldGuardListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    public void onUseBlock(UseBlockEvent event) {
+    public void onUseBlock(WrappedUseBlockEvent event) {
         if (Config.enableWorldGuardIntegration) {
             Player player = event.getPlayer();
 
