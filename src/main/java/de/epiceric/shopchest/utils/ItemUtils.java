@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class ItemUtils {
@@ -47,6 +48,10 @@ public class ItemUtils {
 
     public static boolean isBannerPattern(ItemStack itemStack) {
         return itemStack.getType().name().endsWith("BANNER_PATTERN");
+    }
+
+    public static boolean isAir(Material type) {
+        return Arrays.asList("AIR", "CAVE_AIR", "VOID_AIR").contains(type.name());
     }
 
     /**

@@ -17,6 +17,7 @@ import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.Callback;
+import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
@@ -274,7 +275,7 @@ public class ChestProtectListener implements Listener {
 
             if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {
                 if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.EXTEND_OTHER)) {
-                    if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                    if (ItemUtils.isAir(b.getRelative(BlockFace.UP).getType())) {
                         final Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
 
                         shopUtils.removeShop(shop, true, new Callback<Void>(plugin) {

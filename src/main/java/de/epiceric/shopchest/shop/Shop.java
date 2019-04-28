@@ -117,7 +117,7 @@ public class Shop {
             plugin.debug("Failed to create shop (#" + id + ")");
             plugin.debug(ex);
             return false;
-        } else if ((b.getRelative(BlockFace.UP).getType() != Material.AIR) && Config.showShopItems) {
+        } else if ((!ItemUtils.isAir(b.getRelative(BlockFace.UP).getType())) && Config.showShopItems) {
             NotEnoughSpaceException ex = new NotEnoughSpaceException(String.format("No space above chest in world '%s' at location: %d; %d; %d",
                     b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
             plugin.getShopUtils().removeShop(this, Config.removeShopOnError);

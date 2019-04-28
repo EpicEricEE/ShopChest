@@ -28,6 +28,7 @@ import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
@@ -308,7 +309,7 @@ public class ShopInteractListener implements Listener {
 
                                 e.setCancelled(true);
 
-                                if (b.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                                if (ItemUtils.isAir(b.getRelative(BlockFace.UP).getType())) {
                                     ClickType clickType = ClickType.getPlayerClickType(p);
                                     ShopProduct product = clickType.getProduct();
                                     double buyPrice = clickType.getBuyPrice();
