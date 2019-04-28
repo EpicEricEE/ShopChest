@@ -1935,7 +1935,7 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.TRADER_LLAMA_SPAWN_EGG, langConfig.getString("item.minecraft.trader_llama_spawn_egg", "Trader Llama Spawn Egg")));
             itemNames.add(new ItemName(Material.WANDERING_TRADER_SPAWN_EGG, langConfig.getString("item.minecraft.wandering_trader_spawn_egg", "Wandering Trader Spawn Egg")));
             itemNames.add(new ItemName(Material.WHITE_DYE, langConfig.getString("item.minecraft.white_dye", "White Dye")));
-            itemNames.add(new ItemName(Material.WITHER_ROSE, langConfig.getString("item.minecraft.wither_rose", "Wither Rose")));
+            itemNames.add(new ItemName(Material.WITHER_ROSE, langConfig.getString("block.minecraft.wither_rose", "Wither Rose")));
             itemNames.add(new ItemName(Material.YELLOW_DYE, langConfig.getString("item.minecraft.yellow_dye", "Yellow Dye")));
         } else {
             // Add pre-1.14 item names that don't exist anymore
@@ -1943,7 +1943,7 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.valueOf("DANDELION_YELLOW"), langConfig.getString("item.minecraft.dandelion_yellow", "Dandelion Yellow")));
             itemNames.add(new ItemName(Material.valueOf("ROSE_RED"), langConfig.getString("item.minecraft.rose_red", "Rose Red")));
             itemNames.add(new ItemName(Material.valueOf("SIGN"), langConfig.getString("item.minecraft.sign", "Sign")));
-            itemNames.add(new ItemName(Material.valueOf("WALL_SIGN"), langConfig.getString("item.minecraft.wall_sign", "Wall Sign")));
+            itemNames.add(new ItemName(Material.valueOf("WALL_SIGN"), langConfig.getString("block.minecraft.wall_sign", "Wall Sign")));
         }
 
         // Add Enchantment Names
