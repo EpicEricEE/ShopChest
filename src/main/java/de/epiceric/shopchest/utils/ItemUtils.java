@@ -45,6 +45,10 @@ public class ItemUtils {
         return false;
     }
 
+    public static boolean isBannerPattern(ItemStack itemStack) {
+        return itemStack.getType().name().endsWith("BANNER_PATTERN");
+    }
+
     /**
      * Get the {@link ItemStack} from a String
      * @param item Serialized ItemStack e.g. {@code "STONE"} or {@code "STONE:1"}

@@ -270,6 +270,7 @@ public class Shop {
         requirements.put(HologramFormat.Requirement.IS_MUSIC_DISC, itemStack.getType().isRecord());
         requirements.put(HologramFormat.Requirement.IS_POTION_EXTENDED, ItemUtils.isExtendedPotion(itemStack));
         requirements.put(HologramFormat.Requirement.IS_WRITTEN_BOOK, itemStack.getType() == Material.WRITTEN_BOOK);
+        requirements.put(HologramFormat.Requirement.IS_BANNER_PATTERN, ItemUtils.isBannerPattern(itemStack));
         requirements.put(HologramFormat.Requirement.ADMIN_SHOP, getShopType() == ShopType.ADMIN);
         requirements.put(HologramFormat.Requirement.NORMAL_SHOP, getShopType() == ShopType.NORMAL);
         requirements.put(HologramFormat.Requirement.IN_STOCK, Utils.getAmount(inventory, itemStack));
