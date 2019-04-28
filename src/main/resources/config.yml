@@ -114,6 +114,7 @@ hologram-fixed-bottom: true
 
 # Set the amount (may be negative) a hologram should be lifted in the y-axis.
 # A value of '1' equals to one block, and a value of '0.25' is equal to the
+# height of one line.
 hologram-lift: 0
 
 # Set whether players should be allowed to sell their items, even if the
