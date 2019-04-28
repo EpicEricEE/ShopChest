@@ -24,6 +24,7 @@ public class MySQL extends Database {
                 Config.databaseMySqlHost, Config.databaseMySqlPort, Config.databaseMySqlDatabase));
         config.setUsername(Config.databaseMySqlUsername);
         config.setPassword(Config.databaseMySqlPassword);
+        config.setConnectionTestQuery("SELECT 1");
 
         return new HikariDataSource(config);
     }

@@ -35,6 +35,7 @@ public class SQLite extends Database {
         
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(String.format("jdbc:sqlite:" + dbFile));
+        config.setConnectionTestQuery("SELECT 1");
 
         return new HikariDataSource(config);
     }
