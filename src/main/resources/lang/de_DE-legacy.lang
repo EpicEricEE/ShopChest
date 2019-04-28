@@ -173,6 +173,7 @@ entity.Donkey.name=Esel
 entity.ElderGuardian.name=Großer Wächter
 entity.Enderman.name=Enderman
 entity.Endermite.name=Endermite
+entity.EntityHorse.name=Pferd
 entity.EvocationIllager.name=Magier
 entity.Ghast.name=Ghast
 entity.Giant.name=Riese

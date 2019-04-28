@@ -526,6 +526,7 @@ entity.Ozelot.name=Ocelot
 entity.Cat.name=Cat
 entity.Bat.name=Bat
 entity.Horse.name=Horse
+entity.EntityHorse.name=Horse
 entity.Donkey.name=Donkey
 entity.Mule.name=Mule
 entity.SkeletonHorse.name=Skeleton Horse
