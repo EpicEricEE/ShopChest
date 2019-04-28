@@ -58,9 +58,16 @@ public class ArmorStandWrapper {
 
             boolean isPre9 = Utils.getMajorVersion() < 9;
             fields[0].set(packet, entityId);
-            fields[1].set(packet, isPre9 ? location.getBlockX() : location.getX());
-            fields[2].set(packet, isPre9 ? location.getBlockY() : location.getY());
-            fields[3].set(packet, isPre9 ? location.getBlockZ() : location.getZ());
+            if (isPre9) {
+                fields[1].set(packet, (int)(location.getX() * 32));
+                // 1.8.x armor stands need to be lifted by 1 block
+                fields[2].set(packet, (int)((location.getY() + 1) * 32));
+                fields[3].set(packet, (int)(location.getZ() * 32));
+            } else {
+                fields[1].set(packet, location.getX());
+                fields[2].set(packet, location.getY());
+                fields[3].set(packet, location.getZ());
+            }
             fields[4].set(packet, (byte) 0);
             fields[5].set(packet, (byte) 0);
             fields[6].set(packet, true);

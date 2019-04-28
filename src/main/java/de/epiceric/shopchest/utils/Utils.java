@@ -358,8 +358,8 @@ public class Utils {
                 Method a = dataWatcherClass.getMethod("a", int.class, Object.class);
                 a.invoke(dataWatcher, 0, flags); // flags
                 a.invoke(dataWatcher, 1, (short) 300); // air ticks (?)
-                a.invoke(dataWatcher, 2, (byte) (customName != null ? 1 : 0)); // custom name visible
-                a.invoke(dataWatcher, 3, customName); // custom name
+                a.invoke(dataWatcher, 3, (byte) (customName != null ? 1 : 0)); // custom name visible
+                a.invoke(dataWatcher, 2, customName != null ? customName : ""); // custom name
                 a.invoke(dataWatcher, 4, (byte) 1); // silent
                 a.invoke(dataWatcher, 10, nmsItemStack == null ? (byte) 1 : nmsItemStack); // item / no gravity
             } else {
@@ -405,7 +405,7 @@ public class Utils {
                 register.invoke(dataWatcher, f1.get(null), flags); // flags
                 register.invoke(dataWatcher, f2.get(null), 300); // air ticks (?)
                 register.invoke(dataWatcher, f3.get(null), customName != null); // custom name visible
-                if (majorVersion < 13) register.invoke(dataWatcher, f4.get(null), customName); // custom name
+                if (majorVersion < 13) register.invoke(dataWatcher, f4.get(null), customName != null ? customName : ""); // custom name
                 register.invoke(dataWatcher, f5.get(null), true); // silent
                 
                 if (nmsItemStack != null) {
@@ -495,15 +495,23 @@ public class Utils {
 
             fields[0].set(packet, id);
             if (!isPre9) fields[1].set(packet, uuid);
-            fields[2].set(packet, isPre9 ? loc.getBlockX() : loc.getX());
-            fields[3].set(packet, isPre9 ? loc.getBlockY() : loc.getY());
-            fields[4].set(packet, isPre9 ? loc.getBlockZ() : loc.getZ());
+            if (isPre9) {
+                fields[2].set(packet, (int)(loc.getX() * 32));
+                 // 1.8.x armor stands need to be lifted by 1 block
+                fields[3].set(packet, (int)((loc.getY() + (type == EntityType.ARMOR_STAND ? 1 : 0)) * 32));
+                fields[4].set(packet, (int)(loc.getZ() * 32));
+            } else {
+                fields[2].set(packet, loc.getX());
+                fields[3].set(packet, loc.getY());
+                fields[4].set(packet, loc.getZ());
+            }
             fields[5].set(packet, 0);
             fields[6].set(packet, 0);
             fields[7].set(packet, 0);
             fields[8].set(packet, 0);
             fields[9].set(packet, 0);
-            fields[10].set(packet, isPre14 ? (type == EntityType.ARMOR_STAND ? 78 : 2) : entityType);
+            if (isPre14) fields[10].set(packet, type == EntityType.ARMOR_STAND ? 78 : 2);
+            else fields[10].set(packet, entityType);
             fields[11].set(packet, 0);
 
             return packet;
