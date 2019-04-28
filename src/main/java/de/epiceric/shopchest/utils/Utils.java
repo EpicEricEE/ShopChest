@@ -9,16 +9,21 @@ import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.JsonBuilder;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
+import org.bukkit.util.Vector;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +31,9 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Utils {
 
@@ -322,6 +330,187 @@ public class Utils {
         try {
             return Class.forName("org.bukkit.craftbukkit." + getServerVersion() + "." + className);
         } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Create a NMS data watcher object to send via a {@code PacketPlayOutEntityMetadata} packet.
+     * Gravity will be disabled and the custom name will be displayed if available.
+     * @param customName Custom Name of the entity or {@code null}
+     * @param nmsItemStack NMS ItemStack or {@code null} if armor stand
+     */
+    public static Object createDataWatcher(String customName, Object nmsItemStack) {
+        String version = getServerVersion();
+        int majorVersion = getMajorVersion();
+
+        try {
+            Class<?> entityClass = getNMSClass("Entity");
+            Class<?> entityArmorStandClass = getNMSClass("EntityArmorStand");
+            Class<?> entityItemClass = getNMSClass("EntityItem");
+            Class<?> dataWatcherClass = getNMSClass("DataWatcher");
+            Class<?> dataWatcherObjectClass = getNMSClass("DataWatcherObject");
+
+            byte flags = nmsItemStack == null ? (byte) (1 << 5) : 0; // invisible if armor stand
+
+            Object dataWatcher = dataWatcherClass.getConstructor(entityClass).newInstance((Object) null);
+            if (majorVersion < 9) {
+                Method a = dataWatcherClass.getMethod("a", int.class, Object.class);
+                a.invoke(dataWatcher, 0, flags); // flags
+                a.invoke(dataWatcher, 1, (short) 300); // air ticks (?)
+                a.invoke(dataWatcher, 2, (byte) (customName != null ? 1 : 0)); // custom name visible
+                a.invoke(dataWatcher, 3, customName); // custom name
+                a.invoke(dataWatcher, 4, (byte) 1); // silent
+                a.invoke(dataWatcher, 10, nmsItemStack == null ? (byte) 1 : nmsItemStack); // item / no gravity
+            } else {
+                Method register = dataWatcherClass.getMethod("register", dataWatcherObjectClass, Object.class);
+                String[] dataWatcherObjectFieldNames;
+
+                if ("v1_9_R1".equals(version)) {
+                    dataWatcherObjectFieldNames = new String[] {"ax", "ay", "aA", "az", "aB", "a", "c"};
+                } else if ("v1_9_R2".equals(version)){
+                    dataWatcherObjectFieldNames = new String[] {"ay", "az", "aB", "aA", "aC", "a", "c"};
+                } else if ("v1_10_R1".equals(version)) {
+                    dataWatcherObjectFieldNames = new String[] {"aa", "az", "aB", "aA", "aC", "aD", "c"};
+                } else if ("v1_11_R1".equals(version)) {
+                    dataWatcherObjectFieldNames = new String[] {"Z", "az", "aB", "aA", "aC", "aD", "c"};
+                } else if ("v1_12_R1".equals(version) || "v1_12_R2".equals(version)) {
+                    dataWatcherObjectFieldNames = new String[] {"Z", "aA", "aC", "aB", "aD", "aE", "c"};
+                } else if ("v1_13_R1".equals(version) || "v1_13_R2".equals(version)) {
+                    dataWatcherObjectFieldNames = new String[] {"ac", "aD", "aF", "aE", "aG", "aH", "b"};
+                } else if ("v1_14_R1".equals(version)) {
+                    dataWatcherObjectFieldNames = new String[] {"W", "AIR_TICKS", "aA", "az", "aB", "aC", "ITEM"};
+                } else {
+                    return null;
+                }
+
+                Class<?> f6Class = majorVersion < 9 ? entityArmorStandClass : entityClass;
+
+                Field f1 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[0]);
+                Field f2 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[1]);
+                Field f3 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[2]);
+                Field f4 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[3]);
+                Field f5 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[4]);
+                Field f6 = f6Class.getDeclaredField(dataWatcherObjectFieldNames[5]);
+                Field f7 = entityItemClass.getDeclaredField(dataWatcherObjectFieldNames[6]);
+
+                f1.setAccessible(true);
+                f2.setAccessible(true);
+                f3.setAccessible(true);
+                f4.setAccessible(true);
+                f5.setAccessible(true);
+                f6.setAccessible(true);
+                f7.setAccessible(true);
+                
+                register.invoke(dataWatcher, f1.get(null), flags); // flags
+                register.invoke(dataWatcher, f2.get(null), 300); // air ticks (?)
+                register.invoke(dataWatcher, f3.get(null), customName != null); // custom name visible
+                if (majorVersion < 13) register.invoke(dataWatcher, f4.get(null), customName); // custom name
+                register.invoke(dataWatcher, f5.get(null), true); // silent
+                
+                if (nmsItemStack != null) {
+                    register.invoke(dataWatcher, f7.get(null), majorVersion < 11 ? Optional.of(nmsItemStack) : nmsItemStack); // item
+                }
+
+                if (majorVersion >= 10 || nmsItemStack == null) {
+                    register.invoke(dataWatcher, f6.get(null), true); // no gravity
+                    if (majorVersion >= 13) {
+                        if (customName != null) {
+                            Class<?> chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");
+                            Object iChatBaseComponent = chatSerializerClass.getMethod("a", String.class).invoke(null, JsonBuilder.parse(customName).toString());
+                            register.invoke(dataWatcher, f4.get(null), Optional.of(iChatBaseComponent)); // custom name
+                        } else {
+                            register.invoke(dataWatcher, f4.get(null), Optional.empty()); // custom name
+                        }
+                    }
+                }
+            }
+            return dataWatcher;
+        } catch (InstantiationException | InvocationTargetException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException e) {
+            ShopChest.getInstance().getLogger().severe("Failed to create data watcher!");
+            ShopChest.getInstance().debug("Failed to create data watcher");
+            ShopChest.getInstance().debug(e);
+        }
+        return null;
+    }
+
+    /**
+     * Get a free entity ID for use in {@link #createPacketSpawnEntity(ShopChest, int, UUID, Location, Vector, EntityType)}
+     * 
+     * @return The id or {@code -1} if a free entity ID could not be retrieved.
+     */
+    public static int getFreeEntityId() {
+        try {
+            Class<?> entityClass = getNMSClass("Entity");
+            Field entityCountField = entityClass.getDeclaredField("entityCount");
+            entityCountField.setAccessible(true);
+            if (entityCountField.getType() == int.class) {
+                int id = entityCountField.getInt(null);
+                entityCountField.setInt(null, id+1);
+                return id;
+            } else if (entityCountField.getType() == AtomicInteger.class) {
+                return ((AtomicInteger) entityCountField.get(null)).incrementAndGet();
+            }
+
+            return -1;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Create a {@code PacketPlayOutSpawnEntity} object.
+     * Only {@link EntityType#ARMOR_STAND} and {@link EntityType#DROPPED_ITEM} are supported! 
+     */
+    public static Object createPacketSpawnEntity(ShopChest plugin, int id, UUID uuid, Location loc, EntityType type) {
+        try {
+            Class<?> packetClass = getNMSClass("PacketPlayOutSpawnEntity");
+            Object packet = packetClass.getConstructor().newInstance();
+            boolean isPre9 = getMajorVersion() < 9;
+            boolean isPre14 = getMajorVersion() < 14;
+
+            Field[] fields = new Field[12];
+            fields[0] = packetClass.getDeclaredField("a"); // ID
+            fields[1] = packetClass.getDeclaredField("b"); // UUID (Only 1.9+)
+            fields[2] = packetClass.getDeclaredField(isPre9 ? "b" : "c"); // Loc X
+            fields[3] = packetClass.getDeclaredField(isPre9 ? "c" : "d"); // Loc Y
+            fields[4] = packetClass.getDeclaredField(isPre9 ? "d" : "e"); // Loc Z
+            fields[5] = packetClass.getDeclaredField(isPre9 ? "e" : "f"); // Mot X
+            fields[6] = packetClass.getDeclaredField(isPre9 ? "f" : "g"); // Mot Y
+            fields[7] = packetClass.getDeclaredField(isPre9 ? "g" : "h"); // Mot Z
+            fields[8] = packetClass.getDeclaredField(isPre9 ? "h" : "i"); // Pitch
+            fields[9] = packetClass.getDeclaredField(isPre9 ? "i" : "j"); // Yaw
+            fields[10] = packetClass.getDeclaredField(isPre9 ? "j" : "k"); // Type
+            fields[11] = packetClass.getDeclaredField(isPre9 ? "k" : "l"); // Data
+
+            for (Field field : fields) {
+                field.setAccessible(true);
+            }
+
+            Object entityType = null;
+            if (!isPre14) {
+                Class<?> entityTypesClass = getNMSClass("EntityTypes");
+                entityType = entityTypesClass.getField(type == EntityType.ARMOR_STAND ? "ARMOR_STAND" : "ITEM").get(null);
+            }
+
+            fields[0].set(packet, id);
+            if (!isPre9) fields[1].set(packet, uuid);
+            fields[2].set(packet, isPre9 ? loc.getBlockX() : loc.getX());
+            fields[3].set(packet, isPre9 ? loc.getBlockY() : loc.getY());
+            fields[4].set(packet, isPre9 ? loc.getBlockZ() : loc.getZ());
+            fields[5].set(packet, 0);
+            fields[6].set(packet, 0);
+            fields[7].set(packet, 0);
+            fields[8].set(packet, 0);
+            fields[9].set(packet, 0);
+            fields[10].set(packet, isPre14 ? (type == EntityType.ARMOR_STAND ? 78 : 2) : entityType);
+            fields[11].set(packet, 0);
+
+            return packet;
+        } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            plugin.getLogger().severe("Failed to create packet to spawn entity!");
+            plugin.debug("Failed to create packet to spawn entity!");
+            plugin.debug(e);
             return null;
         }
     }

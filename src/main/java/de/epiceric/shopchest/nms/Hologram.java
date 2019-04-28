@@ -86,11 +86,11 @@ public class Hologram {
      */
     public boolean contains(ArmorStand armorStand) {
         for (ArmorStandWrapper wrapper : wrappers) {
-            if (wrapper.getUuid().equals(armorStand.getUniqueId())) {
+            if (armorStand.getUniqueId().equals(wrapper.getUuid())) {
                 return true;
             }
         }
-        return interactArmorStandWrapper != null && interactArmorStandWrapper.getUuid().equals(armorStand.getUniqueId());
+        return interactArmorStandWrapper != null && armorStand.getUniqueId().equals(interactArmorStandWrapper.getUuid());
     }
 
     /**
