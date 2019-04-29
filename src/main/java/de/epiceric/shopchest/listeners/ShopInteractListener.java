@@ -88,14 +88,12 @@ public class ShopInteractListener implements Listener {
     private Economy econ;
     private Database database;
     private ShopUtils shopUtils;
-    private WorldGuardWrapper wgWrapper;
 
     public ShopInteractListener(ShopChest plugin) {
         this.plugin = plugin;
         this.econ = plugin.getEconomy();
         this.database = plugin.getShopDatabase();
         this.shopUtils = plugin.getShopUtils();
-        this.wgWrapper = WorldGuardWrapper.getInstance();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -165,14 +163,17 @@ public class ShopInteractListener implements Listener {
 
                                 if (plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
                                     plugin.debug("Checking if WorldGuard allows shop creation...");
-
-                                    for (Location loc : chestLocations) {
-                                        if (loc != null) {
-                                            Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag("create-shop", WrappedState.class);
-                                            if (!flag.isPresent()) plugin.debug("WorldGuard flag 'create-shop' is not present!");
-                                            WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, loc, f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
-                                            externalPluginsAllowed = state == WrappedState.ALLOW;
+                                    WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
+                                    Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag("create-shop", WrappedState.class);
+                                    if (flag.isPresent()) {
+                                      for (Location loc : chestLocations) {
+                                            if (loc != null) {
+                                                WrappedState state = wgWrapper.queryFlag(p, loc, flag.get()).orElse(WrappedState.DENY);
+                                                externalPluginsAllowed = state == WrappedState.ALLOW;
+                                            }
                                         }
+                                    } else {
+                                        plugin.debug("WorldGuard flag 'create-shop' is not present!");
                                     }
 
                                     if (!externalPluginsAllowed) denyReason = "WorldGuard";
@@ -467,6 +468,7 @@ public class ShopInteractListener implements Listener {
 
                                         if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
                                             String flagName = (shop.getShopType() == ShopType.ADMIN ? "use-admin-shop" : "use-shop");
+                                            WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
                                             Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag(flagName, WrappedState.class);
                                             if (!flag.isPresent()) plugin.debug("WorldGuard flag '" + flagName + "' is not present!");
                                             WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
@@ -580,6 +582,7 @@ public class ShopInteractListener implements Listener {
 
                                         if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
                                             String flagName = (shop.getShopType() == ShopType.ADMIN ? "use-admin-shop" : "use-shop");
+                                            WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
                                             Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag(flagName, WrappedState.class);
                                             if (!flag.isPresent()) plugin.debug("WorldGuard flag '" + flagName + "' is not present!");
                                             WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
