@@ -1,8 +1,8 @@
 package de.epiceric.shopchest.external;
 
-import com.intellectualcrafters.plot.flag.Flag;
-import com.intellectualcrafters.plot.flag.Flags;
-import com.intellectualcrafters.plot.object.Plot;
+import com.github.intellectualsites.plotsquared.plot.flag.Flag;
+import com.github.intellectualsites.plotsquared.plot.flag.Flags;
+import com.github.intellectualsites.plotsquared.plot.object.Plot;
 
 import org.bukkit.entity.Player;
 

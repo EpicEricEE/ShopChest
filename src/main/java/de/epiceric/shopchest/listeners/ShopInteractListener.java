@@ -1,7 +1,7 @@
 package de.epiceric.shopchest.listeners;
 
 import com.google.gson.JsonPrimitive;
-import com.intellectualcrafters.plot.object.Plot;
+import com.github.intellectualsites.plotsquared.plot.object.Plot;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
@@ -223,7 +223,7 @@ public class ShopInteractListener implements Listener {
                                     plugin.debug("Checking if PlotSquared allows shop creation...");
                                     for (Location loc : chestLocations) {
                                         if (loc != null) {
-                                            com.intellectualcrafters.plot.object.Location plotLocation = new com.intellectualcrafters.plot.object.Location(
+                                            com.github.intellectualsites.plotsquared.plot.object.Location plotLocation = new com.github.intellectualsites.plotsquared.plot.object.Location(
                                                     loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
                                             Plot plot = plotLocation.getOwnedPlot();
@@ -457,8 +457,8 @@ public class ShopInteractListener implements Listener {
                                         boolean externalPluginsAllowed = true;
 
                                         if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                            com.intellectualcrafters.plot.object.Location plotLocation =
-                                                    new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                            com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                                                    new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
                                             Plot plot = plotLocation.getOwnedPlot();
                                             GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
@@ -571,8 +571,8 @@ public class ShopInteractListener implements Listener {
                                         boolean externalPluginsAllowed = true;
 
                                         if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                            com.intellectualcrafters.plot.object.Location plotLocation =
-                                                    new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                            com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                                                    new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
                                             Plot plot = plotLocation.getOwnedPlot();
                                             GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;

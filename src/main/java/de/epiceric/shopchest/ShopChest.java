@@ -33,7 +33,7 @@ import fr.xephi.authme.AuthMe;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.wiefferink.areashop.AreaShop;
 import net.milkbowl.vault.economy.Economy;
-import org.bstats.Metrics;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -52,6 +52,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -186,6 +187,7 @@ public class ShopChest extends JavaPlugin {
         hologramFormat = new HologramFormat(this);
 
         loadMetrics();
+        initDatabase();
         checkForUpdates();
 
         shopUtils = new ShopUtils(this);
@@ -283,11 +285,10 @@ public class ShopChest extends JavaPlugin {
 
     private void loadMetrics() {
         debug("Initializing Metrics...");
-        Metrics metrics = new Metrics(this);
 
-        metrics.addCustomChart(new Metrics.AdvancedPie("shop_type") {
-            @Override
-            public HashMap<String, Integer> getValues(HashMap<String, Integer> hashMap) {
+        Metrics metrics = new Metrics(this);
+        metrics.addCustomChart(new Metrics.SimplePie("database_type", () -> Config.databaseType.toString()));
+        metrics.addCustomChart(new Metrics.AdvancedPie("shop_type", () -> {
                 int normal = 0;
                 int admin = 0;
 
@@ -296,20 +297,16 @@ public class ShopChest extends JavaPlugin {
                     else if (shop.getShopType() == ShopType.ADMIN) admin++;
                 }
 
-                hashMap.put("Admin", admin);
-                hashMap.put("Normal", normal);
+                Map<String, Integer> result = new HashMap<>();
 
-                return hashMap;
-            }
-        });
+                result.put("Admin", admin);
+                result.put("Normal", normal);
 
-        metrics.addCustomChart(new Metrics.SimplePie("database_type") {
-            @Override
-            public String getValue() {
-                return Config.databaseType.toString();
-            }
-        });
+                return result;
+        }));
+    }
 
+    private void initDatabase() {
         if (Config.databaseType == Database.DatabaseType.SQLite) {
             debug("Using database type: SQLite");
             getLogger().info("Using SQLite");
@@ -515,6 +512,10 @@ public class ShopChest extends JavaPlugin {
      * @return Whether the plugin 'PlotSquared' is enabled
      */
     public boolean hasPlotSquared() {
+        if (Utils.getMajorVersion() < 13) {
+            // Supported PlotSquared versions don't support versions below 1.13
+            return false;
+        }
         Plugin p = getServer().getPluginManager().getPlugin("PlotSquared");
         return p != null && p.isEnabled();
     }

@@ -32,10 +32,6 @@
             <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
         </repository>
         <repository>
-            <id>bstats-repo</id>
-            <url>http://repo.bstats.org/content/repositories/releases/</url>
-        </repository>
-        <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
@@ -45,7 +41,7 @@
         </repository>
         <repository>
             <id>athion-repo</id>
-            <url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
+            <url>http://ci.athion.net/job/PlotSquared-Releases/ws/mvn/</url>
         </repository>
         <repository>
             <id>uskyblock-repo</id>
@@ -75,13 +71,13 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.1</version>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>fr.xephi</groupId>
@@ -90,9 +86,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.plotsquared</groupId>
-            <artifactId>plotsquared-api</artifactId>
-            <version>latest</version>
+            <groupId>com.github.intellectualsites.plotsquared</groupId>
+            <artifactId>PlotSquared-API</artifactId>
+            <version>4.226</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -135,7 +131,7 @@
         <dependency>
             <groupId>me.wiefferink</groupId>
             <artifactId>areashop</artifactId>
-            <version>2.4.0</version>
+            <version>2.6.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

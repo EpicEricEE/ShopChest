@@ -236,8 +236,8 @@ public class ChestProtectListener implements Listener {
             }
 
             if (externalPluginsAllowed && plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                com.intellectualcrafters.plot.object.Location loc =
-                        new com.intellectualcrafters.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                com.github.intellectualsites.plotsquared.plot.object.Location loc =
+                        new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
                 externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(loc.getOwnedPlot(), PlotSquaredShopFlag.CREATE_SHOP, p);
             }
