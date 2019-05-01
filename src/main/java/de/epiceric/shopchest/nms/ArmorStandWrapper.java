@@ -17,24 +17,24 @@ public class ArmorStandWrapper {
     private final Class<?> dataWatcherClass = Utils.getNMSClass("DataWatcher");
 
     private final UUID uuid = UUID.randomUUID();
-    
+    private final int entityId;
+
     private ShopChest plugin;
     private Object entity;
     private Location location;
     private String customName;
-    private int entityId = -1;
 
     public ArmorStandWrapper(ShopChest plugin, Location location, String customName, boolean interactable) {
         this.plugin = plugin;
         this.location = location;
         this.customName = customName;
+        this.entityId = Utils.getFreeEntityId();
     }
 
     public void setVisible(Player player, boolean visible) {
         try {
             if (visible) {
                 Object dataWatcher = Utils.createDataWatcher(customName, null);
-                entityId = Utils.getFreeEntityId();
                 Utils.sendPacket(plugin, Utils.createPacketSpawnEntity(plugin, entityId, uuid, location, EntityType.ARMOR_STAND), player);
                 Utils.sendPacket(plugin, packetPlayOutEntityMetadataClass.getConstructor(int.class, dataWatcherClass, boolean.class)
                         .newInstance(entityId, dataWatcher, true), player);

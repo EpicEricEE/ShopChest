@@ -22,8 +22,7 @@ public class ShopItem {
     private final ItemStack itemStack;
     private final Location location;
     private final UUID uuid = UUID.randomUUID();
-
-    private int entityId = -1;
+    private final int entityId;
 
     private final Class<?> packetPlayOutEntityDestroyClass = Utils.getNMSClass("PacketPlayOutEntityDestroy");
     private final Class<?> packetPlayOutEntityVelocityClass = Utils.getNMSClass("PacketPlayOutEntityVelocity");
@@ -37,6 +36,7 @@ public class ShopItem {
         this.plugin = plugin;
         this.itemStack = itemStack;
         this.location = location;
+        this.entityId = Utils.getFreeEntityId();
 
         Class<?> entityClass = Utils.getNMSClass("Entity");
 
@@ -91,7 +91,6 @@ public class ShopItem {
             try {
                 Object nmsItemStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, itemStack);
                 Object dataWatcher = Utils.createDataWatcher(null, nmsItemStack);
-                entityId = Utils.getFreeEntityId();
                 Utils.sendPacket(plugin, Utils.createPacketSpawnEntity(plugin, entityId, uuid, location, EntityType.DROPPED_ITEM), p);
                 Utils.sendPacket(plugin, packetPlayOutEntityMetadataClass.getConstructor(int.class, dataWatcherClass, boolean.class).newInstance(entityId, dataWatcher, true), p);
                 if (Utils.getMajorVersion() < 14) {
