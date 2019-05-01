@@ -21,6 +21,7 @@ public class ShopItem {
     private final Set<UUID> viewers = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
     private final ItemStack itemStack;
     private final Location location;
+    private final UUID uuid = UUID.randomUUID();
 
     private int entityId = -1;
 
@@ -91,7 +92,7 @@ public class ShopItem {
                 Object nmsItemStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, itemStack);
                 Object dataWatcher = Utils.createDataWatcher(null, nmsItemStack);
                 entityId = Utils.getFreeEntityId();
-                Utils.sendPacket(plugin, Utils.createPacketSpawnEntity(plugin, entityId, UUID.randomUUID(), location, EntityType.DROPPED_ITEM), p);
+                Utils.sendPacket(plugin, Utils.createPacketSpawnEntity(plugin, entityId, uuid, location, EntityType.DROPPED_ITEM), p);
                 Utils.sendPacket(plugin, packetPlayOutEntityMetadataClass.getConstructor(int.class, dataWatcherClass, boolean.class).newInstance(entityId, dataWatcher, true), p);
                 if (Utils.getMajorVersion() < 14) {
                     Utils.sendPacket(plugin, packetPlayOutEntityVelocityClass.getConstructor(int.class, double.class, double.class, double.class).newInstance(entityId, 0D, 0D, 0D), p);
