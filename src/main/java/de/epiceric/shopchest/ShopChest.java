@@ -8,6 +8,12 @@ import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.event.ShopInitializedEvent;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
+import de.epiceric.shopchest.external.listeners.ASkyBlockListener;
+import de.epiceric.shopchest.external.listeners.GriefPreventionListener;
+import de.epiceric.shopchest.external.listeners.IslandWorldListener;
+import de.epiceric.shopchest.external.listeners.PlotSquaredListener;
+import de.epiceric.shopchest.external.listeners.TownyListener;
+import de.epiceric.shopchest.external.listeners.USkyBlockListener;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.listeners.AreaShopListener;
 import de.epiceric.shopchest.listeners.BlockExplodeListener;
@@ -196,6 +202,7 @@ public class ShopChest extends JavaPlugin {
                 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
         registerListeners();
+        registerExternalListeners();
         initializeShops();
 
         updater = new ShopUpdater(this);
@@ -391,6 +398,23 @@ public class ShopChest extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(new AreaShopListener(this), this);
             }
         }
+    }
+
+    private void registerExternalListeners() {
+        if (hasASkyBlock())
+            getServer().getPluginManager().registerEvents(new ASkyBlockListener(this), this);
+        if (hasGriefPrevention())
+            getServer().getPluginManager().registerEvents(new GriefPreventionListener(this), this);
+        if (hasIslandWorld())
+            getServer().getPluginManager().registerEvents(new IslandWorldListener(this), this);
+        if (hasPlotSquared())
+            getServer().getPluginManager().registerEvents(new PlotSquaredListener(this), this);
+        if (hasTowny())
+            getServer().getPluginManager().registerEvents(new TownyListener(this), this);
+        if (hasUSkyBlock())
+            getServer().getPluginManager().registerEvents(new USkyBlockListener(this), this);
+        if (hasWorldGuard())
+            getServer().getPluginManager().registerEvents(new de.epiceric.shopchest.external.listeners.WorldGuardListener(this), this);
     }
 
     /**

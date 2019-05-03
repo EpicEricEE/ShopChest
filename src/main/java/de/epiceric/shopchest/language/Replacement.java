@@ -7,9 +7,9 @@ public class Replacement {
     private Placeholder placeholder;
     private String replacement;
 
-    public Replacement(Placeholder placeholder, String replacement) {
+    public Replacement(Placeholder placeholder, Object replacement) {
         this.placeholder = placeholder;
-        this.replacement = replacement;
+        this.replacement = String.valueOf(replacement);
     }
 
     /**

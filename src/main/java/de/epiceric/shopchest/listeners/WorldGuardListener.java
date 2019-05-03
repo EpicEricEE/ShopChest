@@ -1,37 +1,28 @@
 package de.epiceric.shopchest.listeners;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.nms.Hologram;
-import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.utils.ClickType;
-import de.epiceric.shopchest.utils.ClickType.EnumClickType;
+import java.util.Optional;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.Event.Result;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
-import org.codemc.worldguardwrapper.event.AbstractWrappedEvent;
-import org.codemc.worldguardwrapper.event.WrappedDamageEntityEvent;
 import org.codemc.worldguardwrapper.event.WrappedUseBlockEvent;
-import org.codemc.worldguardwrapper.event.WrappedUseEntityEvent;
 import org.codemc.worldguardwrapper.flag.IWrappedFlag;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 
-import java.util.Optional;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ClickType.EnumClickType;
 
 public class WorldGuardListener implements Listener {
 
@@ -61,50 +52,12 @@ public class WorldGuardListener implements Listener {
 
         if (shop != null) {
             // Don't show 'permission denied' messages for any kind of
-            // shop interaction even if entity/block interaction is not
+            // shop interaction even if block interaction is not
             // allowed in the region.
             return true;
         }
 
         return false;
-    }
-
-    private void handleEntityInteraction(Player player, Entity entity, AbstractWrappedEvent event) {
-        if (entity.getType() == EntityType.ARMOR_STAND) {
-            if (!Hologram.isPartOfHologram((ArmorStand) entity))
-                return;
-
-            for (Shop shop : plugin.getShopUtils().getShops()) {
-                if (shop.getHologram() != null && shop.getHologram().contains((ArmorStand) entity)) {
-                    if (isAllowed(player, shop.getLocation())) {
-                        event.setResult(Result.ALLOW);
-                    }
-                    return;
-                }
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onUseEntity(WrappedUseEntityEvent event) {
-        if (Config.enableWorldGuardIntegration) {
-            Player player = event.getPlayer();
-
-            if (event.getOriginalEvent() instanceof PlayerInteractAtEntityEvent) {
-                handleEntityInteraction(player, event.getEntity(), event);
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onDamageEntity(WrappedDamageEntityEvent event) {
-        if (Config.enableWorldGuardIntegration) {
-            Player player = event.getPlayer();
-
-            if (event.getOriginalEvent() instanceof EntityDamageByEntityEvent) {
-                handleEntityInteraction(player, event.getEntity(), event);
-            }
-        }
     }
 
     @EventHandler(priority = EventPriority.LOW)

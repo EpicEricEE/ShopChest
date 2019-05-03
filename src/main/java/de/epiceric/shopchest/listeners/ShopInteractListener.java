@@ -1,13 +1,7 @@
 package de.epiceric.shopchest.listeners;
 
-import com.google.gson.JsonPrimitive;
 import com.github.intellectualsites.plotsquared.plot.object.Plot;
-import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
-import com.wasteofplastic.askyblock.Island;
+import com.google.gson.JsonPrimitive;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Placeholder;
@@ -33,7 +27,6 @@ import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
 import fr.xephi.authme.api.v3.AuthMeApi;
-import me.ryanhamshire.GriefPrevention.Claim;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -54,21 +47,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.IWrappedFlag;
 import org.codemc.worldguardwrapper.flag.WrappedState;
-
-import pl.islandworld.api.IslandWorldApi;
-import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -124,216 +112,47 @@ public class ShopInteractListener implements Listener {
         }.runTaskLater(plugin, 1L);
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerManipulateArmorStand(PlayerArmorStandManipulateEvent e) {
-        // When clicking an armor stand with an armor item, the armor stand will take it.
-        // As a hologram consists of armor stands, they would also take the item.
-        ArmorStand armorStand = e.getRightClicked();
-        if (Hologram.isPartOfHologram(armorStand)) {
-            e.setCancelled(true);
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteractCreate(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         Block b = e.getClickedBlock();
 
-        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(p)) return;
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
+            return;
 
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    if (ClickType.getPlayerClickType(p) != null) {
-                        if (ClickType.getPlayerClickType(p).getClickType() == ClickType.EnumClickType.CREATE) {
-                            if (!shopUtils.isShop(b.getLocation())) {
+        if (ClickType.getPlayerClickType(p) == null)
+            return;
 
-                                boolean externalPluginsAllowed = true;
+        if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST)
+            return;
 
-                                Location[] chestLocations = {b.getLocation(), null};
+        if (ClickType.getPlayerClickType(p).getClickType() != ClickType.EnumClickType.CREATE)
+            return;
 
-                                InventoryHolder ih = ((Chest) b.getState()).getInventory().getHolder();
-                                if (ih instanceof DoubleChest) {
-                                    DoubleChest dc = (DoubleChest) ih;
-                                    chestLocations[0] = ((Chest) dc.getLeftSide()).getLocation();
-                                    chestLocations[1] = ((Chest) dc.getRightSide()).getLocation();
-                                }
+        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(p))
+            return;
 
-                                String denyReason = "Event Cancelled";
-
-                                if (plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
-                                    plugin.debug("Checking if WorldGuard allows shop creation...");
-                                    WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
-                                    Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag("create-shop", WrappedState.class);
-                                    if (flag.isPresent()) {
-                                      for (Location loc : chestLocations) {
-                                            if (loc != null) {
-                                                WrappedState state = wgWrapper.queryFlag(p, loc, flag.get()).orElse(WrappedState.DENY);
-                                                externalPluginsAllowed = state == WrappedState.ALLOW;
-                                            }
-                                        }
-                                    } else {
-                                        plugin.debug("WorldGuard flag 'create-shop' is not present!");
-                                    }
-
-                                    if (!externalPluginsAllowed) denyReason = "WorldGuard";
-                                }
-
-                                if (externalPluginsAllowed && plugin.hasTowny() && Config.enableTownyIntegration) {
-                                    plugin.debug("Checking if Towny allows shop creation...");
-                                    for (Location loc : chestLocations) {
-                                        if (loc != null) {
-                                            TownBlock townBlock = TownyUniverse.getTownBlock(loc);
-                                            if (townBlock != null) {
-                                                plugin.debug("Plot Type is " + townBlock.getType().name());
-                                                try {
-                                                    Town town = townBlock.getTown();
-                                                    boolean residentFound = false;
-                                                    for (Resident resident : town.getResidents()) {
-                                                        if (resident.getName().equals(p.getName())) {
-                                                            residentFound = true;
-                                                            if (resident.isMayor()) {
-                                                                plugin.debug(p.getName() + " is mayor of town");
-                                                                externalPluginsAllowed &= (Config.townyShopPlotsMayor.contains(townBlock.getType().name()));
-                                                            } else if (resident.isKing()) {
-                                                                plugin.debug(p.getName() + " is king of town");
-                                                                externalPluginsAllowed &= (Config.townyShopPlotsKing.contains(townBlock.getType().name()));
-                                                            } else {
-                                                                plugin.debug(p.getName() + " is resident in town");
-                                                                externalPluginsAllowed &= (Config.townyShopPlotsResidents.contains(townBlock.getType().name()));
-                                                            }
-                                                            break;
-                                                        }
-                                                    }
-                                                    if (!residentFound) {
-                                                        plugin.debug(p.getName() + " is not resident in town");
-                                                        externalPluginsAllowed = false;
-                                                    }
-                                                } catch (Exception ex) {
-                                                    plugin.debug(ex);
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if (!externalPluginsAllowed) denyReason = "Towny";
-                                }
-
-                                if (externalPluginsAllowed && plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                    plugin.debug("Checking if PlotSquared allows shop creation...");
-                                    for (Location loc : chestLocations) {
-                                        if (loc != null) {
-                                            com.github.intellectualsites.plotsquared.plot.object.Location plotLocation = new com.github.intellectualsites.plotsquared.plot.object.Location(
-                                                    loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-
-                                            Plot plot = plotLocation.getOwnedPlot();
-                                            externalPluginsAllowed &= PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, p);
-                                        }
-                                    }
-
-                                    if (!externalPluginsAllowed) denyReason = "PlotSquared";
-                                }
-
-                                if (externalPluginsAllowed && plugin.hasUSkyBlock() && Config.enableUSkyblockIntegration) {
-                                    plugin.debug("Checking if uSkyBlock allows shop creation...");
-                                    for (Location loc : chestLocations) {
-                                        if (loc != null) {
-                                            IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(loc);
-                                            if (islandInfo != null) {
-                                                plugin.debug("Chest is on island of " + islandInfo.getLeader());
-                                                externalPluginsAllowed &= islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
-                                            }
-                                        }
-                                    }
-
-                                    if (!externalPluginsAllowed) denyReason = "uSkyBlock";
-                                }
-
-                                if (externalPluginsAllowed && plugin.hasASkyBlock() && Config.enableASkyblockIntegration) {
-                                    plugin.debug("Checking if ASkyBlock allows shop creation...");
-                                    for (Location loc : chestLocations) {
-                                        if (loc != null) {
-                                            Island island = ASkyBlockAPI.getInstance().getIslandAt(loc);
-                                            if (island != null) {
-                                                if (island.getOwner() == null) {
-                                                    plugin.debug("Chest is on an unowned island.");
-                                                    externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId());
-                                                } else {
-                                                    plugin.debug("Chest is on island of " + Bukkit.getOfflinePlayer(island.getOwner()).getName());
-                                                    externalPluginsAllowed &= island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if (!externalPluginsAllowed) denyReason = "ASkyBlock";
-                                }
-
-                                if (externalPluginsAllowed && plugin.hasIslandWorld() && Config.enableIslandWorldIntegration && IslandWorldApi.isInitialized()) {
-                                    plugin.debug("Checking if IslandWorld allows shop creation...");
-                                    for (Location loc : chestLocations) {
-                                        if (loc != null) {
-                                            if (loc.getWorld().getName().equals(IslandWorldApi.getIslandWorld().getName())) {
-                                                plugin.debug("Chest is in island world");
-                                                externalPluginsAllowed &= IslandWorldApi.canBuildOnLocation(p, loc, true);
-                                            }
-                                        }
-                                    }
-
-                                    if (!externalPluginsAllowed) denyReason = "IslandWorld";
-                                }
-
-                                if (externalPluginsAllowed && plugin.hasGriefPrevention() && Config.enableGriefPreventionIntegration) {
-                                    plugin.debug("Checking if GriefPrevention allows shop creation...");
-                                    String gpDenyReason = null;
-                                    for (Location loc : chestLocations) {
-                                        if (loc != null) {
-                                            Claim claim = plugin.getGriefPrevention().dataStore.getClaimAt(loc, false, null);
-                                            if (claim != null) {
-                                                plugin.debug("Checking if claim allows container access");
-                                                gpDenyReason = claim.allowContainers(p);
-                                                externalPluginsAllowed &= gpDenyReason == null;
-                                            }
-                                        }
-                                    }
-
-                                    if (!externalPluginsAllowed) denyReason = "GriefPrevention (" + gpDenyReason + ")";
-                                }
-
-                                if ((e.isCancelled() || !externalPluginsAllowed) && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
-                                    p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CREATE_PROTECTED));
-                                    ClickType.removePlayerClickType(p);
-                                    plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest because " + denyReason);
-                                    e.setCancelled(true);
-                                    return;
-                                }
-
-                                e.setCancelled(true);
-
-                                if (ItemUtils.isAir(b.getRelative(BlockFace.UP).getType())) {
-                                    ClickType clickType = ClickType.getPlayerClickType(p);
-                                    ShopProduct product = clickType.getProduct();
-                                    double buyPrice = clickType.getBuyPrice();
-                                    double sellPrice = clickType.getSellPrice();
-                                    ShopType shopType = clickType.getShopType();
-
-                                    create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
-                                } else {
-                                    p.sendMessage(LanguageUtils.getMessage(Message.CHEST_BLOCKED));
-                                    plugin.debug("Chest is blocked");
-                                }
-                            } else {
-                                e.setCancelled(true);
-                                p.sendMessage(LanguageUtils.getMessage(Message.CHEST_ALREADY_SHOP));
-                                plugin.debug("Chest is already a shop");
-                            }
-
-                            ClickType.removePlayerClickType(p);
-                        }
-                    }
-                }
-            }
+        if (shopUtils.isShop(b.getLocation())) {
+            p.sendMessage(LanguageUtils.getMessage(Message.CHEST_ALREADY_SHOP));
+            plugin.debug("Chest is already a shop");
+        } else if (e.isCancelled() && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
+            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CREATE_PROTECTED));
+            plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest");
+        } else if (!ItemUtils.isAir(b.getRelative(BlockFace.UP).getType())) {
+            p.sendMessage(LanguageUtils.getMessage(Message.CHEST_BLOCKED));
+            plugin.debug("Chest is blocked");
+        } else {
+            ClickType clickType = ClickType.getPlayerClickType(p);
+            ShopProduct product = clickType.getProduct();
+            double buyPrice = clickType.getBuyPrice();
+            double sellPrice = clickType.getSellPrice();
+            ShopType shopType = clickType.getShopType();
+    
+            create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
         }
+
+        e.setCancelled(true);
+        ClickType.removePlayerClickType(p);
     }
 
     private Map<UUID, Set<Integer>> needsConfirmation = new HashMap<>();
@@ -343,313 +162,291 @@ public class ShopInteractListener implements Listener {
         Player p = e.getPlayer();
         boolean inverted = Config.invertMouseButtons;
 
-        if (Utils.getMajorVersion() >= 9) {
-            if (e.getHand() == EquipmentSlot.OFF_HAND) return;
-        }
+        if (Utils.getMajorVersion() >= 9 && e.getHand() == EquipmentSlot.OFF_HAND)
+            return;
 
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-                if (ClickType.getPlayerClickType(p) != null) {
-                    if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        Shop shop = shopUtils.getShop(b.getLocation());
-                        if (shop != null || ClickType.getPlayerClickType(p).getClickType() == ClickType.EnumClickType.CREATE) {
-                            switch (ClickType.getPlayerClickType(p).getClickType()) {
-                                case CREATE:
-                                    break;
-                                    
-                                case INFO:
-                                    e.setCancelled(true);
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK)
+            return;
+        
+        if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST)
+            return;
+        
+        if (ClickType.getPlayerClickType(p) != null) {
+            if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
+                return;
 
-                                    info(p, shop);
+            Shop shop = shopUtils.getShop(b.getLocation());
+            if (shop == null && ClickType.getPlayerClickType(p).getClickType() != ClickType.EnumClickType.CREATE) {
+                p.sendMessage(LanguageUtils.getMessage(Message.CHEST_NO_SHOP));
+                plugin.debug("Chest is not a shop");
+                return;
+            }
 
-                                    ClickType.removePlayerClickType(p);
-                                    break;
+            switch (ClickType.getPlayerClickType(p).getClickType()) {
+                case CREATE:
+                    return;
+                    
+                case INFO:
+                    info(p, shop);
+                    break;
 
-                                case REMOVE:
-                                    e.setCancelled(true);
+                case REMOVE:
+                    remove(p, shop);
+                    break;
 
-                                    if (shop.getShopType() == ShopType.ADMIN) {
-                                        if (p.hasPermission(Permissions.REMOVE_ADMIN)) {
-                                            remove(p, shop);
-                                        } else {
-                                            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_ADMIN));
-                                            plugin.debug(p.getName() + " is not permitted to remove an admin shop");
-                                        }
-                                    } else {
-                                        if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.REMOVE_OTHER)) {
-                                            remove(p, shop);
-                                        } else {
-                                            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_OTHERS));
-                                            plugin.debug(p.getName() + " is not permitted to remove another player's shop");
-                                        }
-                                    }
+                case OPEN:
+                    open(p, shop, true);
+                    break;
+            }
 
-                                    ClickType.removePlayerClickType(p);
-                                    break;
+            e.setCancelled(true);
+            ClickType.removePlayerClickType(p);
+        } else {
+            Shop shop = shopUtils.getShop(b.getLocation());
 
-                                case OPEN:
-                                    e.setCancelled(true);
+            if (shop == null)
+                return;
 
-                                    if (p.getUniqueId().equals(shop.getVendor().getUniqueId()) || p.hasPermission(Permissions.OPEN_OTHER)) {
-                                        open(p, shop, true);
-                                    } else {
-                                        p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_OPEN_OTHERS));
-                                        plugin.debug(p.getName() + " is not permitted to open another player's shop");
-                                    }
+            boolean confirmed = needsConfirmation.containsKey(p.getUniqueId()) && needsConfirmation.get(p.getUniqueId()).contains(shop.getID());
+            
+            if (e.getAction() == Action.LEFT_CLICK_BLOCK && p.isSneaking() && Utils.hasAxeInHand(p)) {
+                return;
+            }
 
-                                    ClickType.removePlayerClickType(p);
-                                    break;
-                            }
-                        } else {
-                            p.sendMessage(LanguageUtils.getMessage(Message.CHEST_NO_SHOP));
-                            plugin.debug("Chest is not a shop");
+            ItemStack infoItem = Config.shopInfoItem;
+            if (infoItem != null) {
+                if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    ItemStack item = Utils.getItemInMainHand(p);
+
+                    if (item == null || !(infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability())) {
+                        item = Utils.getItemInOffHand(p);
+
+                        if (item != null && infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability()) {
+                            e.setCancelled(true);
+                            info(p, shop);
+                            return;
                         }
+                    } else {
+                        e.setCancelled(true);
+                        info(p, shop);
+                        return;
                     }
-                } else {
-                    Shop shop = shopUtils.getShop(b.getLocation());
+                }
+            }
 
-                    if (shop != null) {
-                        boolean confirmed = needsConfirmation.containsKey(p.getUniqueId()) && needsConfirmation.get(p.getUniqueId()).contains(shop.getID());
-                        
-                        if (e.getAction() == Action.LEFT_CLICK_BLOCK && p.isSneaking() && Utils.hasAxeInHand(p)) {
-                            return;
-                        }
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && p.getUniqueId().equals(shop.getVendor().getUniqueId()) && shop.getShopType() != ShopType.ADMIN) {
+                return;
+            }
 
-                        ItemStack infoItem = Config.shopInfoItem;
-                        if (infoItem != null) {
-                            if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                                ItemStack item = Utils.getItemInMainHand(p);
+            if (p.getGameMode() == GameMode.CREATIVE) {
+                e.setCancelled(true);
+                p.sendMessage(LanguageUtils.getMessage(Message.USE_IN_CREATIVE));
+                return;
+            }
 
-                                if (item == null || !(infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability())) {
-                                    item = Utils.getItemInOffHand(p);
+            if ((e.getAction() == Action.RIGHT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.LEFT_CLICK_BLOCK && inverted)) {
+                e.setCancelled(true);
 
-                                    if (item != null && infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability()) {
-                                        e.setCancelled(true);
-                                        info(p, shop);
-                                        return;
-                                    }
-                                } else {
-                                    e.setCancelled(true);
-                                    info(p, shop);
-                                    return;
-                                }
-                            }
-                        }
+                if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
+                    plugin.debug(p.getName() + " wants to buy");
 
-                        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && p.getUniqueId().equals(shop.getVendor().getUniqueId()) && shop.getShopType() != ShopType.ADMIN) {
-                            return;
-                        }
+                    if (shop.getBuyPrice() > 0) {
+                        if (p.hasPermission(Permissions.BUY)) {
+                            // TODO: Outsource shop use external permission
+                            boolean externalPluginsAllowed = true;
 
-                        if (p.getGameMode() == GameMode.CREATIVE) {
-                            e.setCancelled(true);
-                            p.sendMessage(LanguageUtils.getMessage(Message.USE_IN_CREATIVE));
-                            return;
-                        }
+                            if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
+                                com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                                        new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
 
-                        if ((e.getAction() == Action.RIGHT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.LEFT_CLICK_BLOCK && inverted)) {
-                            e.setCancelled(true);
+                                Plot plot = plotLocation.getOwnedPlot();
+                                GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
 
-                            if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
-                                plugin.debug(p.getName() + " wants to buy");
-
-                                if (shop.getBuyPrice() > 0) {
-                                    if (p.hasPermission(Permissions.BUY)) {
-                                        boolean externalPluginsAllowed = true;
-
-                                        if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                            com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
-                                                    new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
-
-                                            Plot plot = plotLocation.getOwnedPlot();
-                                            GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
-
-                                            externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
-                                        }
-
-                                        if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
-                                            String flagName = (shop.getShopType() == ShopType.ADMIN ? "use-admin-shop" : "use-shop");
-                                            WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
-                                            Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag(flagName, WrappedState.class);
-                                            if (!flag.isPresent()) plugin.debug("WorldGuard flag '" + flagName + "' is not present!");
-                                            WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
-                                            externalPluginsAllowed = state == WrappedState.ALLOW;
-                                        }
-
-                                        if (shop.getShopType() == ShopType.ADMIN) {
-                                            if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
-                                                if (confirmed || !Config.confirmShopping) {
-                                                    buy(p, shop, p.isSneaking());
-                                                    if (Config.confirmShopping) {
-                                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                        ids.remove(shop.getID());
-                                                        if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
-                                                        else needsConfirmation.put(p.getUniqueId(), ids);
-                                                    }
-                                                } else {
-                                                    plugin.debug("Needs confirmation");
-                                                    p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
-                                                    Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                    ids.add(shop.getID());
-                                                    needsConfirmation.put(p.getUniqueId(), ids);
-                                                }
-                                            } else {
-                                                plugin.debug(p.getName() + " doesn't have external plugin's permission");
-                                                p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY_HERE));
-                                            }
-                                        } else {
-                                            if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
-                                                Chest c = (Chest) b.getState();
-                                                ItemStack itemStack = shop.getProduct().getItemStack();
-                                                int amount = (p.isSneaking() ? itemStack.getMaxStackSize() : shop.getProduct().getAmount());
-
-                                                if (Utils.getAmount(c.getInventory(), itemStack) >= amount) {
-                                                    if (confirmed || !Config.confirmShopping) {
-                                                        buy(p, shop, p.isSneaking());
-                                                        if (Config.confirmShopping) {
-                                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                            ids.remove(shop.getID());
-                                                            if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
-                                                            else needsConfirmation.put(p.getUniqueId(), ids);
-                                                        }
-                                                    } else {
-                                                        plugin.debug("Needs confirmation");
-                                                        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
-                                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                        ids.add(shop.getID());
-                                                        needsConfirmation.put(p.getUniqueId(), ids);
-                                                    }
-                                                } else {
-                                                    if (Config.autoCalculateItemAmount && Utils.getAmount(c.getInventory(), itemStack) > 0) {
-                                                        if (confirmed || !Config.confirmShopping) {
-                                                            buy(p, shop, p.isSneaking());
-                                                            if (Config.confirmShopping) {
-                                                                Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                                ids.remove(shop.getID());
-                                                                if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
-                                                                else needsConfirmation.put(p.getUniqueId(), ids);
-                                                            }
-                                                        } else {
-                                                            plugin.debug("Needs confirmation");
-                                                            p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
-                                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                            ids.add(shop.getID());
-                                                            needsConfirmation.put(p.getUniqueId(), ids);
-                                                        }
-                                                    } else {
-                                                        p.sendMessage(LanguageUtils.getMessage(Message.OUT_OF_STOCK));
-                                                        if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
-                                                            shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
-                                                                    new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
-                                                                            new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(itemStack))));
-                                                        }
-                                                        plugin.debug("Shop is out of stock");
-                                                    }
-                                                }
-                                            } else {
-                                                plugin.debug(p.getName() + " doesn't have external plugin's permission");
-                                                p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY_HERE));
-                                            }
-                                        }
-                                    } else {
-                                        p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY));
-                                        plugin.debug(p.getName() + " is not permitted to buy");
-                                    }
-                                } else {
-                                    p.sendMessage(LanguageUtils.getMessage(Message.BUYING_DISABLED));
-                                    plugin.debug("Buying is disabled");
-                                }
+                                externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
                             }
 
-                        } else if ((e.getAction() == Action.LEFT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.RIGHT_CLICK_BLOCK && inverted)) {
-                            e.setCancelled(true);
-
-                            if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
-                                plugin.debug(p.getName() + " wants to sell");
-
-                                if (shop.getSellPrice() > 0) {
-                                    if (p.hasPermission(Permissions.SELL)) {
-                                        boolean externalPluginsAllowed = true;
-
-                                        if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                            com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
-                                                    new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
-
-                                            Plot plot = plotLocation.getOwnedPlot();
-                                            GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
-                                            
-                                            externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
-                                        }
-
-                                        if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
-                                            String flagName = (shop.getShopType() == ShopType.ADMIN ? "use-admin-shop" : "use-shop");
-                                            WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
-                                            Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag(flagName, WrappedState.class);
-                                            if (!flag.isPresent()) plugin.debug("WorldGuard flag '" + flagName + "' is not present!");
-                                            WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
-                                            externalPluginsAllowed = state == WrappedState.ALLOW;
-                                        }
-
-                                        ItemStack itemStack = shop.getProduct().getItemStack();
-
-                                        if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
-                                            boolean stack = p.isSneaking() && !Utils.hasAxeInHand(p);
-                                            int amount = stack ? itemStack.getMaxStackSize() : shop.getProduct().getAmount();
-
-                                            if (Utils.getAmount(p.getInventory(), itemStack) >= amount) {
-                                                if (confirmed || !Config.confirmShopping) {
-                                                    sell(p, shop, stack);
-                                                    if (Config.confirmShopping) {
-                                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                        ids.remove(shop.getID());
-                                                        if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
-                                                        else needsConfirmation.put(p.getUniqueId(), ids);
-                                                    }
-                                                } else {
-                                                    plugin.debug("Needs confirmation");
-                                                    p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
-                                                    Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                    ids.add(shop.getID());
-                                                    needsConfirmation.put(p.getUniqueId(), ids);
-                                                }
-                                            } else {
-                                                if (Config.autoCalculateItemAmount && Utils.getAmount(p.getInventory(), itemStack) > 0) {
-                                                    if (confirmed || !Config.confirmShopping) {
-                                                        sell(p, shop, stack);
-                                                        if (Config.confirmShopping) {
-                                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                            ids.remove(shop.getID());
-                                                            if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
-                                                            else needsConfirmation.put(p.getUniqueId(), ids);
-                                                        }
-                                                    } else {
-                                                        plugin.debug("Needs confirmation");
-                                                        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
-                                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
-                                                        ids.add(shop.getID());
-                                                        needsConfirmation.put(p.getUniqueId(), ids);
-                                                    }
-                                                } else {
-                                                    p.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_ITEMS));
-                                                    plugin.debug(p.getName() + " doesn't have enough items");
-                                                }
-                                            }
-                                        } else {
-                                            plugin.debug(p.getName() + " doesn't have external plugin's permission");
-                                            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_SELL_HERE));
+                            if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
+                                String flagName = (shop.getShopType() == ShopType.ADMIN ? "use-admin-shop" : "use-shop");
+                                WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
+                                Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag(flagName, WrappedState.class);
+                                if (!flag.isPresent()) plugin.debug("WorldGuard flag '" + flagName + "' is not present!");
+                                WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
+                                externalPluginsAllowed = state == WrappedState.ALLOW;
+                            }
+                            
+                            if (shop.getShopType() == ShopType.ADMIN) {
+                                if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
+                                    if (confirmed || !Config.confirmShopping) {
+                                        buy(p, shop, p.isSneaking());
+                                        if (Config.confirmShopping) {
+                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                            ids.remove(shop.getID());
+                                            if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                            else needsConfirmation.put(p.getUniqueId(), ids);
                                         }
                                     } else {
-                                        p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_SELL));
-                                        plugin.debug(p.getName() + " is not permitted to sell");
+                                        plugin.debug("Needs confirmation");
+                                        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
+                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                        ids.add(shop.getID());
+                                        needsConfirmation.put(p.getUniqueId(), ids);
                                     }
                                 } else {
-                                    p.sendMessage(LanguageUtils.getMessage(Message.SELLING_DISABLED));
-                                    plugin.debug("Selling is disabled");
+                                    plugin.debug(p.getName() + " doesn't have external plugin's permission");
+                                    p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY_HERE));
                                 }
                             } else {
-                                e.setCancelled(false);
+                                if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
+                                    Chest c = (Chest) b.getState();
+                                    ItemStack itemStack = shop.getProduct().getItemStack();
+                                    int amount = (p.isSneaking() ? itemStack.getMaxStackSize() : shop.getProduct().getAmount());
+
+                                    if (Utils.getAmount(c.getInventory(), itemStack) >= amount) {
+                                        if (confirmed || !Config.confirmShopping) {
+                                            buy(p, shop, p.isSneaking());
+                                            if (Config.confirmShopping) {
+                                                Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                ids.remove(shop.getID());
+                                                if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                                else needsConfirmation.put(p.getUniqueId(), ids);
+                                            }
+                                        } else {
+                                            plugin.debug("Needs confirmation");
+                                            p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
+                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                            ids.add(shop.getID());
+                                            needsConfirmation.put(p.getUniqueId(), ids);
+                                        }
+                                    } else {
+                                        if (Config.autoCalculateItemAmount && Utils.getAmount(c.getInventory(), itemStack) > 0) {
+                                            if (confirmed || !Config.confirmShopping) {
+                                                buy(p, shop, p.isSneaking());
+                                                if (Config.confirmShopping) {
+                                                    Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                    ids.remove(shop.getID());
+                                                    if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                                    else needsConfirmation.put(p.getUniqueId(), ids);
+                                                }
+                                            } else {
+                                                plugin.debug("Needs confirmation");
+                                                p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
+                                                Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                ids.add(shop.getID());
+                                                needsConfirmation.put(p.getUniqueId(), ids);
+                                            }
+                                        } else {
+                                            p.sendMessage(LanguageUtils.getMessage(Message.OUT_OF_STOCK));
+                                            if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
+                                                shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
+                                                        new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                                                                new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(itemStack))));
+                                            }
+                                            plugin.debug("Shop is out of stock");
+                                        }
+                                    }
+                                } else {
+                                    plugin.debug(p.getName() + " doesn't have external plugin's permission");
+                                    p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY_HERE));
+                                }
                             }
+                        } else {
+                            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_BUY));
+                            plugin.debug(p.getName() + " is not permitted to buy");
                         }
+                    } else {
+                        p.sendMessage(LanguageUtils.getMessage(Message.BUYING_DISABLED));
+                        plugin.debug("Buying is disabled");
                     }
+                }
+
+            } else if ((e.getAction() == Action.LEFT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.RIGHT_CLICK_BLOCK && inverted)) {
+                e.setCancelled(true);
+
+                if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
+                    plugin.debug(p.getName() + " wants to sell");
+
+                    if (shop.getSellPrice() > 0) {
+                        if (p.hasPermission(Permissions.SELL)) {
+                            // TODO: Outsource shop use external permission
+                            boolean externalPluginsAllowed = true;
+
+                            if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
+                                com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                                        new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+
+                                Plot plot = plotLocation.getOwnedPlot();
+                                GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
+                                
+                                externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
+                            }
+
+                            if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
+                                String flagName = (shop.getShopType() == ShopType.ADMIN ? "use-admin-shop" : "use-shop");
+                                WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
+                                Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag(flagName, WrappedState.class);
+                                if (!flag.isPresent()) plugin.debug("WorldGuard flag '" + flagName + "' is not present!");
+                                WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
+                                externalPluginsAllowed = state == WrappedState.ALLOW;
+                            }
+
+                            ItemStack itemStack = shop.getProduct().getItemStack();
+
+                            if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
+                                boolean stack = p.isSneaking() && !Utils.hasAxeInHand(p);
+                                int amount = stack ? itemStack.getMaxStackSize() : shop.getProduct().getAmount();
+
+                                if (Utils.getAmount(p.getInventory(), itemStack) >= amount) {
+                                    if (confirmed || !Config.confirmShopping) {
+                                        sell(p, shop, stack);
+                                        if (Config.confirmShopping) {
+                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                            ids.remove(shop.getID());
+                                            if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                            else needsConfirmation.put(p.getUniqueId(), ids);
+                                        }
+                                    } else {
+                                        plugin.debug("Needs confirmation");
+                                        p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
+                                        Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                        ids.add(shop.getID());
+                                        needsConfirmation.put(p.getUniqueId(), ids);
+                                    }
+                                } else {
+                                    if (Config.autoCalculateItemAmount && Utils.getAmount(p.getInventory(), itemStack) > 0) {
+                                        if (confirmed || !Config.confirmShopping) {
+                                            sell(p, shop, stack);
+                                            if (Config.confirmShopping) {
+                                                Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                                ids.remove(shop.getID());
+                                                if (ids.isEmpty()) needsConfirmation.remove(p.getUniqueId());
+                                                else needsConfirmation.put(p.getUniqueId(), ids);
+                                            }
+                                        } else {
+                                            plugin.debug("Needs confirmation");
+                                            p.sendMessage(LanguageUtils.getMessage(Message.CLICK_TO_CONFIRM));
+                                            Set<Integer> ids = needsConfirmation.containsKey(p.getUniqueId()) ? needsConfirmation.get(p.getUniqueId()) : new HashSet<Integer>();
+                                            ids.add(shop.getID());
+                                            needsConfirmation.put(p.getUniqueId(), ids);
+                                        }
+                                    } else {
+                                        p.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_ITEMS));
+                                        plugin.debug(p.getName() + " doesn't have enough items");
+                                    }
+                                }
+                            } else {
+                                plugin.debug(p.getName() + " doesn't have external plugin's permission");
+                                p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_SELL_HERE));
+                            }
+                        } else {
+                            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_SELL));
+                            plugin.debug(p.getName() + " is not permitted to sell");
+                        }
+                    } else {
+                        p.sendMessage(LanguageUtils.getMessage(Message.SELLING_DISABLED));
+                        plugin.debug("Selling is disabled");
+                    }
+                } else {
+                    e.setCancelled(false);
                 }
             }
         }
@@ -752,17 +549,16 @@ public class ShopInteractListener implements Listener {
 
         ShopCreateEvent event = new ShopCreateEvent(executor, shop, creationPrice);
         Bukkit.getPluginManager().callEvent(event);
-
-        if (event.isCancelled()) {
+        if (event.isCancelled() && !executor.hasPermission(Permissions.CREATE_PROTECTED)) {
             plugin.debug("Create event cancelled");
+            executor.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CREATE_PROTECTED));
             return;
         }
 
         EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
         if (!r.transactionSuccess()) {
             plugin.debug("Economy transaction failed: " + r.errorMessage);
-            executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
-                    new Replacement(Placeholder.ERROR, r.errorMessage)));
+            executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r.errorMessage)));
             return;
         }
 
@@ -771,14 +567,8 @@ public class ShopInteractListener implements Listener {
         plugin.debug("Shop created");
         shopUtils.addShop(shop, true);
 
-        Replacement placeholder = new Replacement(
-                Placeholder.CREATION_PRICE, String.valueOf(creationPrice));
-
-        if (shopType == ShopType.ADMIN) {
-            executor.sendMessage(LanguageUtils.getMessage(Message.ADMIN_SHOP_CREATED, placeholder));
-        } else {
-            executor.sendMessage(LanguageUtils.getMessage(Message.SHOP_CREATED, placeholder));
-        }
+        Message message = shopType == ShopType.ADMIN ? Message.ADMIN_SHOP_CREATED : Message.SHOP_CREATED;
+        executor.sendMessage(LanguageUtils.getMessage(message, new Replacement(Placeholder.CREATION_PRICE, creationPrice)));
     }
 
     /**
@@ -787,6 +577,17 @@ public class ShopInteractListener implements Listener {
      * @param shop Shop to be removed
      */
     private void remove(Player executor, Shop shop) {
+        if (shop.getShopType() == ShopType.ADMIN && !executor.hasPermission(Permissions.REMOVE_ADMIN)) {
+            executor.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_ADMIN));
+            return;
+        }
+
+        if (shop.getShopType() == ShopType.NORMAL && !executor.getUniqueId().equals(shop.getVendor().getUniqueId())
+                && !executor.hasPermission(Permissions.REMOVE_OTHER)) {
+            executor.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_OTHERS));
+            return;
+        }
+
         plugin.debug(executor.getName() + " is removing " + shop.getVendor().getName() + "'s shop (#" + shop.getID() + ")");
         ShopRemoveEvent event = new ShopRemoveEvent(executor, shop);
         Bukkit.getPluginManager().callEvent(event);
@@ -817,6 +618,11 @@ public class ShopInteractListener implements Listener {
      * @param message Whether the player should receive the {@link Message#OPENED_SHOP} message
      */
     private void open(Player executor, Shop shop, boolean message) {
+        if (!executor.getUniqueId().equals(shop.getVendor().getUniqueId()) && !executor.hasPermission(Permissions.OPEN_OTHER)) {
+            executor.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_OPEN_OTHERS));
+            return;
+        }
+
         plugin.debug(executor.getName() + " is opening " + shop.getVendor().getName() + "'s shop (#" + shop.getID() + ")");
         ShopOpenEvent event = new ShopOpenEvent(executor, shop);
         Bukkit.getPluginManager().callEvent(event);

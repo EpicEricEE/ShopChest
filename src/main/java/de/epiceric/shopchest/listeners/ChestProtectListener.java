@@ -1,19 +1,12 @@
 package de.epiceric.shopchest.listeners;
 
-import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
-import com.wasteofplastic.askyblock.Island;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.event.ShopExtendEvent;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
-import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.Callback;
@@ -21,9 +14,9 @@ import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
-import me.ryanhamshire.GriefPrevention.Claim;
 import net.milkbowl.vault.economy.EconomyResponse;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -31,27 +24,18 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.data.type.Chest.Type;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
-import org.codemc.worldguardwrapper.WorldGuardWrapper;
-import org.codemc.worldguardwrapper.flag.IWrappedFlag;
-import org.codemc.worldguardwrapper.flag.WrappedState;
-
-import pl.islandworld.api.IslandWorldApi;
-import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class ChestProtectListener implements Listener {
 
@@ -153,6 +137,9 @@ public class ChestProtectListener implements Listener {
         Chest c = (Chest) b.getState();
         Block b2;
 
+        // Can't use Utils::getChestLocations since inventory holder
+        // has not been updated yet in this event (for 1.13+)
+
         if (Utils.getMajorVersion() < 13) {
             InventoryHolder ih = c.getInventory().getHolder();
             if (!(ih instanceof DoubleChest)) {
@@ -197,117 +184,42 @@ public class ChestProtectListener implements Listener {
             b2 = b.getRelative(neighborFacing);
         }
 
-        if (shopUtils.isShop(b.getLocation()) || shopUtils.isShop(b2.getLocation())) {
-            final Shop shop = shopUtils.getShop(b2.getLocation());
+        final Shop shop = shopUtils.getShop(b2.getLocation());
+        if (shop == null)
+            return;
 
-            plugin.debug(String.format("%s tries to extend %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+        plugin.debug(String.format("%s tries to extend %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
 
-            boolean externalPluginsAllowed = true;
-
-            if (plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
-                WorldGuardWrapper wgWrapper = WorldGuardWrapper.getInstance();
-                Optional<IWrappedFlag<WrappedState>> flag = wgWrapper.getFlag("create-shop", WrappedState.class);
-                if (!flag.isPresent()) plugin.debug("WorldGuard flag 'create-shop' is not present!");
-                WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
-                externalPluginsAllowed = state == WrappedState.ALLOW;
-            }
-
-            if (externalPluginsAllowed && plugin.hasTowny() && Config.enableTownyIntegration) {
-                TownBlock townBlock = TownyUniverse.getTownBlock(b.getLocation());
-                if (townBlock != null) {
-                    try {
-                        Town town = townBlock.getTown();
-                        for (Resident resident : town.getResidents()) {
-                            if (resident.getName().equals(p.getName())) {
-                                if (resident.isMayor()) {
-                                    externalPluginsAllowed = (Config.townyShopPlotsMayor.contains(townBlock.getType().name()));
-                                } else if (resident.isKing()) {
-                                    externalPluginsAllowed = (Config.townyShopPlotsKing.contains(townBlock.getType().name()));
-                                } else {
-                                    externalPluginsAllowed = (Config.townyShopPlotsResidents.contains(townBlock.getType().name()));
-                                }
-                                break;
-                            }
-                        }
-                    } catch (Exception ex) {
-                        plugin.debug(ex);
-                    }
-                }
-            }
-
-            if (externalPluginsAllowed && plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                com.github.intellectualsites.plotsquared.plot.object.Location loc =
-                        new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
-
-                externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(loc.getOwnedPlot(), PlotSquaredShopFlag.CREATE_SHOP, p);
-            }
-
-            if (externalPluginsAllowed && plugin.hasUSkyBlock() && Config.enableUSkyblockIntegration) {
-                IslandInfo islandInfo = plugin.getUSkyBlock().getIslandInfo(b.getLocation());
-                if (islandInfo != null) {
-                    externalPluginsAllowed = islandInfo.getMembers().contains(p.getName()) || islandInfo.getLeader().equals(p.getName());
-                }
-            }
-
-            if (externalPluginsAllowed && plugin.hasASkyBlock() && Config.enableASkyblockIntegration) {
-                Island island = ASkyBlockAPI.getInstance().getIslandAt(b.getLocation());
-                if (island != null) {
-                    if (island.getOwner() == null) {
-                        externalPluginsAllowed = island.getMembers().contains(p.getUniqueId());
-                    } else {
-                        externalPluginsAllowed = island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId());
-                    }
-                }
-            }
-
-            if (externalPluginsAllowed && plugin.hasIslandWorld() && Config.enableIslandWorldIntegration && IslandWorldApi.isInitialized()) {
-                if (b.getWorld().getName().equals(IslandWorldApi.getIslandWorld().getName())) {
-                    externalPluginsAllowed = IslandWorldApi.canBuildOnLocation(p, b.getLocation(), true);
-                }
-            }
-
-            if (externalPluginsAllowed && plugin.hasGriefPrevention() && Config.enableGriefPreventionIntegration) {
-                Claim claim = plugin.getGriefPrevention().dataStore.getClaimAt(b.getLocation(), false, null);
-                if (claim != null) {
-                    externalPluginsAllowed = claim.allowContainers(p) == null;
-                }
-            }
-
-            if (externalPluginsAllowed || p.hasPermission(Permissions.EXTEND_PROTECTED)) {
-                if (shop.getVendor().getUniqueId().equals(p.getUniqueId()) || p.hasPermission(Permissions.EXTEND_OTHER)) {
-                    if (ItemUtils.isAir(b.getRelative(BlockFace.UP).getType())) {
-                        final Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
-
-                        shopUtils.removeShop(shop, true, new Callback<Void>(plugin) {
-                            @Override
-                            public void onResult(Void result) {
-                                newShop.create(true);
-                                shopUtils.addShop(newShop, true);
-                                plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
-                            }
-                        });
-                    } else {
-                        e.setCancelled(true);
-                        p.sendMessage(LanguageUtils.getMessage(Message.CHEST_BLOCKED));
-                    }
-                } else {
-                    e.setCancelled(true);
-                    p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_EXTEND_OTHERS));
-                }
-            } else {
-                e.setCancelled(true);
-                p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_EXTEND_PROTECTED));
-            }
+        ShopExtendEvent event = new ShopExtendEvent(p, shop, b.getLocation());
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled() && !p.hasPermission(Permissions.EXTEND_PROTECTED)) {
+            e.setCancelled(true);
+            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_EXTEND_PROTECTED));
+            return;
         }
-    }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onHologramDamage(EntityDamageEvent e) {
-        if (e.getEntity() instanceof ArmorStand) {
-            if (Hologram.isPartOfHologram((ArmorStand) e.getEntity())) {
-                e.setCancelled(true);
-            }
+        if (!p.getUniqueId().equals(shop.getVendor().getUniqueId()) && !p.hasPermission(Permissions.EXTEND_OTHER)) {
+            e.setCancelled(true);
+            p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_EXTEND_OTHERS));
+            return;
         }
+
+        if (!ItemUtils.isAir(b.getRelative(BlockFace.UP).getType())) {
+            e.setCancelled(true);
+            p.sendMessage(LanguageUtils.getMessage(Message.CHEST_BLOCKED));
+            return;
+        }
+
+        final Shop newShop = new Shop(shop.getID(), plugin, shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), shop.getShopType());
+
+        shopUtils.removeShop(shop, true, new Callback<Void>(plugin) {
+            @Override
+            public void onResult(Void result) {
+                newShop.create(true);
+                shopUtils.addShop(newShop, true);
+                plugin.debug(String.format("%s extended %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
+            }
+        });
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
