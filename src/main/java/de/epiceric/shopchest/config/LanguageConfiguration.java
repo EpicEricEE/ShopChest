@@ -16,6 +16,7 @@ public class LanguageConfiguration extends FileConfiguration {
 
     private ShopChest plugin;
     private boolean showMessages;
+    private File file;
 
     public LanguageConfiguration(ShopChest plugin, boolean showMessages) {
         this.plugin = plugin;
@@ -41,13 +42,30 @@ public class LanguageConfiguration extends FileConfiguration {
                 return values.get(key);
             }
         }
+            
+        values.put(path, def);
 
-        if (showMessages) plugin.getLogger().info("Could not find translation for \"" + path + "\" in selected language file. Using default translation (" + def + ")");
+        if (file != null) {
+            // Append missing entry to loaded language file
+            try (FileWriter writer = new FileWriter(file, true)) {
+                writer.write(path + "=" + def + "\n");
+                if (showMessages)
+                    plugin.getLogger().info("Missing translation for \"" + path + "\" has been added as \"" + def + "\" to the selected language file.");
+            } catch (IOException e) {
+                plugin.debug("Failed to add language entry");
+                plugin.debug(e);
+                if (showMessages)
+                    plugin.getLogger().severe("Failed to add missing translation for \"" + path + "\" to the selected langauge file.");
+            }
+        }
+
         return def;
     }
 
     @Override
     public void load(File file) throws IOException, InvalidConfigurationException {
+        this.file = file;
+
         FileInputStream fis = new FileInputStream(file);
         InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
         BufferedReader br = new BufferedReader(isr);
