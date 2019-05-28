@@ -191,6 +191,16 @@ message.cannot-sell-item=&cYou cannot create a shop with this item.
 # Set the message when the player tries to use a shop in creative mode.
 message.use-in-creative=&cYou cannot use a shop in creative mode.
 
+# Set the message when the player has to select an item from the creative menu.
+message.select-item=&aOpen your inventory, and drop an item to select it.
+
+# Set the message when the player has selected an item from the creative menu.
+# Usable Placeholders: %ITEMNAME%
+message.item-selected=&aItem has been selected: &6%ITEMNAME%
+
+# Set the message when the player closes the creative menu to select an item.
+message.creation-cancelled=&cShop creation has been cancelled.
+
 # Set the message when an update is available.
 # Usable Placeholders: %VERSION%
 message.update.update-available=&6&lVersion &c&l%VERSION% &6&lof &c&lShopChest &6&lis available &c&lhere.

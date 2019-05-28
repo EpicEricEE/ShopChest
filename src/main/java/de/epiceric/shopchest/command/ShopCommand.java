@@ -7,6 +7,8 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.utils.Permissions;
+import de.epiceric.shopchest.utils.ClickType.SelectClickType;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
@@ -27,6 +29,7 @@ public class ShopCommand {
     private ShopChest plugin;
     private String name;
     private PluginCommand pluginCommand;
+    private ShopCommandExecutor executor;
 
     private List<ShopSubCommand> subCommands = new ArrayList<>();
 
@@ -40,8 +43,8 @@ public class ShopCommand {
         this.plugin = plugin;
         this.name = Config.mainCommandName;
         this.pluginCommand = createPluginCommand();
+        this.executor = new ShopCommandExecutor(plugin);
 
-        ShopCommandExecutor executor = new ShopCommandExecutor(plugin);
         ShopTabCompleter tabCompleter = new ShopTabCompleter(plugin);
 
         final Replacement cmdReplacement = new Replacement(Placeholder.COMMAND, name);
@@ -148,6 +151,14 @@ public class ShopCommand {
 
     public PluginCommand getCommand() {
         return pluginCommand;
+    }
+
+    /**
+     * Call the second part of the create method after the player
+     * has selected an item from the creative inventory.
+     */
+    public void createShopAfterSelected(Player player, SelectClickType clickType) {
+        executor.create2(player, clickType);
     }
 
     private PluginCommand createPluginCommand() {

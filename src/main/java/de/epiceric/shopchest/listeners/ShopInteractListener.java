@@ -26,6 +26,7 @@ import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.Utils;
+import de.epiceric.shopchest.utils.ClickType.CreateClickType;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -68,7 +69,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ShopInteractListener implements Listener {
-
     private static final Pattern COLOR_CODE_PATTERN = Pattern.compile(".*([§]([a-fA-F0-9]))");
     private static final Pattern FORMAT_CODE_PATTERN = Pattern.compile(".*([§]([l-oL-OkK]))");
 
@@ -120,7 +120,7 @@ public class ShopInteractListener implements Listener {
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
 
-        if (ClickType.getPlayerClickType(p) == null)
+        if (!(ClickType.getPlayerClickType(p) instanceof CreateClickType))
             return;
 
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST)
@@ -132,17 +132,17 @@ public class ShopInteractListener implements Listener {
         if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(p))
             return;
 
-        if (shopUtils.isShop(b.getLocation())) {
-            p.sendMessage(LanguageUtils.getMessage(Message.CHEST_ALREADY_SHOP));
-            plugin.debug("Chest is already a shop");
-        } else if (e.isCancelled() && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
+        if (e.isCancelled() && !p.hasPermission(Permissions.CREATE_PROTECTED)) {
             p.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_CREATE_PROTECTED));
             plugin.debug(p.getName() + " is not allowed to create a shop on the selected chest");
+        } else if (shopUtils.isShop(b.getLocation())) {
+            p.sendMessage(LanguageUtils.getMessage(Message.CHEST_ALREADY_SHOP));
+            plugin.debug("Chest is already a shop");
         } else if (!ItemUtils.isAir(b.getRelative(BlockFace.UP).getType())) {
             p.sendMessage(LanguageUtils.getMessage(Message.CHEST_BLOCKED));
             plugin.debug("Chest is blocked");
         } else {
-            ClickType clickType = ClickType.getPlayerClickType(p);
+            CreateClickType clickType = (CreateClickType) ClickType.getPlayerClickType(p);
             ShopProduct product = clickType.getProduct();
             double buyPrice = clickType.getBuyPrice();
             double sellPrice = clickType.getSellPrice();
@@ -171,32 +171,35 @@ public class ShopInteractListener implements Listener {
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST)
             return;
         
-        if (ClickType.getPlayerClickType(p) != null) {
+        ClickType clickType = ClickType.getPlayerClickType(p);
+        if (clickType != null) {
             if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
                 return;
 
             Shop shop = shopUtils.getShop(b.getLocation());
-            if (shop == null && ClickType.getPlayerClickType(p).getClickType() != ClickType.EnumClickType.CREATE) {
-                p.sendMessage(LanguageUtils.getMessage(Message.CHEST_NO_SHOP));
-                plugin.debug("Chest is not a shop");
-                return;
+            switch (clickType.getClickType()) {
+                case CREATE:
+                case SELECT_ITEM:
+                    break;
+                default: 
+                    if (shop == null) {
+                        p.sendMessage(LanguageUtils.getMessage(Message.CHEST_NO_SHOP));
+                        plugin.debug("Chest is not a shop");
+                        return;
+                    }
             }
 
-            switch (ClickType.getPlayerClickType(p).getClickType()) {
-                case CREATE:
-                    return;
-                    
+            switch (clickType.getClickType()) {
                 case INFO:
                     info(p, shop);
                     break;
-
                 case REMOVE:
                     remove(p, shop);
                     break;
-
                 case OPEN:
                     open(p, shop, true);
                     break;
+                default: return;
             }
 
             e.setCancelled(true);

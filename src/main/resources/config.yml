@@ -24,6 +24,10 @@ shop-info-item: "STICK"
 # in order to prevent accidental purchases or sells.
 confirm-shopping: false
 
+# Set whether players should be able to select the shop item from the
+# creative inventory if they don't hold an item in their hand.
+creative-select-item: true
+
 # Set whether the shop creation price should be refunded
 # when the shop is removed.
 # This only applies when the creator of the shop removes it himself

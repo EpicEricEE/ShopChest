@@ -18,6 +18,7 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.listeners.AreaShopListener;
 import de.epiceric.shopchest.listeners.BlockExplodeListener;
 import de.epiceric.shopchest.listeners.ChestProtectListener;
+import de.epiceric.shopchest.listeners.CreativeModeListener;
 import de.epiceric.shopchest.listeners.NotifyPlayerOnJoinListener;
 import de.epiceric.shopchest.listeners.ShopInteractListener;
 import de.epiceric.shopchest.listeners.ShopItemListener;
@@ -29,6 +30,7 @@ import de.epiceric.shopchest.sql.Database;
 import de.epiceric.shopchest.sql.MySQL;
 import de.epiceric.shopchest.sql.SQLite;
 import de.epiceric.shopchest.utils.Callback;
+import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUpdater;
 import de.epiceric.shopchest.utils.ShopUtils;
@@ -213,6 +215,8 @@ public class ShopChest extends JavaPlugin {
     public void onDisable() {
         debug("Disabling ShopChest...");
 
+        ClickType.clear();
+
         if (updater != null) {
             debug("Stopping updater");
             updater.stop();
@@ -386,6 +390,7 @@ public class ShopChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new NotifyPlayerOnJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new ChestProtectListener(this), this);
+        getServer().getPluginManager().registerEvents(new CreativeModeListener(this), this);
 
         if (!Utils.getServerVersion().equals("v1_8_R1")) {
             getServer().getPluginManager().registerEvents(new BlockExplodeListener(this), this);

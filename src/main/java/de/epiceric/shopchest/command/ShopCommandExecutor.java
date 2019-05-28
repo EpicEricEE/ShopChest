@@ -14,6 +14,7 @@ import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.ShopProduct;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.ClickType;
 import de.epiceric.shopchest.utils.ItemUtils;
@@ -21,7 +22,11 @@ import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.Utils;
+import de.epiceric.shopchest.utils.ClickType.CreateClickType;
+import de.epiceric.shopchest.utils.ClickType.SelectClickType;
+
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -262,22 +267,47 @@ class ShopCommandExecutor implements CommandExecutor {
 
         // Check if item in hand
         if (inHand == null) {
-            p.sendMessage(LanguageUtils.getMessage(Message.NO_ITEM_IN_HAND));
             plugin.debug(p.getName() + " does not have an item in his hand");
-            return;
+
+            if (!Config.creativeSelectItem) {
+                p.sendMessage(LanguageUtils.getMessage(Message.NO_ITEM_IN_HAND));
+                return;
+            }
+
+            ClickType.setPlayerClickType(p, new SelectClickType(p.getGameMode(), amount, buyPrice, sellPrice, shopType));
+            p.setGameMode(GameMode.CREATIVE);
+
+            p.sendMessage(LanguageUtils.getMessage(Message.SELECT_ITEM));
+        } else {
+            SelectClickType ct = new SelectClickType(null, amount, buyPrice, sellPrice, shopType);
+            ct.setItem(inHand);
+            create2(p, ct);
         }
+    }
+
+    /**
+     * <b>SHALL ONLY BE CALLED VIA {@link ShopCommand#createShopAfterSelected()}</b>
+     */
+    protected void create2(Player p, SelectClickType selectClickType) {
+        ItemStack itemStack = selectClickType.getItem();
+        int amount = selectClickType.getAmount();
+        double buyPrice = selectClickType.getBuyPrice();
+        double sellPrice = selectClickType.getSellPrice();
+        boolean buyEnabled = buyPrice > 0;
+        boolean sellEnabled = sellPrice > 0;
+        ShopType shopType = selectClickType.getShopType();
 
         // Check if item on blacklist
         for (String item :Config.blacklist) {
-            ItemStack itemStack = ItemUtils.getItemStack(item);
+            ItemStack is = ItemUtils.getItemStack(item);
 
-            if (itemStack == null) {
+            if (is == null) {
                 plugin.getLogger().warning("Invalid item found in blacklist: " + item);
                 plugin.debug("Invalid item in blacklist: " + item);
                 continue;
             }
 
-            if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
+            if (is.getType().equals(itemStack.getType()) && is.getDurability() == itemStack.getDurability()) {
                 p.sendMessage(LanguageUtils.getMessage(Message.CANNOT_SELL_ITEM));
                 plugin.debug(p.getName() + "'s item is on the blacklist");
                 return;
@@ -286,16 +316,16 @@ class ShopCommandExecutor implements CommandExecutor {
 
         // Check if prices lower than minimum price
         for (String key :Config.minimumPrices) {
-            ItemStack itemStack = ItemUtils.getItemStack(key);
+            ItemStack is = ItemUtils.getItemStack(key);
             double minPrice = plugin.getConfig().getDouble("minimum-prices." + key);
 
-            if (itemStack == null) {
+            if (is == null) {
                 plugin.getLogger().warning("Invalid item found in minimum-prices: " + key);
                 plugin.debug("Invalid item in minimum-prices: " + key);
                 continue;
             }
 
-            if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
+            if (is.getType().equals(itemStack.getType()) && is.getDurability() == itemStack.getDurability()) {
                 if (buyEnabled) {
                     if ((buyPrice < amount * minPrice) && (buyPrice > 0)) {
                         p.sendMessage(LanguageUtils.getMessage(Message.BUY_PRICE_TOO_LOW, new Replacement(Placeholder.MIN_PRICE, String.valueOf(amount * minPrice))));
@@ -316,16 +346,16 @@ class ShopCommandExecutor implements CommandExecutor {
 
         // Check if prices higher than maximum price
         for (String key :Config.maximumPrices) {
-            ItemStack itemStack = ItemUtils.getItemStack(key);
+            ItemStack is = ItemUtils.getItemStack(key);
             double maxPrice = plugin.getConfig().getDouble("maximum-prices." + key);
 
-            if (itemStack == null) {
+            if (is == null) {
                 plugin.getLogger().warning("Invalid item found in maximum-prices: " + key);
                 plugin.debug("Invalid item in maximum-prices: " + key);
                 continue;
             }
 
-            if (itemStack.getType().equals(inHand.getType()) && itemStack.getDurability() == inHand.getDurability()) {
+            if (is.getType().equals(itemStack.getType()) && is.getDurability() == itemStack.getDurability()) {
                 if (buyEnabled) {
                     if ((buyPrice > amount * maxPrice) && (buyPrice > 0)) {
                         p.sendMessage(LanguageUtils.getMessage(Message.BUY_PRICE_TOO_HIGH, new Replacement(Placeholder.MAX_PRICE, String.valueOf(amount * maxPrice))));
@@ -355,8 +385,8 @@ class ShopCommandExecutor implements CommandExecutor {
             }
         }
 
-        if (Enchantment.DURABILITY.canEnchantItem(inHand)) {
-            if (inHand.getDurability() > 0 && !Config.allowBrokenItems) {
+        if (Enchantment.DURABILITY.canEnchantItem(itemStack)) {
+            if (itemStack.getDurability() > 0 && !Config.allowBrokenItems) {
                 p.sendMessage(LanguageUtils.getMessage(Message.CANNOT_SELL_BROKEN_ITEM));
                 plugin.debug(p.getName() + "'s item is broken");
                 return;
@@ -372,12 +402,12 @@ class ShopCommandExecutor implements CommandExecutor {
             }
         }
 
-        ShopProduct product = new ShopProduct(inHand, amount);
+        ShopProduct product = new ShopProduct(itemStack, amount);
         ShopPreCreateEvent event = new ShopPreCreateEvent(p, new Shop(plugin, p, product, null, buyPrice, sellPrice, shopType));
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            ClickType.setPlayerClickType(p, new ClickType(ClickType.EnumClickType.CREATE, product, buyPrice, sellPrice, shopType));
+            ClickType.setPlayerClickType(p, new CreateClickType(product, buyPrice, sellPrice, shopType));
             plugin.debug(p.getName() + " can now click a chest");
             p.sendMessage(LanguageUtils.getMessage(Message.CLICK_CHEST_CREATE));
         } else {

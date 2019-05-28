@@ -3,7 +3,12 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
+
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -13,26 +18,27 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ClickType {
-
     private static Map<UUID, ClickType> playerClickType = new HashMap<>();
     private static Map<UUID, BukkitTask> playerTimers = new HashMap<>();
 
     private EnumClickType enumClickType;
-    private ShopProduct product;
-    private double buyPrice;
-    private double sellPrice;
-    private ShopType shopType;
 
     public ClickType(EnumClickType enumClickType) {
         this.enumClickType = enumClickType;
     }
 
-    public ClickType(EnumClickType enumClickType, ShopProduct product, double buyPrice, double sellPrice, ShopType shopType) {
-        this.enumClickType = enumClickType;
-        this.product = product;
-        this.sellPrice = sellPrice;
-        this.buyPrice = buyPrice;
-        this.shopType = shopType;
+    /**
+     * Clear click types, cancel timers, and reset game modes
+     */
+    public static void clear() {
+        playerClickType.forEach((uuid, ct) -> {
+            if (ct instanceof SelectClickType) {
+                Player p = Bukkit.getPlayer(uuid);
+                if (p != null)
+                    p.setGameMode(((SelectClickType) ct).getGameMode());
+            }
+        });
+        playerTimers.forEach((uuid, timer) -> timer.cancel());
     }
 
     /**
@@ -47,12 +53,13 @@ public class ClickType {
 
     /**
      * Removes the click type from a player and cancels the 15 second timer
+     * 
      * @param player Player to remove the click type from
      */
     public static void removePlayerClickType(OfflinePlayer player) {
         UUID uuid = player.getUniqueId();
         playerClickType.remove(uuid);
-        
+
         // If a timer is still running, cancel it
         Optional.ofNullable(playerTimers.get(uuid)).ifPresent(task -> task.cancel());
         playerTimers.remove(uuid);
@@ -71,13 +78,15 @@ public class ClickType {
         // If a timer is already running, cancel it
         Optional.ofNullable(playerTimers.get(uuid)).ifPresent(task -> task.cancel());
 
-        // Remove ClickType after 15 seconds if player has not clicked a chest
-        playerTimers.put(uuid, new BukkitRunnable() {
-            @Override
-            public void run() {
-                playerClickType.remove(uuid);
-            }
-        }.runTaskLater(ShopChest.getInstance(), 300));
+        if (clickType.getClickType() != EnumClickType.SELECT_ITEM) {
+            // Remove ClickType after 15 seconds if player has not clicked a chest
+            playerTimers.put(uuid, new BukkitRunnable() {
+                @Override
+                public void run() {
+                    playerClickType.remove(uuid);
+                }
+            }.runTaskLater(ShopChest.getInstance(), 300));
+        }
     }
 
     /**
@@ -87,36 +96,119 @@ public class ClickType {
         return enumClickType;
     }
 
-    /**
-     * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the item, the player has hold in his hands, else <b>null</b>.
-     */
-    public ShopProduct getProduct() {
-        return product;
-    }
-
-    /**
-     * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the buy price, the player has entered, else <b>null</b>.
-     */
-    public double getBuyPrice() {
-        return buyPrice;
-    }
-
-    /**
-     * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the sell price, the player has entered, else <b>null</b>.
-     */
-    public double getSellPrice() {
-        return sellPrice;
-    }
-
-    /**
-     * @return If {@link #getClickType()} returns {@link EnumClickType#CREATE}, this returns the shop type, the player has entered, else <b>null</b>.
-     */
-    public ShopType getShopType() {
-        return shopType;
-    }
-
     public enum EnumClickType {
-        CREATE, REMOVE, INFO, OPEN
+        CREATE, REMOVE, INFO, OPEN, SELECT_ITEM
+    }
+
+    public static class CreateClickType extends ClickType {
+        private ShopProduct product;
+        private double buyPrice;
+        private double sellPrice;
+        private ShopType shopType;
+
+        public CreateClickType(ShopProduct product, double buyPrice, double sellPrice, ShopType shopType) {
+            super(EnumClickType.CREATE);
+            this.product = product;
+            this.sellPrice = sellPrice;
+            this.buyPrice = buyPrice;
+            this.shopType = shopType;
+        }
+
+        /**
+         * Returns the item, the player has hold in his hands
+         */
+        public ShopProduct getProduct() {
+            return product;
+        }
+
+        /**
+         * Returns the buy price, the player has entered
+         */
+        public double getBuyPrice() {
+            return buyPrice;
+        }
+
+        /**
+         * Returns the sell price, the player has entered
+         */
+        public double getSellPrice() {
+            return sellPrice;
+        }
+
+        /**
+         * Returns the shop type, the player has entered
+         */
+        public ShopType getShopType() {
+            return shopType;
+        }
+    }
+
+    public static class SelectClickType extends ClickType {
+        private ItemStack itemStack;
+        private GameMode gameMode;
+        private int amount;
+        private double buyPrice;
+        private double sellPrice;
+        private ShopType shopType;
+
+        public SelectClickType(GameMode gameMode, int amount, double buyPrice, double sellPrice, ShopType shopType) {
+            super(EnumClickType.SELECT_ITEM);
+            this.gameMode = gameMode;
+            this.amount = amount;
+            this.sellPrice = sellPrice;
+            this.buyPrice = buyPrice;
+            this.shopType = shopType;
+        }
+
+        /**
+         * Returns the selected item (or {@code null} if no item has been selected)
+         */
+        public ItemStack getItem() {
+            return itemStack;
+        }
+
+        /**
+         * Sets the selected item
+         * @param itemStack The item to set as selected
+         */
+        public void setItem(ItemStack itemStack) {
+            this.itemStack = itemStack;
+        }
+
+        /**
+         * Returns the gamemode, the player was in before entering creative mode
+         */
+        public GameMode getGameMode() {
+            return gameMode;
+        }
+
+        /**
+         * Returns the amount, the player has entered
+         */
+        public int getAmount() {
+            return amount;
+        }
+
+        /**
+         * Returns the buy price, the player has entered
+         */
+        public double getBuyPrice() {
+            return buyPrice;
+        }
+
+        /**
+         * Returns the sell price, the player has entered
+         */
+        public double getSellPrice() {
+            return sellPrice;
+        }
+
+        /**
+         * Returns the shop type, the player has entered
+         */
+        public ShopType getShopType() {
+            return shopType;
+        }
     }
 
 }

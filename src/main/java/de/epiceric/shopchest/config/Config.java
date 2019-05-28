@@ -271,6 +271,11 @@ public class Config {
     public static boolean autoCalculateItemAmount;
 
     /**
+     * Whether players should be able to select an item from the creative inventory
+     */
+    public static boolean creativeSelectItem;
+
+    /**
      * <p>Whether the mouse buttons are inverted</p>
      * <b>Default:</b><br>
      * Right-Click: Buy<br>
@@ -486,6 +491,7 @@ public class Config {
         allowDecimalsInPrice = plugin.getConfig().getBoolean("allow-decimals-in-price");
         allowBrokenItems = plugin.getConfig().getBoolean("allow-broken-items");
         autoCalculateItemAmount = (allowDecimalsInPrice && plugin.getConfig().getBoolean("auto-calculate-item-amount"));
+        creativeSelectItem = plugin.getConfig().getBoolean("creative-select-item");
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
         buyGreaterOrEqualSell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         hopperProtection = plugin.getConfig().getBoolean("hopper-protection");
