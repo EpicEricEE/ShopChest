@@ -2184,6 +2184,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(Message.SHOP_INFO_VENDOR, langConfig.getString("message.shopInfo.vendor", "&6Vendor: &e%VENDOR%")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_PRODUCT, langConfig.getString("message.shopInfo.product", "&6Product: &e%AMOUNT% x %ITEMNAME%")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_STOCK, langConfig.getString("message.shopInfo.stock", "&6In Stock: &e%STOCK%")));
+        messages.add(new LocalizedMessage(Message.SHOP_INFO_CHEST_SPACE, langConfig.getString("message.shopInfo.chest-space", "&6Space in chest: &e%CHEST-SPACE%")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_PRICE, langConfig.getString("message.shopInfo.price", "&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_DISABLED, langConfig.getString("message.shopInfo.disabled", "&7Disabled")));
         messages.add(new LocalizedMessage(Message.SHOP_INFO_NORMAL, langConfig.getString("message.shopInfo.is-normal", "&6Type: &eNormal")));

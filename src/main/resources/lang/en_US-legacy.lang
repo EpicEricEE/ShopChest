@@ -54,6 +54,10 @@ message.shopInfo.product=&6Product: &e%AMOUNT% x %ITEMNAME%
 # Usable Placeholders=%STOCK%
 message.shopInfo.stock=&6In Stock: &e%STOCK%
 
+# Set the chest-space message the player after entering '/shop info'.
+# Usable Placeholders=%CHEST-SPACE%
+message.shopInfo.chest-space=&6Space in chest: &e%CHEST-SPACE%
+
 # Set the price message the player gets after entering '/shop info'.
 # Usable Placeholders: %BUY-PRICE%, %SELL-PRICE%
 message.shopInfo.price=&6Price: Buy: &e%BUY-PRICE%&6 Sell: &e%SELL-PRICE%

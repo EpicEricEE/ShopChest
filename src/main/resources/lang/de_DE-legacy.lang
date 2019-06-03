@@ -11,6 +11,7 @@ message.shop-create-not-enough-money=&cNicht genug Geld. Du brauchst &6%CREATION
 message.shopInfo.vendor=&6Verkäufer: &e%VENDOR%
 message.shopInfo.product=&6Produkt: &e%AMOUNT% x %ITEMNAME%
 message.shopInfo.stock=&6Auf Lager: &e%STOCK%
+message.shopInfo.chest-space=&6Platz in Truhe: &e%CHEST-SPACE%
 message.shopInfo.price=&6Preis: Kauf: &e%BUY-PRICE%&6 Verkauf: &e%SELL-PRICE%
 message.shopInfo.disabled=&7Deaktiviert
 message.shopInfo.is-normal=&6Typ: &eNormal

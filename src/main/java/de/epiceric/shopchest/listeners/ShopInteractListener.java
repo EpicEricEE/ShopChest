@@ -592,6 +592,7 @@ public class ShopInteractListener implements Listener {
         Chest c = (Chest) shop.getLocation().getBlock().getState();
         ItemStack itemStack = shop.getProduct().getItemStack();
         int amount = Utils.getAmount(c.getInventory(), itemStack);
+        int space = Utils.getFreeSpaceForItem(c.getInventory(), itemStack);
 
         String vendorName = (shop.getVendor().getName() == null ?
                 shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
@@ -612,12 +613,16 @@ public class ShopInteractListener implements Listener {
                 Message.SHOP_INFO_NORMAL : Message.SHOP_INFO_ADMIN);
 
         String stock = LanguageUtils.getMessage(Message.SHOP_INFO_STOCK,
-                new Replacement(Placeholder.STOCK, String.valueOf(amount)));
+                new Replacement(Placeholder.STOCK, amount));
+
+        String chestSpace = LanguageUtils.getMessage(Message.SHOP_INFO_CHEST_SPACE,
+                new Replacement(Placeholder.CHEST_SPACE, space));
 
         executor.sendMessage(" ");
         if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(vendorString);
         jb.sendJson(executor);
-        if (shop.getShopType() != ShopType.ADMIN) executor.sendMessage(stock);
+        if (shop.getShopType() != ShopType.ADMIN && shop.getBuyPrice() > 0) executor.sendMessage(stock);
+        if (shop.getShopType() != ShopType.ADMIN && shop.getSellPrice() > 0) executor.sendMessage(chestSpace);
         executor.sendMessage(priceString);
         executor.sendMessage(shopType);
         executor.sendMessage(" ");
