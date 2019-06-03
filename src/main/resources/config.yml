@@ -13,9 +13,6 @@ main-command-name: "shop"
 # (without the '.lang' extension)
 language-file: "en_US"
 
-# Set whether the floating shop items on top of the chest should be shown
-show-shop-items: true
-
 # Set the item with which a player can click a shop to retrieve information.
 # You can set this to an empty string to disable this feature.
 shop-info-item: "STICK"
@@ -43,12 +40,6 @@ refund-shop-creation: false
 # The command is not affected by this setting and will continue to
 # check for updates.
 enable-update-checker: true
-
-# Set whether interaction with the hologram should be enabled.
-# If set to true, a player can do the exact same thing with the
-# hologram, as with the chest. You can even open the chest if you
-# are the vendor or have permission.
-enable-hologram-interaction: true
 
 # Set whether buys and sells should be logged in the database.
 enable-economy-log: false
@@ -106,10 +97,6 @@ enable-vendor-messages: true
 # If set to false, every shop near the player (with the specified
 # distance) will be shown to him.
 only-show-shops-in-sight: true
-
-# Set whether only the shop a player is looking at should be shown to him.
-# This only has effect if 'only-show-shops-in-sight' is enabled
-only-show-first-shop-in-sight: true
 
 # Set whether the hologram's location should be fixed at the bottom,
 # so when it gets more lines, it won't interfere with the item or chest,
@@ -180,12 +167,6 @@ shop-creation-price:
   # ...an admin shop
   admin: 0
 
-# Set whether the shop's chest should be protected by hoppers
-hopper-protection: true
-
-# Set whether the shop's chest should be protected by explosions
-explosion-protection: true
-
 # Set whether the buy price must be greater than or equal sell price.
 buy-greater-or-equal-sell: true
 
@@ -248,8 +229,8 @@ towny-shop-plots:
     - "COMMERCIAL"
 
 # Configuration of the database, where everything is stored.
-# Shops are found in the table 'shop_list', and logged economy
-# transactions are found in the table 'shop_log'
+# Shops are found in the table 'shopchest_shops', and logged economy
+# transactions are found in the table 'shopchest_economy_logs'
 database:
 
   # Select the type of database which should be used
@@ -287,11 +268,8 @@ database:
 # Shop limits are handled with permissions.
 # A player with permission "shopchest.limit.X" has a limit of X shops,
 # a player with permission "shopchest.limit.*" does not have a shop limit.
+# Admin shops are excluded from the shop limit.
 shop-limits:
-
-  # Set whether admin shops should be excluded of the shop limits.
-  # If set to true, admin shops won't be added to a player's shop count.
-  exclude-admin-shops: true
 
   # Set the amount of shops that anyone who doesn't have a
   # specific permission may have.

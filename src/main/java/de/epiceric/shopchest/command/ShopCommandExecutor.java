@@ -234,7 +234,7 @@ class ShopCommandExecutor implements CommandExecutor {
         int limit = shopUtils.getShopLimit(p);
         if (limit != -1) {
             if (shopUtils.getShopAmount(p) >= limit) {
-                if (shopType != Shop.ShopType.ADMIN || !Config.excludeAdminShops) {
+                if (shopType != Shop.ShopType.ADMIN) {
                     p.sendMessage(LanguageUtils.getMessage(Message.SHOP_LIMIT_REACHED, new Replacement(Placeholder.LIMIT, String.valueOf(limit))));
                     plugin.debug(p.getName() + " has reached the limit");
                     return;

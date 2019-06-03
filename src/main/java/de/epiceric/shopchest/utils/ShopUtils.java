@@ -204,7 +204,7 @@ public class ShopUtils {
 
         for (Shop shop : getShops()) {
             if (shop.getVendor().equals(p)) {
-                if (shop.getShopType() != Shop.ShopType.ADMIN || !Config.excludeAdminShops) {
+                if (shop.getShopType() != Shop.ShopType.ADMIN) {
                     shopCount++;
 
                     InventoryHolder ih = shop.getInventoryHolder();
@@ -304,10 +304,8 @@ public class ShopUtils {
 
     private void updateVisibleShops(Player player) {
         double itemDistSquared = Math.pow(Config.maximalItemDistance, 2);
-        boolean firstShopInSight = Config.onlyShowFirstShopInSight;
         double maxDist = Config.maximalDistance;
 
-        List<Shop> shopsInSight = new ArrayList<>();
         double nearestDistSquared = Double.MAX_VALUE;
         Shop nearestShop = null;
 
@@ -330,7 +328,6 @@ public class ShopUtils {
             }
 
             if (shop != null && shop.hasHologram()) {
-                shopsInSight.add(shop);
                 double distSquared = pLoc.distanceSquared(loc);
                 if (distSquared < nearestDistSquared) {
                     nearestDistSquared = distSquared;
@@ -340,14 +337,8 @@ public class ShopUtils {
         }
 
         for (Shop shop : getShops()) {
-            if (firstShopInSight) {
-                if (!shop.equals(nearestShop) && shop.hasHologram()) {
-                    shop.getHologram().hidePlayer(player);
-                }
-            } else {
-                if (!shopsInSight.contains(shop)) {
-                    shop.getHologram().hidePlayer(player);
-                }
+            if (!shop.equals(nearestShop) && shop.hasHologram()) {
+                shop.getHologram().hidePlayer(player);
             }
 
             // Display item based on distance
@@ -367,12 +358,6 @@ public class ShopUtils {
 
         if (nearestShop != null) {
             nearestShop.getHologram().showPlayer(player);
-        }
-
-        if (!firstShopInSight) {
-            for (Shop otherShop : shopsInSight) {
-                otherShop.getHologram().showPlayer(player);
-            }
         }
     }
 

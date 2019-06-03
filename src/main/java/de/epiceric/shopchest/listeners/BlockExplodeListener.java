@@ -1,7 +1,6 @@
 package de.epiceric.shopchest.listeners;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -20,12 +19,10 @@ public class BlockExplodeListener implements Listener {
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent e) {
-        if (Config.explosionProtection) {
-            ArrayList<Block> bl = new ArrayList<>(e.blockList());
-            for (Block b : bl) {
-                if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-                    if (plugin.getShopUtils().isShop(b.getLocation())) e.blockList().remove(b);
-                }
+        ArrayList<Block> bl = new ArrayList<>(e.blockList());
+        for (Block b : bl) {
+            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+                if (plugin.getShopUtils().isShop(b.getLocation())) e.blockList().remove(b);
             }
         }
     }

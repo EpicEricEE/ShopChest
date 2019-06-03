@@ -115,12 +115,10 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent e) {
-        if (Config.explosionProtection) {
-            ArrayList<Block> bl = new ArrayList<>(e.blockList());
-            for (Block b : bl) {
-                if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
-                    if (shopUtils.isShop(b.getLocation())) e.blockList().remove(b);
-                }
+        ArrayList<Block> bl = new ArrayList<>(e.blockList());
+        for (Block b : bl) {
+            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+                if (shopUtils.isShop(b.getLocation())) e.blockList().remove(b);
             }
         }
     }
@@ -224,22 +222,19 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onItemMove(InventoryMoveItemEvent e) {
-        if (Config.hopperProtection) {
-            if ((e.getSource().getType().equals(InventoryType.CHEST)) && (!e.getInitiator().getType().equals(InventoryType.PLAYER))) {
+        if ((e.getSource().getType().equals(InventoryType.CHEST)) && (!e.getInitiator().getType().equals(InventoryType.PLAYER))) {
 
-                if (e.getSource().getHolder() instanceof DoubleChest) {
-                    DoubleChest dc = (DoubleChest) e.getSource().getHolder();
-                    Chest r = (Chest) dc.getRightSide();
-                    Chest l = (Chest) dc.getLeftSide();
+            if (e.getSource().getHolder() instanceof DoubleChest) {
+                DoubleChest dc = (DoubleChest) e.getSource().getHolder();
+                Chest r = (Chest) dc.getRightSide();
+                Chest l = (Chest) dc.getLeftSide();
 
-                    if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) e.setCancelled(true);
+                if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) e.setCancelled(true);
 
-                } else if (e.getSource().getHolder() instanceof Chest) {
-                    Chest c = (Chest) e.getSource().getHolder();
+            } else if (e.getSource().getHolder() instanceof Chest) {
+                Chest c = (Chest) e.getSource().getHolder();
 
-                    if (shopUtils.isShop(c.getLocation())) e.setCancelled(true);
-                }
-
+                if (shopUtils.isShop(c.getLocation())) e.setCancelled(true);
             }
         }
     }

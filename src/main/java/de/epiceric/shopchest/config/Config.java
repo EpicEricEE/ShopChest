@@ -132,16 +132,6 @@ public class Config {
     public static boolean buyGreaterOrEqualSell;
 
     /**
-     * Whether shops should be protected by hoppers
-     **/
-    public static boolean hopperProtection;
-
-    /**
-     * Whether shops should be protected by explosions
-     **/
-    public static boolean explosionProtection;
-
-    /**
      * Whether buys and sells must be confirmed
      **/
     public static boolean confirmShopping;
@@ -156,11 +146,6 @@ public class Config {
      * The command is not affected by this setting and will continue to check for updates.
      **/
     public static boolean enableUpdateChecker;
-
-    /**
-     * Whether hologram interaction should be enabled
-     **/
-    public static boolean enableHologramInteraction;
 
     /**
      * Whether the debug log file should be created
@@ -230,19 +215,9 @@ public class Config {
     public static boolean enableVendorMessages;
 
     /**
-     * Whether admin shops should be excluded of the shop limits
-     **/
-    public static boolean excludeAdminShops;
-
-    /**
      * Whether the extension of a potion or tipped arrow (if available) should be appended to the item name.
      **/
     public static boolean appendPotionLevelToItemName;
-
-    /**
-     * Whether the shop items should be shown
-     **/
-    public static boolean showShopItems;
 
     /**
      * Whether players are allowed to sell/buy broken items
@@ -250,14 +225,9 @@ public class Config {
     public static boolean allowBrokenItems;
 
     /**
-     * Whether only the shops a player has in sight should be shown to him
+     * Whether only the shop a player is pointing at should be shown
      **/
     public static boolean onlyShowShopsInSight;
-
-    /**
-     * Whether only the shop a player is looking at should be shown to him
-     **/
-    public static boolean onlyShowFirstShopInSight;
 
     /**
      * <p>Whether shops should automatically be removed from the database if an error occurred while loading</p>
@@ -494,12 +464,9 @@ public class Config {
         creativeSelectItem = plugin.getConfig().getBoolean("creative-select-item");
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
         buyGreaterOrEqualSell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
-        hopperProtection = plugin.getConfig().getBoolean("hopper-protection");
-        explosionProtection = plugin.getConfig().getBoolean("explosion-protection");
         confirmShopping = plugin.getConfig().getBoolean("confirm-shopping");
         refundShopCreation = plugin.getConfig().getBoolean("refund-shop-creation");
         enableUpdateChecker = plugin.getConfig().getBoolean("enable-update-checker");
-        enableHologramInteraction = plugin.getConfig().getBoolean("enable-hologram-interaction");
         enableDebugLog = plugin.getConfig().getBoolean("enable-debug-log");
         enableEconomyLog = plugin.getConfig().getBoolean("enable-economy-log");
         cleanupEconomyLogDays = plugin.getConfig().getInt("cleanup-economy-log-days");
@@ -514,10 +481,7 @@ public class Config {
         enableAreaShopIntegration = plugin.getConfig().getBoolean("enable-areashop-integration");
         enableVendorMessages = plugin.getConfig().getBoolean("enable-vendor-messages");
         onlyShowShopsInSight = plugin.getConfig().getBoolean("only-show-shops-in-sight");
-        onlyShowFirstShopInSight = plugin.getConfig().getBoolean("only-show-first-shop-in-sight");
-        excludeAdminShops = plugin.getConfig().getBoolean("shop-limits.exclude-admin-shops");
         appendPotionLevelToItemName = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
-        showShopItems = plugin.getConfig().getBoolean("show-shop-items");
         removeShopOnError = plugin.getConfig().getBoolean("remove-shop-on-error");
         invertMouseButtons = plugin.getConfig().getBoolean("invert-mouse-buttons");
         hologramFixedBottom = plugin.getConfig().getBoolean("hologram-fixed-bottom");

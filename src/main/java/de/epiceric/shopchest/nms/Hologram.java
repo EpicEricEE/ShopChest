@@ -44,7 +44,6 @@ public class Hologram {
     private final ShopChest plugin;
 
     private boolean exists;
-    private ArmorStandWrapper interactArmorStandWrapper;
 
     public Hologram(ShopChest plugin, String[] lines, Location location) {
         this.plugin = plugin;
@@ -52,14 +51,6 @@ public class Hologram {
 
         for (int i = 0; i < lines.length; i++) {
             addLine(i, lines[i]);
-        }
-
-        if (Config.enableHologramInteraction) {
-            double y = 0.6;
-            if (Config.hologramFixedBottom) y = 0.85;
-
-            Location loc = getLocation().add(0, y, 0);
-            interactArmorStandWrapper = new ArmorStandWrapper(plugin, loc, null, true);
         }
 
         this.exists = true;
@@ -90,7 +81,7 @@ public class Hologram {
                 return true;
             }
         }
-        return interactArmorStandWrapper != null && armorStand.getUniqueId().equals(interactArmorStandWrapper.getUuid());
+        return false;
     }
 
     /**
@@ -98,13 +89,6 @@ public class Hologram {
      */
     public List<ArmorStandWrapper> getArmorStandWrappers() {
         return wrappers;
-    }
-
-    /**
-     * @return The {@link ArmorStandWrapper} of this hologram that is positioned higher to be used for interaction
-     */
-    public ArmorStandWrapper getInteractArmorStandWrapper() {
-        return interactArmorStandWrapper;
     }
 
     /**
@@ -163,11 +147,6 @@ public class Hologram {
         }
         wrappers.clear();
 
-        if (interactArmorStandWrapper != null) {
-            interactArmorStandWrapper.remove();
-        }
-        interactArmorStandWrapper = null;
-
         exists = false;
         HOLOGRAMS.remove(this);
     }
@@ -184,10 +163,6 @@ public class Hologram {
     private void togglePlayer(Player p, boolean visible) {
         for (ArmorStandWrapper wrapper : wrappers) {
             wrapper.setVisible(p, visible);
-        }
-
-        if (interactArmorStandWrapper != null) {
-            interactArmorStandWrapper.setVisible(p, visible);
         }
     }
 

@@ -15,7 +15,6 @@ import de.epiceric.shopchest.external.PlotSquaredShopFlag.GroupFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
-import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.ShopProduct;
@@ -39,16 +38,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -455,77 +450,10 @@ public class ShopInteractListener implements Listener {
         }
     }
 
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(e.getPlayer())) return;
         handleInteractEvent(e);
-    }
-
-    @EventHandler
-    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent e) {
-        if (!Config.enableHologramInteraction) return;
-
-        Entity entity = e.getRightClicked();
-        Player p = e.getPlayer();
-        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(p)) return;
-
-        if (Utils.getMajorVersion() == 8 || e.getHand() == EquipmentSlot.HAND) {
-            if (entity instanceof ArmorStand) {
-                ArmorStand armorStand = (ArmorStand) entity;
-                if (Hologram.isPartOfHologram(armorStand)) {
-                    Hologram hologram = Hologram.getHologram(armorStand);
-                    if (hologram != null) {
-                        Block b = null;
-                        for (Shop shop : plugin.getShopUtils().getShops()) {
-                            if (shop.getHologram() != null && shop.getHologram().equals(hologram)) {
-                                b = shop.getLocation().getBlock();
-                            }
-                        }
-
-                        if (b != null) {
-                            PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null);
-                            handleInteractEvent(interactEvent);
-                        }
-
-                    }
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerDamageEntity(EntityDamageByEntityEvent e) {
-        if (!Config.enableHologramInteraction) return;
-
-        Entity entity = e.getEntity();
-        Entity damager = e.getDamager();
-
-        if (!(damager instanceof Player)) return;
-        Player p = (Player) damager;
-        if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(p)) return;
-
-        if (entity instanceof ArmorStand) {
-            ArmorStand armorStand = (ArmorStand) entity;
-            if (Hologram.isPartOfHologram(armorStand)) {
-                Hologram hologram = Hologram.getHologram(armorStand);
-                if (hologram != null) {
-                    Block b = null;
-                    for (Shop shop : plugin.getShopUtils().getShops()) {
-                        if (shop.getHologram() != null && shop.getHologram().equals(hologram)) {
-                            b = shop.getLocation().getBlock();
-                        }
-                    }
-
-                    if (b != null) {
-                        PlayerInteractEvent interactEvent = new PlayerInteractEvent(p, Action.LEFT_CLICK_BLOCK, Utils.getPreferredItemInHand(p), b, null);
-                        handleInteractEvent(interactEvent);
-                        e.setCancelled(true);
-                    }
-
-                }
-            }
-        }
     }
 
     /**
