@@ -16,12 +16,17 @@ message.chest-blocked=&cThere must not be a block above the chest.
 # to create a double chest shop, but there is a block above the placed chest.
 message.double-chest-blocked=&cThere must not be a block above the chest.
 
-# Set the message when the clicked shop is removed.
+# Set the message when the clicked shop is removed but no refund was given.
 message.shop-removed=&6Shop removed.
+
+# Set the message when the clicked shop is removed and the player is refunded
+# the creation price.
+# Usable Placeholders: %CREATION-PRICE%
+message.shop-removed-refund=&6Shop removed. You were refunded &c%CREATION-PRICE%&6.
 
 # Set the message when all shops of a player were removed.
 # Usable Placeholders: %AMOUNT%, %VENDOR%
-message.all-shops-removed=&6Removed all (&c%AMOUNT%&6) shop/s of &c%VENDOR%&6.
+message.all-shops-removed=&6Removed all (&c%AMOUNT%&6) shops of &c%VENDOR%&6.
 
 # Set the message when the clicked chest is not a shop.
 message.chest-no-shop=&cChest is not a shop.

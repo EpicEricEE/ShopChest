@@ -2177,6 +2177,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(Message.CHEST_BLOCKED, langConfig.getString("message.chest-blocked", "&cThere must not be a block above the chest.")));
         messages.add(new LocalizedMessage(Message.DOUBLE_CHEST_BLOCKED, langConfig.getString("message.double-chest-blocked", "&cThere must not be a block above the chest.")));
         messages.add(new LocalizedMessage(Message.SHOP_REMOVED, langConfig.getString("message.shop-removed", "&6Shop removed.")));
+        messages.add(new LocalizedMessage(Message.SHOP_REMOVED_REFUND, langConfig.getString("message.shop-removed-refund", "&6Shop removed. You were refunded &c%CREATION-PRICE%&6.")));
         messages.add(new LocalizedMessage(Message.ALL_SHOPS_REMOVED, langConfig.getString("message.all-shops-removed", "&6Removed all (&c%AMOUNT%&6) shop/s of &c%VENDOR%&6.")));
         messages.add(new LocalizedMessage(Message.CHEST_NO_SHOP, langConfig.getString("message.chest-no-shop", "&cChest is not a shop.")));
         messages.add(new LocalizedMessage(Message.SHOP_CREATE_NOT_ENOUGH_MONEY, langConfig.getString("message.shop-create-not-enough-money", "&cNot enough money. You need &6%CREATION-PRICE% &cto create a shop.")));

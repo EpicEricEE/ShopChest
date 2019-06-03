@@ -64,19 +64,25 @@ public class ChestProtectListener implements Listener {
                 }
             });
         } else {
-            if (p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
-                double creationPrice = shop.getShopType() == ShopType.ADMIN ? Config.shopCreationPriceAdmin : Config.shopCreationPriceNormal;
+            double creationPrice = shop.getShopType() == ShopType.ADMIN ? Config.shopCreationPriceAdmin : Config.shopCreationPriceNormal;
+            if (creationPrice > 0 && Config.refundShopCreation && p.getUniqueId().equals(shop.getVendor().getUniqueId())) {
                 EconomyResponse r = plugin.getEconomy().depositPlayer(p, shop.getLocation().getWorld().getName(), creationPrice);
                 if (!r.transactionSuccess()) {
                     plugin.debug("Economy transaction failed: " + r.errorMessage);
                     p.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
                             new Replacement(Placeholder.ERROR, r.errorMessage)));
+                    p.sendMessage(LanguageUtils.getMessage(Message.SHOP_REMOVED_REFUND,
+                            new Replacement(Placeholder.CREATION_PRICE, 0)));
+                } else {
+                    p.sendMessage(LanguageUtils.getMessage(Message.SHOP_REMOVED_REFUND,
+                        new Replacement(Placeholder.CREATION_PRICE, creationPrice)));
                 }
+            } else {
+                p.sendMessage(LanguageUtils.getMessage(Message.SHOP_REMOVED));
             }   
 
             shopUtils.removeShop(shop, true);
             plugin.debug(String.format("%s broke %s's shop (#%d)", p.getName(), shop.getVendor().getName(), shop.getID()));
-            p.sendMessage(LanguageUtils.getMessage(Message.SHOP_REMOVED));
         }
     }
 
