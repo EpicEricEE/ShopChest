@@ -180,12 +180,9 @@ public class ShopChest extends JavaPlugin {
                 getLogger().warning("Plugin may still work, but more errors are expected!");
         }
 
-        loadExternalPlugins();
-
-        debug("Loading utils and extras...");
-        LanguageUtils.load();
-
+        shopUtils = new ShopUtils(this);
         saveResource("item_names.txt", true);
+        LanguageUtils.load();
 
         File hologramFormatFile = new File(getDataFolder(), "hologram-format.yml");
         if (!hologramFormatFile.exists()) {
@@ -193,16 +190,14 @@ public class ShopChest extends JavaPlugin {
         }
 
         hologramFormat = new HologramFormat(this);
-
-        loadMetrics();
-        initDatabase();
-        checkForUpdates();
-
-        shopUtils = new ShopUtils(this);
         shopCommand = new ShopCommand(this);
         shopCreationThreadPool = new ThreadPoolExecutor(0, 8,
                 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-
+        
+        loadExternalPlugins();
+        loadMetrics();
+        initDatabase();
+        checkForUpdates();
         registerListeners();
         registerExternalListeners();
         initializeShops();
@@ -214,6 +209,20 @@ public class ShopChest extends JavaPlugin {
     @Override
     public void onDisable() {
         debug("Disabling ShopChest...");
+
+        if (shopUtils == null) {
+            // Plugin has not been fully enabled (probably due to errors),
+            // so only close file writer.
+            if (fw != null && Config.enableDebugLog) {
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                    getLogger().severe("Failed to close FileWriter");
+                    e.printStackTrace();
+                }
+            }
+            return;
+        }
 
         ClickType.clear();
 
