@@ -20,7 +20,7 @@ language-file: "en_US"
 shop-info-item: "STICK"
 
 # Set whether buys or sells need to be confirmed by the player
-# in order to prevent accidens.
+# in order to prevent accidents.
 confirm-shopping: false
 
 # Set whether players should be able to select the shop item from the
