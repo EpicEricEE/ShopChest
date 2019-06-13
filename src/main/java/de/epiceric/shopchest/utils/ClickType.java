@@ -58,6 +58,10 @@ public class ClickType {
      */
     public static void removePlayerClickType(OfflinePlayer player) {
         UUID uuid = player.getUniqueId();
+        if (playerClickType.get(uuid) instanceof SelectClickType && player instanceof Player) {
+            // Reset gamemode player has select click type
+            ((Player) player).setGameMode(((SelectClickType) playerClickType.get(uuid)).gameMode);
+        }
         playerClickType.remove(uuid);
 
         // If a timer is still running, cancel it
@@ -73,6 +77,10 @@ public class ClickType {
      */
     public static void setPlayerClickType(OfflinePlayer player, ClickType clickType) {
         UUID uuid = player.getUniqueId();
+        if (playerClickType.get(uuid) instanceof SelectClickType && player instanceof Player) {
+            // Reset gamemode player has select click type
+            ((Player) player).setGameMode(((SelectClickType) playerClickType.get(uuid)).gameMode);
+        }
         playerClickType.put(uuid, clickType);
 
         // If a timer is already running, cancel it

@@ -54,7 +54,6 @@ public class CreativeModeListener implements Listener {
             ClickType.removePlayerClickType(p);
             ((SelectClickType) clickType).setItem(e.getCursor());
             p.closeInventory();
-            p.setGameMode(((SelectClickType) clickType).getGameMode());
 
             p.sendMessage(LanguageUtils.getMessage(Message.ITEM_SELECTED,
                     new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(e.getCursor()))));
@@ -75,7 +74,6 @@ public class CreativeModeListener implements Listener {
             return;
 
         ClickType.removePlayerClickType(p);
-        p.setGameMode(((SelectClickType) clickType).getGameMode());
         p.sendMessage(LanguageUtils.getMessage(Message.CREATION_CANCELLED));
     }
     
@@ -84,9 +82,6 @@ public class CreativeModeListener implements Listener {
         // Reset game mode on quit if SelectClickType is set
         Player p = e.getPlayer();
         ClickType ct = ClickType.getPlayerClickType(p);
-        if (ct instanceof SelectClickType) {
-            p.setGameMode(((SelectClickType) ct).getGameMode());
-        }
         ClickType.removePlayerClickType(p);
     }
 
