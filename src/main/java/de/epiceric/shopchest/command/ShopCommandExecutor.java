@@ -274,8 +274,11 @@ class ShopCommandExecutor implements CommandExecutor {
                 return;
             }
 
-            ClickType.setPlayerClickType(p, new SelectClickType(p.getGameMode(), amount, buyPrice, sellPrice, shopType));
-            p.setGameMode(GameMode.CREATIVE);
+            if (!(ClickType.getPlayerClickType(p) instanceof SelectClickType)) {
+                // Don't set previous game mode to creative if player already has select click type
+                ClickType.setPlayerClickType(p, new SelectClickType(p.getGameMode(), amount, buyPrice, sellPrice, shopType));
+                p.setGameMode(GameMode.CREATIVE);
+            }
 
             p.sendMessage(LanguageUtils.getMessage(Message.SELECT_ITEM));
         } else {
