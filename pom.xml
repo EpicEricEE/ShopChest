@@ -59,6 +59,10 @@
             <id>nlthijs48-repo</id>
             <url>http://maven.wiefferink.me</url>
         </repository>
+        <repository>
+            <id>articdive-repo</id>
+            <url>https://nexus.articdive.de/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -117,9 +121,8 @@
         <dependency>
             <groupId>com.palmergames</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.91.4.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Towny-0.91.4.0.jar</systemPath>
+            <version>0.93.1.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>pl.gnacik</groupId>
