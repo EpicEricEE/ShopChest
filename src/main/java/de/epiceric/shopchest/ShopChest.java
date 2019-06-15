@@ -307,6 +307,7 @@ public class ShopChest extends JavaPlugin {
         debug("Initializing Metrics...");
 
         Metrics metrics = new Metrics(this);
+        metrics.addCustomChart(new Metrics.SimplePie("creative_setting", () -> Config.creativeSelectItem ? "Enabled" : "Disabled"));
         metrics.addCustomChart(new Metrics.SimplePie("database_type", () -> Config.databaseType.toString()));
         metrics.addCustomChart(new Metrics.AdvancedPie("shop_type", () -> {
                 int normal = 0;
