@@ -79,11 +79,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>1.5</version>
-        </dependency>
-        <dependency>
             <groupId>fr.xephi</groupId>
             <artifactId>authme</artifactId>
             <version>5.4.0</version>
@@ -114,28 +109,35 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.codemc.worldguardwrapper</groupId>
-            <artifactId>worldguardwrapper</artifactId>
-            <version>1.1.6-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.palmergames</groupId>
             <artifactId>Towny</artifactId>
             <version>0.93.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>pl.gnacik</groupId>
-            <artifactId>IslandWorld</artifactId>
-            <version>7.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/IslandWorld-7.0.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>me.wiefferink</groupId>
             <artifactId>areashop</artifactId>
             <version>2.6.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.gnacik</groupId>
+            <artifactId>IslandWorld</artifactId>
+            <version>8.5</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/IslandWorld-8.5.jar</systemPath>
+        </dependency>
+        
+        <!-- Shaded dependencies -->
+        <dependency>
+            <groupId>org.codemc.worldguardwrapper</groupId>
+            <artifactId>worldguardwrapper</artifactId>
+            <version>1.1.6-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
