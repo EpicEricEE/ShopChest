@@ -20,6 +20,16 @@ public class SQLite extends Database {
 
     @Override
     HikariDataSource getDataSource() {
+        try {
+            // Initialize driver class so HikariCP can find it
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            plugin.getLogger().severe("Failed to initialize SQLite driver");
+            plugin.debug("Failed to initialize SQLite driver");
+            plugin.debug(e);
+            return null;
+        }
+
         File folder = plugin.getDataFolder();
         File dbFile = new File(folder, "shops.db");
 
@@ -30,6 +40,7 @@ public class SQLite extends Database {
                 plugin.getLogger().severe("Failed to create database file");
                 plugin.debug("Failed to create database file");
                 plugin.debug(ex);
+                return null;
             }
         }
         

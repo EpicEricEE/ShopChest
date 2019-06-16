@@ -228,6 +228,11 @@ public abstract class Database {
 
                 dataSource = getDataSource();
 
+                if (dataSource == null) {
+                    callback.onError(new SQLException("Failed to get data source"));
+                    return;
+                }
+
                 try (Connection con = dataSource.getConnection()) {
                     // Update database structure if necessary
                     update();
