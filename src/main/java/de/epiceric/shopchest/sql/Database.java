@@ -36,8 +36,6 @@ import java.util.UUID;
 import com.zaxxer.hikari.HikariDataSource;
 
 public abstract class Database {
-    private static final int DATABASE_VERSION = 2;
-
     private final Set<String> notFoundWorlds = new HashSet<>();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -65,9 +63,30 @@ public abstract class Database {
 
     abstract String getQueryGetTable();
 
+    private int getDatabaseVersion() throws SQLException {
+        try (Connection con = dataSource.getConnection()) {
+            try (Statement s = con.createStatement()) {
+                ResultSet rs = s.executeQuery("SELECT value FROM " + tableFields + " WHERE field='version'");
+                if (rs.next()) {
+                    return rs.getInt("value");
+                }
+            }
+        }
+        return 0;
+    }
+
+    private void setDatabaseVersion(int version) throws SQLException {
+        String queryUpdateVersion = "REPLACE INTO " + tableFields + " VALUES ('version', ?)";
+        try (Connection con = dataSource.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement(queryUpdateVersion)) {
+                ps.setInt(1, version);
+                ps.executeUpdate();
+            }
+        }
+    }
+
     private boolean update() throws SQLException {
         String queryGetTable = getQueryGetTable();
-        String queryUpdateVersion = "REPLACE INTO " + tableFields + " VALUES ('version', ?)";
 
         try (Connection con = dataSource.getConnection()) {
             boolean needsUpdate1 = false; // update "shop_log" to "economy_logs" and update "shops" with prefixes
@@ -191,15 +210,22 @@ public abstract class Database {
                 try (Statement s = con.createStatement()) {
                     s.executeUpdate(getQueryCreateTableFields());
                 }
+
+                setDatabaseVersion(2);
             }
             
-            // Set database version
-            try (PreparedStatement ps = con.prepareStatement(queryUpdateVersion)) {
-                ps.setInt(1, DATABASE_VERSION);
-                ps.executeUpdate();
+            int databaseVersion = getDatabaseVersion();
+
+            if (databaseVersion < 3) {
+                // plugin.getLogger().info("Updating database... (#3)");
+
+                // Update database structure...
+
+                // setDatabaseVersion(3);
             }
 
-            return needsUpdate1 || needsUpdate2;
+            int newDatabaseVersion = getDatabaseVersion();
+            return needsUpdate1 || needsUpdate2 || newDatabaseVersion > databaseVersion;
         }
     }
 
