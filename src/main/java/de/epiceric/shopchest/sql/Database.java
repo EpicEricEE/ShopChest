@@ -36,12 +36,14 @@ import java.util.UUID;
 import com.zaxxer.hikari.HikariDataSource;
 
 public abstract class Database {
+    private static final int DATABASE_VERSION = 2;
 
     private static Set<String> notFoundWorlds = new HashSet<>();
 
-    private String tableShops;
-    private String tableLogs;
-    private String tableLogouts;
+    String tableShops;
+    String tableLogs;
+    String tableLogouts;
+    String tableFields;
 
     ShopChest plugin;
     HikariDataSource dataSource;
@@ -52,9 +54,157 @@ public abstract class Database {
 
     abstract HikariDataSource getDataSource();
 
+    abstract String getQueryCreateTableShops();
+
+    abstract String getQueryCreateTableLog();
+
+    abstract String getQueryCreateTableLogout();
+
+    abstract String getQueryCreateTableFields();
+
+    abstract String getQueryGetTable();
+
+    private void update() throws SQLException {
+        String queryGetTable = getQueryGetTable();
+        String queryUpdateVersion = "REPLACE INTO " + tableFields + " VALUES ('version', ?)";
+
+        try (Connection con = dataSource.getConnection()) {
+            boolean needsUpdate1 = false; // update "shop_log" to "economy_logs" and update "shops" with prefixes
+            boolean needsUpdate2 = false; // create field table and set database version
+
+            try (PreparedStatement ps = con.prepareStatement(queryGetTable)) {
+                ps.setString(1, "shop_log");
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    needsUpdate1 = true;
+                }
+            }
+
+            try (PreparedStatement ps = con.prepareStatement(queryGetTable)) {
+                ps.setString(1, tableFields);
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    needsUpdate2 = true;
+                }
+            }
+
+            if (needsUpdate1) {
+                String queryRenameTableLogouts = "ALTER TABLE player_logout RENAME TO " + tableLogouts;
+                String queryRenameTableLogs = "ALTER TABLE shop_log RENAME TO backup_shop_log"; // for backup
+                String queryRenameTableShops = "ALTER TABLE shops RENAME TO backup_shops"; // for backup
+
+                plugin.getLogger().info("Updating database... (#1)");
+
+                // Rename logout table
+                try (Statement s = con.createStatement()) {
+                    s.executeUpdate(queryRenameTableLogouts);
+                }
+
+                // Backup shops table
+                try (Statement s = con.createStatement()) {
+                    s.executeUpdate(queryRenameTableShops);
+                }
+
+                // Backup log table
+                try (Statement s = con.createStatement()) {
+                    s.executeUpdate(queryRenameTableLogs);
+                }
+
+                // Create new shops table
+                try (Statement s = con.createStatement()) {
+                    s.executeUpdate(getQueryCreateTableShops());
+                }
+
+                // Create new log table
+                try (Statement s = con.createStatement()) {
+                    s.executeUpdate(getQueryCreateTableLog());
+                }
+
+                // Convert shop table
+                try (Statement s = con.createStatement()) {
+                    ResultSet rs = s.executeQuery("SELECT id,product FROM backup_shops");
+                    while (rs.next()) {
+                        ItemStack is = Utils.decode(rs.getString("product"));
+                        int amount = is.getAmount();
+                        is.setAmount(1);
+                        String product = Utils.encode(is);
+                        
+                        String insertQuery = "INSERT INTO " + tableShops + " SELECT id,vendor,?,?,world,x,y,z,buyprice,sellprice,shoptype FROM backup_shops WHERE id = ?";
+                        try (PreparedStatement ps = con.prepareStatement(insertQuery)) {
+                            ps.setString(1, product);
+                            ps.setInt(2, amount);
+                            ps.setInt(3, rs.getInt("id"));
+                            ps.executeUpdate();
+                        }
+                    }
+                }
+
+                // Convert log table
+                try (Statement s = con.createStatement()) {
+                    ResultSet rs = s.executeQuery("SELECT id,timestamp,executor,product,vendor FROM backup_shop_log");
+                    while (rs.next()) {
+                        String timestamp = rs.getString("timestamp");
+                        long time = 0L;
+
+                        try {
+                            time = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(timestamp).getTime();
+                        } catch (ParseException e) {
+                            plugin.debug("Failed to parse timestamp '" + timestamp + "': Time is set to 0");
+                            plugin.debug(e);
+                        }
+
+                        String player = rs.getString("executor");
+                        String playerUuid = player.substring(0, 36);
+                        String playerName = player.substring(38, player.length() - 1);
+
+                        String oldProduct = rs.getString("product");
+                        String product = oldProduct.split(" x ")[1];
+                        int amount = Integer.valueOf(oldProduct.split(" x ")[0]);
+
+                        String vendor = rs.getString("vendor");
+                        String vendorUuid = vendor.substring(0, 36);
+                        String vendorName = vendor.substring(38).replaceAll("\\)( \\(ADMIN\\))?", "");
+                        boolean admin = vendor.endsWith("(ADMIN)");
+                        
+                        String insertQuery = "INSERT INTO " + tableLogs + " SELECT id,-1,timestamp,?,?,?,?,'Unknown',?,?,?,?,world,x,y,z,price,type FROM backup_shop_log WHERE id = ?";
+                        try (PreparedStatement ps = con.prepareStatement(insertQuery)) {
+                            ps.setLong(1, time);
+                            ps.setString(2, playerName);
+                            ps.setString(3, playerUuid);
+                            ps.setString(4, product);
+                            ps.setInt(5, amount);
+                            ps.setString(6, vendorName);
+                            ps.setString(7, vendorUuid);
+                            ps.setBoolean(8, admin);
+                            ps.setInt(9, rs.getInt("id"));
+                            ps.executeUpdate();
+                        }
+                    }
+                }
+            }
+
+            if (needsUpdate2) {
+                plugin.getLogger().info("Updating database... (#2)");
+
+                // Create fields table
+                try (Statement s = con.createStatement()) {
+                    s.executeUpdate(getQueryCreateTableFields());
+                }
+            }
+            
+            // Set database version
+            try (PreparedStatement ps = con.prepareStatement(queryUpdateVersion)) {
+                ps.setInt(1, DATABASE_VERSION);
+                ps.executeUpdate();
+            }
+        }
+    }
+
     /**
-     * (Re-)Connects to the the database and initializes it. <br>
-     * Creates the table (if doesn't exist) and tests the connection
+     * <p>(Re-)Connects to the the database and initializes it.</p>
+     * 
+     * All tables are created if necessary and if the database
+     * structure has to be updated, that is done as well.
      * 
      * @param callback Callback that - if succeeded - returns the amount of shops
      *                 that were found (as {@code int})
@@ -69,6 +219,7 @@ public abstract class Database {
         this.tableShops = Config.databaseTablePrefix + "shops";
         this.tableLogs = Config.databaseTablePrefix + "economy_logs";
         this.tableLogouts = Config.databaseTablePrefix + "player_logouts";
+        this.tableFields = Config.databaseTablePrefix + "fields";
 
         new BukkitRunnable() {
             @Override
@@ -76,167 +227,29 @@ public abstract class Database {
                 disconnect();
 
                 dataSource = getDataSource();
-                
-                String autoIncrement = Database.this instanceof SQLite ? "AUTOINCREMENT" : "AUTO_INCREMENT";
 
-                String queryCreateTableShopList = 
-                        "CREATE TABLE IF NOT EXISTS " + tableShops + " ("
-                        + "id INTEGER PRIMARY KEY " + autoIncrement + ","
-                        + "vendor TINYTEXT NOT NULL,"
-                        + "product TEXT NOT NULL,"
-                        + "amount INTEGER NOT NULL,"
-                        + "world TINYTEXT NOT NULL,"
-                        + "x INTEGER NOT NULL,"
-                        + "y INTEGER NOT NULL,"
-                        + "z INTEGER NOT NULL,"
-                        + "buyprice FLOAT NOT NULL,"
-                        + "sellprice FLOAT NOT NULL,"
-                        + "shoptype TINYTEXT NOT NULL)";
-
-                String queryCreateTableShopLog = 
-                        "CREATE TABLE IF NOT EXISTS " + tableLogs + " ("
-                        + "id INTEGER PRIMARY KEY " + autoIncrement + ","
-                        + "shop_id INTEGER NOT NULL,"
-                        + "timestamp TINYTEXT NOT NULL,"
-                        + "time LONG NOT NULL,"
-                        + "player_name TINYTEXT NOT NULL,"
-                        + "player_uuid TINYTEXT NOT NULL,"
-                        + "product_name TINYTEXT NOT NULL,"
-                        + "product TEXT NOT NULL,"
-                        + "amount INTEGER NOT NULL,"
-                        + "vendor_name TINYTEXT NOT NULL,"
-                        + "vendor_uuid TINYTEXT NOT NULL,"
-                        + "admin BIT NOT NULL,"
-                        + "world TINYTEXT NOT NULL,"
-                        + "x INTEGER NOT NULL,"
-                        + "y INTEGER NOT NULL,"
-                        + "z INTEGER NOT NULL,"
-                        + "price FLOAT NOT NULL,"
-                        + "type TINYTEXT NOT NULL)";
-
-                String queryCreateTablePlayerLogout = 
-                        "CREATE TABLE IF NOT EXISTS " + tableLogouts + " ("
-                        + "player VARCHAR(36) PRIMARY KEY NOT NULL,"
-                        + "time LONG NOT NULL)";
-
-                String queryCheckIfOldFormat =
-                        Database.this instanceof SQLite ?
-                                "SELECT name FROM sqlite_master WHERE type='table' AND name='shop_log'" :
-                                "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='shop_log'";
-
-                String queryRenameTableLogouts = "ALTER TABLE player_logout RENAME TO " + tableLogouts;
-                String queryRenameTableLogs = "ALTER TABLE shop_log RENAME TO backup_shop_log"; // for backup
-                String queryRenameTableShops = "ALTER TABLE shops RENAME TO backup_shops"; // for backup
-                        
                 try (Connection con = dataSource.getConnection()) {
-                    // Check if database is in old format
-                    try (Statement s = con.createStatement()) {
-                        ResultSet rs = s.executeQuery(queryCheckIfOldFormat);
-                        if (rs.next()) {
-                            plugin.getLogger().warning("Database is using old format and will be converted.");
-
-                            try (Statement s2 = con.createStatement()) {
-                                s.executeUpdate(queryRenameTableShops);
-
-                                // Create new shops table
-                                try (Statement s3 = con.createStatement()) {
-                                    s3.executeUpdate(queryCreateTableShopList);
-                                }
-
-                                // Create new log table
-                                try (Statement s4 = con.createStatement()) {
-                                    s4.executeUpdate(queryCreateTableShopLog);
-                                }
-
-                                // Convert shop table
-                                try (Statement s3 = con.createStatement()) {
-                                    ResultSet rs2 = s3.executeQuery("SELECT id,product FROM backup_shops");
-                                    while (rs2.next()) {
-                                        ItemStack is = Utils.decode(rs2.getString("product"));
-                                        int amount = is.getAmount();
-                                        is.setAmount(1);
-                                        String product = Utils.encode(is);
-                                        
-                                        String insertQuery = "INSERT INTO " + tableShops + " SELECT id,vendor,?,?,world,x,y,z,buyprice,sellprice,shoptype FROM backup_shops WHERE id = ?";
-                                        try (PreparedStatement ps = con.prepareStatement(insertQuery)) {
-                                            ps.setString(1, product);
-                                            ps.setInt(2, amount);
-                                            ps.setInt(3, rs2.getInt("id"));
-                                            ps.executeUpdate();
-                                        }
-                                    }
-                                }
-
-                                // Convert log table
-                                try (Statement s3 = con.createStatement()) {
-                                    ResultSet rs2 = s3.executeQuery("SELECT id,timestamp,executor,product,vendor FROM shop_log");
-                                    while (rs2.next()) {
-                                        String timestamp = rs2.getString("timestamp");
-                                        long time = 0L;
-
-                                        try {
-                                            time = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(timestamp).getTime();
-                                        } catch (ParseException e) {
-                                            plugin.debug("Failed to parse timestamp '" + timestamp + "': Time is set to 0");
-                                            plugin.debug(e);
-                                        }
-
-                                        String player = rs2.getString("executor");
-                                        String playerUuid = player.substring(0, 36);
-                                        String playerName = player.substring(38, player.length() - 1);
-
-                                        String oldProduct = rs2.getString("product");
-                                        String product = oldProduct.split(" x ")[1];
-                                        int amount = Integer.valueOf(oldProduct.split(" x ")[0]);
-
-                                        String vendor = rs2.getString("vendor");
-                                        String vendorUuid = vendor.substring(0, 36);
-                                        String vendorName = vendor.substring(38).replaceAll("\\)( \\(ADMIN\\))?", "");
-                                        boolean admin = vendor.endsWith("(ADMIN)");
-                                        
-                                        String insertQuery = "INSERT INTO " + tableLogs + " SELECT id,-1,timestamp,?,?,?,?,'Unknown',?,?,?,?,world,x,y,z,price,type FROM shop_log WHERE id = ?";
-                                        try (PreparedStatement ps = con.prepareStatement(insertQuery)) {
-                                            ps.setLong(1, time);
-                                            ps.setString(2, playerName);
-                                            ps.setString(3, playerUuid);
-                                            ps.setString(4, product);
-                                            ps.setInt(5, amount);
-                                            ps.setString(6, vendorName);
-                                            ps.setString(7, vendorUuid);
-                                            ps.setBoolean(8, admin);
-                                            ps.setInt(9, rs2.getInt("id"));
-                                            ps.executeUpdate();
-                                        }
-                                    }
-                                }
-
-                                // Rename log table
-                                try (Statement s3 = con.createStatement()) {
-                                    s3.executeUpdate(queryRenameTableLogs);
-                                }
-
-                                // Rename logout table
-                                try (Statement s3 = con.createStatement()) {
-                                    s3.executeUpdate(queryRenameTableLogouts);
-                                }
-                            }
-                        }
-                    }
-                    
+                    // Update database structure if necessary
+                    update();
 
                     // Create shop table
                     try (Statement s = con.createStatement()) {
-                        s.executeUpdate(queryCreateTableShopList);
+                        s.executeUpdate(getQueryCreateTableShops());
                     }
 
                     // Create log table
                     try (Statement s = con.createStatement()) {
-                        s.executeUpdate(queryCreateTableShopLog);
+                        s.executeUpdate(getQueryCreateTableLog());
                     }
 
                     // Create logout table
                     try (Statement s = con.createStatement()) {
-                        s.executeUpdate(queryCreateTablePlayerLogout);
+                        s.executeUpdate(getQueryCreateTableLogout());
+                    }
+
+                    // Create fields table
+                    try (Statement s = con.createStatement()) {
+                        s.executeUpdate(getQueryCreateTableFields());
                     }
 
                     // Clean up economy log
@@ -245,7 +258,7 @@ public abstract class Database {
                     }
 
                     // Count shops entries in database
-                    try (Statement s = con.createStatement();) {
+                    try (Statement s = con.createStatement()) {
                         ResultSet rs = s.executeQuery("SELECT COUNT(id) FROM " + tableShops);
                         if (rs.next()) {
                             int count = rs.getInt(1);
@@ -264,8 +277,8 @@ public abstract class Database {
                         callback.callSyncError(e);
                     }
                     
-                    plugin.getLogger().severe("Failed to initialize database");
-                    plugin.debug("Failed to initialize database");
+                    plugin.getLogger().severe("Failed to initialize or connect to database");
+                    plugin.debug("Failed to initialize or connect to database");
                     plugin.debug(e);
                 }
             }
