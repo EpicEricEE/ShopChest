@@ -64,7 +64,7 @@ public abstract class Database {
 
     abstract String getQueryGetTable();
 
-    private void update() throws SQLException {
+    private boolean update() throws SQLException {
         String queryGetTable = getQueryGetTable();
         String queryUpdateVersion = "REPLACE INTO " + tableFields + " VALUES ('version', ?)";
 
@@ -197,6 +197,8 @@ public abstract class Database {
                 ps.setInt(1, DATABASE_VERSION);
                 ps.executeUpdate();
             }
+
+            return needsUpdate1 || needsUpdate2;
         }
     }
 
@@ -235,7 +237,9 @@ public abstract class Database {
 
                 try (Connection con = dataSource.getConnection()) {
                     // Update database structure if necessary
-                    update();
+                    if (update()) {
+                        plugin.getLogger().info("Updating database finished");
+                    }
 
                     // Create shop table
                     try (Statement s = con.createStatement()) {
