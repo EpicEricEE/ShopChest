@@ -444,6 +444,12 @@ public class ShopChest extends JavaPlugin {
                 getLogger().info("Initialized " + result + " Shops");
                 debug("Initialized " + result + " Shops");
             }
+
+            @Override
+            public void onError(Throwable throwable) {
+                // Database connection probably failed => disable plugin to prevent more errors
+                getServer().getPluginManager().disablePlugin(ShopChest.this);
+            }
         });
     }
 

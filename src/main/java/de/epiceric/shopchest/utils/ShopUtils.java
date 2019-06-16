@@ -3,6 +3,7 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
+
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
@@ -256,10 +257,13 @@ public class ShopUtils {
                     @Override
                     public void onError(Throwable throwable) {
                         if (callback != null) callback.callSyncError(throwable);
-                        plugin.debug("Error while adding shops");
-                        plugin.debug(throwable);
                     }
                 });
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                if (callback != null) callback.callSyncError(throwable);
             }
         });
     }

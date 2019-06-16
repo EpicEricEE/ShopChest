@@ -3,6 +3,8 @@ package de.epiceric.shopchest.listeners;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Callback;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -93,6 +95,12 @@ public class ShopUpdateListener implements Listener {
             public void onResult(Integer result) {
                 plugin.getLogger().info(String.format("Reloaded %d shops because a new world '%s' was loaded", result, worldName));
                 plugin.debug(String.format("Reloaded %d shops because a new world '%s' was loaded", result, worldName));
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                // Database connection probably failed => disable plugin to prevent more errors
+                Bukkit.getPluginManager().disablePlugin(plugin);
             }
         });
     }
