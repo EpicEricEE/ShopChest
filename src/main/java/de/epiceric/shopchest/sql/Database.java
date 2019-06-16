@@ -38,7 +38,8 @@ import com.zaxxer.hikari.HikariDataSource;
 public abstract class Database {
     private static final int DATABASE_VERSION = 2;
 
-    private static Set<String> notFoundWorlds = new HashSet<>();
+    private final Set<String> notFoundWorlds = new HashSet<>();
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     String tableShops;
     String tableLogs;
@@ -147,7 +148,7 @@ public abstract class Database {
                         long time = 0L;
 
                         try {
-                            time = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(timestamp).getTime();
+                            time = dateFormat.parse(timestamp).getTime();
                         } catch (ParseException e) {
                             plugin.debug("Failed to parse timestamp '" + timestamp + "': Time is set to 0");
                             plugin.debug(e);
@@ -487,7 +488,7 @@ public abstract class Database {
                         long millis = System.currentTimeMillis();
 
                         ps.setInt(1, shop.getID());
-                        ps.setString(2, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(millis));
+                        ps.setString(2, dateFormat.format(millis));
                         ps.setLong(3, millis);
                         ps.setString(4, executor.getName());
                         ps.setString(5, executor.getUniqueId().toString());
