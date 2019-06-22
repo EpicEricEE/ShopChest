@@ -376,76 +376,81 @@ public class Utils {
             Class<?> dataWatcherClass = getNMSClass("DataWatcher");
             Class<?> dataWatcherObjectClass = getNMSClass("DataWatcherObject");
 
-            byte flags = nmsItemStack == null ? (byte) (1 << 5) : 0; // invisible if armor stand
+            byte entityFlags = nmsItemStack == null ? (byte) 0b100000 : 0; // invisible if armor stand
+            byte armorStandFlags = nmsItemStack == null ? (byte) 0b10000 : 0; // marker (since 1.8_R2)
 
             Object dataWatcher = dataWatcherClass.getConstructor(entityClass).newInstance((Object) null);
             if (majorVersion < 9) {
+                if (getRevision() == 1) armorStandFlags = 0; // Marker not supported on 1.8_R1
+
                 Method a = dataWatcherClass.getMethod("a", int.class, Object.class);
-                a.invoke(dataWatcher, 0, flags); // flags
+                a.invoke(dataWatcher, 0, entityFlags); // flags
                 a.invoke(dataWatcher, 1, (short) 300); // air ticks (?)
                 a.invoke(dataWatcher, 3, (byte) (customName != null ? 1 : 0)); // custom name visible
                 a.invoke(dataWatcher, 2, customName != null ? customName : ""); // custom name
                 a.invoke(dataWatcher, 4, (byte) 1); // silent
-                a.invoke(dataWatcher, 10, nmsItemStack == null ? (byte) 1 : nmsItemStack); // item / no gravity
+                a.invoke(dataWatcher, 10, nmsItemStack == null ? armorStandFlags : nmsItemStack); // item / armor stand flags
             } else {
                 Method register = dataWatcherClass.getMethod("register", dataWatcherObjectClass, Object.class);
                 String[] dataWatcherObjectFieldNames;
 
                 if ("v1_9_R1".equals(version)) {
-                    dataWatcherObjectFieldNames = new String[] {"ax", "ay", "aA", "az", "aB", "a", "c"};
+                    dataWatcherObjectFieldNames = new String[] {"ax", "ay", "aA", "az", "aB", "a", "c", "a"};
                 } else if ("v1_9_R2".equals(version)){
-                    dataWatcherObjectFieldNames = new String[] {"ay", "az", "aB", "aA", "aC", "a", "c"};
+                    dataWatcherObjectFieldNames = new String[] {"ay", "az", "aB", "aA", "aC", "a", "c", "a"};
                 } else if ("v1_10_R1".equals(version)) {
-                    dataWatcherObjectFieldNames = new String[] {"aa", "az", "aB", "aA", "aC", "aD", "c"};
+                    dataWatcherObjectFieldNames = new String[] {"aa", "az", "aB", "aA", "aC", "aD", "c", "a"};
                 } else if ("v1_11_R1".equals(version)) {
-                    dataWatcherObjectFieldNames = new String[] {"Z", "az", "aB", "aA", "aC", "aD", "c"};
+                    dataWatcherObjectFieldNames = new String[] {"Z", "az", "aB", "aA", "aC", "aD", "c", "a"};
                 } else if ("v1_12_R1".equals(version) || "v1_12_R2".equals(version)) {
-                    dataWatcherObjectFieldNames = new String[] {"Z", "aA", "aC", "aB", "aD", "aE", "c"};
+                    dataWatcherObjectFieldNames = new String[] {"Z", "aA", "aC", "aB", "aD", "aE", "c", "a"};
                 } else if ("v1_13_R1".equals(version) || "v1_13_R2".equals(version)) {
-                    dataWatcherObjectFieldNames = new String[] {"ac", "aD", "aF", "aE", "aG", "aH", "b"};
+                    dataWatcherObjectFieldNames = new String[] {"ac", "aD", "aF", "aE", "aG", "aH", "b", "a"};
                 } else if ("v1_14_R1".equals(version)) {
-                    dataWatcherObjectFieldNames = new String[] {"W", "AIR_TICKS", "aA", "az", "aB", "aC", "ITEM"};
+                    dataWatcherObjectFieldNames = new String[] {"W", "AIR_TICKS", "aA", "az", "aB", "aC", "ITEM", "b"};
                 } else {
                     return null;
                 }
 
-                Class<?> f6Class = majorVersion < 9 ? entityArmorStandClass : entityClass;
+                Field fEntityFlags = entityClass.getDeclaredField(dataWatcherObjectFieldNames[0]);
+                Field fAirTicks = entityClass.getDeclaredField(dataWatcherObjectFieldNames[1]);
+                Field fNameVisible = entityClass.getDeclaredField(dataWatcherObjectFieldNames[2]);
+                Field fCustomName = entityClass.getDeclaredField(dataWatcherObjectFieldNames[3]);
+                Field fSilent = entityClass.getDeclaredField(dataWatcherObjectFieldNames[4]);
+                Field fNoGravity = entityClass.getDeclaredField(dataWatcherObjectFieldNames[5]);
+                Field fItem = entityItemClass.getDeclaredField(dataWatcherObjectFieldNames[6]);
+                Field fArmorStandFlags = entityArmorStandClass.getDeclaredField(dataWatcherObjectFieldNames[7]);
 
-                Field f1 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[0]);
-                Field f2 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[1]);
-                Field f3 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[2]);
-                Field f4 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[3]);
-                Field f5 = entityClass.getDeclaredField(dataWatcherObjectFieldNames[4]);
-                Field f6 = f6Class.getDeclaredField(dataWatcherObjectFieldNames[5]);
-                Field f7 = entityItemClass.getDeclaredField(dataWatcherObjectFieldNames[6]);
-
-                f1.setAccessible(true);
-                f2.setAccessible(true);
-                f3.setAccessible(true);
-                f4.setAccessible(true);
-                f5.setAccessible(true);
-                f6.setAccessible(true);
-                f7.setAccessible(true);
+                fEntityFlags.setAccessible(true);
+                fAirTicks.setAccessible(true);
+                fNameVisible.setAccessible(true);
+                fCustomName.setAccessible(true);
+                fSilent.setAccessible(true);
+                fNoGravity.setAccessible(true);
+                fItem.setAccessible(true);
+                fArmorStandFlags.setAccessible(true);
                 
-                register.invoke(dataWatcher, f1.get(null), flags); // flags
-                register.invoke(dataWatcher, f2.get(null), 300); // air ticks (?)
-                register.invoke(dataWatcher, f3.get(null), customName != null); // custom name visible
-                if (majorVersion < 13) register.invoke(dataWatcher, f4.get(null), customName != null ? customName : ""); // custom name
-                register.invoke(dataWatcher, f5.get(null), true); // silent
+                register.invoke(dataWatcher, fEntityFlags.get(null), entityFlags);
+                register.invoke(dataWatcher, fAirTicks.get(null), 300);
+                register.invoke(dataWatcher, fNameVisible.get(null), customName != null);
+                register.invoke(dataWatcher, fSilent.get(null), true);
+                if (majorVersion < 13) register.invoke(dataWatcher, fCustomName.get(null), customName != null ? customName : "");
                 
                 if (nmsItemStack != null) {
-                    register.invoke(dataWatcher, f7.get(null), majorVersion < 11 ? Optional.of(nmsItemStack) : nmsItemStack); // item
+                    register.invoke(dataWatcher, fItem.get(null), majorVersion < 11 ? Optional.of(nmsItemStack) : nmsItemStack);
+                } else {
+                    register.invoke(dataWatcher, fArmorStandFlags.get(null), armorStandFlags);
                 }
 
                 if (majorVersion >= 10 || nmsItemStack == null) {
-                    register.invoke(dataWatcher, f6.get(null), true); // no gravity
+                    register.invoke(dataWatcher, fNoGravity.get(null), true);
                     if (majorVersion >= 13) {
                         if (customName != null) {
                             Class<?> chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");
                             Object iChatBaseComponent = chatSerializerClass.getMethod("a", String.class).invoke(null, JsonBuilder.parse(customName).toString());
-                            register.invoke(dataWatcher, f4.get(null), Optional.of(iChatBaseComponent)); // custom name
+                            register.invoke(dataWatcher, fCustomName.get(null), Optional.of(iChatBaseComponent));
                         } else {
-                            register.invoke(dataWatcher, f4.get(null), Optional.empty()); // custom name
+                            register.invoke(dataWatcher, fCustomName.get(null), Optional.empty());
                         }
                     }
                 }
@@ -518,16 +523,21 @@ public class Utils {
                 entityType = entityTypesClass.getField(type == EntityType.ARMOR_STAND ? "ARMOR_STAND" : "ITEM").get(null);
             }
 
+            double y = loc.getY();
+            if (type == EntityType.ARMOR_STAND && !getServerVersion().equals("v1_8_R1")) {
+                // Marker armor stand => lift by normal armor stand height
+                y += 1.975;
+            }
+
             fields[0].set(packet, id);
             if (!isPre9) fields[1].set(packet, uuid);
             if (isPre9) {
                 fields[2].set(packet, (int)(loc.getX() * 32));
-                 // 1.8.x armor stands need to be lifted by 1 block
-                fields[3].set(packet, (int)((loc.getY() + (type == EntityType.ARMOR_STAND ? 1 : 0)) * 32));
+                fields[3].set(packet, (int)(y * 32));
                 fields[4].set(packet, (int)(loc.getZ() * 32));
             } else {
                 fields[2].set(packet, loc.getX());
-                fields[3].set(packet, loc.getY());
+                fields[3].set(packet, y);
                 fields[4].set(packet, loc.getZ());
             }
             fields[5].set(packet, 0);
