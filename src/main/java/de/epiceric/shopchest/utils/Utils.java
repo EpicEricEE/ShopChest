@@ -437,7 +437,7 @@ public class Utils {
                 if (majorVersion < 13) register.invoke(dataWatcher, fCustomName.get(null), customName != null ? customName : "");
                 
                 if (nmsItemStack != null) {
-                    register.invoke(dataWatcher, fItem.get(null), majorVersion < 11 ? Optional.of(nmsItemStack) : nmsItemStack);
+                    register.invoke(dataWatcher, fItem.get(null), majorVersion < 11 ? com.google.common.base.Optional.of(nmsItemStack) : nmsItemStack);
                 } else {
                     register.invoke(dataWatcher, fArmorStandFlags.get(null), armorStandFlags);
                 }
