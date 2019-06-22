@@ -395,9 +395,9 @@ public class Utils {
                 String[] dataWatcherObjectFieldNames;
 
                 if ("v1_9_R1".equals(version)) {
-                    dataWatcherObjectFieldNames = new String[] {"ax", "ay", "aA", "az", "aB", "a", "c", "a"};
+                    dataWatcherObjectFieldNames = new String[] {"ax", "ay", "aA", "az", "aB", null, "c", "a"};
                 } else if ("v1_9_R2".equals(version)){
-                    dataWatcherObjectFieldNames = new String[] {"ay", "az", "aB", "aA", "aC", "a", "c", "a"};
+                    dataWatcherObjectFieldNames = new String[] {"ay", "az", "aB", "aA", "aC", null, "c", "a"};
                 } else if ("v1_10_R1".equals(version)) {
                     dataWatcherObjectFieldNames = new String[] {"aa", "az", "aB", "aA", "aC", "aD", "c", "a"};
                 } else if ("v1_11_R1".equals(version)) {
@@ -417,7 +417,7 @@ public class Utils {
                 Field fNameVisible = entityClass.getDeclaredField(dataWatcherObjectFieldNames[2]);
                 Field fCustomName = entityClass.getDeclaredField(dataWatcherObjectFieldNames[3]);
                 Field fSilent = entityClass.getDeclaredField(dataWatcherObjectFieldNames[4]);
-                Field fNoGravity = entityClass.getDeclaredField(dataWatcherObjectFieldNames[5]);
+                Field fNoGravity = majorVersion >= 10 ? entityClass.getDeclaredField(dataWatcherObjectFieldNames[5]) : null;
                 Field fItem = entityItemClass.getDeclaredField(dataWatcherObjectFieldNames[6]);
                 Field fArmorStandFlags = entityArmorStandClass.getDeclaredField(dataWatcherObjectFieldNames[7]);
 
@@ -426,7 +426,7 @@ public class Utils {
                 fNameVisible.setAccessible(true);
                 fCustomName.setAccessible(true);
                 fSilent.setAccessible(true);
-                fNoGravity.setAccessible(true);
+                if (majorVersion >= 10) fNoGravity.setAccessible(true);
                 fItem.setAccessible(true);
                 fArmorStandFlags.setAccessible(true);
                 
@@ -442,7 +442,7 @@ public class Utils {
                     register.invoke(dataWatcher, fArmorStandFlags.get(null), armorStandFlags);
                 }
 
-                if (majorVersion >= 10 || nmsItemStack == null) {
+                if (majorVersion >= 10) {
                     register.invoke(dataWatcher, fNoGravity.get(null), true);
                     if (majorVersion >= 13) {
                         if (customName != null) {
