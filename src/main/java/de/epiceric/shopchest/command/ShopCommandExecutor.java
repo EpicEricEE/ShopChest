@@ -204,7 +204,9 @@ class ShopCommandExecutor implements CommandExecutor {
                 // Database connection probably failed => disable plugin to prevent more errors
                 sender.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, 
                         new Replacement(Placeholder.ERROR, "No database access: Disabling ShopChest")));
-                Bukkit.getPluginManager().disablePlugin(plugin);
+                plugin.getLogger().severe("No database access: Disabling ShopChest");
+                if (throwable != null) plugin.getLogger().severe(throwable.getMessage());
+                plugin.getServer().getPluginManager().disablePlugin(plugin);
             }
         });
     }

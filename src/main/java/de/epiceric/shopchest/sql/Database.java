@@ -255,10 +255,18 @@ public abstract class Database {
             public void run() {
                 disconnect();
 
-                dataSource = getDataSource();
+                try {
+                    dataSource = getDataSource();
+                } catch (Exception e) {
+                    callback.onError(e);
+                    plugin.debug(e);
+                    return;
+                }
 
                 if (dataSource == null) {
-                    callback.onError(new SQLException("Failed to get data source"));
+                    Exception e = new IllegalStateException("Data source is null");
+                    callback.onError(e);
+                    plugin.debug(e);
                     return;
                 }
 
@@ -719,6 +727,7 @@ public abstract class Database {
     public void disconnect() {
         if (dataSource != null) {
             dataSource.close();
+            dataSource = null;
         }
     }
 

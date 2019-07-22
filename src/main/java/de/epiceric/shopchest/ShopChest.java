@@ -448,6 +448,8 @@ public class ShopChest extends JavaPlugin {
             @Override
             public void onError(Throwable throwable) {
                 // Database connection probably failed => disable plugin to prevent more errors
+                getLogger().severe("No database access. Disabling ShopChest");
+                if (throwable != null) getLogger().severe(throwable.getMessage());
                 getServer().getPluginManager().disablePlugin(ShopChest.this);
             }
         });

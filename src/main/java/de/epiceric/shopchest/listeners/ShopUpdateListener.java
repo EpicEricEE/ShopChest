@@ -4,7 +4,6 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Callback;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,11 +52,9 @@ public class ShopUpdateListener implements Listener {
         final Player p = e.getPlayer();
 
         // Wait till the chunk should have loaded on the client
-        // Update IF worlds are different OR chunks are different (as many teleports are in same chunk)
         if (!from.getWorld().getName().equals(to.getWorld().getName())
                 || from.getChunk().getX() != to.getChunk().getX()
                 || from.getChunk().getZ() != to.getChunk().getZ()) {
-            // Wait for 15 ticks before we actually put it in the queue
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -71,7 +68,6 @@ public class ShopUpdateListener implements Listener {
                                     shop.getHologram().hidePlayer(p);
                                 }
                             }
-                            // so next update will update correctly
                             plugin.getShopUtils().resetPlayerLocation(p);
                         }
                     });
@@ -100,7 +96,9 @@ public class ShopUpdateListener implements Listener {
             @Override
             public void onError(Throwable throwable) {
                 // Database connection probably failed => disable plugin to prevent more errors
-                Bukkit.getPluginManager().disablePlugin(plugin);
+                plugin.getLogger().severe("No database access. Disabling ShopChest");
+                if (throwable != null) plugin.getLogger().severe(throwable.getMessage());
+                plugin.getServer().getPluginManager().disablePlugin(plugin);
             }
         });
     }
