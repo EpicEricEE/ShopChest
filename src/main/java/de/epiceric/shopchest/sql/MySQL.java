@@ -20,7 +20,7 @@ public class MySQL extends Database {
     @Override
     HikariDataSource getDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(String.format("jdbc:mysql://%s:%d/%s?autoReconnect=true&useSSL=false",
+        config.setJdbcUrl(String.format("jdbc:mysql://%s:%d/%s?autoReconnect=true&useSSL=false&serverTimezone=UTC",
                 Config.databaseMySqlHost, Config.databaseMySqlPort, Config.databaseMySqlDatabase));
         config.setUsername(Config.databaseMySqlUsername);
         config.setPassword(Config.databaseMySqlPassword);
