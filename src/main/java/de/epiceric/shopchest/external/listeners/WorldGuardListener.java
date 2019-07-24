@@ -70,6 +70,11 @@ public class WorldGuardListener implements Listener {
     // }
 
     private boolean handleForLocation(Player player, Location loc, Cancellable e, IWrappedFlag<WrappedState> flag) {
+        if (flag == null) {
+            // Flag may have not been registered successfully, so ignore them.
+            return false;
+        }
+
         WrappedState state = wgWrapper.queryFlag(player, loc, flag).orElse(WrappedState.DENY);
         if (state == WrappedState.DENY) {
             e.setCancelled(true);
@@ -82,8 +87,8 @@ public class WorldGuardListener implements Listener {
     private IWrappedFlag<WrappedState> getStateFlag(String flagName) {
         Optional<IWrappedFlag<WrappedState>> flagOptional = wgWrapper.getFlag(flagName, WrappedState.class);
         if (!flagOptional.isPresent()) {
-            plugin.getLogger().severe("Failed to get WorldGuard flag '" + flagName + "'.");
-            plugin.debug("WorldGuard flag '" + flagName + "' is not present!");
+            plugin.getLogger().severe("Failed to get WorldGuard state flag '" + flagName + "'.");
+            plugin.debug("WorldGuard state flag '" + flagName + "' is not present!");
             return null;
         }
         return flagOptional.get();
