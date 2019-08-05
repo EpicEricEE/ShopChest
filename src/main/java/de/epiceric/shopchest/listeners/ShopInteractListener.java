@@ -443,8 +443,6 @@ public class ShopInteractListener implements Listener {
                         p.sendMessage(LanguageUtils.getMessage(Message.SELLING_DISABLED));
                         plugin.debug("Selling is disabled");
                     }
-                } else {
-                    e.setCancelled(false);
                 }
             }
         }
