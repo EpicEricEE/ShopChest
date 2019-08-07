@@ -57,7 +57,7 @@ public class AreaShopListener implements Listener {
 
             for (IWrappedRegion r : WorldGuardWrapper.getInstance().getRegions(shop.getLocation())) {
                 if (generalRegion.getLowerCaseName().equals(r.getId())) {
-                    plugin.getShopUtils().removeShop(shop, true);
+                    plugin.getShopUtils().removeShopById(shop.getID(), true);
                     break;
                 }
             }

@@ -15,6 +15,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ShopUtils {
 
@@ -114,10 +115,11 @@ public class ShopUtils {
         addShop(shop, addToDatabase, null);
     }
 
-    /** Remove a shop
+    /** Remove a shop. May not work properly if double chest doesn't exist!
      * @param shop Shop to remove
      * @param removeFromDatabase Whether the shop should also be removed from the database
      * @param callback Callback that - if succeeded - returns null
+     * @see ShopUtils#removeShopById(int, boolean, Callback)
      */
     public void removeShop(Shop shop, boolean removeFromDatabase, Callback<Void> callback) {
         plugin.debug("Removing shop (#" + shop.getID() + ")");
@@ -146,12 +148,55 @@ public class ShopUtils {
     }
 
     /**
-     * Remove a shop
+     * Remove a shop. May not work properly if double chest doesn't exist!
      * @param shop Shop to remove
      * @param removeFromDatabase Whether the shop should also be removed from the database
+     * @see ShopUtils#removeShopById(int, boolean)
      */
     public void removeShop(Shop shop, boolean removeFromDatabase) {
         removeShop(shop, removeFromDatabase, null);
+    }
+
+    /**
+     * Remove a shop by its ID
+     * @param shopId ID of the shop to remove
+     * @param removeFromDatabase Whether the shop should also be removed from the database
+     * @param callback Callback that - if succeeded - returns null
+     */
+    public void removeShopById(int shopId, boolean removeFromDatabase, Callback<Void> callback) {
+        Map<Location, Shop> toRemove = shopLocation.entrySet().stream()
+                .filter(e -> e.getValue().getID() == shopId)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        plugin.debug(String.format("Removing %d shop(s) with ID %d", toRemove.size(), shopId));
+
+        if (toRemove.isEmpty()) {
+            if (callback != null) callback.callSyncResult(null);
+            return;
+        }
+
+        toRemove.forEach((loc, shop) -> {
+            shopLocation.remove(loc);
+
+            shop.removeItem();
+            shop.removeHologram();
+        });
+
+        // Database#removeShop removes shop by ID so this only needs to be called once
+        if (removeFromDatabase) {
+            plugin.getShopDatabase().removeShop(toRemove.values().iterator().next(), callback);
+        } else {
+            if (callback != null) callback.callSyncResult(null);
+        }
+    }
+
+    /**
+     * Remove a shop by its ID
+     * @param shopId ID of the shop to remove
+     * @param removeFromDatabase Whether the shop should also be removed from the database
+     */
+    public void removeShopById(int shopId, boolean removeFromDatabase) {
+        removeShopById(shopId, removeFromDatabase, null);
     }
 
     /**
