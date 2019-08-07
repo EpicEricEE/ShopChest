@@ -81,7 +81,6 @@ public class CreativeModeListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         // Reset game mode on quit if SelectClickType is set
         Player p = e.getPlayer();
-        ClickType ct = ClickType.getPlayerClickType(p);
         ClickType.removePlayerClickType(p);
     }
 
