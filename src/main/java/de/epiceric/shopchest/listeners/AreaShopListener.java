@@ -52,7 +52,7 @@ public class AreaShopListener implements Listener {
     private void removeShopsInRegion(GeneralRegion generalRegion) {
         if (!plugin.hasWorldGuard()) return;
 
-        for (Shop shop : plugin.getShopUtils().getShops()) {
+        for (Shop shop : plugin.getShopUtils().getShopsCopy()) {
             if (!shop.getLocation().getWorld().getName().equals(generalRegion.getWorldName())) continue;
 
             for (IWrappedRegion r : WorldGuardWrapper.getInstance().getRegions(shop.getLocation())) {
