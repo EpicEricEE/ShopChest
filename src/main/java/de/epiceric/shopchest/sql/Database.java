@@ -5,7 +5,6 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.ShopBuySellEvent;
 import de.epiceric.shopchest.event.ShopBuySellEvent.Type;
 import de.epiceric.shopchest.exceptions.WorldNotFoundException;
-import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
@@ -526,7 +525,7 @@ public abstract class Database {
                         ps.setLong(3, millis);
                         ps.setString(4, executor.getName());
                         ps.setString(5, executor.getUniqueId().toString());
-                        ps.setString(6, LanguageUtils.getItemName(product.getItemStack()));
+                        ps.setString(6, product.getLocalizedName());
                         ps.setString(7, Utils.encode(product.getItemStack()));
                         ps.setInt(8, product.getAmount());
                         ps.setString(9, shop.getVendor().getName());

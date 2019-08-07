@@ -279,7 +279,7 @@ public class Shop {
         Map<Placeholder, Object> placeholders = new EnumMap<>(Placeholder.class);
         placeholders.put(Placeholder.VENDOR, getVendor().getName());
         placeholders.put(Placeholder.AMOUNT, getProduct().getAmount());
-        placeholders.put(Placeholder.ITEM_NAME, LanguageUtils.getItemName(itemStack));
+        placeholders.put(Placeholder.ITEM_NAME, getProduct().getLocalizedName());
         placeholders.put(Placeholder.ENCHANTMENT, LanguageUtils.getEnchantmentString(ItemUtils.getEnchantments(itemStack)));
         placeholders.put(Placeholder.BUY_PRICE, getBuyPrice());
         placeholders.put(Placeholder.SELL_PRICE, getSellPrice());

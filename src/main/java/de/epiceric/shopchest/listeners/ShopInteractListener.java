@@ -337,7 +337,7 @@ public class ShopInteractListener implements Listener {
                                             if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
                                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
                                                         new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
-                                                                new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(itemStack))));
+                                                                new Replacement(Placeholder.ITEM_NAME, shop.getProduct().getLocalizedName())));
                                             }
                                             plugin.debug("Shop is out of stock");
                                         }
@@ -639,7 +639,7 @@ public class ShopInteractListener implements Listener {
                 new Replacement(Placeholder.AMOUNT, String.valueOf(product.getAmount()))) + " ";
 
         String[] parts = productString.split(Placeholder.ITEM_NAME.toString());
-        String productName = LanguageUtils.getItemName(product.getItemStack());
+        String productName = product.getLocalizedName();
         String jsonItem = "";
         JsonBuilder jb = new JsonBuilder(plugin);
         JsonBuilder.PartArray rootArray = new JsonBuilder.PartArray();
@@ -806,14 +806,14 @@ public class ShopInteractListener implements Listener {
 
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
                             executor.sendMessage(LanguageUtils.getMessage(Message.BUY_SUCCESS, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                    new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                    new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
                                     new Replacement(Placeholder.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
 
                             if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                        new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName())));
                             }
 
@@ -848,7 +848,7 @@ public class ShopInteractListener implements Listener {
                         }.runTaskLater(plugin, 1L);
 
                         executor.sendMessage(LanguageUtils.getMessage(Message.BUY_SUCCESS_ADMIN, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice))));
+                                new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice))));
 
                         plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
                     }
@@ -969,14 +969,14 @@ public class ShopInteractListener implements Listener {
 
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
                             executor.sendMessage(LanguageUtils.getMessage(Message.SELL_SUCCESS, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                    new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
+                                    new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
                                     new Replacement(Placeholder.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
 
                             if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_SOLD, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                        new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName())));
                             }
 
@@ -1012,7 +1012,7 @@ public class ShopInteractListener implements Listener {
                         }.runTaskLater(plugin, 1L);
 
                         executor.sendMessage(LanguageUtils.getMessage(Message.SELL_SUCCESS_ADMIN, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                new Replacement(Placeholder.ITEM_NAME, LanguageUtils.getItemName(product)), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice))));
+                                new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice))));
 
                         plugin.debug(executor.getName() + " successfully sold (#" + shop.getID() + ")");
                     }
