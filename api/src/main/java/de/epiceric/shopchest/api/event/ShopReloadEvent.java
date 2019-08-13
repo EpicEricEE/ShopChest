@@ -6,7 +6,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player reloads the shops
+ * Called when the shops are reloaded by a command
+ * 
+ * @since 1.13
  */
 public class ShopReloadEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -19,7 +21,10 @@ public class ShopReloadEvent extends Event implements Cancellable {
     }
 
     /**
-     * @return Sender who triggered the reload
+     * Gets the sender that entered the reload command
+     * 
+     * @return the sender
+     * @since 1.13
      */
     public CommandSender getSender() {
         return sender;

@@ -9,6 +9,11 @@ import org.bukkit.event.HandlerList;
 
 import java.util.List;
 
+/**
+ * Called when a player enters the command to remove all shops of a player
+ * 
+ * @since 1.13
+ */
 public class ShopRemoveAllEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
@@ -23,14 +28,34 @@ public class ShopRemoveAllEvent extends Event implements Cancellable {
         this.shops = shops;
     }
 
+    /**
+     * Gets the sender that entered the reload command
+     * 
+     * @return the sender
+     * @since 1.13
+     */
     public CommandSender getSender() {
         return sender;
     }
 
+    /**
+     * Gets the player whose shops will be removed
+     * 
+     * @return the vendor
+     * @since 1.13
+     */
     public OfflinePlayer getVendor() {
         return vendor;
     }
 
+    /**
+     * Gets the shops that will be removed
+     * <p>
+     * This list can be modified to include or exclude certain shops.
+     * 
+     * @return a modifiable list of shops
+     * @since 1.13
+     */
     public List<Shop> getShops() {
         return shops;
     }

@@ -7,6 +7,8 @@ import org.bukkit.event.Cancellable;
 
 /**
  * Called when a player buys or sells something from or to a shop
+ * 
+ * @since 1.13
  */
 public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     private Type type;
@@ -22,21 +24,30 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     }
 
     /**
-     * @return Whether the player buys or sells something
+     * Gets whether the type of transaction is a buy or a sell
+     * 
+     * @return the type of transaction
+     * @since 1.13
      */
     public Type getType() {
         return type;
     }
 
     /**
-     * @return The amount which might be modified because of automatic item amount calculation
+     * Gets the amount which might be modified because of automatic item amount calculation
+     * 
+     * @return the amount
+     * @since 1.13
      */
     public int getAmount() {
         return amount;
     }
 
     /**
-     * @return The price which might be modified because of automatic item amount calculation
+     * Gets the price which might be modified because of automatic item amount calculation
+     * 
+     * @return the price
+     * @since 1.13
      */
     public double getPrice() {
         return price;

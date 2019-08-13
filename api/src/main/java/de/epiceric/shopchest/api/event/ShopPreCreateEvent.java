@@ -8,7 +8,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player wants to create a shop (enters the command)
+ * Called when a player enters the command to create a shop
+ * 
+ * @since 1.13
  */
 public class ShopPreCreateEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -29,35 +31,50 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
     }
 
     /**
+     * Gets the player who is involved in this event
+     * 
      * @return the player
+     * @since 1.13
      */
     public Player getPlayer() {
         return player;
     }
 
     /**
+     * Gets the product the shop will sell or buy
+     * 
      * @return the product
+     * @since 1.13
      */
     public ShopProduct getProduct() {
         return product;
     }
 
     /**
-     * @return the buyPrice
+     * Gets the price for which players will be able to buy from the shop
+     * 
+     * @return the buy price
+     * @since 1.13
      */
     public double getBuyPrice() {
         return buyPrice;
     }
 
     /**
-     * @return the sellPrice
+     * Gets the price for which players will be able to sell to the shop
+     * 
+     * @return the sell price
+     * @since 1.13
      */
     public double getSellPrice() {
         return sellPrice;
     }
 
     /**
-     * @return the admin
+     * Gets whether the shop will be an admin shop
+     * 
+     * @return whether the shop will be an admin shop
+     * @since 1.13
      */
     public boolean isAdminShop() {
         return admin;
