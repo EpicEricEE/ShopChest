@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
 
 import de.epiceric.shopchest.api.ShopManager;
+import de.epiceric.shopchest.api.exceptions.ChestNotFoundException;
 
 /**
  * Represents a shop
@@ -33,7 +34,7 @@ public interface Shop {
     OfflinePlayer getVendor();
 
     /**
-     * Gets the product this shop is buying or selling
+     * Gets a copy of the product this shop is buying or selling
      * 
      * @return the product
      * @since 1.13
@@ -72,9 +73,10 @@ public interface Shop {
      * Gets the inventory of this shop's chest
      * 
      * @return the inventory
+     * @throws ChestNotFoundException when there is no chest at the shop's location
      * @since 1.13
      */
-    Inventory getInventory();
+    Inventory getInventory() throws ChestNotFoundException;
 
     /**
      * Gets whether this shop is an admin shop

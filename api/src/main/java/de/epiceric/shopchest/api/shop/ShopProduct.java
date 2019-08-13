@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 public interface ShopProduct {
 
     /**
-     * Gets the {@link ItemStack} with an amount of one
+     * Gets a copy of this product's {@link ItemStack} with an amount of one
      * 
      * @return the item
      * @since 1.13
@@ -18,9 +18,9 @@ public interface ShopProduct {
     ItemStack getItemStack();
 
     /**
-     * Sets the {@link ItemStack}
+     * Sets this product's {@link ItemStack}
      * <p>
-     * The passed item stack will be cloned and its amount set to one.
+     * The passed item stack will be copied and its amount set to one.
      * 
      * @param itemStack the item
      * @since 1.13
