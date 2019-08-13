@@ -1,6 +1,6 @@
 package de.epiceric.shopchest.api.event;
 
-import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.api.shop.Shop;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;

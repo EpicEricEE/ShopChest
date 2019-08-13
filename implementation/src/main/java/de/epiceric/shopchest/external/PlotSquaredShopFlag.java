@@ -43,7 +43,7 @@ public class PlotSquaredShopFlag {
     public static boolean isFlagAllowedOnPlot(Plot plot, GroupFlag flag, Player p) {
         if (plot != null && flag != null) {
             Group group = plot.getFlag(flag, PlotSquaredShopFlag.Group.NONE);
-            ShopChest.getInstance().debug("Flag " + flag.getName() + " is set to " + group);
+            //ShopChest.getInstance().debug("Flag " + flag.getName() + " is set to " + group);
 
             switch (group) {
                 case OWNERS:
@@ -59,7 +59,7 @@ public class PlotSquaredShopFlag {
             }
         }
 
-        ShopChest.getInstance().debug("Flag or plot is null, or value of flag is not a group");
+        //ShopChest.getInstance().debug("Flag or plot is null, or value of flag is not a group");
 
         return true;
     }

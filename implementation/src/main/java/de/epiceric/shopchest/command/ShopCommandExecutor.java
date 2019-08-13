@@ -150,7 +150,7 @@ class ShopCommandExecutor implements CommandExecutor {
 
         sender.sendMessage(LanguageUtils.getMessage(Message.UPDATE_CHECKING));
 
-        UpdateChecker uc = new UpdateChecker(ShopChest.getInstance());
+        UpdateChecker uc = new UpdateChecker(plugin);
         UpdateChecker.UpdateCheckerResult result = uc.check();
 
         if (result == UpdateChecker.UpdateCheckerResult.TRUE) {
