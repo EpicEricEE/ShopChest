@@ -1,7 +1,9 @@
 package de.epiceric.shopchest.api;
 
-import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import de.epiceric.shopchest.api.player.ShopPlayer;
 
 /**
  * The plugin's main entry point
@@ -18,13 +20,11 @@ public abstract class ShopChest extends JavaPlugin {
     public abstract ShopManager getShopManager();
 
     /**
-     * Gets the amount of shops the given player is allowed to have
-     * <p>
-     * If the player has no shop limit {@link Integer#MAX_VALUE} is returned.
+     * Gets the wrapped {@link ShopPlayer} for the given player
      * 
      * @param player the player
-     * @return the shop limit
+     * @return the wrapped player
      */
-    public abstract int getShopLimit(OfflinePlayer player);
+    public abstract ShopPlayer wrapPlayer(Player player);
     
 }

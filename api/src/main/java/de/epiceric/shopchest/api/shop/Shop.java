@@ -26,9 +26,9 @@ public interface Shop {
     int getId();
 
     /**
-     * Gets the player who created this shop
+     * Gets the player who owns this shop
      * 
-     * @return the vendor
+     * @return the vendor or {@code null} if this shop is an admin shop
      * @since 1.13
      */
     OfflinePlayer getVendor();
@@ -84,15 +84,9 @@ public interface Shop {
      * @return whether this shop is an admin shop
      * @since 1.13
      */
-    boolean isAdminShop();
-
-    /**
-     * Sets whether this shop is an admin shop
-     * 
-     * @param adminShop whether this shop should be an admin shop
-     * @since 1.13
-     */
-    void setAdminShop(boolean adminShop);
+    default boolean isAdminShop() {
+        return getVendor() == null;
+    }
 
     /**
      * Gets the price for which a player can buy the product from this shop
