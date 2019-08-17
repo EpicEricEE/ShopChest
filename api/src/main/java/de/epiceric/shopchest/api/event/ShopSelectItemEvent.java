@@ -1,22 +1,18 @@
 package de.epiceric.shopchest.api.event;
 
-import de.epiceric.shopchest.api.shop.ShopProduct;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import de.epiceric.shopchest.api.shop.ShopProduct;
+
 /**
- * Called when a player enters the command to create a shop
- * <p>
- * The player may have to select an item first, but may also close the
- * creative inventory to cancel shop creation.
+ * Called when a player has selected an item
  * 
- * @see ShopSelectItemEvent
  * @since 1.13
  */
-public class ShopPreCreateEvent extends Event implements Cancellable {
+public class ShopSelectItemEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private Player player;
@@ -26,12 +22,8 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
     private boolean admin;
     private boolean cancelled;
 
-    public ShopPreCreateEvent(Player player, ShopProduct product, double buyPrice, double sellPrice, boolean admin) {
+    public ShopSelectItemEvent(Player player) {
         this.player = player;
-        this.product = product;
-        this.buyPrice = buyPrice;
-        this.sellPrice = sellPrice;
-        this.admin = admin;
     }
 
     /**
@@ -45,9 +37,9 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
     }
 
     /**
-     * Gets the product the shop will sell or buy
+     * Gets the item the player has selected
      * 
-     * @return the product
+     * @return the item
      * @since 1.13
      */
     public ShopProduct getProduct() {
@@ -55,13 +47,13 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
     }
 
     /**
-     * Gets whether the item has already been selected
+     * Sets the item
      * 
-     * @return whether the item has been selected
+     * @param product the item
      * @since 1.13
      */
-    public boolean hasProduct() {
-        return getProduct() != null;
+    public void setProduct(ShopProduct product) {
+        this.product = product;
     }
 
     /**
