@@ -1,11 +1,10 @@
 package de.epiceric.shopchest.api.event;
 
-import de.epiceric.shopchest.api.shop.ShopProduct;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Called when a player enters the command to create a shop
@@ -20,15 +19,17 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private Player player;
-    private ShopProduct product;
+    private ItemStack itemStack;
+    private int amount;
     private double buyPrice;
     private double sellPrice;
     private boolean admin;
     private boolean cancelled;
 
-    public ShopPreCreateEvent(Player player, ShopProduct product, double buyPrice, double sellPrice, boolean admin) {
+    public ShopPreCreateEvent(Player player, ItemStack itemStack, int amount, double buyPrice, double sellPrice, boolean admin) {
         this.player = player;
-        this.product = product;
+        this.itemStack = itemStack;
+        this.amount = amount;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.admin = admin;
@@ -45,13 +46,23 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
     }
 
     /**
-     * Gets the product the shop will sell or buy
+     * Gets the item stack the shop will sell or buy
      * 
-     * @return the product
+     * @return the product or {@code null} if it has not been selected
      * @since 1.13
      */
-    public ShopProduct getProduct() {
-        return product;
+    public ItemStack getItemStack() {
+        return itemStack == null ? null : itemStack.clone();
+    }
+
+    /**
+     * Gets the amount of items the shop will sell or buy
+     * 
+     * @return the amount
+     * @since 1.13
+     */
+    public int getAmount() {
+        return amount;
     }
 
     /**
@@ -60,8 +71,8 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * @return whether the item has been selected
      * @since 1.13
      */
-    public boolean hasProduct() {
-        return getProduct() != null;
+    public boolean isItemSelected() {
+        return getItemStack() != null;
     }
 
     /**

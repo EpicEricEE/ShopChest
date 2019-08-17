@@ -4,8 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import de.epiceric.shopchest.api.shop.ShopProduct;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Called when a player has selected an item
@@ -16,14 +15,20 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private Player player;
-    private ShopProduct product;
+    private ItemStack item;
+    private int amount;
     private double buyPrice;
     private double sellPrice;
     private boolean admin;
     private boolean cancelled;
 
-    public ShopSelectItemEvent(Player player) {
+    public ShopSelectItemEvent(Player player, ItemStack item, int amount, double buyPrice, double sellPrice, boolean admin) {
         this.player = player;
+        this.item = item == null ? null : item.clone();
+        this.amount = amount;
+        this.buyPrice = buyPrice;
+        this.sellPrice = sellPrice;
+        this.admin = admin;
     }
 
     /**
@@ -42,18 +47,35 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * @return the item
      * @since 1.13
      */
-    public ShopProduct getProduct() {
-        return product;
+    public ItemStack getItem() {
+        return item;
     }
 
     /**
      * Sets the item
+     * <p>
+     * If {@code item} is {@code null}, the event will be cancelled.
      * 
-     * @param product the item
+     * @param item the item
      * @since 1.13
      */
-    public void setProduct(ShopProduct product) {
-        this.product = product;
+    public void setItem(ItemStack item) {
+        if (item == null) {
+            setCancelled(true);
+            this.item = null;
+        } else {
+            this.item = item.clone();
+        }
+    }
+
+    /**
+     * Gets the amount of items the player wants to sell or buy at the shop
+     * 
+     * @return the amount
+     * @since 1.13
+     */
+    public int getAmount() {
+        return amount;
     }
 
     /**
