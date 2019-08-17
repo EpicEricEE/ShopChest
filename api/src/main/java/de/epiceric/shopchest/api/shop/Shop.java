@@ -1,5 +1,7 @@
 package de.epiceric.shopchest.api.shop;
 
+import java.util.function.Consumer;
+
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -12,8 +14,8 @@ import de.epiceric.shopchest.api.exceptions.ChestNotFoundException;
  * Represents a shop
  * 
  * @since 1.13
- * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double)
- * @see ShopManager#addAdminShop(ShopProduct, Location, double, double)
+ * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double, Consumer, Consumer)
+ * @see ShopManager#addAdminShop(ShopProduct, Location, double, double, Consumer, Consumer)
  */
 public interface Shop {
 
@@ -21,6 +23,7 @@ public interface Shop {
      * Gets this shop's ID
      * 
      * @return the ID
+     * @throws IllegalStateException if the shop has not been added to the database yet
      * @since 1.13
      */
     int getId();

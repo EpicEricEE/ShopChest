@@ -2,14 +2,13 @@ package de.epiceric.shopchest.api;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
 import de.epiceric.shopchest.api.event.ShopReloadEvent;
-import de.epiceric.shopchest.api.exceptions.ChestNotFoundException;
-import de.epiceric.shopchest.api.exceptions.NoSpaceAboveChestException;
 import de.epiceric.shopchest.api.shop.Shop;
 import de.epiceric.shopchest.api.shop.ShopProduct;
 
@@ -70,20 +69,18 @@ public interface ShopManager {
      * When {@code sellPrice} is zero, a player cannot sell to the shop.
      * You cannot have {@code buyPrice} and {@code sellPrice} be zero.
      * 
-     * @param vendor    the shop's vendor
-     * @param product   the shop's product
-     * @param location  the shop's chest location.
-     *                  Can be either chest if it's on a double chest
-     * @param buyPrice  the price a player can buy the product for.
-     * @param sellPrice the price a player can sell the product for.
-     * @throws ChestNotFoundException when there is no chest at the given location
-     * @throws NoSpaceAboveChestException when there is no empty space above the chest
-     * @return the shop if created successfully or an empty optional if not
+     * @param vendor        the shop's vendor
+     * @param product       the shop's product
+     * @param location      the shop's chest location.
+     *                      Can be either chest if it's on a double chest
+     * @param buyPrice      the price a player can buy the product for.
+     * @param sellPrice     the price a player can sell the product for.
+     * @param callback      the callback returning the created shop on success
+     * @param errorCallback the callback returning the error if one occurred
      * @since 1.13
-     * @see ShopManager#addAdminShop(ShopProduct, Location, double, double)
+     * @see ShopManager#addAdminShop(ShopProduct, Location, double, double, Consumer, Consumer)
      */
-    Shop addShop(OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice)
-            throws ChestNotFoundException, NoSpaceAboveChestException;
+    void addShop(OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice, Consumer<Shop> callback, Consumer<Throwable> errorCallback);
 
     /**
      * Creates an admin shop and adds it to the database
@@ -92,43 +89,47 @@ public interface ShopManager {
      * When {@code sellPrice} is zero, a player cannot sell to the shop.
      * You cannot have {@code buyPrice} and {@code sellPrice} be zero.
      * 
-     * @param product   the shop's product
-     * @param location  the shop's chest location.
-     *                  Can be either chest if it's on a double chest
-     * @param buyPrice  the price a player can buy the product for.
-     * @param sellPrice the price a player can sell the product for.
-     * @throws ChestNotFoundException when there is no chest at the given location
-     * @throws NoSpaceAboveChestException when there is no empty space above the chest
-     * @return the created admin shop
+     * @param product       the shop's product
+     * @param location      the shop's chest location.
+     *                      Can be either chest if it's on a double chest
+     * @param buyPrice      the price a player can buy the product for.
+     * @param sellPrice     the price a player can sell the product for.
+     * @param callback      the callback returning the created shop on success
+     * @param errorCallback the callback returning the error if one occurred
      * @since 1.13
-     * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double)
+     * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double, Consumer, Consumer)
      */
-    Shop addAdminShop(ShopProduct product, Location location, double buyPrice, double sellPrice)
-            throws ChestNotFoundException, NoSpaceAboveChestException;
+    void addAdminShop(ShopProduct product, Location location, double buyPrice, double sellPrice, Consumer<Shop> callback, Consumer<Throwable> errorCallback);
 
     /**
      * Removes a shop from the database
      * 
      * @param shop the shop to remove
+     * @param callback      the callback returning nothing on success
+     * @param errorCallback the callback returning the error if one occurred
      * @since 1.13
      */
-    void removeShop(Shop shop);
+    void removeShop(Shop shop, Consumer<Void> callback, Consumer<Throwable> errorCallback);
     
     /**
      * Removes a shop from the database by its ID
      * 
      * @param shopId the id of the shop to remove
+     * @param callback      the callback returning nothing on success
+     * @param errorCallback the callback returning the error if one occurred
      * @since 1.13
      */
-    void removeShop(int shopId);
+    void removeShop(int shopId, Consumer<Void> callback, Consumer<Throwable> errorCallback);
 
     /**
      * Asynchronously reloads all shops from the database
      * <p>
      * This does not trigger the {@link ShopReloadEvent}.
      * 
+     * @param callback      the callback returning the amount of shops on success
+     * @param errorCallback the callback returning the error if one occurred
      * @since 1.13
      */
-    void reloadShops();
+    void reloadShops(Consumer<Integer> callback, Consumer<Throwable> errorCallback);
 
 }
