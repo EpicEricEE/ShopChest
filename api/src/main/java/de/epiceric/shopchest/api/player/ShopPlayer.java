@@ -45,7 +45,18 @@ public interface ShopPlayer {
      * @return whether this player has a flag
      * @since  1.13
      */
-    boolean hasFlag();
+    default boolean hasFlag() {
+        return getFlag() != null;
+    }
+
+    /**
+     * Removes this player's flag
+     * 
+     * @since 1.13
+     */
+    default void removeFlag() {
+        setFlag(null);
+    }
 
     /**
      * Gets the amount of shops the given player is allowed to have
