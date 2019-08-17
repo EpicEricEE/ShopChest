@@ -130,9 +130,12 @@ public abstract class ShopCommand {
      * @since 1.13
      */
     public void sendUsage(CommandSender sender) {
-        String format = "[green] /%s %s [white] - [yellow] %s"; // TODO: i18n
+        // Use same help format as in default bukkit help message
+        sender.sendMessage("§e--------- §fHelp: ShopChest §e-----------------------");
+        sender.sendMessage("§7Below is a list of all ShopChest commands:");
         subCommands.stream().filter(sub -> sub.canExecute(sender) && sub.isPermitted(sender))
-                .forEach(sub -> sender.sendMessage(String.format(format, sub.getName(), sub.getDescription())));
+                .forEach(sub -> sender.sendMessage(String.format("§6/%s %s: §f%s", getName(), sub.getName(),
+                        sub.getDescription())));
     }
 
 }
