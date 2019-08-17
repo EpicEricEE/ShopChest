@@ -110,16 +110,6 @@ public interface ShopManager {
      * @since 1.13
      */
     void removeShop(Shop shop, Consumer<Void> callback, Consumer<Throwable> errorCallback);
-    
-    /**
-     * Removes a shop from the database by its ID
-     * 
-     * @param shopId the id of the shop to remove
-     * @param callback      the callback returning nothing on success
-     * @param errorCallback the callback returning the error if one occurred
-     * @since 1.13
-     */
-    void removeShop(int shopId, Consumer<Void> callback, Consumer<Throwable> errorCallback);
 
     /**
      * Asynchronously reloads all shops from the database
