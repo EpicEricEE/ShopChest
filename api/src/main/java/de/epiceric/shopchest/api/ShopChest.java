@@ -3,6 +3,7 @@ package de.epiceric.shopchest.api;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.epiceric.shopchest.api.command.ShopCommand;
 import de.epiceric.shopchest.api.player.ShopPlayer;
 
 /**
@@ -34,4 +35,11 @@ public abstract class ShopChest extends JavaPlugin {
      * @return the formatted amount
      */
     public abstract String formatEconomy(double amount);
+
+    /**
+     * Gets the main command of this plugin
+     * 
+     * @return the shop command
+     */
+    public abstract ShopCommand getShopCommand();
 }
