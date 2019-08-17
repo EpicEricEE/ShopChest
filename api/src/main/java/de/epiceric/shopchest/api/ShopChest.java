@@ -26,5 +26,12 @@ public abstract class ShopChest extends JavaPlugin {
      * @return the wrapped player
      */
     public abstract ShopPlayer wrapPlayer(Player player);
-    
+
+    /**
+     * Gets a formatted String for the given amount of money
+     * 
+     * @param amount the amount of money
+     * @return the formatted amount
+     */
+    public abstract String formatEconomy(double amount);
 }
