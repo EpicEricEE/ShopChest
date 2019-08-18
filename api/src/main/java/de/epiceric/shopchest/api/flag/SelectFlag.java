@@ -72,7 +72,7 @@ public class SelectFlag implements Flag {
 
     @Override
     public void onRemove(ShopPlayer player) {
-        player.getPlayer().setGameMode(getGameMode());;
+        player.getBukkitPlayer().setGameMode(getGameMode());;
     }
 
 }
