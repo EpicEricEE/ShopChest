@@ -22,7 +22,7 @@ public interface ShopPlayer {
      * @return the wrapped player
      * @since 1.13
      */
-    Player getPlayer();
+    Player getBukkitPlayer();
 
     /**
      * Sends a (formatted) message to this player
@@ -34,7 +34,17 @@ public interface ShopPlayer {
      * @since 1.13
      */
     default void sendMessage(String message, Object... args) {
-        getPlayer().sendMessage(MessageFormat.format(message, args));
+        getBukkitPlayer().sendMessage(MessageFormat.format(message, args));
+    }
+
+    /**
+     * Gets whether this player has the given permission
+     * 
+     * @param permission the permission
+     * @return whether this player has the permission
+     */
+    default boolean hasPermission(String permission) {
+        return getBukkitPlayer().hasPermission(permission);
     }
 
     /**
@@ -91,4 +101,14 @@ public interface ShopPlayer {
      */
     Collection<Shop> getShops();
 
+    /**
+     * Gets whether this player is the vendor of the given shop
+     * 
+     * @param shop the shop
+     * @return whether this player is the vendor
+     */
+    default boolean ownsShop(Shop shop) {
+        return shop != null && !shop.isAdminShop()
+                && shop.getVendor().getUniqueId().equals(getBukkitPlayer().getUniqueId());
+    }
 }
