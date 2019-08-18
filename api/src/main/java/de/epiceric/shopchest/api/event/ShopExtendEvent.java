@@ -1,9 +1,9 @@
 package de.epiceric.shopchest.api.event;
 
+import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.api.shop.Shop;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 /**
@@ -15,7 +15,7 @@ public class ShopExtendEvent extends ShopEvent implements Cancellable {
     private boolean cancelled;
     private Location newChestLocation;
 
-    public ShopExtendEvent(Player player, Shop shop, Location newChest) {
+    public ShopExtendEvent(ShopPlayer player, Shop shop, Location newChest) {
         super(player, shop);
         this.newChestLocation = newChest;
     }

@@ -1,7 +1,7 @@
 package de.epiceric.shopchest.api.event;
 
+import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.api.shop.Shop;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 /**
@@ -12,7 +12,7 @@ import org.bukkit.event.Cancellable;
 public class ShopRemoveEvent extends ShopEvent implements Cancellable {
     private boolean cancelled;
 
-    public ShopRemoveEvent(Player player, Shop shop) {
+    public ShopRemoveEvent(ShopPlayer player, Shop shop) {
         super(player, shop);
     }
 

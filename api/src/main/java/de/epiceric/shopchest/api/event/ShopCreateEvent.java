@@ -1,7 +1,7 @@
 package de.epiceric.shopchest.api.event;
 
+import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.api.shop.Shop;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 /**
@@ -13,7 +13,7 @@ public class ShopCreateEvent extends ShopEvent implements Cancellable {
     private double creationPrice;
     private boolean cancelled;
 
-    public ShopCreateEvent(Player player, Shop shop, double creationPrice) {
+    public ShopCreateEvent(ShopPlayer player, Shop shop, double creationPrice) {
         super(player, shop);
         this.creationPrice = creationPrice;
     }

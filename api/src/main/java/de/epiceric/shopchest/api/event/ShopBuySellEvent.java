@@ -1,8 +1,8 @@
 package de.epiceric.shopchest.api.event;
 
+import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.api.shop.Shop;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 /**
@@ -16,7 +16,7 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     private double price;
     private boolean cancelled;
 
-    public ShopBuySellEvent(Player player, Shop shop, Type type, int amount, double price) {
+    public ShopBuySellEvent(ShopPlayer player, Shop shop, Type type, int amount, double price) {
         super(player, shop);
         this.type = type;
         this.amount = amount;

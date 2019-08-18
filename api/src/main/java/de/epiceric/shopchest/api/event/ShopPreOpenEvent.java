@@ -1,9 +1,10 @@
 package de.epiceric.shopchest.api.event;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import de.epiceric.shopchest.api.player.ShopPlayer;
 
 /**
  * Called when a player enters the command to open a shop
@@ -13,10 +14,10 @@ import org.bukkit.event.HandlerList;
 public class ShopPreOpenEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
-    private Player player;
+    private ShopPlayer player;
     private boolean cancelled;
 
-    public ShopPreOpenEvent(Player player) {
+    public ShopPreOpenEvent(ShopPlayer player) {
         this.player = player;
     }
 
@@ -26,7 +27,7 @@ public class ShopPreOpenEvent extends Event implements Cancellable {
      * @return the player
      * @since 1.13
      */
-    public Player getPlayer() {
+    public ShopPlayer getPlayer() {
         return player;
     }
 

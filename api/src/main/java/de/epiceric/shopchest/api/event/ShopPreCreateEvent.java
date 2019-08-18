@@ -1,10 +1,11 @@
 package de.epiceric.shopchest.api.event;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+
+import de.epiceric.shopchest.api.player.ShopPlayer;
 
 /**
  * Called when a player enters the command to create a shop
@@ -18,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 public class ShopPreCreateEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
-    private Player player;
+    private ShopPlayer player;
     private ItemStack itemStack;
     private int amount;
     private double buyPrice;
@@ -26,7 +27,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
     private boolean admin;
     private boolean cancelled;
 
-    public ShopPreCreateEvent(Player player, ItemStack itemStack, int amount, double buyPrice, double sellPrice, boolean admin) {
+    public ShopPreCreateEvent(ShopPlayer player, ItemStack itemStack, int amount, double buyPrice, double sellPrice, boolean admin) {
         this.player = player;
         this.itemStack = itemStack;
         this.amount = amount;
@@ -41,7 +42,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * @return the player
      * @since 1.13
      */
-    public Player getPlayer() {
+    public ShopPlayer getPlayer() {
         return player;
     }
 
