@@ -9,6 +9,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
 import de.epiceric.shopchest.api.event.ShopReloadEvent;
+import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.api.shop.Shop;
 import de.epiceric.shopchest.api.shop.ShopProduct;
 
@@ -50,6 +51,7 @@ public interface ShopManager {
      * @param vendor the player
      * @return a collection of shops
      * @since 1.13
+     * @see ShopPlayer#getShops()
      */
     Collection<Shop> getShops(OfflinePlayer vendor);
 
