@@ -4,9 +4,14 @@ import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.api.shop.Shop;
 
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.EventPriority;
 
 /**
  * Called when a player buys or sells something from or to a shop
+ * <p>
+ * The transaction takes place with {@link EventPriority#HIGHEST}.
+ * If the transaction fails, this should be checked in a listener with
+ * {@link EventPriority#MONITOR}.
  * 
  * @since 1.13
  */
