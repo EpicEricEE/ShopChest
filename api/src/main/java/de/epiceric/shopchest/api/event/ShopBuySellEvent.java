@@ -34,7 +34,8 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     }
 
     /**
-     * Gets the amount which might be modified because of automatic item amount calculation
+     * Gets the amount which might be modified because of automatic item amount
+     * calculation
      * 
      * @return the amount
      * @since 1.13
@@ -44,13 +45,39 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     }
 
     /**
-     * Gets the price which might be modified because of automatic item amount calculation
+     * Sets the amount of items the player will buy or sell
+     * <p>
+     * This might not be equal to the amount specified in {@link Shop#getProduct()}.
+     * 
+     * @param amount the amount
+     * @since 1.13
+     */
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    /**
+     * Gets the price the player and the vendor of the shop will pay or receive
+     * <p>
+     * This might not be equal to {@link Shop#getBuyPrice()} or
+     * {@link Shop#getSellPrice()}.
      * 
      * @return the price
      * @since 1.13
      */
     public double getPrice() {
         return price;
+    }
+
+    /**
+     * Sets the amount of money the player and the vendor of the shop will pay or
+     * receive
+     * 
+     * @param price the price
+     * @since 1.13
+     */
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     @Override
@@ -64,7 +91,6 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     }
 
     public enum Type {
-        BUY,
-        SELL;
+        BUY, SELL;
     }
 }
