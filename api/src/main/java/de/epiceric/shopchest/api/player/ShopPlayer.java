@@ -24,6 +24,16 @@ public interface ShopPlayer {
     Player getPlayer();
 
     /**
+     * Sends a (formatted) message to this player
+     * 
+     * @param message the message (a format string)
+     * @param args the arguments referenced by the format
+     */
+    default void sendMessage(String message, Object... args) {
+        getPlayer().sendMessage(String.format(message, args));
+    }
+
+    /**
      * Gets this player's flag
      * 
      * @return the flag or {@code null} if the player does not have one
