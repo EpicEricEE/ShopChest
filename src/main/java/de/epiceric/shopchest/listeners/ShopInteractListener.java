@@ -62,6 +62,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -627,16 +628,15 @@ public class ShopInteractListener implements Listener {
         if (shop.getShopType() != ShopType.ADMIN && shop.getSellPrice() > 0) executor.sendMessage(chestSpace);
         executor.sendMessage(priceString);
         executor.sendMessage(shopType);
-        if (essentials != null){
+        if (essentials != null) {
             User user = essentials.getUser(shop.getVendor().getUniqueId());
             long seen = user.getLastOnlineActivity();
-            int days = (int) (System.currentTimeMillis() - seen) / (1000*60*60*24);
-	        executor.sendMessage("§6Online: §eLast login was §a" + days + "§e ago.");
-
-            if (user.getConfigUUID().toString().equals("f05b6506-c11e-4fec-bc36-f260a01f3fcf")
-                    ||days>30){ // user is Magnum or chest expired // todo get from config
+            int days = (int) (System.currentTimeMillis() - seen) / (1000 * 60 * 60 * 24);
+            executor.sendMessage("§6Online: §eLast login was §a" + days + "§e ago.");
+            if ((Config.removeInactive) && (days > Config.inactiveDays)) {
+                Logger log = plugin.getLogger();
+                log.info("Removed inactive shop of " + user.getName());
                 remove(executor, shop);
-
                 executor.sendMessage("§cShop removed due to inactivity");
             }
         }

@@ -503,8 +503,8 @@ public class Config {
         defaultLimit = plugin.getConfig().getInt("shop-limits.default");
         mainCommandName = plugin.getConfig().getString("main-command-name");
         languageFile = plugin.getConfig().getString("language-file");
-        removeInactive = plugin.getConfig().getBoolean("enable-inactive-removal");
-        inactiveDays = plugin.getConfig().getInt("inactive-time");
+        removeInactive = plugin.getConfig().getBoolean("enable-inactive-removal",true);
+        inactiveDays = plugin.getConfig().getInt("inactive-time",30);
 
 
         if (firstLoad || langReload) loadLanguageConfig(showMessages);
