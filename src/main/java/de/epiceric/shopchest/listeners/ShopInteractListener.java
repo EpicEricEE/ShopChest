@@ -1,5 +1,7 @@
 package de.epiceric.shopchest.listeners;
 
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
 import com.github.intellectualsites.plotsquared.plot.object.Plot;
 import com.google.gson.JsonPrimitive;
 import de.epiceric.shopchest.ShopChest;
@@ -71,12 +73,14 @@ public class ShopInteractListener implements Listener {
     private Economy econ;
     private Database database;
     private ShopUtils shopUtils;
+    private Essentials essentials;
 
     public ShopInteractListener(ShopChest plugin) {
         this.plugin = plugin;
         this.econ = plugin.getEconomy();
         this.database = plugin.getShopDatabase();
         this.shopUtils = plugin.getShopUtils();
+        this.essentials = plugin.getEssentials();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -142,7 +146,7 @@ public class ShopInteractListener implements Listener {
             double buyPrice = clickType.getBuyPrice();
             double sellPrice = clickType.getSellPrice();
             ShopType shopType = clickType.getShopType();
-    
+
             create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
         }
 
@@ -162,10 +166,10 @@ public class ShopInteractListener implements Listener {
 
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK)
             return;
-        
+
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST)
             return;
-        
+
         ClickType clickType = ClickType.getPlayerClickType(p);
         if (clickType != null) {
             if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
@@ -176,7 +180,7 @@ public class ShopInteractListener implements Listener {
                 case CREATE:
                 case SELECT_ITEM:
                     break;
-                default: 
+                default:
                     if (shop == null) {
                         p.sendMessage(LanguageUtils.getMessage(Message.CHEST_NO_SHOP));
                         plugin.debug("Chest is not a shop");
@@ -206,7 +210,7 @@ public class ShopInteractListener implements Listener {
                 return;
 
             boolean confirmed = needsConfirmation.containsKey(p.getUniqueId()) && needsConfirmation.get(p.getUniqueId()).contains(shop.getID());
-            
+
             if (e.getAction() == Action.LEFT_CLICK_BLOCK && p.isSneaking() && Utils.hasAxeInHand(p)) {
                 return;
             }
@@ -271,7 +275,7 @@ public class ShopInteractListener implements Listener {
                                 WrappedState state = flag.map(f -> wgWrapper.queryFlag(p, b.getLocation(), f).orElse(WrappedState.DENY)).orElse(WrappedState.DENY);
                                 externalPluginsAllowed = state == WrappedState.ALLOW;
                             }
-                            
+
                             if (shop.getShopType() == ShopType.ADMIN) {
                                 if (externalPluginsAllowed || p.hasPermission(Permissions.BYPASS_EXTERNAL_PLUGIN)) {
                                     if (confirmed || !Config.confirmShopping) {
@@ -374,7 +378,7 @@ public class ShopInteractListener implements Listener {
 
                                 Plot plot = plotLocation.getOwnedPlot();
                                 GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
-                                
+
                                 externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
                             }
 
@@ -623,6 +627,19 @@ public class ShopInteractListener implements Listener {
         if (shop.getShopType() != ShopType.ADMIN && shop.getSellPrice() > 0) executor.sendMessage(chestSpace);
         executor.sendMessage(priceString);
         executor.sendMessage(shopType);
+        if (essentials != null){
+            User user = essentials.getUser(shop.getVendor().getUniqueId());
+            long seen = user.getLastOnlineActivity();
+            int days = (int) (System.currentTimeMillis() - seen) / (1000*60*60*24);
+	        executor.sendMessage("§6Online: §eLast login was §a" + days + "§e ago.");
+
+            if (user.getConfigUUID().toString().equals("f05b6506-c11e-4fec-bc36-f260a01f3fcf")
+                    ||days>30){ // user is Magnum or chest expired // todo get from config
+                remove(executor, shop);
+
+                executor.sendMessage("§cShop removed due to inactivity");
+            }
+        }
         executor.sendMessage(" ");
     }
 
@@ -643,10 +660,10 @@ public class ShopInteractListener implements Listener {
         String jsonItem = "";
         JsonBuilder jb = new JsonBuilder(plugin);
         JsonBuilder.PartArray rootArray = new JsonBuilder.PartArray();
-        
+
         try {
-            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");	
-            Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, product.getItemStack());	
+            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");
+            Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, product.getItemStack());
             Class<?> nbtTagCompoundClass = Utils.getNMSClass("NBTTagCompound");
             Object nbtTagCompound = nbtTagCompoundClass.getConstructor().newInstance();
             nmsStack.getClass().getMethod("save", nbtTagCompoundClass).invoke(nmsStack, nbtTagCompound);
@@ -680,7 +697,7 @@ public class ShopInteractListener implements Listener {
                 formatPrefix = colorMatcher.group(1);
                 lastColorGroupEndIndex = colorMatcher.end();
             }
-            
+
             Matcher formatMatcher = FORMAT_CODE_PATTERN.matcher(part);
             while (formatMatcher.find(lastColorGroupEndIndex)) {
                 formatPrefix += formatMatcher.group(1);
@@ -884,7 +901,7 @@ public class ShopInteractListener implements Listener {
 
         if (shop.getShopType() == ShopType.ADMIN || econ.getBalance(shop.getVendor(), worldName) >= price || Config.autoCalculateItemAmount) {
             int amountForMoney = 1;
-            
+
             if (shop.getShopType() != ShopType.ADMIN) {
                  amountForMoney = (int) (amount / price * econ.getBalance(shop.getVendor(), worldName));
             }

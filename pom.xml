@@ -59,6 +59,10 @@
             <id>nlthijs48-repo</id>
             <url>http://maven.wiefferink.me</url>
         </repository>
+        <repository>
+            <id>ess-repo</id>
+            <url>https://ci.ender.zone/plugin/repository/everything/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -124,7 +128,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/IslandWorld-8.5.jar</systemPath>
         </dependency>
-        
+        <dependency>
+            <groupId>net.ess3</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.17.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Shaded dependencies -->
         <dependency>
             <groupId>org.codemc.worldguardwrapper</groupId>

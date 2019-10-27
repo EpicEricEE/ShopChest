@@ -1,5 +1,6 @@
 package de.epiceric.shopchest;
 
+import com.earth2me.essentials.Essentials;
 import com.palmergames.bukkit.towny.Towny;
 import com.wasteofplastic.askyblock.ASkyBlock;
 import de.epiceric.shopchest.command.ShopCommand;
@@ -90,6 +91,7 @@ public class ShopChest extends JavaPlugin {
     private AreaShop areaShop;
     private ShopUpdater updater;
     private ExecutorService shopCreationThreadPool;
+    private Essentials essentials;
 
     /**
      * @return An instance of ShopChest
@@ -300,6 +302,10 @@ public class ShopChest extends JavaPlugin {
 
         if (hasPlotSquared()) {
             PlotSquaredShopFlag.register(this);
+        }
+        Plugin essPlugin = Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+        if (essPlugin instanceof Essentials){
+            essentials = (Essentials) getServer().getPluginManager().getPlugin("Essentials");
         }
     }
 
@@ -659,4 +665,8 @@ public class ShopChest extends JavaPlugin {
     public Config getShopChestConfig() {
         return config;
     }
+
+	public Essentials getEssentials() {
+		return essentials;
+	}
 }

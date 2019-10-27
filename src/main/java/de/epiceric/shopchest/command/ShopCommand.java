@@ -22,6 +22,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Shop command.
+ */
 public class ShopCommand {
 
     private static boolean commandCreated = false;
@@ -33,6 +36,11 @@ public class ShopCommand {
 
     private List<ShopSubCommand> subCommands = new ArrayList<>();
 
+    /**
+     * Instantiates a new Shop command.
+     *
+     * @param plugin the plugin
+     */
     public ShopCommand(final ShopChest plugin) {
         if (commandCreated) {
             IllegalStateException e = new IllegalStateException("Command has already been registered");
@@ -149,6 +157,11 @@ public class ShopCommand {
         commandCreated = true;
     }
 
+    /**
+     * Gets command.
+     *
+     * @return the command
+     */
     public PluginCommand getCommand() {
         return pluginCommand;
     }
@@ -156,6 +169,9 @@ public class ShopCommand {
     /**
      * Call the second part of the create method after the player
      * has selected an item from the creative inventory.
+     *
+     * @param player    the player
+     * @param clickType the click type
      */
     public void createShopAfterSelected(Player player, SelectClickType clickType) {
         executor.create2(player, clickType);
@@ -183,11 +199,21 @@ public class ShopCommand {
         return null;
     }
 
+    /**
+     * Add sub command.
+     *
+     * @param subCommand the sub command
+     */
     public void addSubCommand(ShopSubCommand subCommand) {
         plugin.debug("Adding sub command \"" + subCommand.getName() + "\"");
         this.subCommands.add(subCommand);
     }
 
+    /**
+     * Gets sub commands.
+     *
+     * @return the sub commands
+     */
     public List<ShopSubCommand> getSubCommands() {
         return new ArrayList<>(subCommands);
     }

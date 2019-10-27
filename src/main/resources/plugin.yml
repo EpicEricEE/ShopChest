@@ -6,7 +6,7 @@ version: ${project.version}
 author: EpicEric
 website: ${project.url}
 description: Create your own nice-looking chest shops and sell your stuff to other players!
-softdepend: [WorldGuard, Towny, AuthMe, PlotSquared, uSkyBlock, ASkyBlock, IslandWorld, GriefPrevention, AreaShop, Multiverse-Core, MultiWorld]
+softdepend: [WorldGuard, Towny, AuthMe, PlotSquared, uSkyBlock, ASkyBlock, IslandWorld, GriefPrevention, AreaShop, Multiverse-Core, MultiWorld, Essentials]
 depend: [Vault]
 api-version: 1.13
 
