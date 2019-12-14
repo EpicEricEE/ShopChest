@@ -108,7 +108,7 @@ public class JsonBuilder {
         }
     }
     
-    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fl-oL-OkK0-9])+)([^§]*)");
+    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fk-oK-OrR0-9])+)([^§]*)");
 
     private Part rootPart;
     private ShopChest plugin;
@@ -171,7 +171,7 @@ public class JsonBuilder {
                     case "":
                         break;
                     case "k":
-                        part.setValue("obuscated", new Part(true));
+                        part.setValue("obfuscated", new Part(true));
                         break;
                     case "l":
                         part.setValue("bold", new Part(true));
