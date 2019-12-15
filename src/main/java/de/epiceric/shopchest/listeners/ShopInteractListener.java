@@ -484,11 +484,13 @@ public class ShopInteractListener implements Listener {
             return;
         }
 
-        EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
-        if (!r.transactionSuccess()) {
-            plugin.debug("Economy transaction failed: " + r.errorMessage);
-            executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r.errorMessage)));
-            return;
+        if (creationPrice > 0) {
+            EconomyResponse r = plugin.getEconomy().withdrawPlayer(executor, location.getWorld().getName(), creationPrice);
+            if (!r.transactionSuccess()) {
+                plugin.debug("Economy transaction failed: " + r.errorMessage);
+                executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r.errorMessage)));
+                return;
+            }
         }
 
         shop.create(true);
