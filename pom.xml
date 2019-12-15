@@ -13,6 +13,7 @@
         <module>api</module>
         <module>implementation</module>
         <module>new-implementation</module>
+        <module>nms</module>
     </modules>
 
     <properties>
