@@ -68,9 +68,7 @@ public class ChestInteractListener implements Listener {
                 } else if (flag instanceof OpenFlag) {
                     ShopOpenEvent event = new ShopOpenEvent(player, shop);
                     plugin.getServer().getPluginManager().callEvent(event);
-                    if (event.isCancelled()) {
-                        e.setCancelled(true);
-                    }
+                    e.setCancelled(event.isCancelled());
                 } else if (flag instanceof CreateFlag) {
                     e.setCancelled(true);
                     player.sendMessage("§cThis chest already is a shop."); // TODO: i18n
