@@ -1946,6 +1946,16 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.valueOf("WALL_SIGN"), langConfig.getString("block.minecraft.wall_sign", "Wall Sign")));
         }
 
+        if (Utils.getMajorVersion() >= 15) {
+            itemNames.add(new ItemName(Material.BEE_NEST, langConfig.getString("block.minecraft.bee_nest", "Bee Nest")));
+            itemNames.add(new ItemName(Material.BEE_SPAWN_EGG, langConfig.getString("item.minecraft.bee_spawn_egg", "Bee Spawn Egg")));
+            itemNames.add(new ItemName(Material.BEEHIVE, langConfig.getString("block.minecraft.beehive", "Beehive")));
+            itemNames.add(new ItemName(Material.HONEY_BLOCK, langConfig.getString("block.minecraft.honey_block", "Honey Block")));
+            itemNames.add(new ItemName(Material.HONEY_BOTTLE, langConfig.getString("item.minecraft.honey_bottle", "Honey Bottle")));
+            itemNames.add(new ItemName(Material.HONEYCOMB, langConfig.getString("item.minecraft.honeycomb", "Honeycomb")));
+            itemNames.add(new ItemName(Material.HONEYCOMB_BLOCK, langConfig.getString("block.minecraft.honeycomb_block", "Honeycomb Block")));
+        }
+
         // Add Enchantment Names
         enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_ALL, langConfig.getString("enchantment.minecraft.sharpness", "Sharpness")));
         enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_UNDEAD, langConfig.getString("enchantment.minecraft.smite", "Smite")));
