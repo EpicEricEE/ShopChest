@@ -108,7 +108,7 @@ public class JsonBuilder {
         }
     }
     
-    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fl-oL-OkK0-9])+)([^§]*)");
+    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fk-oK-OrR0-9])+)([^§]*)");
 
     private Part rootPart;
     private ShopChest plugin;
@@ -147,7 +147,7 @@ public class JsonBuilder {
 
         matcher.reset();
 
-        PartArray array = new PartArray();
+        PartArray array = new PartArray(new Part());
         int lastEndIndex = 0;
 
         while (matcher.find()) {
