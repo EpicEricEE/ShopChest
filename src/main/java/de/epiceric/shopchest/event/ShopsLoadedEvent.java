@@ -1,24 +1,25 @@
 package de.epiceric.shopchest.event;
 
+import java.util.Collection;
+
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import de.epiceric.shopchest.shop.Shop;
+
 /**
- * @deprecated Use {@link ShopsLoadedEvent} instead since shops are loaded
- *             dynamically based on chunk loading
+ * Called when shops have been loaded and added to the server
  */
-@Deprecated
-public class ShopInitializedEvent extends Event {
-
+public class ShopsLoadedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private int amount;
+    private Collection<Shop> shops;
 
-    public ShopInitializedEvent(int amount) {
-        this.amount = amount;
+    public ShopsLoadedEvent(Collection<Shop> shops) {
+        this.shops = shops;
     }
 
-    public int getAmount() {
-        return amount;
+    public Collection<Shop> getShops() {
+        return shops;
     }
 
     public static HandlerList getHandlerList() {

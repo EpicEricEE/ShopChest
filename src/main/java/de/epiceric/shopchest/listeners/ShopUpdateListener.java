@@ -4,6 +4,10 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Callback;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,12 +16,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ShopUpdateListener implements Listener {
 
-    private ShopChest plugin;
+    private final ShopChest plugin;
+    private final Set<Chunk> newLoadedChunks = new HashSet<>();
 
     public ShopUpdateListener(ShopChest plugin) {
         this.plugin = plugin;
@@ -83,23 +89,55 @@ public class ShopUpdateListener implements Listener {
     }
 
     @EventHandler
-    public void onWorldLoad(WorldLoadEvent e) {
-        final String worldName = e.getWorld().getName();
+    public void onChunkLoad(ChunkLoadEvent e) {
+        if (!plugin.getShopDatabase().isInitialized()) {
+            return;
+        }
 
-        plugin.getShopUtils().reloadShops(false, false, new Callback<Integer>(plugin) {
-            @Override
-            public void onResult(Integer result) {
-                plugin.getLogger().info(String.format("Reloaded %d shops because a new world '%s' was loaded", result, worldName));
-                plugin.debug(String.format("Reloaded %d shops because a new world '%s' was loaded", result, worldName));
-            }
+        // Wait 10 ticks after first event is triggered, so that multiple
+        // chunk loads can be handled at the same time without having to
+        // send a database request for each chunk.
+        if (newLoadedChunks.isEmpty()) {
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    int chunkCount = newLoadedChunks.size();
+                    plugin.getShopUtils().loadShops(newLoadedChunks.toArray(new Chunk[chunkCount]), new Callback<Integer>(plugin) {
+                        @Override
+                        public void onResult(Integer result) {
+                            if (result == 0) {
+                                return;
+                            }
+                            plugin.debug("Loaded " + result + " shops in " + chunkCount + " chunks");
+                        }
+            
+                        @Override
+                        public void onError(Throwable throwable) {
+                            // Database connection probably failed => disable plugin to prevent more errors
+                            plugin.getLogger().severe("Failed to load shops in newly loaded chunks");
+                            plugin.debug("Failed to load shops in newly loaded chunks");
+                            if (throwable != null) plugin.debug(throwable);
+                        }
+                    });
+                    newLoadedChunks.clear();
+                }
+            }.runTaskLater(plugin, 10L);
+        }
 
-            @Override
-            public void onError(Throwable throwable) {
-                // Database connection probably failed => disable plugin to prevent more errors
-                plugin.getLogger().severe("No database access. Disabling ShopChest");
-                if (throwable != null) plugin.getLogger().severe(throwable.getMessage());
-                plugin.getServer().getPluginManager().disablePlugin(plugin);
-            }
-        });
+        newLoadedChunks.add(e.getChunk());
+    }
+
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent e) {
+        if (!plugin.getShopDatabase().isInitialized()) {
+            return;
+        }
+
+        int num = plugin.getShopUtils().unloadShops(e.getChunk());
+
+        if (num > 0) {
+            String chunkStr = "[" + e.getChunk().getX() + "; " + e.getChunk().getZ() + "]";
+            plugin.debug("Unloaded " + num + " shops in chunk " + chunkStr);
+        }
     }
 }

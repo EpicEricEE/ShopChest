@@ -2,8 +2,12 @@ package de.epiceric.shopchest.utils;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.event.ShopsLoadedEvent;
+import de.epiceric.shopchest.event.ShopsUnloadedEvent;
 import de.epiceric.shopchest.shop.Shop;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
@@ -246,6 +250,7 @@ public class ShopUtils {
      * @return The amount of a shops a player has (if {@link Config#excludeAdminShops} is true, admin shops won't be counted)
      */
     public int getShopAmount(OfflinePlayer p) {
+        // FIXME: currently only showing loaded shops
         float shopCount = 0;
 
         for (Shop shop : getShops()) {
@@ -265,52 +270,63 @@ public class ShopUtils {
     }
 
     /**
-     * Reload the shops
-     * @param reloadConfig Whether the configuration should also be reloaded
-     * @param showConsoleMessages Whether messages about the language file should be shown in the console
-     * @param callback Callback that - if succeeded - returns the amount of shops that were reloaded (as {@code int})
+     * Gets all shops in the given chunk from the database and adds them to the server
+     * @param chunk The chunk to load shops from
+     * @param callback Callback that returns the amount of shops added if succeeded
+     * @see ShopUtils#loadShops(Chunk[], Callback)
      */
-    public void reloadShops(boolean reloadConfig, final boolean showConsoleMessages, final Callback<Integer> callback) {
-        plugin.debug("Reloading shops...");
+    public void loadShops(final Chunk chunk, final Callback<Integer> callback) {
+        loadShops(new Chunk[] {chunk}, callback);
+    }
 
-        if (reloadConfig) {
-            plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
-            plugin.getHologramFormat().reload();
-            plugin.getUpdater().restart();
-        }
-
-        plugin.getShopDatabase().connect(new Callback<Integer>(plugin) {
+    /**
+     * Gets all shops in the given chunks from the database and adds them to the server
+     * @param chunk The chunks to load shops from
+     * @param callback Callback that returns the amount of shops added if succeeded
+     * @see ShopUtils#loadShops(Chunk Callback)
+     */
+    public void loadShops(final Chunk[] chunks, final Callback<Integer> callback) {
+        plugin.getShopDatabase().getShopsInChunks(chunks, new Callback<Collection<Shop>>(plugin) {
             @Override
-            public void onResult(Integer result) {
-                for (Shop shop : getShopsCopy()) {
-                    removeShop(shop, false);
-                    plugin.debug("Removed shop (#" + shop.getID() + ")");
+            public void onResult(Collection<Shop> result) {
+                for (Shop shop : result) {
+                    if (shop.create(true)) {
+                        addShop(shop, false);
+                    }
                 }
 
-                plugin.getShopDatabase().getShops(showConsoleMessages, new Callback<Collection<Shop>>(plugin) {
-                    @Override
-                    public void onResult(Collection<Shop> result) {
-                        for (Shop shop : result) {
-                            if (shop.create(showConsoleMessages)) {
-                                addShop(shop, false);
-                            }
-                        }
+                if (callback != null) callback.onResult(result.size());
 
-                        if (callback != null) callback.callSyncResult(result.size());
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        if (callback != null) callback.callSyncError(throwable);
-                    }
-                });
+                Bukkit.getPluginManager().callEvent(new ShopsLoadedEvent(result));
             }
 
             @Override
             public void onError(Throwable throwable) {
-                if (callback != null) callback.callSyncError(throwable);
+                if (callback != null) callback.onError(throwable);
             }
         });
+    }
+
+    /**
+     * Removes all shops from the given chunk from the server
+     * @param chunk The chunk containing the shops to unload
+     * @return The amount of shops that were unloaded
+     */
+    public int unloadShops(final Chunk chunk) {
+        Set<Shop> unloadedShops = new HashSet<>();
+
+        Iterator<Shop> iter = getShops().iterator();
+        while(iter.hasNext()) {
+            Shop shop = iter.next();
+            if (shop.getLocation().getChunk().equals(chunk)) {
+                removeShop(shop, false);
+                unloadedShops.add(shop);
+                plugin.debug("Unloaded shop (#" + shop.getID() + ")");
+            }
+        }
+        
+        Bukkit.getPluginManager().callEvent(new ShopsUnloadedEvent(Collections.unmodifiableCollection(unloadedShops)));
+        return unloadedShops.size();
     }
 
     /**

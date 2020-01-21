@@ -26,8 +26,10 @@ import de.epiceric.shopchest.utils.ClickType.CreateClickType;
 import de.epiceric.shopchest.utils.ClickType.SelectClickType;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,7 +38,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 class ShopCommandExecutor implements CommandExecutor {
 
@@ -191,12 +195,40 @@ class ShopCommandExecutor implements CommandExecutor {
             return;
         }
 
-        shopUtils.reloadShops(true, true, new Callback<Integer>(plugin) {
+        // Reload configurations
+        plugin.getShopChestConfig().reload(false, true, true);
+        plugin.getHologramFormat().reload();
+        plugin.getUpdater().restart();
+
+        // Remove all shops
+        Iterator<Shop> iter = shopUtils.getShops().iterator();
+        while (iter.hasNext()) {
+            shopUtils.removeShop(iter.next(), false);
+        }
+
+        Chunk[] loadedChunks = Bukkit.getWorlds().stream().map(World::getLoadedChunks)
+                .flatMap(Stream::of).toArray(Chunk[]::new);
+
+        // Reconnect to the database and re-load shops in loaded chunks
+        plugin.getShopDatabase().connect(new Callback<Integer>(plugin) {
             @Override
             public void onResult(Integer result) {
-                sender.sendMessage(LanguageUtils.getMessage(Message.RELOADED_SHOPS,
-                        new Replacement(Placeholder.AMOUNT, String.valueOf(result))));
-                plugin.debug(sender.getName() + " has reloaded " + result + " shops");
+                shopUtils.loadShops(loadedChunks, new Callback<Integer>(plugin) {
+                    @Override
+                    public void onResult(Integer result) {
+                        sender.sendMessage(LanguageUtils.getMessage(Message.RELOADED_SHOPS,
+                                new Replacement(Placeholder.AMOUNT, String.valueOf(result))));
+                        plugin.debug(sender.getName() + " has reloaded " + result + " shops");
+                    }
+        
+                    @Override
+                    public void onError(Throwable throwable) {
+                        sender.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, 
+                                new Replacement(Placeholder.ERROR, "Failed to load shops from database")));
+                        plugin.getLogger().severe("Failed to load shops");
+                        if (throwable != null) plugin.getLogger().severe(throwable.getMessage());
+                    }
+                });
             }
 
             @Override

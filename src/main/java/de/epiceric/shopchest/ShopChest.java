@@ -43,6 +43,8 @@ import me.wiefferink.areashop.AreaShop;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -65,6 +67,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class ShopChest extends JavaPlugin {
 
@@ -437,13 +440,26 @@ public class ShopChest extends JavaPlugin {
      * Initializes the shops
      */
     private void initializeShops() {
-        debug("Initializing Shops...");
-        shopUtils.reloadShops(false, true, new Callback<Integer>(this) {
+        getShopDatabase().connect(new Callback<Integer>(this) {
             @Override
             public void onResult(Integer result) {
-                Bukkit.getServer().getPluginManager().callEvent(new ShopInitializedEvent(result));
-                getLogger().info("Initialized " + result + " Shops");
-                debug("Initialized " + result + " Shops");
+                Chunk[] loadedChunks = getServer().getWorlds().stream().map(World::getLoadedChunks)
+                        .flatMap(Stream::of).toArray(Chunk[]::new);
+
+                shopUtils.loadShops(loadedChunks, new Callback<Integer>(ShopChest.this) {
+                    @Override
+                    public void onResult(Integer result) {
+                        getServer().getPluginManager().callEvent(new ShopInitializedEvent(result));
+                        getLogger().info("Loaded " + result + " shops in already loaded chunks");
+                        debug("Loaded " + result + " shops in already loaded chunks");
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        getLogger().severe("Failed to load shops in already loaded chunks");
+                        if (throwable != null) getLogger().severe(throwable.getMessage());
+                    }
+                });
             }
 
             @Override
