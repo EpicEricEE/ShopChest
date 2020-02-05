@@ -398,6 +398,15 @@ class ShopCommandExecutor implements CommandExecutor {
             }
         }
 
+        if (buyEnabled && !Config.allowDecimalsInPrice && Config.vat != 0) {
+            double minTaxed = 100 * Config.vat;
+            if (minTaxed > buyPrice) {
+                p.sendMessage(LanguageUtils.getMessage(Message.BUY_PRICE_TOO_LOW, new Replacement(Placeholder.MIN_PRICE, minTaxed)));
+                plugin.debug(p.getName() + "'s buy price is lower than the minimum taxed");
+                return;
+            }
+        }
+
         if (Enchantment.DURABILITY.canEnchantItem(itemStack)) {
             if (itemStack.getDurability() > 0 && !Config.allowBrokenItems) {
                 p.sendMessage(LanguageUtils.getMessage(Message.CANNOT_SELL_BROKEN_ITEM));
