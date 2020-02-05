@@ -68,7 +68,7 @@ public class Shop {
         this.product = product;
         this.location = location;
         this.buyPrice = buyPrice;
-        this.taxedBuyPrice = calculateVat(buyPrice, Config.vat, Config.allowDecimalsInPrice);
+        this.taxedBuyPrice = buyPrice + calculateVat(buyPrice, Config.vat, Config.allowDecimalsInPrice);
         this.sellPrice = sellPrice;
         this.shopType = shopType;
     }
@@ -83,15 +83,15 @@ public class Shop {
      * @param price to make calculation on
      * @param vat in percentage
      * @param allowDecimal if round to int
-     * @return taxed price, returns price if price is equal to 0
+     * @return VAT, returns 0 if price is equal to 0
      */
     private double calculateVat(double price, double vat, boolean allowDecimal) {
         if (vat == 0) { // zero if disabled
-            return price;
+            return 0;
         }
 
-        price *= (1D + vat);
-        return allowDecimal ? price : (int) Math.max(price, 100 * vat);
+        double result = vat * price;
+        return allowDecimal ? result : (int) Math.max(result, 1);
     }
 
     /**

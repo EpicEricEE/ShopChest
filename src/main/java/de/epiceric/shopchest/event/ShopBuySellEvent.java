@@ -11,13 +11,15 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
     private Type type;
     private int newAmount;
     private double newPrice;
+    private double newTaxedPrice;
     private boolean cancelled;
 
-    public ShopBuySellEvent(Player player, Shop shop, Type type, int newAmount, double newPrice) {
+    public ShopBuySellEvent(Player player, Shop shop, Type type, int newAmount, double newPrice, double newTaxedPrice) {
         super(player, shop);
         this.type = type;
         this.newAmount = newAmount;
         this.newPrice = newPrice;
+        this.newTaxedPrice = newTaxedPrice;
     }
 
     /**
@@ -39,6 +41,13 @@ public class ShopBuySellEvent extends ShopEvent implements Cancellable {
      */
     public double getNewPrice() {
         return newPrice;
+    }
+
+    /**
+     * @return The taxed price which might be modified because of automatic item amount calculation
+     */
+    public double getNewTaxedPrice() {
+        return newTaxedPrice;
     }
 
     @Override
