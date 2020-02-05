@@ -607,6 +607,7 @@ public class ShopInteractListener implements Listener {
 
         String priceString = LanguageUtils.getMessage(Message.SHOP_INFO_PRICE,
                 new Replacement(Placeholder.BUY_PRICE, (shop.getBuyPrice() > 0 ? String.valueOf(shop.getBuyPrice()) : disabled)),
+                new Replacement(Placeholder.BUY_TAXED_PRICE, (shop.getTaxedBuyPrice() > 0 ? String.valueOf(shop.getTaxedBuyPrice()) : disabled)),
                 new Replacement(Placeholder.SELL_PRICE, (shop.getSellPrice() > 0 ? String.valueOf(shop.getSellPrice()) : disabled)));
 
         String shopType = LanguageUtils.getMessage(shop.getShopType() == ShopType.NORMAL ?
@@ -721,7 +722,7 @@ public class ShopInteractListener implements Listener {
 
         String worldName = shop.getLocation().getWorld().getName();
 
-        double price = shop.getBuyPrice();
+        double price = shop.getTaxedBuyPrice();
         if (stack) price = (price / shop.getProduct().getAmount()) * amount;
 
         if (econ.getBalance(executor, worldName) >= price || Config.autoCalculateItemAmount) {

@@ -122,6 +122,11 @@ public class Config {
     public static List<String> blacklist;
 
     /**
+     * Percentage of VAT.
+     **/
+    public static double vat;
+
+    /**
      * Whether prices may contain decimals
      **/
     public static boolean allowDecimalsInPrice;
@@ -463,6 +468,7 @@ public class Config {
         autoCalculateItemAmount = (allowDecimalsInPrice && plugin.getConfig().getBoolean("auto-calculate-item-amount"));
         creativeSelectItem = plugin.getConfig().getBoolean("creative-select-item");
         blacklist = (plugin.getConfig().getStringList("blacklist") == null) ? new ArrayList<String>() : plugin.getConfig().getStringList("blacklist");
+        vat = plugin.getConfig().getDouble("vat");
         buyGreaterOrEqualSell = plugin.getConfig().getBoolean("buy-greater-or-equal-sell");
         confirmShopping = plugin.getConfig().getBoolean("confirm-shopping");
         refundShopCreation = plugin.getConfig().getBoolean("refund-shop-creation");

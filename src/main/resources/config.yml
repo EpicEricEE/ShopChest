@@ -133,6 +133,9 @@ maximum-prices:
 blacklist:
 # - "DIORITE"
 
+# Set the percentage of VAT.
+vat: 0.1
+
 # Set the price a player has to pay in order to create...
 # You can set this to 0 to disable costs.
 shop-creation-price:

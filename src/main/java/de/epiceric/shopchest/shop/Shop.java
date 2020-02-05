@@ -51,6 +51,7 @@ public class Shop {
     private final ShopProduct product;
     private final Location location;
     private final double buyPrice;
+    private final double taxedBuyPrice;
     private final double sellPrice;
     private final ShopType shopType;
 
@@ -67,12 +68,30 @@ public class Shop {
         this.product = product;
         this.location = location;
         this.buyPrice = buyPrice;
+        this.taxedBuyPrice = calculateVat(buyPrice, Config.vat, Config.allowDecimalsInPrice);
         this.sellPrice = sellPrice;
         this.shopType = shopType;
     }
 
     public Shop(ShopChest plugin, OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
         this(-1, plugin, vendor, product, location, buyPrice, sellPrice, shopType);
+    }
+
+    /**
+     * Calculate VAT on the given price
+     *
+     * @param price to make calculation on
+     * @param vat in percentage
+     * @param allowDecimal if round to int
+     * @return taxed price, returns price if price is equal to 0
+     */
+    private double calculateVat(double price, double vat, boolean allowDecimal) {
+        if (vat == 0) { // zero if disabled
+            return price;
+        }
+
+        price *= (1D + vat);
+        return allowDecimal ? price : (int) Math.max(price, 100 * vat);
     }
 
     /**
@@ -282,6 +301,7 @@ public class Shop {
         placeholders.put(Placeholder.ITEM_NAME, getProduct().getLocalizedName());
         placeholders.put(Placeholder.ENCHANTMENT, LanguageUtils.getEnchantmentString(ItemUtils.getEnchantments(itemStack)));
         placeholders.put(Placeholder.BUY_PRICE, getBuyPrice());
+        placeholders.put(Placeholder.BUY_TAXED_PRICE, getTaxedBuyPrice());
         placeholders.put(Placeholder.SELL_PRICE, getSellPrice());
         placeholders.put(Placeholder.POTION_EFFECT, LanguageUtils.getPotionEffectName(itemStack));
         placeholders.put(Placeholder.MUSIC_TITLE, LanguageUtils.getMusicDiscName(itemStack.getType()));
@@ -301,7 +321,7 @@ public class Shop {
 
                 switch (placeholder) {
                     case BUY_PRICE:
-                        replace = plugin.getEconomy().format(getBuyPrice());
+                        replace = plugin.getEconomy().format(getTaxedBuyPrice());
                         break;
                     case SELL_PRICE:
                         replace = plugin.getEconomy().format(getSellPrice());
@@ -421,6 +441,13 @@ public class Shop {
      */
     public double getBuyPrice() {
         return buyPrice;
+    }
+
+    /**
+     * @return Taxed price of the shop
+     */
+    public double getTaxedBuyPrice() {
+        return taxedBuyPrice;
     }
 
     /**
