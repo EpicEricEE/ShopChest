@@ -86,7 +86,7 @@ public class Shop {
      * @return VAT, returns 0 if price is equal to 0
      */
     private double calculateVat(double price, double vat, boolean allowDecimal) {
-        if (vat == 0) { // zero if disabled
+        if (Double.compare(vat, 0) == 0) { // zero if disabled
             return 0;
         }
 
