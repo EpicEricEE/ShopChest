@@ -63,6 +63,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -445,6 +446,20 @@ public class ShopChest extends JavaPlugin {
             public void onResult(Integer result) {
                 Chunk[] loadedChunks = getServer().getWorlds().stream().map(World::getLoadedChunks)
                         .flatMap(Stream::of).toArray(Chunk[]::new);
+
+                shopUtils.loadShopAmounts(new Callback<Map<UUID,Integer>>(ShopChest.this) {
+                    @Override
+                    public void onResult(Map<UUID, Integer> result) {
+                        getLogger().info("Loaded shop amounts");
+                        debug("Loaded shop amounts");
+                    }
+                    
+                    @Override
+                    public void onError(Throwable throwable) {
+                        getLogger().severe("Failed to load shop amounts. Shop limits will not be working correctly!");
+                        if (throwable != null) getLogger().severe(throwable.getMessage());
+                    }
+                });
 
                 shopUtils.loadShops(loadedChunks, new Callback<Integer>(ShopChest.this) {
                     @Override

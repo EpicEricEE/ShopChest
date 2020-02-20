@@ -5,6 +5,7 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.ShopsLoadedEvent;
 import de.epiceric.shopchest.event.ShopsUnloadedEvent;
 import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -22,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class ShopUtils {
+
+    private final Map<UUID, Counter> playerShopAmount = new HashMap<>();
 
     // concurrent since it is updated in async task
     private final Map<UUID, Location> playerLocation = new ConcurrentHashMap<>();
@@ -103,6 +106,9 @@ public class ShopUtils {
         }
 
         if (addToDatabase) {
+            if (shop.getShopType() != ShopType.ADMIN) {
+                playerShopAmount.compute(shop.getVendor().getUniqueId(), (uuid, amount) -> amount == null ? new Counter(1) : amount.increment());
+            }
             plugin.getShopDatabase().addShop(shop, callback);
         } else {
             if (callback != null) callback.callSyncResult(shop.getID());
@@ -145,6 +151,9 @@ public class ShopUtils {
         shop.removeHologram();
 
         if (removeFromDatabase) {
+            if (shop.getShopType() != ShopType.ADMIN) {
+                playerShopAmount.compute(shop.getVendor().getUniqueId(), (uuid, amount) -> amount == null ? new Counter() : amount.decrement());
+            }
             plugin.getShopDatabase().removeShop(shop, callback);
         } else {
             if (callback != null) callback.callSyncResult(null);
@@ -186,8 +195,15 @@ public class ShopUtils {
             shop.removeHologram();
         });
 
+        Shop first = toRemove.values().iterator().next();
+        boolean isAdmin = first.getShopType() == ShopType.ADMIN;
+        UUID vendorUuid = first.getVendor().getUniqueId();
+
         // Database#removeShop removes shop by ID so this only needs to be called once
         if (removeFromDatabase) {
+            if (!isAdmin) {
+                playerShopAmount.compute(vendorUuid, (uuid, amount) -> amount == null ? new Counter() : amount.decrement());
+            }
             plugin.getShopDatabase().removeShop(toRemove.values().iterator().next(), callback);
         } else {
             if (callback != null) callback.callSyncResult(null);
@@ -250,23 +266,27 @@ public class ShopUtils {
      * @return The amount of a shops a player has (if {@link Config#excludeAdminShops} is true, admin shops won't be counted)
      */
     public int getShopAmount(OfflinePlayer p) {
-        // FIXME: currently only showing loaded shops
-        float shopCount = 0;
+        return playerShopAmount.getOrDefault(p.getUniqueId(), new Counter()).get();
+    }
 
-        for (Shop shop : getShops()) {
-            if (shop.getVendor().equals(p)) {
-                if (shop.getShopType() != Shop.ShopType.ADMIN) {
-                    shopCount++;
-
-                    InventoryHolder ih = shop.getInventoryHolder();
-
-                    if (ih instanceof DoubleChest)
-                        shopCount -= 0.5;
-                }
+    /**
+     * Loads the amount of shops for each player
+     * @param callback Callback that returns the amount of shops for each player
+     */
+    public void loadShopAmounts(final Callback<Map<UUID, Integer>> callback) {
+        plugin.getShopDatabase().getShopAmounts(new Callback<Map<UUID,Integer>>(plugin) {
+            @Override
+            public void onResult(Map<UUID, Integer> result) {
+                playerShopAmount.clear();
+                result.forEach((uuid, amount) -> playerShopAmount.put(uuid, new Counter(amount)));
+                if (callback != null) callback.onResult(result);
             }
-        }
 
-        return Math.round(shopCount);
+            @Override
+            public void onError(Throwable throwable) {
+                if (callback != null) callback.onError(throwable);
+            }
+        });
     }
 
     /**

@@ -367,6 +367,43 @@ public abstract class Database {
     }
 
     /**
+     * Get shop amounts for each player
+     * 
+     * @param callback Callback that returns a map of each player's shop amount
+     */
+    public void getShopAmounts(final Callback<Map<UUID, Integer>> callback) {
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                try (Connection con = dataSource.getConnection();
+                        Statement s = con.createStatement()) {
+                    ResultSet rs = s.executeQuery("SELECT vendor, COUNT(*) AS count FROM " + tableShops + " WHERE shoptype = 'NORMAL' GROUP BY vendor");
+
+                    plugin.debug("Getting shop amounts from database");
+
+                    Map<UUID, Integer> result = new HashMap<>();
+                    while (rs.next()) {
+                        UUID uuid = UUID.fromString(rs.getString("vendor"));
+                        result.put(uuid, rs.getInt("count"));
+                    }
+
+                    if (callback != null) {
+                        callback.callSyncResult(result);
+                    }
+                } catch (SQLException ex) {
+                    if (callback != null) {
+                        callback.callSyncError(ex);
+                    }
+
+                    plugin.getLogger().severe("Failed to get shop amounts from database");
+                    plugin.debug("Failed to get shop amounts from database");
+                    plugin.debug(ex);
+                }        
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    /**
      * Get all shops from the database that are located in the given chunks
      * 
      * @param chunks Shops in these chunks are retrieved
