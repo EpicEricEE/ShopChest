@@ -309,15 +309,23 @@ public class ShopUtils {
         plugin.getShopDatabase().getShopsInChunks(chunks, new Callback<Collection<Shop>>(plugin) {
             @Override
             public void onResult(Collection<Shop> result) {
+                Collection<Shop> loadedShops = new HashSet<>();
+
                 for (Shop shop : result) {
-                    if (shop.create(true)) {
+                    Location loc = shop.getLocation();
+                    int x = loc.getBlockX() / 16;
+                    int z = loc.getBlockZ() / 16;
+                    
+                    // Only add shop if chunk is still loaded
+                    if (loc.getWorld().isChunkLoaded(x, z) && shop.create(true)) {
                         addShop(shop, false);
+                        loadedShops.add(shop);
                     }
                 }
 
-                if (callback != null) callback.onResult(result.size());
+                if (callback != null) callback.onResult(loadedShops.size());
 
-                Bukkit.getPluginManager().callEvent(new ShopsLoadedEvent(result));
+                Bukkit.getPluginManager().callEvent(new ShopsLoadedEvent(Collections.unmodifiableCollection(loadedShops)));
             }
 
             @Override
