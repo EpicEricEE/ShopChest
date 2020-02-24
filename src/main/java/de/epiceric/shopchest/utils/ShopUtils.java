@@ -313,11 +313,21 @@ public class ShopUtils {
 
                 for (Shop shop : result) {
                     Location loc = shop.getLocation();
+
+                    // Don't add shop if shop is already loaded
+                    if (shopLocation.containsKey(loc)) {
+                        continue;
+                    }
+
                     int x = loc.getBlockX() / 16;
                     int z = loc.getBlockZ() / 16;
                     
-                    // Only add shop if chunk is still loaded
-                    if (loc.getWorld().isChunkLoaded(x, z) && shop.create(true)) {
+                    // Don't add shop if chunk is no longer loaded
+                    if (!loc.getWorld().isChunkLoaded(x, z)) {
+                        continue;
+                    }
+
+                    if (shop.create(true)) {
                         addShop(shop, false);
                         loadedShops.add(shop);
                     }
