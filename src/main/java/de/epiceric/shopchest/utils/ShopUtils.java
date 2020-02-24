@@ -3,7 +3,6 @@ package de.epiceric.shopchest.utils;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.ShopsLoadedEvent;
-import de.epiceric.shopchest.event.ShopsUnloadedEvent;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 
@@ -343,28 +342,6 @@ public class ShopUtils {
                 if (callback != null) callback.onError(throwable);
             }
         });
-    }
-
-    /**
-     * Removes all shops from the given chunk from the server
-     * @param chunk The chunk containing the shops to unload
-     * @return The amount of shops that were unloaded
-     */
-    public int unloadShops(final Chunk chunk) {
-        Set<Shop> unloadedShops = new HashSet<>();
-
-        Iterator<Shop> iter = getShops().iterator();
-        while(iter.hasNext()) {
-            Shop shop = iter.next();
-            if (shop.getLocation().getChunk().equals(chunk)) {
-                removeShop(shop, false);
-                unloadedShops.add(shop);
-                plugin.debug("Unloaded shop (#" + shop.getID() + ")");
-            }
-        }
-        
-        Bukkit.getPluginManager().callEvent(new ShopsUnloadedEvent(Collections.unmodifiableCollection(unloadedShops)));
-        return unloadedShops.size();
     }
 
     /**
