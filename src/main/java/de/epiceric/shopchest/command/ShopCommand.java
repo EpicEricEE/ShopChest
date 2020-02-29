@@ -21,17 +21,20 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class ShopCommand {
 
     private static boolean commandCreated = false;
 
-    private ShopChest plugin;
-    private String name;
-    private PluginCommand pluginCommand;
-    private ShopCommandExecutor executor;
+    private final ShopChest plugin;
+    private final String name;
+    private final String fallbackPrefix;
+    private final PluginCommand pluginCommand;
+    private final ShopCommandExecutor executor;
 
-    private List<ShopSubCommand> subCommands = new ArrayList<>();
+    private final List<ShopSubCommand> subCommands = new ArrayList<>();
 
     public ShopCommand(final ShopChest plugin) {
         if (commandCreated) {
@@ -41,7 +44,8 @@ public class ShopCommand {
         }
 
         this.plugin = plugin;
-        this.name = Config.mainCommandName;
+        this.name = Config.mainCommandName.toLowerCase(Locale.ENGLISH).trim();
+        this.fallbackPrefix = plugin.getName().toLowerCase(Locale.ENGLISH).trim();
         this.pluginCommand = createPluginCommand();
         this.executor = new ShopCommandExecutor(plugin);
 
@@ -198,17 +202,50 @@ public class ShopCommand {
         plugin.debug("Registering command " + name);
 
         try {
-            Field f = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
-            f.setAccessible(true);
+            Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
+            fCommandMap.setAccessible(true);
 
-            Object commandMapObject = f.get(Bukkit.getPluginManager());
+            Object commandMapObject = fCommandMap.get(Bukkit.getPluginManager());
             if (commandMapObject instanceof CommandMap) {
                 CommandMap commandMap = (CommandMap) commandMapObject;
-                commandMap.register(plugin.getName(), pluginCommand);
+                commandMap.register(fallbackPrefix, pluginCommand);
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             plugin.getLogger().severe("Failed to register command");
             plugin.debug("Failed to register plugin command");
+            plugin.debug(e);
+        }
+    }
+
+    public void unregister() {
+        if (pluginCommand == null) return;
+
+        plugin.debug("Unregistering command " + name);
+
+        try {
+            Field fCommandMap = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
+            fCommandMap.setAccessible(true);
+
+            Object commandMapObject = fCommandMap.get(Bukkit.getPluginManager());
+            if (commandMapObject instanceof CommandMap) {
+                CommandMap commandMap = (CommandMap) commandMapObject;
+                pluginCommand.unregister(commandMap);
+
+                Field fKnownCommands = commandMap.getClass().getDeclaredField("knownCommands");
+                fKnownCommands.setAccessible(true);
+
+                Object knownCommandsObject = fKnownCommands.get(commandMap);
+                if (knownCommandsObject instanceof Map) {
+                    Map<?, ?> knownCommands = (Map<?, ?>) knownCommandsObject;
+                    knownCommands.remove(fallbackPrefix + ":" + name);
+                    if (pluginCommand.equals(knownCommands.get(name))) {
+                        knownCommands.remove(name);
+                    }
+                }
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            plugin.getLogger().severe("Failed to unregister command");
+            plugin.debug("Failed to unregister plugin command");
             plugin.debug(e);
         }
     }
