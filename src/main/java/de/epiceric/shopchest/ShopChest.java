@@ -251,7 +251,7 @@ public class ShopChest extends JavaPlugin {
 
         if (database != null) {
             if (database instanceof SQLite) {
-                ((SQLite) database).vacuum(false);
+                ((SQLite) database).vacuum();
             }
 
             database.disconnect();
