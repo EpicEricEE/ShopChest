@@ -25,8 +25,7 @@ confirm-shopping: false
 
 # Set whether players should be able to select the shop item from the
 # creative inventory if they don't hold an item in their hand.
-# !! This feature may be exploitable, players could get access to creative mode!
-creative-select-item: false
+creative-select-item: true
 
 # Set whether the (current) shop creation price should be refunded
 # when the shop is removed by its creator.
