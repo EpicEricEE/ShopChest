@@ -10,7 +10,34 @@
 
     <name>ShopChest</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
-    <description>Let your players create their own nice-looking shops to sell their stuff to other players!</description>
+    <description>A Bukkit plugin letting players create custom chest shops.</description>
+
+    <scm>
+        <connection>scm:git:https://github.com/EpicEricEE/ShopChest.git</connection>
+        <developerConnection>scm:git:git@github.com:EpicEricEE/ShopChest.git</developerConnection>
+        <url>https://github.com/EpicEricEE/ShopChest</url>
+    </scm>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://ci.codemc.io/job/EpicEricEE/job/ShopChest/</url>
+    </ciManagement>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/EpicEricEE/ShopChest/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <!-- Encoding Properties -->
@@ -199,7 +226,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -209,7 +236,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <doclint>none</doclint>
                 </configuration>
                 <executions>
                     <execution>
