@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.StringJoiner;
 
 public class LanguageUtils {
 
@@ -2417,21 +2418,13 @@ public class LanguageUtils {
      */
     public static String getEnchantmentString(Map<Enchantment, Integer> enchantmentMap) {
         if (enchantmentMap == null) return null;
-        Enchantment[] enchantments = enchantmentMap.keySet().toArray(new Enchantment[enchantmentMap.size()]);
-        StringBuilder enchantmentList = new StringBuilder();
+        StringJoiner joiner = new StringJoiner(", ");
 
-        for (int i = 0; i < enchantments.length; i++) {
-            Enchantment enchantment = enchantments[i];
-
-            if (i == enchantments.length - 1) {
-                enchantmentList.append(LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)));
-            } else {
-                enchantmentList.append(LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)));
-                enchantmentList.append(", ");
-            }
+        for (Enchantment enchantment : enchantmentMap.keySet()) {
+            joiner.add(LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)));
         }
 
-        return enchantmentList.toString();
+        return joiner.toString();
     }
 
     /**
