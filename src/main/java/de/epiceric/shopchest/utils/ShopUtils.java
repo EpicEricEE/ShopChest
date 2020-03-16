@@ -133,21 +133,23 @@ public class ShopUtils {
     public void removeShop(Shop shop, boolean removeFromDatabase, Callback<Void> callback) {
         plugin.debug("Removing shop (#" + shop.getID() + ")");
 
-        InventoryHolder ih = shop.getInventoryHolder();
+        if (shop.isCreated()) {
+            InventoryHolder ih = shop.getInventoryHolder();
 
-        if (ih instanceof DoubleChest) {
-            DoubleChest dc = (DoubleChest) ih;
-            Chest r = (Chest) dc.getRightSide();
-            Chest l = (Chest) dc.getLeftSide();
+            if (ih instanceof DoubleChest) {
+                DoubleChest dc = (DoubleChest) ih;
+                Chest r = (Chest) dc.getRightSide();
+                Chest l = (Chest) dc.getLeftSide();
 
-            shopLocation.remove(r.getLocation());
-            shopLocation.remove(l.getLocation());
-        } else {
-            shopLocation.remove(shop.getLocation());
+                shopLocation.remove(r.getLocation());
+                shopLocation.remove(l.getLocation());
+            } else {
+                shopLocation.remove(shop.getLocation());
+            }
+
+            shop.removeItem();
+            shop.removeHologram();
         }
-
-        shop.removeItem();
-        shop.removeHologram();
 
         if (removeFromDatabase) {
             if (shop.getShopType() != ShopType.ADMIN) {
@@ -266,6 +268,34 @@ public class ShopUtils {
      */
     public int getShopAmount(OfflinePlayer p) {
         return playerShopAmount.getOrDefault(p.getUniqueId(), new Counter()).get();
+    }
+
+    /**
+     * Get all shops of a player from the database without loading them
+     * @param p Player, whose shops should be get
+     * @param callback Callback that returns a collection of the given player's shops
+     */
+    public void getShops(OfflinePlayer p, Callback<Collection<Shop>> callback) {
+        plugin.getShopDatabase().getShops(p.getUniqueId(), new Callback<Collection<Shop>>(plugin) {
+            @Override
+            public void onResult(Collection<Shop> result) {
+                Set<Shop> shops = new HashSet<>();
+                for (Shop playerShop : result) {
+                    Shop loadedShop = getShop(playerShop.getLocation());
+                    if (loadedShop != null && loadedShop.equals(playerShop)) {
+                        shops.add(loadedShop);
+                    } else {
+                        shops.add(playerShop);
+                    }
+                }
+                if (callback != null) callback.onResult(shops);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                if (callback != null) callback.onError(throwable);
+            }
+        });
     }
 
     /**

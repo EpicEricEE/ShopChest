@@ -38,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -544,27 +545,34 @@ class ShopCommandExecutor implements CommandExecutor {
 
         plugin.debug(sender.getName() + " is removing all shops of " + vendor.getName());
 
-        List<Shop> shops = new ArrayList<>();
+        plugin.getShopUtils().getShops(vendor, new Callback<Collection<Shop>>(plugin) {
+            @Override
+            public void onResult(Collection<Shop> result) {
+                List<Shop> shops = new ArrayList<>(result);
 
-        for (Shop shop : shopUtils.getShops()) {
-            if (shop.getVendor().getUniqueId().equals(vendor.getUniqueId())) {
-                shops.add(shop);
+                ShopRemoveAllEvent event = new ShopRemoveAllEvent(sender, vendor, shops);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()){
+                    plugin.debug("Remove all event cancelled");
+                    return;
+                }
+        
+                for (Shop shop : shops) {
+                    shopUtils.removeShop(shop, true);
+                }
+        
+                sender.sendMessage(LanguageUtils.getMessage(Message.ALL_SHOPS_REMOVED,
+                        new Replacement(Placeholder.AMOUNT, String.valueOf(shops.size())),
+                        new Replacement(Placeholder.VENDOR, vendor.getName())));
             }
-        }
 
-        ShopRemoveAllEvent event = new ShopRemoveAllEvent(sender, vendor, shops);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()){
-            plugin.debug("Remove all event cancelled");
-            return;
-        }
+            @Override
+            public void onError(Throwable throwable) {
+                sender.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
+                        new Replacement(Placeholder.ERROR, "Failed to get player's shops")));
+            }
+        });
 
-        for (Shop shop : shops) {
-            shopUtils.removeShop(shop, true);
-        }
-
-        sender.sendMessage(LanguageUtils.getMessage(Message.ALL_SHOPS_REMOVED,
-                new Replacement(Placeholder.AMOUNT, String.valueOf(shops.size())),
-                new Replacement(Placeholder.VENDOR, vendor.getName())));
+        
     }
 }

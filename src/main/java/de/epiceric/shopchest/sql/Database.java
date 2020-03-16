@@ -404,6 +404,63 @@ public abstract class Database {
     }
 
     /**
+     * Get all shops of a player, including admin shops
+     * 
+     * @param callback Callback that returns a set of shops of the given player
+     */
+    public void getShops(UUID playerUuid, final Callback<Collection<Shop>> callback) {
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                try (Connection con = dataSource.getConnection();
+                        PreparedStatement ps = con.prepareStatement("SELECT * FROM " + tableShops + " WHERE vendor = ?")) {
+                    ps.setString(1, playerUuid.toString());
+                    ResultSet rs = ps.executeQuery();
+
+                    plugin.debug("Getting a player's shops from database");
+
+                    Set<Shop> result = new HashSet<>();
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+
+                        plugin.debug("Getting Shop... (#" + id + ")");
+
+                        int x = rs.getInt("x");
+                        int y = rs.getInt("y");
+                        int z = rs.getInt("z");
+
+                        World world = plugin.getServer().getWorld(rs.getString("world"));
+                        Location location = new Location(world, x, y, z);
+                        OfflinePlayer vendor = Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
+                        ItemStack itemStack = Utils.decode(rs.getString("product"));
+                        int amount = rs.getInt("amount");
+                        ShopProduct product = new ShopProduct(itemStack, amount);
+                        double buyPrice = rs.getDouble("buyprice");
+                        double sellPrice = rs.getDouble("sellprice");
+                        ShopType shopType = ShopType.valueOf(rs.getString("shoptype"));
+
+                        plugin.debug("Initializing new shop... (#" + id + ")");
+
+                        result.add(new Shop(id, plugin, vendor, product, location, buyPrice, sellPrice, shopType));
+                    }
+
+                    if (callback != null) {
+                        callback.callSyncResult(result);
+                    }
+                } catch (SQLException ex) {
+                    if (callback != null) {
+                        callback.callSyncError(ex);
+                    }
+
+                    plugin.getLogger().severe("Failed to get player's shops from database");
+                    plugin.debug("Failed to get player's shops from database");
+                    plugin.debug(ex);
+                }        
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    /**
      * Get all shops from the database that are located in the given chunks
      * 
      * @param chunks Shops in these chunks are retrieved

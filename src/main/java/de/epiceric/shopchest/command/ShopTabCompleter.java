@@ -2,14 +2,18 @@ package de.epiceric.shopchest.command;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 class ShopTabCompleter implements TabCompleter {
 
@@ -29,6 +33,7 @@ class ShopTabCompleter implements TabCompleter {
             List<String> townyShopPlots = Arrays.asList("ARENA", "COMMERCIAL", "EMBASSY", "FARM", "INN", "JAIL", "RESIDENTIAL", "SPLEEF", "WILDS");
 
             Set<String> configValues = plugin.getConfig().getKeys(true);
+            List<String> playerNames = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
 
             ArrayList<String> returnCompletions = new ArrayList<>();
 
@@ -44,6 +49,18 @@ class ShopTabCompleter implements TabCompleter {
                         return returnCompletions;
                     } else {
                         return configSubCommands;
+                    }
+                } else if (args[0].equals("removeall")) {
+                    if (!args[1].equals("")) {
+                        for (String name : playerNames) {
+                            if (name.startsWith(args[1])) {
+                                returnCompletions.add(name);
+                            }
+                        }
+
+                        return returnCompletions;
+                    } else {
+                        return playerNames;
                     }
                 }
             } else if (args.length == 3) {

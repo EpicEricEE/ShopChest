@@ -231,7 +231,7 @@ public class ShopCommand {
                 CommandMap commandMap = (CommandMap) commandMapObject;
                 pluginCommand.unregister(commandMap);
 
-                Field fKnownCommands = commandMap.getClass().getDeclaredField("knownCommands");
+                Field fKnownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
                 fKnownCommands.setAccessible(true);
 
                 Object knownCommandsObject = fKnownCommands.get(commandMap);
