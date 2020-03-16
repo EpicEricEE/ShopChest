@@ -45,7 +45,7 @@ public class BentoBoxListener extends FlagListener {
     }
 
     private boolean handleForLocation(Player player, Location loc, Cancellable e) {
-        boolean allowed = checkIsland((Event) e, player, loc, BentoBoxShopFlag.SHOP_FLAG, true);
+        boolean allowed = checkIsland((Event) e, player, loc, BentoBoxShopFlag.SHOP_FLAG);
         if (!allowed) {
             e.setCancelled(true);
             plugin.debug("Cancel Reason: BentoBox");
