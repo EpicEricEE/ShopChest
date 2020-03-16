@@ -195,6 +195,11 @@ public class Config {
     public static boolean enableASkyblockIntegration;
 
     /**
+     * Whether BentoBox integration should be enabled
+     **/
+    public static boolean enableBentoBoxIntegration;
+
+    /**
      * Whether IslandWorld integration should be enabled
      **/
     public static boolean enableIslandWorldIntegration;
@@ -476,6 +481,7 @@ public class Config {
         enablePlotsquaredIntegration = plugin.getConfig().getBoolean("enable-plotsquared-integration");
         enableUSkyblockIntegration = plugin.getConfig().getBoolean("enable-uskyblock-integration");
         enableASkyblockIntegration = plugin.getConfig().getBoolean("enable-askyblock-integration");
+        enableBentoBoxIntegration = plugin.getConfig().getBoolean("enable-bentobox-integration");
         enableIslandWorldIntegration = plugin.getConfig().getBoolean("enable-islandworld-integration");
         enableGriefPreventionIntegration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
         enableAreaShopIntegration = plugin.getConfig().getBoolean("enable-areashop-integration");

@@ -6,6 +6,7 @@ import de.epiceric.shopchest.command.ShopCommand;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.event.ShopInitializedEvent;
+import de.epiceric.shopchest.external.BentoBoxShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.external.listeners.ASkyBlockListener;
@@ -16,6 +17,7 @@ import de.epiceric.shopchest.external.listeners.TownyListener;
 import de.epiceric.shopchest.external.listeners.USkyBlockListener;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.listeners.AreaShopListener;
+import de.epiceric.shopchest.listeners.BentoBoxListener;
 import de.epiceric.shopchest.listeners.BlockExplodeListener;
 import de.epiceric.shopchest.listeners.ChestProtectListener;
 import de.epiceric.shopchest.listeners.CreativeModeListener;
@@ -54,6 +56,7 @@ import org.codemc.worldguardwrapper.WorldGuardWrapper;
 
 import pl.islandworld.IslandWorld;
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
+import world.bentobox.bentobox.BentoBox;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -92,6 +95,7 @@ public class ShopChest extends JavaPlugin {
     private IslandWorld islandWorld;
     private GriefPrevention griefPrevention;
     private AreaShop areaShop;
+    private BentoBox bentoBox;
     private ShopUpdater updater;
     private ExecutorService shopCreationThreadPool;
 
@@ -303,12 +307,21 @@ public class ShopChest extends JavaPlugin {
             areaShop = (AreaShop) areaShopPlugin;
         }
 
+        Plugin bentoBoxPlugin = getServer().getPluginManager().getPlugin("BentoBox");
+        if (bentoBoxPlugin instanceof BentoBox) {
+            bentoBox = (BentoBox) bentoBoxPlugin;
+        }
+
         if (hasWorldGuard()) {
             WorldGuardWrapper.getInstance().registerEvents(this);
         }
 
         if (hasPlotSquared()) {
             PlotSquaredShopFlag.register(this);
+        }
+
+        if (hasBentoBox()) {
+            BentoBoxShopFlag.register(this);
         }
     }
 
@@ -422,6 +435,10 @@ public class ShopChest extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(new AreaShopListener(this), this);
             }
         }
+
+        if (hasBentoBox()) {
+            getServer().getPluginManager().registerEvents(new BentoBoxListener(this), this);
+        }
     }
 
     private void registerExternalListeners() {
@@ -439,6 +456,8 @@ public class ShopChest extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new USkyBlockListener(this), this);
         if (hasWorldGuard())
             getServer().getPluginManager().registerEvents(new de.epiceric.shopchest.external.listeners.WorldGuardListener(this), this);
+        if (hasBentoBox())
+            getServer().getPluginManager().registerEvents(new de.epiceric.shopchest.external.listeners.BentoBoxListener(this), this);
     }
 
     /**
@@ -621,6 +640,13 @@ public class ShopChest extends JavaPlugin {
      */
     public boolean hasWorldGuard() {
         return worldGuard != null && worldGuard.isEnabled();
+    }
+
+    /**
+     * @return Whether the plugin 'WorldGuard' is enabled
+     */
+    public boolean hasBentoBox() {
+        return bentoBox != null && bentoBox.isEnabled();
     }
 
     /**
