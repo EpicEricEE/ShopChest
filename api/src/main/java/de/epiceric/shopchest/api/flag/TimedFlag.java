@@ -27,9 +27,7 @@ public abstract class TimedFlag implements Flag {
     @Override
     public void onAssign(ShopPlayer player) {
         task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (this.equals(player.getFlag())) {
-                player.removeFlag();
-            }
+            player.getFlag().filter(this::equals).ifPresent(f -> player.removeFlag());
         }, seconds * 20);
     }
 

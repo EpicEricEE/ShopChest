@@ -3,6 +3,7 @@ package de.epiceric.shopchest.player;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
@@ -55,8 +56,8 @@ public class ShopPlayerImpl implements ShopPlayer {
     }
 
     @Override
-    public Flag getFlag() {
-        return flag;
+    public Optional<Flag> getFlag() {
+        return Optional.ofNullable(flag);
     }
 
     @Override

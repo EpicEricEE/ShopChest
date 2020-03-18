@@ -85,10 +85,8 @@ public class ShopManagerImpl implements ShopManager {
                             }
                             shopsInWorld.get(worldName).put(toBlockLocation(shop.getLocation()), shop);
             
-                            Location otherLoc = ((ShopImpl) shop).getOtherLocation();
-                            if (otherLoc != null) {
-                                shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop);
-                            }
+                            ((ShopImpl) shop).getOtherLocation().ifPresent(otherLoc ->
+                                    shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop));;
                         });
                         callback.accept(shops);
                     },
@@ -125,7 +123,7 @@ public class ShopManagerImpl implements ShopManager {
     @Override
     public Collection<Shop> getShops(OfflinePlayer vendor) {
         return getShops().stream().filter(shop -> !shop.isAdminShop())
-                .filter(shop -> shop.getVendor().getUniqueId().equals(vendor.getUniqueId()))
+                .filter(shop -> shop.getVendor().get().getUniqueId().equals(vendor.getUniqueId()))
                 .collect(Collectors.toList());
     }
 
@@ -151,10 +149,8 @@ public class ShopManagerImpl implements ShopManager {
                 }
                 shopsInWorld.get(worldName).put(toBlockLocation(location), shop);
 
-                Location otherLoc = ((ShopImpl) shop).getOtherLocation();
-                if (otherLoc != null) {
-                    shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop);
-                }
+                ((ShopImpl) shop).getOtherLocation().ifPresent(otherLoc ->
+                        shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop));
 
                 callback.accept(shop);
             },

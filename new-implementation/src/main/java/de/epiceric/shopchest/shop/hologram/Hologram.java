@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import de.epiceric.shopchest.api.ShopChest;
@@ -20,7 +21,7 @@ public class Hologram {
         int topLine = shop.canPlayerBuy() && shop.canPlayerSell() ? 3 : 2;
 
         // TODO: Configurable
-        lines.add(new HologramLine(getLocation(topLine), shop.isAdminShop() ? "§cAdmin Shop" : shop.getVendor().getName()));
+        lines.add(new HologramLine(getLocation(topLine), shop.getVendor().map(OfflinePlayer::getName).orElse("§cAdmin Shop")));
         lines.add(new HologramLine(getLocation(topLine - 1), shop.getProduct().getAmount() + " §7x §f" + shop.getProduct().getLocalizedName()));
         if (shop.canPlayerBuy()) lines.add(new HologramLine(getLocation(topLine - 2), "§eBuy for " + plugin.formatEconomy(shop.getBuyPrice())));
         if (shop.canPlayerSell()) lines.add(new HologramLine(getLocation(0), "§eSell for " + plugin.formatEconomy(shop.getSellPrice())));
@@ -29,12 +30,12 @@ public class Hologram {
     private Location getLocation(int lineFromBottom) {
         double lineHeight = 0.25;
         Location loc = shop.getLocation().subtract(0, 0.75, 0);
-        Location otherLoc = ((ShopImpl) shop).getOtherLocation();
+        Location otherLoc = ((ShopImpl) shop).getOtherLocation().orElse(null);
 
         if (otherLoc == null) {
             return loc.add(0.5, lineFromBottom * lineHeight, 0.5);
         }
-
+        
         if (loc.getX() == otherLoc.getX()) {
             double zDiff = otherLoc.subtract(loc).getZ();
             return loc.add(0.5, lineFromBottom * lineHeight, zDiff);

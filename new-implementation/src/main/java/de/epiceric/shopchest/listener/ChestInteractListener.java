@@ -22,7 +22,6 @@ import de.epiceric.shopchest.api.event.ShopOpenEvent;
 import de.epiceric.shopchest.api.event.ShopRemoveEvent;
 import de.epiceric.shopchest.api.event.ShopBuySellEvent.Type;
 import de.epiceric.shopchest.api.flag.CreateFlag;
-import de.epiceric.shopchest.api.flag.Flag;
 import de.epiceric.shopchest.api.flag.InfoFlag;
 import de.epiceric.shopchest.api.flag.OpenFlag;
 import de.epiceric.shopchest.api.flag.RemoveFlag;
@@ -57,23 +56,24 @@ public class ChestInteractListener implements Listener {
 
         if (shopOpt.isPresent()) {
             Shop shop = shopOpt.get();
-            if (player.hasFlag() && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                Flag flag = player.getFlag();
-                if (flag instanceof InfoFlag) {
-                    plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shop));
-                    e.setCancelled(true);
-                } else if (flag instanceof RemoveFlag) {
-                    plugin.getServer().getPluginManager().callEvent(new ShopRemoveEvent(player, shop));
-                    e.setCancelled(true);
-                } else if (flag instanceof OpenFlag) {
-                    ShopOpenEvent event = new ShopOpenEvent(player, shop);
-                    plugin.getServer().getPluginManager().callEvent(event);
-                    e.setCancelled(event.isCancelled());
-                } else if (flag instanceof CreateFlag) {
-                    e.setCancelled(true);
-                    player.sendMessage("§cThis chest already is a shop."); // TODO: i18n
-                }
-                player.removeFlag();
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                player.getFlag().ifPresent(flag -> {
+                    if (flag instanceof InfoFlag) {
+                        plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shop));
+                        e.setCancelled(true);
+                    } else if (flag instanceof RemoveFlag) {
+                        plugin.getServer().getPluginManager().callEvent(new ShopRemoveEvent(player, shop));
+                        e.setCancelled(true);
+                    } else if (flag instanceof OpenFlag) {
+                        ShopOpenEvent event = new ShopOpenEvent(player, shop);
+                        plugin.getServer().getPluginManager().callEvent(event);
+                        e.setCancelled(event.isCancelled());
+                    } else if (flag instanceof CreateFlag) {
+                        e.setCancelled(true);
+                        player.sendMessage("§cThis chest already is a shop."); // TODO: i18n
+                    }
+                    player.removeFlag();
+                });
             } else if (e.hasItem() && e.getItem().getType() == Config.CORE_SHOP_INFO_ITEM.get()) {
                 plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shopOpt.get()));
                 e.setCancelled(true);
@@ -100,14 +100,17 @@ public class ChestInteractListener implements Listener {
                         .callEvent(new ShopBuySellEvent(player, shop, type, shop.getProduct().getAmount(), price));
             }
         } else {
-            if (player.getFlag() instanceof CreateFlag && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                e.setCancelled(true);
-                CreateFlag flag = (CreateFlag) player.getFlag();
-                player.removeFlag();
-                OfflinePlayer vendor = flag.isAdminShop() ? null : player.getBukkitPlayer();
-                plugin.getServer().getPluginManager().callEvent(new ShopCreateEvent(player,
-                        new ShopImpl(vendor, flag.getProduct(), location, flag.getBuyPrice(), flag.getSellPrice()),
-                        Config.SHOP_CREATION_PRICE.get()));
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                player.getFlag().filter(flag -> flag instanceof CreateFlag).ifPresent(f -> {
+                    e.setCancelled(true);
+                    CreateFlag flag = (CreateFlag) f;
+                    player.removeFlag();
+                    OfflinePlayer vendor = flag.isAdminShop() ? null : player.getBukkitPlayer();
+                    plugin.getServer().getPluginManager().callEvent(new ShopCreateEvent(player,
+                            new ShopImpl(vendor, flag.getProduct(), location, flag.getBuyPrice(), flag.getSellPrice()),
+                            Config.SHOP_CREATION_PRICE.get()));
+                });
+                
             }
         }
     }

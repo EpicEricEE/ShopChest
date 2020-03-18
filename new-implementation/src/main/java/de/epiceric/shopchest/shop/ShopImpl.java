@@ -1,5 +1,7 @@
 package de.epiceric.shopchest.shop;
 
+import java.util.Optional;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -58,9 +60,9 @@ public class ShopImpl implements Shop {
     /**
      * Gets the location of the other chest block if this shop is on a double chest
      * 
-     * @return the other location or {@code null} if there is no other chest
+     * @return the other location or an empty optional if there is no other chest
      */
-    public Location getOtherLocation() {
+    public Optional<Location> getOtherLocation() {
         try {
             Inventory inv = getInventory();
             if (inv instanceof DoubleChestInventory) {
@@ -71,15 +73,15 @@ public class ShopImpl implements Shop {
                         location.getBlockX() == left.getBlockX() &&
                         location.getBlockY() == left.getBlockY() &&
                         location.getBlockZ() == left.getBlockZ()) {
-                    return right;
+                    return Optional.of(right);
                 } else {
-                    return left;
+                    return Optional.of(left);
                 }
             }
         } catch (ChestNotFoundException e) {
             Logger.severe(e.getMessage());
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -127,8 +129,8 @@ public class ShopImpl implements Shop {
     }
 
     @Override
-    public OfflinePlayer getVendor() {
-        return vendor;
+    public Optional<OfflinePlayer> getVendor() {
+        return Optional.ofNullable(vendor);
     }
 
     @Override

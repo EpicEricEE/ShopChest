@@ -38,21 +38,20 @@ public class CreativeSelectListener implements Listener {
         }
 
         ShopPlayer player = plugin.wrapPlayer((Player) e.getWhoClicked());
-        if (player.getFlag() instanceof SelectFlag) {
+        player.getFlag().filter(flag -> flag instanceof SelectFlag).ifPresent(f -> {
             e.setCancelled(true);
 
             if (e.getCursor() == null || e.getCursor().getType() == Material.AIR) {
                 return;
             }
 
-            SelectFlag flag = (SelectFlag) player.getFlag();
+            SelectFlag flag = (SelectFlag) f;
             player.removeFlag();
             plugin.getServer().getScheduler().runTask(plugin, () -> player.getBukkitPlayer().closeInventory());
 
             plugin.getServer().getPluginManager().callEvent(new ShopSelectItemEvent(player, e.getCursor(),
                     flag.getAmount(), flag.getBuyPrice(), flag.getSellPrice(), flag.isAdminShop()));
-
-        }
+        });
     }
 
     @EventHandler
@@ -62,7 +61,7 @@ public class CreativeSelectListener implements Listener {
         }
 
         ShopPlayer player = plugin.wrapPlayer((Player) e.getPlayer());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             player.removeFlag();
             player.sendMessage("§cShop creation has been cancelled.");
         }
@@ -82,7 +81,7 @@ public class CreativeSelectListener implements Listener {
         }
 
         ShopPlayer player = plugin.wrapPlayer((Player) e.getWhoClicked());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -95,7 +94,7 @@ public class CreativeSelectListener implements Listener {
         }
 
         ShopPlayer player = plugin.wrapPlayer((Player) e.getSource().getHolder());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -108,7 +107,7 @@ public class CreativeSelectListener implements Listener {
         }
 
         ShopPlayer player = plugin.wrapPlayer((Player) e.getEntity());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -117,7 +116,7 @@ public class CreativeSelectListener implements Listener {
     public void onBlockBreak(BlockBreakEvent e) {
         // Cancel any block breaks if SelectFlag is assigned
         ShopPlayer player = plugin.wrapPlayer(e.getPlayer());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -126,7 +125,7 @@ public class CreativeSelectListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent e) {
         // Cancel any block places if SelectFlag is assigned
         ShopPlayer player = plugin.wrapPlayer(e.getPlayer());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -135,7 +134,7 @@ public class CreativeSelectListener implements Listener {
     public void onBlockMultiPlace(BlockMultiPlaceEvent e) {
         // Cancel any block places if SelectFlag is assigned
         ShopPlayer player = plugin.wrapPlayer(e.getPlayer());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -144,7 +143,7 @@ public class CreativeSelectListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         // Cancel any interactions if SelectFlag is assigned
         ShopPlayer player = plugin.wrapPlayer(e.getPlayer());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -153,7 +152,7 @@ public class CreativeSelectListener implements Listener {
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent e) {
         // Cancel any entity interactions if SelectFlag is assigned
         ShopPlayer player = plugin.wrapPlayer(e.getPlayer());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -166,7 +165,7 @@ public class CreativeSelectListener implements Listener {
         }
 
         ShopPlayer player = plugin.wrapPlayer((Player) e.getDamager());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
     }
@@ -175,9 +174,13 @@ public class CreativeSelectListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent e) {
         // Cancel any player movement if SelectFlag is assigned
         ShopPlayer player = plugin.wrapPlayer(e.getPlayer());
-        if (player.getFlag() instanceof SelectFlag) {
+        if (hasSelectFlag(player)) {
             e.setCancelled(true);
         }
+    }
+
+    private boolean hasSelectFlag(ShopPlayer player) {
+        return player.getFlag().filter(flag -> flag instanceof SelectFlag).isPresent();
     }
 
 }

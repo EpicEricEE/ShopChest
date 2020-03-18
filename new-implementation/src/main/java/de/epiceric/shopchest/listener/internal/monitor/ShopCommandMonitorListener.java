@@ -33,7 +33,7 @@ public class ShopCommandMonitorListener implements Listener {
         ShopPlayer player = e.getPlayer();
 
         if (!e.isItemSelected()) {
-            if (!(player.getFlag() instanceof SelectFlag)) {
+            if (!(player.getFlag().orElse(null) instanceof SelectFlag)) {
                 // Set flag only if player doesn't already have SelectFlag
                 Flag flag = new SelectFlag(e.getAmount(), e.getBuyPrice(), e.getSellPrice(), e.isAdminShop(),
                         player.getBukkitPlayer().getGameMode());

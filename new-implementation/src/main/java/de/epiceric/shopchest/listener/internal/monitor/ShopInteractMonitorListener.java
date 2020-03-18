@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import com.google.gson.JsonPrimitive;
 
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,7 +48,7 @@ public class ShopInteractMonitorListener implements Listener {
                 error -> e.getPlayer().sendMessage("§cFailed to add admin shop: {0}", error.getMessage())
             );
         } else {
-            plugin.getShopManager().addShop(shop.getVendor(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), 
+            plugin.getShopManager().addShop(shop.getVendor().get(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), 
                 newShop -> e.getPlayer().sendMessage("§aShop has been added with ID {0}.", newShop.getId()), // TODO: i18n
                 error -> e.getPlayer().sendMessage("§cFailed to add shop: {0}", error.getMessage())
             );
@@ -104,7 +105,7 @@ public class ShopInteractMonitorListener implements Listener {
         // TODO: i18n
         player.sendMessage("§e--------- §fShop Info §e-----------------------------");
         player.sendMessage("§7Hover over the underlined product for more details");
-        player.sendMessage("§6Vendor: §f{0}", shop.isAdminShop() ? "Admin" : shop.getVendor().getName());
+        player.sendMessage("§6Vendor: §f{0}", shop.getVendor().map(OfflinePlayer::getName).orElse("Admin"));
 
         if (productJson.startsWith("[{")) {
             NmsUtil.sendJsonMessage(player.getBukkitPlayer(), getProductJson(product));
@@ -161,7 +162,6 @@ public class ShopInteractMonitorListener implements Listener {
         Economy economy = ((ShopChestImpl) plugin).getEconomy();
         Player bukkitPlayer = e.getPlayer().getBukkitPlayer();
         String worldName = e.getShop().getWorld().getName();
-        boolean isAdmin = e.getShop().isAdminShop();
 
         if (e.getType() == Type.BUY) {
             EconomyResponse r = economy.withdrawPlayer(bukkitPlayer, worldName, e.getPrice());
@@ -171,8 +171,8 @@ public class ShopInteractMonitorListener implements Listener {
                 return;
             }
 
-            if (!isAdmin) {
-                EconomyResponse rVendor = economy.depositPlayer(e.getShop().getVendor(), worldName, e.getPrice());
+            e.getShop().getVendor().ifPresent(vendor -> {
+                EconomyResponse rVendor = economy.depositPlayer(vendor, worldName, e.getPrice());
                 if (!rVendor.transactionSuccess()) {
                     e.setCancelled(true);
                     e.getPlayer().sendMessage("§cFailed to deposit money to vendor: {0}", r.errorMessage); // TODO: i18n
@@ -183,7 +183,7 @@ public class ShopInteractMonitorListener implements Listener {
                     }
                     return;
                 }
-            }
+            });
         } else {
             EconomyResponse r = economy.depositPlayer(bukkitPlayer, worldName, e.getPrice());
             if (!r.transactionSuccess()) {
@@ -192,8 +192,8 @@ public class ShopInteractMonitorListener implements Listener {
                 return;
             }
 
-            if (!isAdmin) {
-                EconomyResponse rVendor = economy.withdrawPlayer(e.getShop().getVendor(), worldName, e.getPrice());
+            e.getShop().getVendor().ifPresent(vendor -> {
+                EconomyResponse rVendor = economy.withdrawPlayer(vendor, worldName, e.getPrice());
                 if (!rVendor.transactionSuccess()) {
                     e.setCancelled(true);
                     e.getPlayer().sendMessage("§cFailed to withdraw money from vendor: {0}", r.errorMessage); // TODO: i18n
@@ -204,7 +204,8 @@ public class ShopInteractMonitorListener implements Listener {
                     }
                     return;
                 }
-            }
+            });
+                
         }
     }
 
@@ -233,7 +234,7 @@ public class ShopInteractMonitorListener implements Listener {
                     player.sendMessage("§aYou bought §e{0} x {1} §afor §e{2}§a.", e.getAmount(), itemName, price);
                 } else {
                     player.sendMessage("§aYou bought §e{0} x {1} §afor §e{2} §afrom §e{3}§a.", e.getAmount(), itemName,
-                            price, shop.getVendor().getName());
+                            price, shop.getVendor().get().getName());
                 }
             } else {
                 for (int i = 0; i < e.getAmount(); i++) {
@@ -248,7 +249,7 @@ public class ShopInteractMonitorListener implements Listener {
                     player.sendMessage("§aYou sold §e{0} x {1} §afor §e{2}§a.", e.getAmount(), itemName, price);
                 } else {
                     player.sendMessage("§aYou sold §e{0} x {1} §afor §e{2} §ato §e{3}§a.", e.getAmount(), itemName,
-                            price, shop.getVendor().getName());
+                            price, shop.getVendor().get().getName());
                 }
             }
         } catch (ChestNotFoundException ignored) {

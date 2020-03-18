@@ -2,6 +2,7 @@ package de.epiceric.shopchest.api.player;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.bukkit.entity.Player;
 
@@ -50,10 +51,10 @@ public interface ShopPlayer {
     /**
      * Gets this player's flag
      * 
-     * @return the flag or {@code null} if the player does not have one
+     * @return the flag or an empty optional if the player does not have one
      * @since 1.13
      */
-    Flag getFlag();
+    Optional<Flag> getFlag();
 
     /**
      * Sets this player's flag
@@ -70,7 +71,7 @@ public interface ShopPlayer {
      * @since 1.13
      */
     default boolean hasFlag() {
-        return getFlag() != null;
+        return getFlag().isPresent();
     }
 
     /**
@@ -109,6 +110,6 @@ public interface ShopPlayer {
      */
     default boolean ownsShop(Shop shop) {
         return shop != null && !shop.isAdminShop()
-                && shop.getVendor().getUniqueId().equals(getBukkitPlayer().getUniqueId());
+                && shop.getVendor().get().getUniqueId().equals(getBukkitPlayer().getUniqueId());
     }
 }

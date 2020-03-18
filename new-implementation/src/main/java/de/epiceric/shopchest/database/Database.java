@@ -460,7 +460,7 @@ public abstract class Database {
                     ps.setInt(1, shop.getId());
                 }
 
-                ps.setString(i+1, shop.isAdminShop() ? "admin" : shop.getVendor().getUniqueId().toString());
+                ps.setString(i+1, shop.getVendor().map(vendor -> vendor.getUniqueId().toString()).orElse("admin"));
                 ps.setString(i+2, encodeItemStack(shop.getProduct().getItemStack()));
                 ps.setInt(i+3, shop.getProduct().getAmount());
                 ps.setString(i+4, shop.getLocation().getWorld().getName());
@@ -523,8 +523,8 @@ public abstract class Database {
                 ps.setString(6, product.getLocalizedName());
                 ps.setString(7, encodeItemStack(product.getItemStack()));
                 ps.setInt(8, product.getAmount());
-                ps.setString(9, shop.getVendor().getName());
-                ps.setString(10, shop.getVendor().getUniqueId().toString());
+                ps.setString(9, shop.getVendor().map(OfflinePlayer::getName).orElse(""));
+                ps.setString(10, shop.getVendor().map(vendor -> vendor.getUniqueId().toString()).orElse(""));
                 ps.setBoolean(11, shop.isAdminShop());
                 ps.setString(12, shop.getLocation().getWorld().getName());
                 ps.setInt(13, shop.getLocation().getBlockX());

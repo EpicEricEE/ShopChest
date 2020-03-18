@@ -1,6 +1,9 @@
 package de.epiceric.shopchest.listener.internal;
 
+import java.util.Optional;
+
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Player;
@@ -132,7 +135,7 @@ public class ShopInteractListener implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            if (!shop.isAdminShop() && !economy.has(shop.getVendor(), shop.getWorld().getName(), e.getPrice())) {
+            if (!shop.isAdminShop() && !economy.has(shop.getVendor().get(), shop.getWorld().getName(), e.getPrice())) {
                 player.sendMessage("§cThe vendor of this shop doesn't have enough money.");
                 e.setCancelled(true);
                 return;
@@ -157,13 +160,15 @@ public class ShopInteractListener implements Listener {
                 // for this event to be fired.
             }
         
-            boolean vendorMessages = Config.FEATURES_VENDOR_MESSAGES.get();
-            ShopPlayer vendor = shop.getVendor().isOnline() ? plugin.wrapPlayer(shop.getVendor().getPlayer()) : null;
+           boolean vendorMessages = Config.FEATURES_VENDOR_MESSAGES.get();
+           Optional<ShopPlayer> vendor = shop.getVendor().filter(OfflinePlayer::isOnline)
+                .map(offlinePlayer -> plugin.wrapPlayer(offlinePlayer.getPlayer()));
+            
             if (e.getType() == Type.BUY) {
                 if (shopAmount < e.getAmount()) {
                     player.sendMessage("§cThis shop is out of items to sell.");
-                    if (vendorMessages && vendor != null) {
-                        vendor.sendMessage("§cYour shop selling §e{0} x {1} §cis out of stock.", product.getAmount(),
+                    if (vendorMessages && vendor.isPresent()) {
+                        vendor.get().sendMessage("§cYour shop selling §e{0} x {1} §cis out of stock.", product.getAmount(),
                                 product.getLocalizedName());
                     }
                     e.setCancelled(true);
@@ -172,8 +177,8 @@ public class ShopInteractListener implements Listener {
             } else if (e.getType() == Type.SELL) {
                 if (shopSpace < e.getAmount()) {
                     player.sendMessage("§cThis shop doesn't have enough space for your items.");
-                    if (vendorMessages && vendor != null) {
-                        vendor.sendMessage("§cYour shop buying §e{0} x {1} §cis full.", product.getAmount(),
+                    if (vendorMessages && vendor.isPresent()) {
+                        vendor.get().sendMessage("§cYour shop buying §e{0} x {1} §cis full.", product.getAmount(),
                                 product.getLocalizedName());
                     }
                     e.setCancelled(true);

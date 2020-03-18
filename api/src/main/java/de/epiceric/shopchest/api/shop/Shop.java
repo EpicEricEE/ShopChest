@@ -1,5 +1,6 @@
 package de.epiceric.shopchest.api.shop;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.bukkit.Location;
@@ -31,10 +32,10 @@ public interface Shop {
     /**
      * Gets the player who owns this shop
      * 
-     * @return the vendor or {@code null} if this shop is an admin shop
+     * @return the vendor or an empty optional if this shop is an admin shop
      * @since 1.13
      */
-    OfflinePlayer getVendor();
+    Optional<OfflinePlayer> getVendor();
 
     /**
      * Gets a copy of the product this shop is buying or selling
@@ -88,7 +89,7 @@ public interface Shop {
      * @since 1.13
      */
     default boolean isAdminShop() {
-        return getVendor() == null;
+        return !getVendor().isPresent();
     }
 
     /**
