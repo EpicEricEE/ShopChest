@@ -2,6 +2,7 @@ package de.epiceric.shopchest.command;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Locale;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,7 +30,7 @@ public class ShopCommandImpl extends ShopCommand {
 
     @Override
     public String getName() {
-        return Config.CORE_MAIN_COMMAND_NAME.get();
+        return Config.CORE_MAIN_COMMAND_NAME.get().toLowerCase(Locale.ENGLISH).trim();
     }
 
     /**

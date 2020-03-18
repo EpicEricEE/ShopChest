@@ -5,12 +5,15 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -47,7 +50,7 @@ public class ShopChestImpl extends ShopChest {
 
     @Override
     public void onLoad() {
-        if (!loadConfig()) {
+        if (!loadConfigData()) {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -69,26 +72,14 @@ public class ShopChestImpl extends ShopChest {
 
     @Override
     public void onDisable() {
-        if (configManager != null) {
-            try {
-                configManager.save();
-            } catch (IOException e) {
-                Logger.severe("Failed to save configuration file. Config may have been lost");
-                Logger.severe(e);
-            }
-        }
-
-        if (database != null) {
-            if (database instanceof SQLite) {
-                ((SQLite) database).vacuum();
-            }
-            database.disconnect();
-        }
+        unregisterCommand();
+        saveConfigData();
+        unloadDatabase();
 
         getShopManager().getShops().forEach(shop -> ((ShopImpl) shop).destroy());
     }
 
-    private boolean loadConfig() {
+    private boolean loadConfigData() {
         configManager = ConfigManager.get(this);
 
         try {
@@ -100,6 +91,17 @@ public class ShopChestImpl extends ShopChest {
         }
 
         return true;
+    }
+
+    private void saveConfigData() {
+        if (configManager != null) {
+            try {
+                configManager.save();
+            } catch (IOException e) {
+                Logger.severe("Failed to save configuration file. Config may have been lost");
+                Logger.severe(e);
+            }
+        }
     }
 
     private boolean loadEconomy() {
@@ -138,6 +140,29 @@ public class ShopChestImpl extends ShopChest {
         }
     }
 
+    private void unregisterCommand() {
+        try {
+            Command pluginCommand = ((ShopCommandImpl) command).getPluginCommand();
+            Field fieldCommandMap = getServer() .getClass().getDeclaredField("commandMap");
+            fieldCommandMap.setAccessible(true);
+
+            CommandMap commandMap = (CommandMap) fieldCommandMap.get(getServer());
+            pluginCommand.unregister(commandMap);
+
+            Field fieldKnownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
+            fieldKnownCommands.setAccessible(true);
+
+            Map<?, ?> knownCommands = (Map<?, ?>) fieldKnownCommands.get(commandMap);
+            knownCommands.remove("shopchest:" + command.getName());
+            if (pluginCommand.equals(knownCommands.get(command.getName()))) {
+                knownCommands.remove(command.getName());
+            }
+        } catch (ReflectiveOperationException e) {
+            Logger.severe("Failed to unregister shop command");
+            Logger.severe(e);
+        }
+    }
+
     private void loadDatabase() {
         if (Config.DATABASE_TYPE.get() == DatabaseType.SQLITE) {
             database = new SQLite(this);
@@ -156,6 +181,15 @@ public class ShopChestImpl extends ShopChest {
                 getServer().getPluginManager().disablePlugin(this);
             }
         );
+    }
+
+    private void unloadDatabase() {
+        if (database != null) {
+            if (database instanceof SQLite) {
+                ((SQLite) database).vacuum();
+            }
+            database.disconnect();
+        }
     }
     
     private void checkForUpdates() {
