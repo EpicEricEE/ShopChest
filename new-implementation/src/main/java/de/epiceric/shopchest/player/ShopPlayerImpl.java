@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
+import de.epiceric.shopchest.ShopManagerImpl;
 import de.epiceric.shopchest.api.ShopChest;
 import de.epiceric.shopchest.api.config.Config;
 import de.epiceric.shopchest.api.flag.Flag;
@@ -75,6 +76,11 @@ public class ShopPlayerImpl implements ShopPlayer {
     public int getShopLimit() {
         return Config.CORE_DEFAULT_SHOP_LIMIT.get(); // TODO: permissions based
 	}
+
+    @Override
+    public int getShopAmount() {
+        return ((ShopManagerImpl) plugin.getShopManager()).getShopAmount(getBukkitPlayer());
+    }
 
 	@Override
 	public Collection<Shop> getShops() {

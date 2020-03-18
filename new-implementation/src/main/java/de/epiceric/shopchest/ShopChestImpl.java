@@ -5,12 +5,17 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.SimpleCommandMap;
@@ -22,7 +27,7 @@ import de.epiceric.shopchest.api.ShopManager;
 import de.epiceric.shopchest.api.command.ShopCommand;
 import de.epiceric.shopchest.api.config.Config;
 import de.epiceric.shopchest.api.database.DatabaseType;
-import de.epiceric.shopchest.api.event.ShopInitializedEvent;
+import de.epiceric.shopchest.api.event.ShopLoadedEvent;
 import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.command.ShopCommandImpl;
 import de.epiceric.shopchest.config.ConfigManager;
@@ -170,13 +175,29 @@ public class ShopChestImpl extends ShopChest {
             database = new MySQL(this);
         }
 
-        ((ShopManagerImpl) getShopManager()).loadShops(
+        ((ShopManagerImpl) getShopManager()).loadShopAmounts(
+            shopAmounts -> {
+                Logger.info("Loaded shop amounts from the database");
+            },
+            error -> {
+                Logger.severe("Failed to load shops amounts from the database");
+                Logger.severe("Shop limits will not be working correctly");
+                Logger.severe(error);
+            }
+        );
+
+        List<Chunk> chunks = new ArrayList<>();
+        for (World world : getServer().getWorlds()) {
+            chunks.addAll(Arrays.asList(world.getLoadedChunks()));
+        }
+
+        ((ShopManagerImpl) getShopManager()).loadShops(chunks.toArray(new Chunk[chunks.size()]),
             shops -> {
-                getServer().getPluginManager().callEvent(new ShopInitializedEvent(shops.size()));
+                getServer().getPluginManager().callEvent(new ShopLoadedEvent(shops));
                 Logger.info("Loaded {0} shops from the database", shops.size());
             },
             error -> {
-                Logger.severe("Failed to load shops from database");
+                Logger.severe("Failed to load shops from the database");
                 Logger.severe(error);
                 getServer().getPluginManager().disablePlugin(this);
             }
@@ -259,12 +280,17 @@ public class ShopChestImpl extends ShopChest {
         });
     }
 
-    /* package-private */ Database getDatabase() {
+    /**
+     * Gets an instance of the plugin's database
+     * 
+     * @return the database
+     */
+    public Database getDatabase() {
         return database;
     }
 
     /**
-     * Gets an instance to the config manager
+     * Gets an instance of the config manager
      * 
      * @return the config manager
      * @see ConfigManager#get(ShopChestImpl)

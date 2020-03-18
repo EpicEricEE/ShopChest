@@ -94,7 +94,17 @@ public interface ShopPlayer {
     int getShopLimit();
 
     /**
-     * Gets the shops this player owns
+     * Gets the amount of shops the given player currently has
+     * <p>
+     * This number includes shops that are not loaded.
+     * 
+     * @return the amount of shops
+     * @since 1.13
+     */
+    int getShopAmount();
+
+    /**
+     * Gets the loaded shops this player owns
      * 
      * @return a collection of shops
      * @since 1.13

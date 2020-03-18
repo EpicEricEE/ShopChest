@@ -1,23 +1,32 @@
 package de.epiceric.shopchest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Chest;
 
 import de.epiceric.shopchest.api.ShopManager;
+import de.epiceric.shopchest.api.event.ShopLoadedEvent;
+import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.api.shop.Shop;
 import de.epiceric.shopchest.api.shop.ShopProduct;
 import de.epiceric.shopchest.shop.ShopImpl;
+import de.epiceric.shopchest.util.Counter;
 
 public class ShopManagerImpl implements ShopManager {
     private static ShopManagerImpl instance;
@@ -32,6 +41,7 @@ public class ShopManagerImpl implements ShopManager {
     private ShopChestImpl plugin;
 
     private Map<String, Map<Location, Shop>> shopsInWorld = new HashMap<>();
+    private Map<UUID, Counter> shopAmounts = new HashMap<>();
 
     private ShopManagerImpl(ShopChestImpl plugin) {
         this.plugin = plugin;
@@ -66,35 +76,71 @@ public class ShopManagerImpl implements ShopManager {
     }
 
     /**
-     * Loads and caches shops from the database
+     * Loads shops in the given chunks from the database
      * <p>
-     * Cache will be cleared before new shops are cached.
+     * This will fire a {@link ShopLoadedEvent}.
+     * 
+     * @param chunks a collection
      */
-    public void loadShops(Consumer<Collection<Shop>> callback, Consumer<Throwable> errorCallback) {
+    public void loadShops(Chunk[] chunks, Consumer<Collection<Shop>> callback, Consumer<Throwable> errorCallback) {
         plugin.getDatabase().connect(
             amount -> {
-                plugin.getDatabase().getShops(
+                plugin.getDatabase().getShops(chunks,
                     shops -> {
-                        clearShops();
-                        shops.stream().forEach(shop -> {
-                            ((ShopImpl) shop).create();
+                        for (Iterator<Shop> it = shops.iterator(); it.hasNext();) {
+                            Shop shop = it.next();
+
+                            if (getShop(shop.getLocation()).isPresent()) {
+                                // A shop is already loaded at the location, which should be the same.
+                                it.remove();
+                                continue;
+                            }
 
                             String worldName = shop.getWorld().getName();
                             if (!shopsInWorld.containsKey(worldName)) {
                                 shopsInWorld.put(worldName, new HashMap<>());
                             }
+
+                            ((ShopImpl) shop).create();
+
                             shopsInWorld.get(worldName).put(toBlockLocation(shop.getLocation()), shop);
-            
                             ((ShopImpl) shop).getOtherLocation().ifPresent(otherLoc ->
-                                    shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop));;
-                        });
-                        callback.accept(shops);
+                                    shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop));
+                        }
+                        
+                        callback.accept(Collections.unmodifiableCollection(shops));
+                        plugin.getServer().getPluginManager().callEvent(new ShopLoadedEvent(shops));
                     },
                     errorCallback
                 );
             },
             errorCallback
         );
+    }
+
+    /**
+     * Loads all players' shop amounts from the database
+     */
+    public void loadShopAmounts(Consumer<Map<UUID, Integer>> callback, Consumer<Throwable> errorCallback) {
+        plugin.getDatabase().getShopAmounts(
+            shopAmounts -> {
+                this.shopAmounts.clear();
+                shopAmounts.forEach((uuid, amount) -> this.shopAmounts.put(uuid, new Counter(amount)));
+                callback.accept(shopAmounts);
+            },
+            errorCallback
+        );
+    }
+
+    /**
+     * Gets the amount of shops a player has
+     * 
+     * @param player the player
+     * @return the amount of shops
+     * @see ShopPlayer#getShopAmount()
+     */
+    public int getShopAmount(OfflinePlayer player) {
+        return shopAmounts.getOrDefault(player.getUniqueId(), new Counter()).get();
     }
 
     /* API Implementation */
@@ -152,6 +198,12 @@ public class ShopManagerImpl implements ShopManager {
                 ((ShopImpl) shop).getOtherLocation().ifPresent(otherLoc ->
                         shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop));
 
+                if (vendor != null) {
+                    shopAmounts.compute(vendor.getUniqueId(), (uuid, counter) -> {
+                        return counter == null ? new Counter(1) : counter.increment();
+                    });
+                }
+
                 callback.accept(shop);
             },
             errorCallback
@@ -168,8 +220,14 @@ public class ShopManagerImpl implements ShopManager {
         ((ShopImpl) shop).destroy();
         shopsInWorld.get(shop.getWorld().getName()).remove(shop.getLocation());
 
-        getRemainingShopLocation(shop.getId(), shop.getWorld()).ifPresent(otherLoc -> {
-            shopsInWorld.get(shop.getWorld().getName()).remove(otherLoc);
+        getRemainingShopLocation(shop.getId(), shop.getWorld()).ifPresent(otherLoc ->
+            shopsInWorld.get(shop.getWorld().getName()).remove(otherLoc));
+
+        
+        shop.getVendor().ifPresent(vendor -> {
+            shopAmounts.compute(vendor.getUniqueId(), (uuid, counter) -> {
+                return counter == null ? new Counter() : counter.decrement();
+            });
         });
 
         plugin.getDatabase().removeShop(shop, callback, errorCallback);
@@ -177,6 +235,14 @@ public class ShopManagerImpl implements ShopManager {
 
     @Override
     public void reloadShops(Consumer<Integer> callback, Consumer<Throwable> errorCallback) {
+        List<Chunk> chunks = new ArrayList<>();
+        for (World world : plugin.getServer().getWorlds()) {
+            chunks.addAll(Arrays.asList(world.getLoadedChunks()));
+        }
 
+        loadShops(chunks.toArray(new Chunk[chunks.size()]),
+            shops -> callback.accept(shops.size()),
+            errorCallback
+        );
     }
 }

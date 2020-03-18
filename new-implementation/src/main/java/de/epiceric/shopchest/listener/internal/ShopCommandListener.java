@@ -82,7 +82,7 @@ public class ShopCommandListener implements Listener {
         }
 
         // Check shop limit
-        if (player.getShops().size() >= player.getShopLimit()) {
+        if (player.getShopAmount() >= player.getShopLimit()) {
             e.setCancelled(true);
             player.sendMessage("§cYou don't have permission to create any more shops."); // TODO: i18n
             return;
@@ -99,7 +99,7 @@ public class ShopCommandListener implements Listener {
         boolean allowDecimals = Config.SHOP_CREATION_ALLOW_DECIMAL_PRICES.get();
         if (!allowDecimals && (!isInt(buyPrice) || !isInt(buyPrice))) {
             e.setCancelled(true);
-            player.sendMessage("§cThe prices must not contain decimals.");
+            player.sendMessage("§cThe prices must not contain decimals."); // TODO: i18n
             return;
         }
 

@@ -1,5 +1,6 @@
 package de.epiceric.shopchest.database;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -29,8 +30,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -40,6 +43,8 @@ import com.zaxxer.hikari.HikariDataSource;
 public abstract class Database {
     private final Set<String> notFoundWorlds = new HashSet<>();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private boolean initialized;
 
     String tableShops;
     String tableLogs;
@@ -344,6 +349,7 @@ public abstract class Database {
                     ResultSet rs = s.executeQuery("SELECT COUNT(id) FROM " + tableShops);
                     if (rs.next()) {
                         int count = rs.getInt(1);
+                        initialized = true;
                         callSyncResult(callback, count);
                     } else {
                         throw new SQLException("Count result set has no entries");
@@ -379,6 +385,32 @@ public abstract class Database {
     }
 
     /**
+     * Get shop amounts for each player
+     * 
+     * @param callback Callback that returns a map of each player's shop amount
+     */
+    public void getShopAmounts(Consumer<Map<UUID, Integer>> callback, Consumer<Throwable> errorCallback) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            try (Connection con = dataSource.getConnection();
+                    Statement s = con.createStatement()) {
+                ResultSet rs = s.executeQuery("SELECT vendor, COUNT(*) AS count FROM " + tableShops + " WHERE shoptype = 'NORMAL' GROUP BY vendor");
+
+                Map<UUID, Integer> result = new HashMap<>();
+                while (rs.next()) {
+                    UUID uuid = UUID.fromString(rs.getString("vendor"));
+                    result.put(uuid, rs.getInt("count"));
+                }
+
+                callSyncResult(callback, result);
+            } catch (SQLException e) {
+                callSyncError(errorCallback, e);
+                Logger.severe("Failed to get shop amounts from database");
+                Logger.severe(e);
+            }        
+        });
+    }
+
+    /**
      * Get all shops from the database
      * 
      * @param showConsoleMessages Whether console messages (errors or warnings)
@@ -387,54 +419,103 @@ public abstract class Database {
      *                            collection of all shops (as
      *                            {@code Collection<Shop>})
      */
-    public void getShops(Consumer<Collection<Shop>> callback, Consumer<Throwable> errorCallback) {
+    public void getShops(Chunk[] chunks, Consumer<Collection<Shop>> callback, Consumer<Throwable> errorCallback) {
+        // Split chunks into packages containing each {splitSize} chunks at max
+        int splitSize = 80;
+        int parts = (int) Math.ceil(chunks.length / (double) splitSize);
+        Chunk[][] splitChunks = new Chunk[parts][];
+        for (int i = 0; i < parts; i++) {
+            int size = i < parts - 1 ? splitSize : chunks.length % splitSize;
+            Chunk[] tmp = new Chunk[size];
+            System.arraycopy(chunks, i * splitSize, tmp, 0, size);
+            splitChunks[i] = tmp;
+        }
+
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             List<Shop> shops = new ArrayList<>();
 
-            try (Connection con = dataSource.getConnection();
-                    PreparedStatement ps = con.prepareStatement("SELECT * FROM " + tableShops + "")) {
-                ResultSet rs = ps.executeQuery();
+            // Send a request for each chunk package
+            for (Chunk[] newChunks : splitChunks) {
 
-                while (rs.next()) {
-                    int id = rs.getInt("id");
-
-                    String worldName = rs.getString("world");
-                    World world = plugin.getServer().getWorld(worldName);
-
-                    if (world == null) {
-                        if (!notFoundWorlds.contains(worldName)) {
-                            Logger.warning("Could not find world with name \"{0}\"", worldName);
-                            notFoundWorlds.add(worldName);
-                        }
-                        continue;
-                    }
-
-                    boolean admin = rs.getString("shoptype").equalsIgnoreCase("ADMIN");
-                    OfflinePlayer vendor = admin ? null
-                            : plugin.getServer().getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
-
-                    int x = rs.getInt("x");
-                    int y = rs.getInt("y");
-                    int z = rs.getInt("z");
-                    Location location = new Location(world, x, y, z);
-
-                    ItemStack itemStack = decodeItemStack(rs.getString("product"));
-                    int amount = rs.getInt("amount");
-                    ShopProduct product = new ShopProductImpl(itemStack, amount);
-
-                    double buyPrice = rs.getDouble("buyprice");
-                    double sellPrice = rs.getDouble("sellprice");
-
-                    shops.add(new ShopImpl(id, vendor, product, location, buyPrice, sellPrice));
+                // Map chunks by world
+                Map<String, Set<Chunk>> chunksByWorld = new HashMap<>();
+                for (Chunk chunk : newChunks) {
+                    String world = chunk.getWorld().getName();
+                    Set<Chunk> chunksForWorld = chunksByWorld.getOrDefault(world, new HashSet<>());
+                    chunksForWorld.add(chunk);
+                    chunksByWorld.put(world, chunksForWorld);
                 }
 
-                callSyncResult(callback, Collections.unmodifiableCollection(shops));
-            } catch (SQLException e) {
-                callSyncError(errorCallback, e);
-                Logger.severe("Failed to get shops from database");
-                Logger.severe(e);
+                // Create query dynamically
+                String query = "SELECT * FROM " + tableShops + " WHERE ";
+                for (String world : chunksByWorld.keySet()) {
+                    query += "(world = ? AND (";
+                    int chunkNum = chunksByWorld.get(world).size();
+                    for (int i = 0; i < chunkNum; i++) {
+                        query += "((x BETWEEN ? AND ?) AND (z BETWEEN ? AND ?)) OR ";
+                    }
+                    query += "1=0)) OR ";
+                }
+                query += "1=0";
+
+                try (Connection con = dataSource.getConnection();
+                        PreparedStatement ps = con.prepareStatement(query)) {
+                    int index = 0;
+                    for (String world : chunksByWorld.keySet()) {
+                        ps.setString(++index, world);
+                        for (Chunk chunk : chunksByWorld.get(world)) {
+                            int minX = chunk.getX() * 16;
+                            int minZ = chunk.getZ() * 16;
+                            ps.setInt(++index, minX);
+                            ps.setInt(++index, minX + 15);
+                            ps.setInt(++index, minZ);
+                            ps.setInt(++index, minZ + 15);
+                        }
+                    }
+
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+
+                        String worldName = rs.getString("world");
+                        World world = plugin.getServer().getWorld(worldName);
+
+                        if (world == null) {
+                            if (!notFoundWorlds.contains(worldName)) {
+                                Logger.warning("Could not find world with name \"{0}\"", worldName);
+                                notFoundWorlds.add(worldName);
+                            }
+                            continue;
+                        }
+
+                        boolean admin = rs.getString("shoptype").equalsIgnoreCase("ADMIN");
+                        OfflinePlayer vendor = admin ? null
+                                : plugin.getServer().getOfflinePlayer(UUID.fromString(rs.getString("vendor")));
+
+                        int x = rs.getInt("x");
+                        int y = rs.getInt("y");
+                        int z = rs.getInt("z");
+                        Location location = new Location(world, x, y, z);
+
+                        ItemStack itemStack = decodeItemStack(rs.getString("product"));
+                        int amount = rs.getInt("amount");
+                        ShopProduct product = new ShopProductImpl(itemStack, amount);
+
+                        double buyPrice = rs.getDouble("buyprice");
+                        double sellPrice = rs.getDouble("sellprice");
+
+                        shops.add(new ShopImpl(id, vendor, product, location, buyPrice, sellPrice));
+                    }
+                } catch (SQLException e) {
+                    callSyncError(errorCallback, e);
+                    Logger.severe("Failed to get shops from database");
+                    Logger.severe(e);
+
+                    return;
+                }
             }
 
+            callSyncResult(callback, Collections.unmodifiableCollection(shops));
         });
     }
 
@@ -663,5 +744,12 @@ public abstract class Database {
             dataSource.close();
             dataSource = null;
         }
+    }
+
+    /**
+     * Gets whether the database has been fully initialized
+     */
+    public boolean isInitialized() {
+        return initialized;
     }
 }

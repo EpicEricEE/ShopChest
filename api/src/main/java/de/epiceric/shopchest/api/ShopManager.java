@@ -21,7 +21,7 @@ import de.epiceric.shopchest.api.shop.ShopProduct;
 public interface ShopManager {
 
     /**
-     * Gets all shops
+     * Gets all currently loaded shops
      * 
      * @return a collection of shops
      */
@@ -31,7 +31,7 @@ public interface ShopManager {
      * Gets the shop by its ID
      * 
      * @param id the shop's ID
-     * @return the shop or an empty optional if there is no shop
+     * @return the shop or an empty optional if there is no shop loaded
      * @since 1.13
      */
     Optional<Shop> getShop(int id);
@@ -40,13 +40,13 @@ public interface ShopManager {
      * Gets the shop at the given location
      * 
      * @param location the shop's chest location
-     * @return the shop or an empty optional if there is no shop
+     * @return the shop or an empty optional if there is no shop loaded
      * @since 1.13
      */
     Optional<Shop> getShop(Location location);
 
     /**
-     * Gets all shops by the given player
+     * Gets all loaded shops by the given player
      * 
      * @param vendor the player
      * @return a collection of shops
@@ -56,7 +56,7 @@ public interface ShopManager {
     Collection<Shop> getShops(OfflinePlayer vendor);
 
     /**
-     * Gets all shops in the given world
+     * Gets all loaded shops in the given world
      * 
      * @param world the world
      * @return a collection of shops
@@ -114,7 +114,7 @@ public interface ShopManager {
     void removeShop(Shop shop, Consumer<Void> callback, Consumer<Throwable> errorCallback);
 
     /**
-     * Asynchronously reloads all shops from the database
+     * Removes all shops and reloads the shops in currently loaded chunks
      * <p>
      * This does not trigger the {@link ShopReloadEvent}.
      * 
