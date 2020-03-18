@@ -8,5 +8,5 @@ import de.epiceric.shopchest.api.ShopChest;
 public class OpenFlag extends TimedFlag {
     public OpenFlag(ShopChest plugin) {
         super(plugin, 15);
-	}
+    }
 }

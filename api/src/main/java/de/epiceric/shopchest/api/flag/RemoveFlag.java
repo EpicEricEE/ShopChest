@@ -8,5 +8,5 @@ import de.epiceric.shopchest.api.ShopChest;
 public class RemoveFlag extends TimedFlag {
     public RemoveFlag(ShopChest plugin) {
         super(plugin, 15);
-	}
+    }
 }

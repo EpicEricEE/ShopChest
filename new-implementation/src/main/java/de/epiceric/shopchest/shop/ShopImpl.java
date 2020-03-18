@@ -178,10 +178,10 @@ public class ShopImpl implements Shop {
         return sellPrice;
     }
 
-	@Override
-	public void setSellPrice(double sellPrice) {
+    @Override
+    public void setSellPrice(double sellPrice) {
         this.sellPrice = sellPrice;
-		// TODO: update
+        // TODO: update
     }
     
     /**

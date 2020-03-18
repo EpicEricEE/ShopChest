@@ -65,8 +65,8 @@ public class ShopInteractMonitorListener implements Listener {
 
     private String getProductJson(ShopProduct product) {
         try {
-            Class<?> craftItemStackClass = NmsUtil.getCraftClass("inventory.CraftItemStack");	
-            Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, product.getItemStack());	
+            Class<?> craftItemStackClass = NmsUtil.getCraftClass("inventory.CraftItemStack");
+            Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, product.getItemStack());
             Class<?> nbtTagCompoundClass = NmsUtil.getNmsClass("NBTTagCompound");
             Object nbtTagCompound = nbtTagCompoundClass.getConstructor().newInstance();
             nmsStack.getClass().getMethod("save", nbtTagCompoundClass).invoke(nmsStack, nbtTagCompound);

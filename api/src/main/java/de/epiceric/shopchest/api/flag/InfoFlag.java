@@ -8,5 +8,5 @@ import de.epiceric.shopchest.api.ShopChest;
 public class InfoFlag extends TimedFlag {
     public InfoFlag(ShopChest plugin) {
         super(plugin, 15);
-	}
+    }
 }

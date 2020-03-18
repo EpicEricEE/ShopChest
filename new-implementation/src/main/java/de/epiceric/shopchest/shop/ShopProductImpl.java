@@ -21,5 +21,5 @@ public class ShopProductImpl extends ShopProduct {
             joiner.add(word.substring(0, 1).toUpperCase(Locale.US) + word.substring(1));
         }
         return joiner.toString();
-	}
+    }
 }
