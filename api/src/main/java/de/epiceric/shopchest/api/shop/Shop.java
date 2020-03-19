@@ -101,17 +101,6 @@ public interface Shop {
     double getBuyPrice();
 
     /**
-     * Sets the price for which a player can sell the product to this shop
-     * <p>
-     * If set to zero, a player cannot buy from this shop.
-     * 
-     * @param buyPrice the buy price
-     * @throws IllegalStateException when a player can neither buy nor sell from this shop
-     * @since 1.13
-     */
-    void setBuyPrice(double buyPrice);
-
-    /**
      * Gets whether a player can buy from this shop
      * 
      * @return whether buying is enabled
@@ -128,17 +117,6 @@ public interface Shop {
      * @since 1.13
      */
     double getSellPrice();
-
-    /**
-     * Sets the price for which a player can sell the product to this shop
-     * <p>
-     * If set to zero, a player cannot sell to this shop.
-     * 
-     * @param sellPrice the sell price
-     * @throws IllegalStateException when a player can neither buy nor sell from this shop
-     * @since 1.13
-     */
-    void setSellPrice(double sellPrice);
 
     /**
      * Gets whether a player can sell to this shop

@@ -17,6 +17,7 @@ import de.epiceric.shopchest.api.ShopChest;
 import de.epiceric.shopchest.api.config.Config;
 import de.epiceric.shopchest.api.event.ShopBuySellEvent;
 import de.epiceric.shopchest.api.event.ShopCreateEvent;
+import de.epiceric.shopchest.api.event.ShopEditEvent;
 import de.epiceric.shopchest.api.event.ShopExtendEvent;
 import de.epiceric.shopchest.api.event.ShopInfoEvent;
 import de.epiceric.shopchest.api.event.ShopOpenEvent;
@@ -49,6 +50,24 @@ public class ShopInteractListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
+    public void onShopEdit(ShopEditEvent e) {
+        Shop shop = e.getShop();
+        ShopPlayer player = e.getPlayer();
+
+        if (shop.isAdminShop() && !player.hasPermission("shopchest.edit.admin")) {
+            player.sendMessage("§cYou don't have permission to edit an admin shop."); // TODO: i18n
+            e.setCancelled(true);
+            return;
+        }
+
+        if (!player.ownsShop(shop) && !player.hasPermission("shopchest.edit.other")) {
+            player.sendMessage("§cYou don't have permission to edit this shop."); // TODO: i18n
+            e.setCancelled(true);
+            return;
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onShopRemove(ShopRemoveEvent e) {
         Shop shop = e.getShop();
         ShopPlayer player = e.getPlayer();
@@ -59,7 +78,7 @@ public class ShopInteractListener implements Listener {
             return;
         }
 
-        if (!player.ownsShop(shop) && !player.hasPermission("shop.remove.other")) {
+        if (!player.ownsShop(shop) && !player.hasPermission("shopchest.remove.other")) {
             player.sendMessage("§cYou don't have permission to remove this shop."); // TODO: i18n
             e.setCancelled(true);
             return;

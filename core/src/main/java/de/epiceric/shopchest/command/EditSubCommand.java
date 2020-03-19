@@ -13,25 +13,25 @@ import org.bukkit.inventory.ItemStack;
 
 import de.epiceric.shopchest.api.ShopChest;
 import de.epiceric.shopchest.api.command.SubCommand;
-import de.epiceric.shopchest.api.event.ShopPreCreateEvent;
+import de.epiceric.shopchest.api.event.ShopPreEditEvent;
 import de.epiceric.shopchest.api.player.ShopPlayer;
 
-public class CreateSubCommand extends SubCommand {
+public class EditSubCommand extends SubCommand {
+    private static final List<String> ITEM_ARGS = Arrays.asList("set-item", "select-item", "edit-item", "item", "i");
     private static final List<String> AMOUNT_ARGS = Arrays.asList("amount", "count", "number", "num", "n");
     private static final List<String> BUY_PRICE_ARGS = Arrays.asList("buy-price", "buyprice", "price-buy", "buy", "b");
     private static final List<String> SELL_PRICE_ARGS = Arrays.asList("sell-price", "sellprice", "price-sell", "sell", "s");
-    private static final List<String> ADMIN_ARGS = Arrays.asList("admin", "admin-shop", "adminshop");
 
     private ShopChest plugin;
 
-    CreateSubCommand(ShopChest plugin) {
-        super("create", true);
+    EditSubCommand(ShopChest plugin) {
+        super("edit", true);
         this.plugin = plugin;
     }
 
     @Override
     public String getDescription() {
-        return "Create a shop";
+        return "Edit a shop";
     }
 
     private ItemStack getItemInHand(Player player) {
@@ -56,17 +56,13 @@ public class CreateSubCommand extends SubCommand {
 
     @Override
     public void onExecute(CommandSender sender, String... args) {
+        List<String> itemArgs = getNamedArgs(ITEM_ARGS, args);
         List<String> amountArgs = getNamedArgs(AMOUNT_ARGS, args);
         List<String> buyPriceArgs = getNamedArgs(BUY_PRICE_ARGS, args);
         List<String> sellPriceArgs = getNamedArgs(SELL_PRICE_ARGS, args);
         
-        if (amountArgs.isEmpty()) {
-            sender.sendMessage("§cYou have to set an amount."); // i18n
-            return;
-        }
-        
-        if (buyPriceArgs.isEmpty() && sellPriceArgs.isEmpty()) {
-            sender.sendMessage("§cYou have to set either a buy price or a sell price."); // i18n
+        if (itemArgs.isEmpty() && amountArgs.isEmpty() && buyPriceArgs.isEmpty() && sellPriceArgs.isEmpty()) {
+            sender.sendMessage("§cYou have to set either the amount or a price, or that you want to set the item."); // i18n
             return;
         }
 
@@ -85,16 +81,16 @@ public class CreateSubCommand extends SubCommand {
             return;
         }
 
-        int amount;
+        int amount = -1;
         try {
             amount = Integer.parseInt(amountArgs.get(0).split("=")[1]);
-            if (amount < 0) throw new NumberFormatException();
+            if (amount <= 0) throw new NumberFormatException();
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             sender.sendMessage("§cThe amount you entered is not valid."); // i18n
             return;
         }
 
-        double buyPrice = 0;
+        double buyPrice = -1;
         if (buyPriceArgs.size() > 0) {
             try {
                 buyPrice = Double.parseDouble(buyPriceArgs.get(0).split("=")[1]);
@@ -105,7 +101,7 @@ public class CreateSubCommand extends SubCommand {
             }
         }
 
-        double sellPrice = 0;
+        double sellPrice = -1;
         if (sellPriceArgs.size() > 0) {
             try {
                 sellPrice = Double.parseDouble(sellPriceArgs.get(0).split("=")[1]);
@@ -116,12 +112,11 @@ public class CreateSubCommand extends SubCommand {
             }
         }
 
-        boolean admin = !getNamedArgs(ADMIN_ARGS, args).isEmpty();
         ShopPlayer player = plugin.wrapPlayer((Player) sender);
-        ItemStack item = getItemInHand(player.getBukkitPlayer());
+        ItemStack item = itemArgs.size() > 0 ? getItemInHand(player.getBukkitPlayer()) : null;
 
-        plugin.getServer().getPluginManager()
-                .callEvent(new ShopPreCreateEvent(player, item, amount, buyPrice, sellPrice, admin));
+        plugin.getServer().getPluginManager().callEvent(
+                    new ShopPreEditEvent(player, item, amount, buyPrice, sellPrice, itemArgs.size() > 0));
     }
 
     @Override
@@ -131,7 +126,6 @@ public class CreateSubCommand extends SubCommand {
         boolean isAmountSet = !getNamedArgs(AMOUNT_ARGS, argsWithoutLast).isEmpty();
         boolean isBuyPriceSet = !getNamedArgs(BUY_PRICE_ARGS, argsWithoutLast).isEmpty();
         boolean isSellPriceSet = !getNamedArgs(SELL_PRICE_ARGS, argsWithoutLast).isEmpty();
-        boolean isAdminSet = !getNamedArgs(ADMIN_ARGS, argsWithoutLast).isEmpty();
 
         String lastArg = args[args.length - 1].toLowerCase(Locale.US);
 
@@ -151,10 +145,6 @@ public class CreateSubCommand extends SubCommand {
 
         // Add equals signs
         ret.replaceAll(arg -> arg + "=");
-
-        if (!isAdminSet && sender.hasPermission("shopchest.create.admin")) {
-            ADMIN_ARGS.stream().filter(arg -> arg.startsWith(lastArg)).findFirst().ifPresent(ret::add);
-        }
 
         return ret;
     }

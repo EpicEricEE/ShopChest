@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import de.epiceric.shopchest.api.ShopChest;
 import de.epiceric.shopchest.api.config.Config;
 import de.epiceric.shopchest.api.event.ShopPreCreateEvent;
+import de.epiceric.shopchest.api.event.ShopPreEditEvent;
 import de.epiceric.shopchest.api.event.ShopSelectItemEvent;
 import de.epiceric.shopchest.api.player.ShopPlayer;
 
@@ -31,20 +32,20 @@ public class ShopCommandListener implements Listener {
 
         // Check if minimum price is followed
         double minPrice = Config.SHOP_CREATION_MINIMUM_PRICES.get().getMap().getOrDefault(type, 0d);
-        if (buyPrice < minPrice) {
+        if (buyPrice > 0 && buyPrice < minPrice) {
             player.sendMessage("§cThe buy price must be higher than " + plugin.formatEconomy(minPrice) + "."); // TODO: i18n
             return false;
-        } else if (sellPrice < minPrice) {
+        } else if (sellPrice > 0 && sellPrice < minPrice) {
             player.sendMessage("§cThe sell price must be higher than " + plugin.formatEconomy(minPrice) + "."); // TODO: i18n
             return false;
         }
 
         // Check if maximum price is followed
         double maxPrice = Config.SHOP_CREATION_MAXIMUM_PRICES.get().getMap().getOrDefault(type, Double.MAX_VALUE);
-        if (buyPrice > maxPrice) {
+        if (buyPrice > 0 && buyPrice > maxPrice) {
             player.sendMessage("§cThe buy price must be lower than " + plugin.formatEconomy(maxPrice) + "."); // TODO: i18n
             return false;
-        } else if (sellPrice > maxPrice) {
+        } else if (sellPrice > 0 && sellPrice > maxPrice) {
             player.sendMessage("§cThe sell price must be lower than " + plugin.formatEconomy(maxPrice) + "."); // TODO: i18n
             return false;
         }
@@ -112,6 +113,46 @@ public class ShopCommandListener implements Listener {
         }
 
         if (e.isItemSelected() && !isItemAllowed(player, e.getItemStack().getType(), buyPrice, sellPrice)) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onShopPreEdit(ShopPreEditEvent e) {
+        ShopPlayer player = e.getPlayer();
+
+        // TODO: buy/sell and item based permission
+        
+        if (e.hasBuyPrice() && e.hasSellPrice()) {
+            // Check if either buying or selling is enabled
+            if (e.getBuyPrice() == 0 && e.getSellPrice() == 0) {
+                e.setCancelled(true);
+                player.sendMessage("§cYou cannot have both prices set to zero."); // TODO: i18n
+                return;
+            }
+
+            // Check if buy price is higher than sell price
+            boolean buyHigherSell = Config.FEATURES_VENDOR_MONEY_PROTECTION.get();
+            if (buyHigherSell && e.getBuyPrice() < e.getSellPrice()) {
+                e.setCancelled(true);
+                player.sendMessage("§cThe buy price must at least be as high as the sell price to prevent players from stealing your money."); // TODO: i18n
+                return;
+            }
+        }
+
+        // Check if prices are integers
+        if (!Config.SHOP_CREATION_ALLOW_DECIMAL_PRICES.get()) {
+            boolean isBuyPriceInt = e.hasBuyPrice() && isInt(e.getBuyPrice());
+            boolean isSellPriceInt = e.hasSellPrice() && isInt(e.getSellPrice());
+            if (!isBuyPriceInt || !isSellPriceInt) {
+                e.setCancelled(true);
+                player.sendMessage("§cThe prices must not contain decimals."); // TODO: i18n
+                return;
+            }
+        }
+
+        // Check blacklist, minimum and maximum prices if item is set
+        if (e.hasItemStack() && !isItemAllowed(player, e.getItemStack().getType(), e.getBuyPrice(), e.getSellPrice())) {
             e.setCancelled(true);
         }
     }

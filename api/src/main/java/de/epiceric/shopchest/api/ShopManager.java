@@ -111,7 +111,7 @@ public interface ShopManager {
      * @param errorCallback the callback returning the error if one occurred
      * @since 1.13
      */
-    void removeShop(Shop shop, Consumer<Void> callback, Consumer<Throwable> errorCallback);
+    void removeShop(Shop shop, Runnable callback, Consumer<Throwable> errorCallback);
 
     /**
      * Removes all shops and reloads the shops in currently loaded chunks

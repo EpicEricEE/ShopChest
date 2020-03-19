@@ -58,6 +58,16 @@ public abstract class Database {
         this.plugin = plugin;
     }
 
+    protected <T> void callSyncResult(Runnable callback) {
+        if (callback == null) return;
+
+        if (plugin.getServer().isPrimaryThread()) {
+            callback.run();
+        } else {
+            plugin.getServer().getScheduler().runTask(plugin, () -> callback.run());
+        }
+    }
+
     protected <T> void callSyncResult(Consumer<T> callback, T result) {
         if (callback == null) return;
 
@@ -369,13 +379,13 @@ public abstract class Database {
      * @param shop     Shop to remove
      * @param callback Callback that - if succeeded - returns {@code null}
      */
-    public void removeShop(Shop shop, Consumer<Void> callback, Consumer<Throwable> errorCallback) {
+    public void removeShop(Shop shop, Runnable callback, Consumer<Throwable> errorCallback) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try (Connection con = dataSource.getConnection();
                     PreparedStatement ps = con.prepareStatement("DELETE FROM " + tableShops + " WHERE id = ?")) {
                 ps.setInt(1, shop.getId());
                 ps.executeUpdate();
-                callSyncResult(callback, null);
+                callSyncResult(callback);
             } catch (SQLException e) {
                 callSyncError(errorCallback, e);
                 Logger.severe("Failed to remove shop from database");
@@ -572,6 +582,41 @@ public abstract class Database {
     }
 
     /**
+     * Updates a shop in the database
+     * 
+     * @param shop shop to update
+     * @param callback callback that runs on success
+     * @param errorCallback callback that returns an error if one occurred
+     */
+    public void updateShop(Shop shop, Runnable callback, Consumer<Throwable> errorCallback) {
+        final String query = "REPLACE INTO " + tableShops + " (id,vendor,product,amount,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            try (Connection con = dataSource.getConnection();
+                    PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, shop.getId());
+                ps.setString(2, shop.getVendor().map(vendor -> vendor.getUniqueId().toString()).orElse("admin"));
+                ps.setString(3, encodeItemStack(shop.getProduct().getItemStack()));
+                ps.setInt(4, shop.getProduct().getAmount());
+                ps.setString(5, shop.getLocation().getWorld().getName());
+                ps.setInt(6, shop.getLocation().getBlockX());
+                ps.setInt(7, shop.getLocation().getBlockY());
+                ps.setInt(8, shop.getLocation().getBlockZ());
+                ps.setDouble(9, shop.getBuyPrice());
+                ps.setDouble(10, shop.getSellPrice());
+                ps.setString(11, shop.isAdminShop() ? "ADMIN" : "NORMAL");
+                ps.executeUpdate();
+
+                callSyncResult(callback);
+            } catch (SQLException e) {
+                callSyncError(errorCallback, e);
+                Logger.severe("Failed to update shop in database");
+                Logger.severe(e);
+            }
+        });
+    }
+
+    /**
      * Log an economy transaction to the database
      * 
      * @param executor Player who bought/sold something
@@ -581,9 +626,9 @@ public abstract class Database {
      * @param type Whether the executor bought or sold
      * @param callback Callback that - if succeeded - returns {@code null}
      */
-    public void logEconomy(Player executor, Shop shop, ShopProduct product, double price, Type type, Consumer<Void> callback, Consumer<Throwable> errorCallback) {
+    public void logEconomy(Player executor, Shop shop, ShopProduct product, double price, Type type, Runnable callback, Consumer<Throwable> errorCallback) {
         if (!Config.ECONOMY_LOG_ENABLE.get()) {
-            callSyncResult(callback, null);
+            callSyncResult(callback);
             return;
         }
 
@@ -615,7 +660,7 @@ public abstract class Database {
                 ps.setString(17, type.toString());
                 ps.executeUpdate();
 
-                callSyncResult(callback, null);
+                callSyncResult(callback);
             } catch (SQLException e) {
                 callSyncError(errorCallback, e);
                 Logger.severe("Failed to log economy transaction to database");
@@ -697,14 +742,14 @@ public abstract class Database {
      * @param player    Player who logged out
      * @param callback  Callback that - if succeeded - returns {@code null}
      */
-    public void logLogout(Player player, Consumer<Void> callback, Consumer<Throwable> errorCallback) {
+    public void logLogout(Player player, Runnable callback, Consumer<Throwable> errorCallback) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try (Connection con = dataSource.getConnection();
                     PreparedStatement ps = con.prepareStatement("REPLACE INTO " + tableLogouts + " (player,time) VALUES(?,?)")) {
                 ps.setString(1, player.getUniqueId().toString());
                 ps.setLong(2, System.currentTimeMillis());
                 ps.executeUpdate();
-                callSyncResult(callback, null);
+                callSyncResult(callback);
             } catch (SQLException e) {
                 callSyncError(errorCallback, e);
                 Logger.severe("Failed to log last logout to database");

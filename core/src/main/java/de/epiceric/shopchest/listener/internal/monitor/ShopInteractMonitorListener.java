@@ -16,6 +16,7 @@ import de.epiceric.shopchest.ShopChestImpl;
 import de.epiceric.shopchest.api.ShopChest;
 import de.epiceric.shopchest.api.event.ShopBuySellEvent;
 import de.epiceric.shopchest.api.event.ShopCreateEvent;
+import de.epiceric.shopchest.api.event.ShopEditEvent;
 import de.epiceric.shopchest.api.event.ShopExtendEvent;
 import de.epiceric.shopchest.api.event.ShopInfoEvent;
 import de.epiceric.shopchest.api.event.ShopOpenEvent;
@@ -26,6 +27,8 @@ import de.epiceric.shopchest.api.exceptions.ChestNotFoundException;
 import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.api.shop.Shop;
 import de.epiceric.shopchest.api.shop.ShopProduct;
+import de.epiceric.shopchest.shop.ShopImpl;
+import de.epiceric.shopchest.shop.ShopProductImpl;
 import de.epiceric.shopchest.util.ItemUtil;
 import de.epiceric.shopchest.util.Logger;
 import de.epiceric.shopchest.util.NmsUtil;
@@ -56,9 +59,22 @@ public class ShopInteractMonitorListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onShopEdit(ShopEditEvent e) {
+        ShopImpl shop = (ShopImpl) e.getShop();
+        shop.setBuyPrice(e.getBuyPrice());
+        shop.setSellPrice(e.getSellPrice());
+        shop.setProduct(new ShopProductImpl(e.getItemStack(), e.getAmount()));
+
+        ((ShopChestImpl) plugin).getDatabase().updateShop(shop,
+            () -> e.getPlayer().sendMessage("§aShop has been edited."), // TODO: i18n
+            error -> e.getPlayer().sendMessage("§cFailed to save edit: {0}", error.getMessage())
+        );
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onShopRemove(ShopRemoveEvent e) {
         plugin.getShopManager().removeShop(e.getShop(),
-            _void -> e.getPlayer().sendMessage("§aShop has been removed."), // TODO: i18n
+            () -> e.getPlayer().sendMessage("§aShop has been removed."), // TODO: i18n
             error -> e.getPlayer().sendMessage("§cFailed to remove shop: {0}", error.getMessage())
         );
     }

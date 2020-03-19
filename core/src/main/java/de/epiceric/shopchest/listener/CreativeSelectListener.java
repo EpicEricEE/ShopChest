@@ -50,7 +50,7 @@ public class CreativeSelectListener implements Listener {
             plugin.getServer().getScheduler().runTask(plugin, () -> player.getBukkitPlayer().closeInventory());
 
             plugin.getServer().getPluginManager().callEvent(new ShopSelectItemEvent(player, e.getCursor(),
-                    flag.getAmount(), flag.getBuyPrice(), flag.getSellPrice(), flag.isAdminShop()));
+                    flag.getAmount(), flag.getBuyPrice(), flag.getSellPrice(), flag.getType()));
         });
     }
 

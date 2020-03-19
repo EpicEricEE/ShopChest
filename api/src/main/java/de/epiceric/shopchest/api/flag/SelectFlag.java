@@ -8,17 +8,21 @@ import de.epiceric.shopchest.api.player.ShopPlayer;
  * Represents the flag a player has after entering the create command
  */
 public class SelectFlag implements Flag {
+    public enum Type {
+        ADMIN, NORMAL, EDIT
+    }
+
     private int amount;
     private double buyPrice;
     private double sellPrice;
-    private boolean admin;
+    private Type type;
     private GameMode gameMode;
 
-    public SelectFlag(int amount, double buyPrice, double sellPrice, boolean admin, GameMode gameMode) {
+    public SelectFlag(int amount, double buyPrice, double sellPrice, Type type, GameMode gameMode) {
         this.amount = amount;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
-        this.admin = admin;
+        this.type = type;
         this.gameMode = gameMode;
     }
 
@@ -46,7 +50,16 @@ public class SelectFlag implements Flag {
      * @return whether the players wants to create an admin shop
      */
     public boolean isAdminShop() {
-        return admin;
+        return type == Type.ADMIN;
+    }
+
+    /**
+     * Gets whether the player wants to edit a shop
+     * 
+     * @return whether the players wants to edit a shop
+     */
+    public boolean isEditingShop() {
+        return type == Type.EDIT;
     }
 
     /**
@@ -56,6 +69,16 @@ public class SelectFlag implements Flag {
      */
     public double getSellPrice() {
         return sellPrice;
+    }
+
+    /**
+     * Gets either the shop type of the shop being created, or whether the shop
+     * is being edited
+     * 
+     * @return the shop type or {@link Type#EDIT}
+     */
+    public Type getType() {
+        return type;
     }
 
     /**

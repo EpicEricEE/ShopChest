@@ -14,6 +14,7 @@ import de.epiceric.shopchest.api.ShopChest;
 import de.epiceric.shopchest.api.exceptions.ChestNotFoundException;
 import de.epiceric.shopchest.api.shop.Shop;
 import de.epiceric.shopchest.api.shop.ShopProduct;
+import de.epiceric.shopchest.database.Database;
 import de.epiceric.shopchest.shop.hologram.Hologram;
 import de.epiceric.shopchest.util.Logger;
 
@@ -138,6 +139,18 @@ public class ShopImpl implements Shop {
         return product.clone();
     }
 
+    /**
+     * Sets the product this shop is buying or selling
+     * <p>
+     * To update the shop in the database, it is necessary to update the shop in the database.
+     * 
+     * @param product the product
+     * @see Database#updateShop(Shop, Runnable, java.util.function.Consumer)
+     */
+    public void setProduct(ShopProduct product) {
+        this.product = product;
+    }
+
     @Override
     public Location getLocation() {
         return location.clone();
@@ -167,10 +180,23 @@ public class ShopImpl implements Shop {
         return buyPrice;
     }
 
-    @Override
+    /**
+     * Sets the price for which a player can sell the product to this shop
+     * <p>
+     * If set to zero, a player cannot buy from this shop.
+     * <p>
+     * To update the shop in the database, it is necessary to update the shop in the database.
+     * 
+     * @param buyPrice the buy price
+     * @throws IllegalStateException when a player can neither buy nor sell from this shop
+     * @see Database#updateShop(Shop, Runnable, java.util.function.Consumer)
+     * @since 1.13
+     */
     public void setBuyPrice(double buyPrice) {
+        if (buyPrice <= 0 && !canPlayerSell()) {
+            throw new IllegalStateException("Cannot set both buy price and sell price to 0");
+        }
         this.buyPrice = buyPrice;
-        // TODO: update
     }
 
     @Override
@@ -178,17 +204,25 @@ public class ShopImpl implements Shop {
         return sellPrice;
     }
 
-    @Override
+    /**
+     * Sets the price for which a player can sell the product to this shop
+     * <p>
+     * If set to zero, a player cannot sell to this shop.
+     * <p>
+     * To update the shop in the database, it is necessary to update the shop in the database.
+     * 
+     * @param sellPrice the sell price
+     * @throws IllegalStateException when a player can neither buy nor sell from this shop
+     * @see Database#updateShop(Shop, Runnable, java.util.function.Consumer)
+     * @since 1.13
+     */
     public void setSellPrice(double sellPrice) {
+        if (sellPrice <= 0 && !canPlayerBuy()) {
+            throw new IllegalStateException("Cannot set both sell price and buy price to 0");
+        }
         this.sellPrice = sellPrice;
-        // TODO: update
     }
     
-    /**
-     * Indicates whether some other object is "equal to" this one
-     * <p>
-     * Returns {@code true} if both objects are a {@link Shop} and have the same ID.
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

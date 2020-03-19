@@ -5,6 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
+import de.epiceric.shopchest.api.flag.SelectFlag;
 import de.epiceric.shopchest.api.player.ShopPlayer;
 
 /**
@@ -20,16 +21,16 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
     private int amount;
     private double buyPrice;
     private double sellPrice;
-    private boolean admin;
+    private SelectFlag.Type type;
     private boolean cancelled;
 
-    public ShopSelectItemEvent(ShopPlayer player, ItemStack item, int amount, double buyPrice, double sellPrice, boolean admin) {
+    public ShopSelectItemEvent(ShopPlayer player, ItemStack item, int amount, double buyPrice, double sellPrice, SelectFlag.Type type) {
         this.player = player;
         this.item = item == null ? null : item.clone();
         this.amount = amount;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
-        this.admin = admin;
+        this.type = type;
     }
 
     /**
@@ -103,10 +104,46 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * Gets whether the shop will be an admin shop
      * 
      * @return whether the shop will be an admin shop
+     * @see #isNormalShop()
+     * @see #isEditingShop()
      * @since 1.13
      */
     public boolean isAdminShop() {
-        return admin;
+        return type == SelectFlag.Type.ADMIN;
+    }
+
+    /**
+     * Gets whether the shop will be a normal shop
+     * 
+     * @return whether the shop will be a normal shop
+     * @see #isAdminShop()
+     * @see #isEditingShop()
+     * @since 1.13
+     */
+    public boolean isNormalShop() {
+        return type == SelectFlag.Type.NORMAL;
+    }
+
+    /**
+     * Gets whether the shop is being edited
+     * 
+     * @return whether the shop is being edited
+     * @see #isAdminShop()
+     * @see #isNormalShop()
+     * @since 1.13
+     */
+    public boolean isEditingShop() {
+        return type == SelectFlag.Type.EDIT;
+    }
+
+    /**
+     * Gets either the shop type of the shop being created, or whether the shop
+     * is being edited
+     * 
+     * @return the shop type or {@link Type#EDIT}
+     */
+    public SelectFlag.Type getType() {
+        return type;
     }
 
     @Override

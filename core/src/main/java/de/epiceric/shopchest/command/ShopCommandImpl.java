@@ -24,6 +24,7 @@ public class ShopCommandImpl extends ShopCommand {
         this.plugin = plugin;
 
         addSubCommand(new CreateSubCommand(plugin));
+        addSubCommand(new EditSubCommand(plugin));
         addSubCommand(new RemoveSubCommand(plugin));
         addSubCommand(new InfoSubCommand(plugin));
     }

@@ -215,7 +215,7 @@ public class ShopManagerImpl implements ShopManager {
     }
 
     @Override
-    public void removeShop(Shop shop, Consumer<Void> callback, Consumer<Throwable> errorCallback) {
+    public void removeShop(Shop shop, Runnable callback, Consumer<Throwable> errorCallback) {
         ((ShopImpl) shop).destroy();
         shopsInWorld.get(shop.getWorld().getName()).remove(shop.getLocation());
 
