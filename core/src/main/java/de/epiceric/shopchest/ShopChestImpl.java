@@ -5,10 +5,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -195,12 +193,10 @@ public class ShopChestImpl extends ShopChest {
             }
         );
 
-        List<Chunk> chunks = new ArrayList<>();
-        for (World world : getServer().getWorlds()) {
-            chunks.addAll(Arrays.asList(world.getLoadedChunks()));
-        }
+        Chunk[] chunks = getServer().getWorlds().stream().map(World::getLoadedChunks)
+                .flatMap(Stream::of).toArray(Chunk[]::new);
 
-        ((ShopManagerImpl) getShopManager()).loadShops(chunks.toArray(new Chunk[chunks.size()]),
+        ((ShopManagerImpl) getShopManager()).loadShops(chunks,
             shops -> {
                 getServer().getPluginManager().callEvent(new ShopLoadedEvent(shops));
                 Logger.info("Loaded {0} shops from the database", shops.size());

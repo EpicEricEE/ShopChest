@@ -1,18 +1,17 @@
 package de.epiceric.shopchest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -235,12 +234,10 @@ public class ShopManagerImpl implements ShopManager {
 
     @Override
     public void reloadShops(Consumer<Integer> callback, Consumer<Throwable> errorCallback) {
-        List<Chunk> chunks = new ArrayList<>();
-        for (World world : plugin.getServer().getWorlds()) {
-            chunks.addAll(Arrays.asList(world.getLoadedChunks()));
-        }
+        Chunk[] chunks = plugin.getServer().getWorlds().stream().map(World::getLoadedChunks)
+                .flatMap(Stream::of).toArray(Chunk[]::new);
 
-        loadShops(chunks.toArray(new Chunk[chunks.size()]),
+        loadShops(chunks,
             shops -> callback.accept(shops.size()),
             errorCallback
         );
