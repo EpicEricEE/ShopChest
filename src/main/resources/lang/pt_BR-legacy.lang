@@ -1,0 +1,1202 @@
+#Versão antiga para versões pré 1.13!
+
+# -------- Sobre as variáveis --------
+
+# "Placeholders" foi traduzido para "Variáveis"
+
+# Tradução do nome das variáveis:
+
+# %CREATION-PRICE% -> Preço de criação da loja
+# %VENDOR% ---------> Vendedor
+# %AMOUNT% ---------> Quantidade de itens / Quantidade lojas
+# %STOCK% ----------> Estoque
+# %ITEMNAME% -------> Nome do item
+# %BUY-PRICE% ------> Preço de compra
+# %SELL-PRICE% -----> Preço de venda
+# %CHEST-SPACE% ----> Espaço no baú
+# %PLAYER% ---------> Jogador
+# %REVENUE% --------> Ganho monetário
+# %MAX-PRICE% ------> Preço máximo
+# %MIN-PRICE% ------> Preço mínimo
+# %COMMAND% --------> Comando
+# %VALUE% ----------> Valor
+# %PROPERTY% -------> Propriedade
+# %COMMAND% --------> Comando
+# %LIMIT% ----------> Limite
+# %VERSION% --------> Versão
+# %ERROR% ----------> Erro
+
+# -------- Código de formatação de cores --------
+
+# Preto ------------> &0
+# Branco -----------> &f
+# Vermelho ---------> &4
+# Roxo -------------> &5
+# Roxo escuro ------> &9
+# Roxo claro -------> &d
+# Cinza claro ------> &7
+# Cinza ------------> &8
+# Azul marinho -----> &1
+# Azul -------------> &3
+# Azul claro -------> &b
+# Verde ------------> &2
+# Verde claro ------> &a
+# Rosa -------------> &c
+# Amarelo ----------> &e
+# Dourado ----------> &6
+
+# -------- Mensagens do Plugin --------
+
+# Define a mensagem para quando uma loja é criada no baú clicado.
+# Variáveis disponíveis: %CREATION-PRICE%
+message.shop-created=&6Você pagou &c%CREATION-PRICE% &6para criar esta loja.
+
+# Define a mensagem para quando uma loja de administrador é criada no baú clicado.
+# Variáveis disponíveis: %CREATION-PRICE%
+message.admin-shop-created=&6Você pagou &c%CREATION-PRICE% &6para criar esta loja de administrador.
+
+# Define a mensagem para quando o baú clicado já é uma loja.
+message.chest-already-shop=&cO baú já é uma loja.
+
+# Define a mensagem para quando há um bloco sobre o báu clicado.
+message.chest-blocked=&cNão pode haver um bloco sobre o baú.
+
+# Define a mensagem para quando o jogador tenta colocar um baú ao lado de uma loja
+# para criar uma loja com baú duplo, mas há um bloco sobre o novo baú colocado.
+message.double-chest-blocked=&cNão pode haver um bloco sobre o baú.
+
+# Define a mensagem para quando a loja clicada é removida e não há reembolso.
+message.shop-removed=&6Loja removida.
+
+# Define a mensagem para quando a loja clicada é removida e o jogador recebe reembolso do valor de criação da loja.
+# Variáveis disponíveis: %CREATION-PRICE%
+message.shop-removed-refund=&6Loja removida. Você reembolsou &c%CREATION-PRICE%&6.
+
+# Define a menssagem para quando todas as lojas do jogador foram removidas.
+# Variáveis disponíveis: %AMOUNT%, %VENDOR%
+message.all-shops-removed=&6Removidas todas as (&c%AMOUNT%&6) lojas de &c%VENDOR%&6.
+
+# Define a mensagem para quando o baú clicado não é uma loja.
+message.chest-no-shop=&cBaú não é uma loja.
+
+# Define a mensagem para quando o jogador não tem dinheiro suficiente para criar uma loja.
+# Variáveis disponíveis: %CREATION-PRICE%
+message.shop-create-not-enough-money=&cDinheiro insuficiente. Você precisa de &6%CREATION-PRICE% &cpara criar uma loja.
+
+# Define a mensagem sobre o vendedor quando o jogador executa '/shop info'.
+# Variáveis disponíveis: %VENDOR%
+message.shopInfo.vendor=&6Vendedor: &e%VENDOR%
+
+# Define a mensagem sobre o produto quando o jogador executa '/shop info'.
+# Variáveis disponíveis: %AMOUNT%, %ITEMNAME%
+message.shopInfo.product=&6Produto: &e%AMOUNT% x %ITEMNAME%
+
+# Define a menssagem sobre a quantidade em estoque quando o jogador executa '/shopp info'.
+# Variáveis disponíveis: %STOCK%
+message.shopInfo.stock=&6Em estoque: &e%STOCK%
+
+# Define a mensagem sobre o espaço no baú quando o jogador executa '/shop info'.
+# Variáveis disponíveis: %CHEST-SPACE%
+message.shopInfo.chest-space=&6Espaço no baú: &e%CHEST-SPACE%
+
+# Define a mensagem que o jogador recebe depois de executar '/shop info'.
+# Variáveis disponíveis: %BUY-PRICE%, %SELL-PRICE%
+message.shopInfo.price=&6Preço: Compra: &e%BUY-PRICE%&6 Venda: &e%SELL-PRICE%
+
+# Se o preço de venda ou de compra estiver desabilitado, esta mensagem irá aparecer no lugar do preço na mensagem acima.
+message.shopInfo.disabled=&7Disabilitado
+
+# Define a mensagem quando a loja é do tipo normal quando o jogador executa '/shop info'.
+message.shopInfo.is-normal=&6Tipo: &eNormal
+
+# Define a mensagem quando a loja é do tipo administrativa quando o jogador executa '/shop info'.
+message.shopInfo.is-admin=&6Tio: &eAdmin
+
+# Define a mensagem que o jogador recebe quando tenta criar uma loja com o preço de venda e de compra em definido em 0
+message.buy-and-sell-disabled=&cVocê não pode criar uma loja com compra e venda desabilitado.
+
+# Define a mensagem quando o jogador compra algo com sucesso.
+# Variáveis disponíveis: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %VENDOR%
+message.buy-success=&aVocê comprou &6%AMOUNT% x %ITEMNAME%&a por &6%BUY-PRICE%&a de &6%VENDOR%&a.
+
+# Define a mensagem quando um jogador comprou algo com sucesso de uma loja administrativa.
+# Variáveis disponíveis: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%
+message.buy-success-admin=&aVocê comprou &6%AMOUNT% x %ITEMNAME%&a por &6%BUY-PRICE%&a.
+
+# Define a mensagem para quando o jogador vendeu algo com sucesso.
+# Variáveis disponíveis: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %VENDOR%
+message.sell-success=&aVocê vendeu &6%AMOUNT% x %ITEMNAME%&a por &6%SELL-PRICE%&a para &6%VENDOR%&a.
+
+# Define a mensagem para quando o jogador vendeu algo com sucesso para uma loja administrativa.
+# Variáveis disponíveis: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%
+message.sell-success-admin=&aVocê vendeu &6%AMOUNT% x %ITEMNAME%&a por &6%SELL-PRICE%&a.
+
+# Define a mensagem para quando um jogador compra algo da loja do jogador.
+# Variáveis disponíveis: %AMOUNT%, %ITEMNAME%, %BUY-PRICE%, %PLAYER%
+message.someone-bought=&6%PLAYER% &acomprou &6%AMOUNT% x %ITEMNAME%&a por &6%BUY-PRICE%&a na sua loja.
+
+# Define a mensagem para quando um jogador vende algo para a loja do jogador.
+# Variáveis disponíveis: %AMOUNT%, %ITEMNAME%, %SELL-PRICE%, %PLAYER%
+message.someone-sold=&6%PLAYER% &avendeu &6%AMOUNT% x %ITEMNAME%&a por &6%SELL-PRICE%&a na sua loja.
+
+# Define a mensagem para quando o jogador se conecta e teve ganhos enquanto desconectado.
+# Variáveis disponíveis: %REVENUE%
+message.revenue-while-offline=&6Enquanto você estava desconectado, suas lojas tiveram um ganho de &c%REVENUE%&6.
+
+# Define a mensagem para quando o inventário do jogador está cheio e ele tenta comprar algo.
+message.not-enough-inventory-space=&cNão há espaço suficiente no inventário.
+
+# Define a mensagem para quando o inventário da loja esta cheio e o jogador tenta vender algo.
+message.chest-not-enough-inventory-space=&cLoja está cheia.
+
+# Define a mensagem para quando o jogador não tem dinheiro suficiente para comprar algo.
+message.not-enough-money=&cDinheiro insuficiente.
+
+# Define a mensagem para quando o jogador não tem itens suficientes para vender.
+message.not-enough-items=&cNão há itens suficientes.
+
+# Define a mensagem para quando o vendedor não tem dinheiro suficiente para comprar algo do jogador.
+message.vendor-not-enough-money=&cVendedor não tem dinheiro suficiente.
+
+# Define a mensagem para quando a loja está sem estoque.
+message.out-of-stock=&cLoja sem estoque.
+
+# Define a mensagem para o vendedor quando sua loja está sem estoque.
+# Variáveis disponíveis: %AMOUNT%, %ITEMNAME%
+message.vendor-out-of-stock=&cSua loja que vende &6%AMOUNT% x %ITEMNAME% &cesta sem estoque.
+
+# Define a mensagem para quando um erro ocorre.
+# Variáveis disponíveis: %ERROR%
+message.error-occurred=&cOcorreu um erro: %ERROR%
+
+# Define a mensagem para quando os argumentos <AMOUNT> <BUY-PRICE> e/ou <BUY-PRICE> não sejam números no '/shop create'.
+message.amount-and-price-not-number=&cQuantidades e preços devem ser números.
+
+# Define a mensagem para quando o argumento <AMOUNT> é zero.
+message.amount-is-zero=&cA quantidade deve ser maior que 0.
+
+# Define a mensagem para quando a configuração "allow-decimals-in-prices" está definido para falso e o jogador insere um preço com decimais.
+message.prices-contain-decimals=&cPreços não devem conter decimais.
+
+# Define a mensagem para quando o jogador não está segurando um item na mão.
+message.no-item-in-hand=&cNão há um item na mão.
+
+# Define a mensagem para quando o jogador deve clicar num baú para criar um loja.
+message.click-chest-to-create-shop=&aClique num baú dentro de 15 segundos para criar uma loja.
+
+# Define a mensagem para quando o jogador deve clicar numa loja para removê-la.
+message.click-chest-to-remove-shop=&aClique numa loja dentro de 15 segundos para removê-la.
+
+# Define a mensagem para quando o jogador deve clicar numa loja para ver informações.
+message.click-chest-for-info=&aClique numa loja dentro de 15 segundos para ver informações.
+
+# Define a mensagem para quando o jogador deve clicar numa loja para abrir-la.
+message.click-chest-to-open-shop=&aClique numa loja dentro de 15 segundos para abrir-la.
+
+# Define a mensagem para quando o jogador deve clicar a loja novamente para confirmar a compra/venda.
+message.click-to-confirm=&aClique novamente para confirmar.
+
+# Define a mensagem para quando um jogador abrir uma loja.
+# Variáveis disponíveis: %VENDOR%
+message.opened-shop=&aVocê abriu a loja de %VENDOR%.
+
+# Define a mensagem para quando um jogador tentar quebrar uma loja.
+message.cannot-break-shop=&cVocê não pode quebrar uma loja.
+
+# Define a mensagem para quando um jogador tenta vender um item quebrado.
+message.cannot-sell-broken-item=&cVocê não pode vender um item quebrado.
+
+# Define a mensagem para quando o preço de compra inserido está abaixo do preço mínimo.
+# Variáveis disponíveis: %MIN-PRICE%
+message.buy-price-too-low=&cPreço de compra deve ser maior que %MIN-PRICE%.
+
+# Define a mensagem para quando o preço de venda inserido está abaixo do preço mínimo.
+# Variáveis disponíveis: %MIN-PRICE%
+message.sell-price-too-low=&cPreço de venda deve ser maior que %MIN-PRICE%.
+
+# Define a mensagem para quando o preço de compra inserido está acima do preço máximo.
+# Variáveis disponíveis: %MAX-PRICE%
+message.buy-price-too-high=&cPreço de compra deve ser menor que %MAX-PRICE%.
+
+# Define a mensagem para quando o preço de venda inserido está acima do preço máximo.
+# Variáveis disponíveis: %MAX-PRICE%
+message.sell-price-too-high=&cPreço de venda deve ser menor que %MAX-PRICE%.
+
+# Define a mensagem para quando a ação de comprar está desativada na loja.
+message.buying-disabled=&cCompras estão desativadas nesta loja.
+
+# Define a mensagem para quando a ação de vender está desativada na loja.
+message.selling-disabled=&cVendas estão desativadas nesta loja.
+
+# Define a mensagem para quando para quando o recarregamento foi completado.
+# Variáveis disponíveis: %AMOUNT% (Quantidade de lojas)
+message.reloaded-shops=&aRecarregado com sucesso %AMOUNT% loja/s.
+
+# Define a mensagem para quando o limite de lojas do jogador é atingido.
+# Variáveis disponíveis: %LIMIT%
+message.shop-limit-reached=&cVocê atingiu seu limite de &6%LIMIT% &cloja/s.
+
+# Define a mensagem que mostra ao jogador quantas lojas do limite de lojas dele foram usadas.
+# Variáveis disponíveis: %LIMIT%, %AMOUNT% (Quantidade de lojas)
+message.occupied-shop-slots=&6Você tem &c%AMOUNT%/%LIMIT% &6lojas/s usadas.
+
+# Define a mensagem para quando o jogador tenta criar uma loja com um item  que está na lista negra.
+message.cannot-sell-item=&cVocê não pode criar uma loja com esse item.
+
+# Define a mensagem para quando o jogador tenta criar uma loja no modo criativo.
+message.use-in-creative=&cVocê não pode criar uma loja estando no modo criativo.
+
+# Define a mensagem para quando o jogador deve selecionar um item do menu criativo.
+message.select-item=&aAbra seu inventário, e largue um item para selecioná-lo.
+
+# Define a mensagem para quando o jogador selecionou um item do menu criativo.
+# Variáveis disponíveis: %ITEMNAME%
+message.item-selected=&aItem selecionado: &6%ITEMNAME%
+
+# Define a mensagem para quando o jogador fecha o menu criativo para selecionar um item.
+message.creation-cancelled=&cCriação da loja foi cancelada.
+
+# Define a mensagem para quando uma atualização está disponível.
+# Variáveis disponíveis: %VERSION%
+message.update.update-available=&6&lVersão &c&l%VERSION% &6&ldo &c&lShopChest &6&lestá disponível &c&laqui.
+
+# Define a mensagem que aparece sobre a mensagem disponível.
+message.update.click-to-download=Clique para baixar
+
+# Define a mensagem para quando não há atualizações disponíveis.
+message.update.no-update=&6&lNão há nenhuma nova atualização disponível.
+
+# Define a mensagem para quando o checador de atualizações é iniciado.
+message.update.checking=&6&lProcurando por atualizações...
+
+# Define a mensagem para quando ocorre um erro enquanto procurava por atualizações.
+message.update.error=&c&lHouve um erro enquanto procurava por atualizações.
+
+# Define a mensagem para quando um jogador não permitido tenta criar uma loja.
+message.noPermission.create=&cVocê não tem permissão de criar uma loja.
+
+# Define a mensagem para quando um jogador não permitido tenta criar uma loja administrativa.
+message.noPermission.create-admin=&cVocê não tem permissão de criar uma loja administrativa.
+
+# Define a mensagem para quando um jogador não permitido tenta criar uma loja num baú protegido.
+message.noPermission.create-protected=&cVocê não tem permissão de criar uma loja aqui.
+
+# Define a mensagem para quando um jogador não permitido tenta abrir uma loja de outro jogador.
+message.noPermission.open-others=&cVocê não tem permissão de abrir este baú.
+
+# Define a mensagem para quando um jogador não permitido tenta comprar algo.
+message.noPermission.buy=&cVocê não tem permissão de comprar algo.
+
+# Define a mensagem para quando um jogador não permitido tenta vender algo.
+message.noPermission.sell=&cVocê não tem permissão de vender algo.
+
+# Define a mensagem para quando um jogador não permitido tenta comprar algo em uma região/lote que não permita uso de lojas.
+message.noPermission.buy-here=&cVocê não tem permissão de comprar algo aqui.
+
+# Define a mensagem para quando um jogador não permitido tenta vender algo em uma região/lote que não permita uso de lojas.
+message.noPermission.sell-here=&cVocê não tem permissão de vender algo aqui.
+
+# Define a mensagem para quando um jogador não permitido tenta remover uma loja de outro jogador.
+message.noPermission.remove-others=&cVocê não tem permissão de remover esta loja.
+
+# Define a mensagem para quando um jogador não permitido tenta remover uma loja administrativa.
+message.noPermission.remove-admin=&cVocê não tem permissão de remover uma loja administrativa.
+
+# Define a mensagem para quando um jogador não permitido tenta recarregar as lojas.
+message.noPermission.reload=&cVocê não tem permissão para recarregar as lojas.
+
+# Define a mensagem para quando um jogador não permitido tenta checar por atualizações.
+message.noPermission.update=&cVocê não tem permissão para checar por atualizações.
+
+# Define a mensagem para quando um jogador não permitido tenta alterar configuraões.
+message.noPermission.config=&cVocê não tem permissão para alterar configuações.
+
+# Define a mensagem para quando um jogador não permitido tenta expandir o baú da loja de outro jogador.
+message.noPermission.extend-others=&cVocê não tem permissão para expandir este baú.
+
+# Define a mensagem para quando um jogador não permitido tenta expandir um baú para uma região/lote protegido (ex. WorldGuard/Towny).
+message.noPermission.extend-protected=&cVocê não tem permissão de expandir este baú até aqui.
+
+# Define o cabeçalho da mensagem de ajuda que o jogador recebe quando executa '/shop' ou um comando inválido.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.header=&6==== &c/%COMMAND% &6Ajuda
+
+# Define o cabeçalho da mensagem de ajuda que o jogador recebe quando executa '/shop' ou um comando inválido.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.footer=&6==== Fim
+
+# Define a mensagem da descrição do comando para '/shop create' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.create=&a/%COMMAND% create <quantidade> <preço de compra> <preço de venda> - Cria uma loja.
+
+# Define a mensagem da descrição do comando para '/shop create' quando você executa '/shop' e tem a permissão "shopchest.create.admin"
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.create-admin=&a/%COMMAND% create <quantidade> <preço de compra> <preço de venda> [normal|admin] - Cria uma loja.
+
+# Define a mensagem da descrição do comando para '/shop remove' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.remove=&a/%COMMAND% remove - Remove uma loja.
+
+# Define a mensagem da descrição do comando para '/shop info' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.info=&a/%COMMAND% info - Vê informações de uma loja.
+
+# Define a mensagem da descrição do comando para '/shop removeall' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.removeall=&a/%COMMAND% removeall - Remove todas as lojas de um jogador.
+
+# Define a mensagem da descrição do comando para '/shop reload' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.reload=&a/%COMMAND% reload - Recarrega as lojas.
+
+# Define a mensagem da descrição do comando para '/shop update' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.update=&a/%COMMAND% update - Checa por atualizações.
+
+# Define a mensagem da descrição do comando para '/shop limits' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.limits=&a/%COMMAND% limits - Vê o limite de lojas.
+
+# Define a mensagem da descrição do comando para '/shop open' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.open=&a/%COMMAND% open - Abre uma loja.
+
+# Define a mensagem da descrição do comando para '/shop config' quando você executa '/shop'.
+# Variáveis disponíveis: %COMMAND%
+message.commandDescription.config=&a/%COMMAND% config <set|add|remove> <propriedade> <valor> - Altera o valor de configurações.
+
+# Define a messagem que o jogador recebe depois de alterar um valor de configuração por meio de comando.
+# Variáveis disponíveis: %PROPERTY%, %VALUE%
+message.config.set=&6Alterado &a%PROPERTY% &6para &a%VALUE%&6.
+
+# Define a messagem que o jogador recebe depois de adicionar um valor de configuração por meio de comando.
+# Variáveis disponíveis: %PROPERTY%, %VALUE%
+message.config.added=&6Adicionado &a%VALUE% &6para &a%PROPERTY%&6.
+
+# Define a messagem que o jogador recebe depois de remover um valor de configuração por meio de comando.
+# Variáveis disponíveis: %PROPERTY%, %VALUE%
+message.config.removed=&6Removido &a%VALUE% &6de &a%PROPERTY%&6.
+
+# -------- Nome dos itens (Minecraft 1.12.2) --------
+
+book.generation.0=Original
+book.generation.1=Cópia do original
+book.generation.2=Cópia de uma cópia
+book.generation.3=Rasgado
+effect.damageBoost=Força
+effect.fireResistance=Resist. ao fogo
+effect.harm=Dano instantâneo
+effect.heal=Vida instantânea
+effect.invisibility=Invisibilidade
+effect.jump=Supersalto
+effect.luck=Sorte
+effect.moveSlowdown=Lentidão
+effect.moveSpeed=Velocidade
+effect.nightVision=Visão noturna
+effect.poison=Veneno
+effect.regeneration=Regeneração
+effect.waterBreathing=Respir. aquática
+effect.weakness=Fraqueza
+enchantment.arrowDamage=Força
+enchantment.arrowFire=Chama
+enchantment.arrowInfinite=Infinidade
+enchantment.arrowKnockback=Impacto
+enchantment.binding_curse=Maldição da ligação
+enchantment.damage.all=Afiação
+enchantment.damage.arthropods=Ruína dos artrópodes
+enchantment.damage.undead=Julgamento
+enchantment.digging=Eficiência
+enchantment.durability=Inquebrabilidade
+enchantment.fire=Aspecto flamejante
+enchantment.fishingSpeed=Isca
+enchantment.frostWalker=Passos gelados
+enchantment.knockback=Repulsão
+enchantment.level.1=I
+enchantment.level.10=X
+enchantment.level.2=II
+enchantment.level.3=III
+enchantment.level.4=IV
+enchantment.level.5=V
+enchantment.level.6=VI
+enchantment.level.7=VII
+enchantment.level.8=VIII
+enchantment.level.9=IX
+enchantment.lootBonus=Saque
+enchantment.lootBonusDigger=Fortuna
+enchantment.lootBonusFishing=Sorte do mar
+enchantment.mending=Remendo
+enchantment.oxygen=Respiração
+enchantment.protect.all=Proteção
+enchantment.protect.explosion=Proteção contra explosões
+enchantment.protect.fall=Peso pena
+enchantment.protect.fire=Proteção contra fogo
+enchantment.protect.projectile=Proteção contra projéteis
+enchantment.sweeping=Alcance
+enchantment.thorns=Espinhos
+enchantment.untouching=Toque suave
+enchantment.vanishing_curse=Maldição do desaparecimento
+enchantment.waterWalker=Passos profundos
+enchantment.waterWorker=Afinidade aquática
+entity.Bat.name=Morcego
+entity.Blaze.name=Blaze
+entity.CaveSpider.name=Aranha das cavernas
+entity.Chicken.name=Galinha
+entity.Cow.name=Vaca
+entity.Creeper.name=Creeper
+entity.Donkey.name=Burro
+entity.ElderGuardian.name=Guardião ancião
+entity.Enderman.name=Enderman
+entity.Endermite.name=Endermite
+entity.EvocationIllager.name=Invocador
+entity.Ghast.name=Ghast
+entity.Guardian.name=Guardião
+entity.Horse.name=Cavalo
+entity.Husk.name=Zumbi-múmia
+entity.IllusionIllager.name=Ilusionista
+entity.LavaSlime.name=Cubo de magma
+entity.Llama.name=Lhama
+entity.Mule.name=Mula
+entity.MushroomCow.name=Coguvaca
+entity.Ozelot.name=Jaguatirica
+entity.Parrot.name=Papagaio
+entity.Pig.name=Porco
+entity.PigZombie.name=Homem-porco zumbi
+entity.PolarBear.name=Urso polar
+entity.Rabbit.name=Coelho
+entity.Sheep.name=Ovelha
+entity.Shulker.name=Shulker
+entity.Silverfish.name=Traça
+entity.Skeleton.name=Esqueleto
+entity.SkeletonHorse.name=Cavalo esqueleto
+entity.Slime.name=Slime
+entity.Spider.name=Aranha
+entity.Squid.name=Lula
+entity.Stray.name=Vagante
+entity.Vex.name=Vex
+entity.Villager.name=Aldeão
+entity.VindicationIllager.name=Defensor
+entity.Witch.name=Bruxa
+entity.WitherSkeleton.name=Esqueleto Wither
+entity.Wolf.name=Lobo
+entity.Zombie.name=Zumbi
+entity.ZombieHorse.name=Cavalo zumbi
+entity.ZombieVillager.name=Aldeão zumbi
+item.apple.name=Maçã
+item.appleGold.name=Maçã dourada
+item.armorStand.name=Suporte de armaduras
+item.arrow.name=Flecha
+item.banner.black.name=Estandarte preto
+item.banner.blue.name=Estandarte azul
+item.banner.brown.name=Estandarte marrom
+item.banner.cyan.name=Estandarte ciano
+item.banner.gray.name=Estandarte cinza
+item.banner.green.name=Estandarte verde
+item.banner.lightBlue.name=Estandarte azul-claro
+item.banner.lime.name=Estandarte verde-limão
+item.banner.magenta.name=Estandarte magenta
+item.banner.orange.name=Estandarte laranja
+item.banner.pink.name=Estandarte rosa
+item.banner.purple.name=Estandarte roxo
+item.banner.red.name=Estandarte vermelho
+item.banner.silver.name=Estandarte cinza-claro
+item.banner.white.name=Estandarte branco
+item.banner.yellow.name=Estandarte amarelo
+item.bed.black.name=Cama preta
+item.bed.blue.name=Cama azul
+item.bed.brown.name=Cama marrom
+item.bed.cyan.name=Cama ciano
+item.bed.gray.name=Cama cinza
+item.bed.green.name=Cama verde
+item.bed.lightBlue.name=Cama azul-clara
+item.bed.lime.name=Cama verde-limão
+item.bed.magenta.name=Cama magenta
+item.bed.orange.name=Cama laranja
+item.bed.pink.name=Cama rosa
+item.bed.purple.name=Cama roxa
+item.bed.red.name=Cama vermelha
+item.bed.silver.name=Cama cinza-clara
+item.bed.white.name=Cama branca
+item.bed.yellow.name=Cama amarela
+item.beefCooked.name=Filé
+item.beefRaw.name=Bife cru
+item.beetroot.name=Beterraba
+item.beetroot_seeds.name=Sementes de beterraba
+item.beetroot_soup.name=Sopa de beterraba
+item.blazePowder.name=Pó de blaze
+item.blazeRod.name=Vara de blaze
+item.boat.acacia.name=Bote de acácia
+item.boat.birch.name=Bote de eucalipto
+item.boat.dark_oak.name=Bote de carvalho escuro
+item.boat.jungle.name=Bote de madeira da selva
+item.boat.oak.name=Bote de carvalho
+item.boat.spruce.name=Bote de pinheiro
+item.bone.name=Osso
+item.book.name=Livro
+item.bootsChain.name=Botas de cota de malha
+item.bootsCloth.name=Botas de couro
+item.bootsDiamond.name=Botas de diamante
+item.bootsGold.name=Botas de ouro
+item.bootsIron.name=Botas de ferro
+item.bow.name=Arco
+item.bowl.name=Tigela
+item.bread.name=Pão
+item.brewingStand.name=Suporte de poções
+item.brick.name=Tijolo
+item.bucket.name=Balde
+item.bucketLava.name=Balde de lava
+item.bucketWater.name=Balde de água
+item.cake.name=Bolo
+item.carrotGolden.name=Cenoura dourada
+item.carrotOnAStick.name=Vara com cenoura
+item.carrots.name=Cenoura
+item.cauldron.name=Caldeirão
+item.charcoal.name=Carvão vegetal
+item.chestplateChain.name=Peitoral de cota de malha
+item.chestplateCloth.name=Túnica de couro
+item.chestplateDiamond.name=Peitoral de diamante
+item.chestplateGold.name=Peitoral de ouro
+item.chestplateIron.name=Peitoral de ferro
+item.chickenCooked.name=Frango assado
+item.chickenRaw.name=Frango cru
+item.chorusFruit.name=Fruta do coro
+item.chorusFruitPopped.name=Fruta do coro estourada
+item.clay.name=Bola de argila
+item.clock.name=Relógio
+item.coal.name=Carvão
+item.comparator.name=Comparador de redstone
+item.compass.name=Bússola
+item.cookie.name=Biscoito
+item.diamond.name=Diamante
+item.diode.name=Repetidor de redstone
+item.doorAcacia.name=Porta de acácia
+item.doorBirch.name=Porta de eucalipto
+item.doorDarkOak.name=Porta de carvalho escuro
+item.doorIron.name=Porta de ferro
+item.doorJungle.name=Porta de madeira da selva
+item.doorOak.name=Porta de carvalho
+item.doorSpruce.name=Porta de pinheiro
+item.dragon_breath.name=Bafo de dragão
+item.dyePowder.black.name=Bolsa de tinta
+item.dyePowder.blue.name=Lápis-lazúli
+item.dyePowder.brown.name=Sementes de cacau
+item.dyePowder.cyan.name=Corante ciano
+item.dyePowder.gray.name=Corante cinza
+item.dyePowder.green.name=Verde do cacto
+item.dyePowder.lightBlue.name=Corante azul-claro
+item.dyePowder.lime.name=Corante verde-limão
+item.dyePowder.magenta.name=Corante magenta
+item.dyePowder.orange.name=Corante laranja
+item.dyePowder.pink.name=Corante rosa
+item.dyePowder.purple.name=Corante roxo
+item.dyePowder.red.name=Vermelho da rosa
+item.dyePowder.silver.name=Corante cinza-claro
+item.dyePowder.white.name=Farinha de osso
+item.dyePowder.yellow.name=Amarelo do dente-de-leão
+item.egg.name=Ovo
+item.elytra.name=Élitros
+item.emerald.name=Esmeralda
+item.emptyMap.name=Mapa em branco
+item.enchantedBook.name=Livro encantado
+item.end_crystal.name=Cristal do End
+item.enderPearl.name=Pérola de ender
+item.expBottle.name=Frasco de experiência
+item.eyeOfEnder.name=Olho de ender
+item.feather.name=Pena
+item.fermentedSpiderEye.name=Olho de aranha fermentado
+item.fireball.name=Bola de fogo
+item.fireworks.name=Fogos de artifício
+item.fireworksCharge.name=Estrela de fogos de artifício
+item.fish.clownfish.raw.name=Peixe-palhaço
+item.fish.cod.cooked.name=Bacalhau assado
+item.fish.cod.raw.name=Bacalhau cru
+item.fish.pufferfish.raw.name=Baiacu
+item.fish.salmon.cooked.name=Salmão assado
+item.fish.salmon.raw.name=Salmão cru
+item.fishingRod.name=Vara de pesca
+item.flint.name=Sílex
+item.flintAndSteel.name=Pederneira
+item.flowerPot.name=Vaso de flor
+item.frame.name=Moldura
+item.ghastTear.name=Lágrima de ghast
+item.glassBottle.name=Frasco de vidro
+item.goldNugget.name=Pepita de ouro
+item.hatchetDiamond.name=Machado de diamante
+item.hatchetGold.name=Machado de ouro
+item.hatchetIron.name=Machado de ferro
+item.hatchetStone.name=Machado de pedra
+item.hatchetWood.name=Machado de madeira
+item.helmetChain.name=Capacete de cota de malha
+item.helmetCloth.name=Capuz de couro
+item.helmetDiamond.name=Capacete de diamante
+item.helmetGold.name=Capacete de ouro
+item.helmetIron.name=Capacete de ferro
+item.hoeDiamond.name=Enxada de diamante
+item.hoeGold.name=Enxada de ouro
+item.hoeIron.name=Enxada de ferro
+item.hoeStone.name=Enxada de pedra
+item.hoeWood.name=Enxada de madeira
+item.horsearmordiamond.name=Armadura de diamante para cavalo
+item.horsearmorgold.name=Armadura de ouro para cavalo
+item.horsearmormetal.name=Armadura de ferro para cavalo
+item.ingotGold.name=Barra de ouro
+item.ingotIron.name=Barra de ferro
+item.ironNugget.name=Pepita de ferro
+item.knowledgeBook.name=Livro do conhecimento
+item.leash.name=Laço
+item.leather.name=Couro
+item.leggingsChain.name=Calças de cota de malha
+item.leggingsCloth.name=Calças de couro
+item.leggingsDiamond.name=Calças de diamante
+item.leggingsGold.name=Calças de ouro
+item.leggingsIron.name=Calças de ferro
+item.magmaCream.name=Creme de magma
+item.map.name=Mapa
+item.melon.name=Melancia
+item.milk.name=Balde de leite
+item.minecart.name=Carrinho
+item.minecartChest.name=Carrinho com baú
+item.minecartCommandBlock.name=Carrinho com bloco de comando
+item.minecartFurnace.name=Carrinho com fornalha
+item.minecartHopper.name=Carrinho com funil
+item.minecartTnt.name=Carrinho com dinamite
+item.monsterPlacer.name=Gerar
+item.mushroomStew.name=Ensopado de cogumelos
+item.muttonCooked.name=Carneiro assado
+item.muttonRaw.name=Carneiro cru
+item.nameTag.name=Etiqueta
+item.netherStalkSeeds.name=Fungo do Nether
+item.netherStar.name=Estrela do Nether
+item.netherbrick.name=Tijolo do Nether
+item.netherquartz.name=Quartzo do Nether
+item.painting.name=Quadro
+item.paper.name=Papel
+item.pickaxeDiamond.name=Picareta de diamante
+item.pickaxeGold.name=Picareta de ouro
+item.pickaxeIron.name=Picareta de ferro
+item.pickaxeStone.name=Picareta de pedra
+item.pickaxeWood.name=Picareta de madeira
+item.porkchopCooked.name=Costeleta de porco assada
+item.porkchopRaw.name=Costeleta de porco crua
+item.potato.name=Batata
+item.potatoBaked.name=Batata assada
+item.potatoPoisonous.name=Batata venenosa
+item.potion.name=Poção
+item.prismarineCrystals.name=Cristais de prismarinho
+item.prismarineShard.name=Fragmento de prismarinho
+item.pumpkinPie.name=Torta de abóbora
+item.rabbitCooked.name=Coelho assado
+item.rabbitFoot.name=Pé de coelho
+item.rabbitHide.name=Pele de coelho
+item.rabbitRaw.name=Coelho cru
+item.rabbitStew.name=Ensopado de coelho
+item.record.11.desc=C418 - 11
+item.record.13.desc=C418 - 13
+item.record.blocks.desc=C418 - blocks
+item.record.cat.desc=C418 - cat
+item.record.chirp.desc=C418 - chirp
+item.record.far.desc=C418 - far
+item.record.mall.desc=C418 - mall
+item.record.mellohi.desc=C418 - mellohi
+item.record.name=Disco de música
+item.record.stal.desc=C418 - stal
+item.record.strad.desc=C418 - strad
+item.record.wait.desc=C418 - wait
+item.record.ward.desc=C418 - ward
+item.redstone.name=Redstone
+item.reeds.name=Canas-de-açúcar
+item.rottenFlesh.name=Carne podre
+item.saddle.name=Sela
+item.seeds.name=Sementes
+item.seeds_melon.name=Sementes de melancia
+item.seeds_pumpkin.name=Sementes de abóbora
+item.shears.name=Tesoura
+item.shield.name=Escudo
+item.shovelDiamond.name=Pá de diamante
+item.shovelGold.name=Pá de ouro
+item.shovelIron.name=Pá de ferro
+item.shovelStone.name=Pá de pedra
+item.shovelWood.name=Pá de madeira
+item.shulkerShell.name=Casco de shulker
+item.sign.name=Placa
+item.skull.char.name=Cabeça
+item.skull.creeper.name=Cabeça de creeper
+item.skull.dragon.name=Cabeça de dragão
+item.skull.skeleton.name=Crânio de esqueleto
+item.skull.wither.name=Crânio de esqueleto Wither
+item.skull.zombie.name=Cabeça de zumbi
+item.slimeball.name=Bola de slime
+item.snowball.name=Bola de neve
+item.speckledMelon.name=Fatia de melancia reluzente
+item.spectral_arrow.name=Flecha espectral
+item.spiderEye.name=Olho de aranha
+item.stick.name=Graveto
+item.string.name=Linha
+item.sugar.name=Açúcar
+item.sulphur.name=Pólvora
+item.swordDiamond.name=Espada de diamante
+item.swordGold.name=Espada de ouro
+item.swordIron.name=Espada de ferro
+item.swordStone.name=Espada de pedra
+item.swordWood.name=Espada de madeira
+item.tipped_arrow.name=Flecha com efeito
+item.totem.name=Totem da imortalidade
+item.wheat.name=Trigo
+item.writingBook.name=Livro e pena
+item.writtenBook.name=Livro escrito
+item.yellowDust.name=Pó de pedra luminosa
+lingering_potion.effect.awkward=Poção prolongada estranha
+lingering_potion.effect.empty=Poção prolongada não fabricável
+lingering_potion.effect.fire_resistance=Poção prolongada de resistência ao fogo
+lingering_potion.effect.harming=Poção prolongada de dano
+lingering_potion.effect.healing=Poção prolongada de cura
+lingering_potion.effect.invisibility=Poção prolongada de invisibilidade
+lingering_potion.effect.leaping=Poção prolongada de salto
+lingering_potion.effect.luck=Poção prolongada de sorte
+lingering_potion.effect.mundane=Poção comum prolongada
+lingering_potion.effect.night_vision=Poção prolongada de visão noturna
+lingering_potion.effect.poison=Poção prolongada de veneno
+lingering_potion.effect.regeneration=Poção prolongada de regeneração
+lingering_potion.effect.slowness=Poção prolongada de lentidão
+lingering_potion.effect.strength=Poção prolongada de força
+lingering_potion.effect.swiftness=Poção prolongada de agilidade
+lingering_potion.effect.thick=Poção prolongada espessa
+lingering_potion.effect.water=Frasco de água prolongado
+lingering_potion.effect.water_breathing=Poção prolongada de respiração aquática
+lingering_potion.effect.weakness=Poção prolongada de fraqueza
+potion.effect.awkward=Poção estranha
+potion.effect.empty=Poção não fabricável
+potion.effect.fire_resistance=Poção de resistência ao fogo
+potion.effect.harming=Poção de dano
+potion.effect.healing=Poção de cura
+potion.effect.invisibility=Poção de invisibilidade
+potion.effect.leaping=Poção de salto
+potion.effect.luck=Poção de sorte
+potion.effect.mundane=Poção comum
+potion.effect.night_vision=Poção de visão noturna
+potion.effect.poison=Poção de veneno
+potion.effect.regeneration=Poção de regeneração
+potion.effect.slowness=Poção de lentidão
+potion.effect.strength=Poção de força
+potion.effect.swiftness=Poção de agilidade
+potion.effect.thick=Poção espessa
+potion.effect.water=Frasco de água
+potion.effect.water_breathing=Poção de respiração aquática
+potion.effect.weakness=Poção de fraqueza
+splash_potion.effect.awkward=Poção estranha arremessável
+splash_potion.effect.empty=Poção arremessável não fabricável
+splash_potion.effect.fire_resistance=Poção arremessável de resistência ao fogo
+splash_potion.effect.harming=Poção arremessável de dano
+splash_potion.effect.healing=Poção arremessável de cura
+splash_potion.effect.invisibility=Poção arremessável de invisibilidade
+splash_potion.effect.leaping=Poção arremessável de salto
+splash_potion.effect.luck=Poção arremessável de sorte
+splash_potion.effect.mundane=Poção comum arremessável
+splash_potion.effect.night_vision=Poção arremessável de visão noturna
+splash_potion.effect.poison=Poção arremessável de veneno
+splash_potion.effect.regeneration=Poção arremessável de regeneração
+splash_potion.effect.slowness=Poção arremessável de lentidão
+splash_potion.effect.strength=Poção arremessável de força
+splash_potion.effect.swiftness=Poção arremessável de agilidade
+splash_potion.effect.thick=Poção espessa arremessável
+splash_potion.effect.water=Frasco de água arremessável
+splash_potion.effect.water_breathing=Poção arremessável de respiração aquática
+splash_potion.effect.weakness=Poção arremessável de fraqueza
+tile.acaciaFence.name=Cerca de acácia
+tile.acaciaFenceGate.name=Portão de acácia
+tile.activatorRail.name=Trilho ativador
+tile.anvil.intact.name=Bigorna
+tile.anvil.slightlyDamaged.name=Bigorna ligeiramente danificada
+tile.anvil.veryDamaged.name=Bigorna muito danificada
+tile.barrier.name=Barreira
+tile.beacon.name=Sinalizador
+tile.bedrock.name=Rocha matriz
+tile.birchFence.name=Cerca de eucalipto
+tile.birchFenceGate.name=Portão de eucalipto
+tile.blockCoal.name=Bloco de carvão
+tile.blockDiamond.name=Bloco de diamante
+tile.blockEmerald.name=Bloco de esmeralda
+tile.blockGold.name=Bloco de ouro
+tile.blockIron.name=Bloco de ferro
+tile.blockLapis.name=Bloco de lápis-lazúli
+tile.blockRedstone.name=Bloco de redstone
+tile.boneBlock.name=Bloco de ossos
+tile.bookshelf.name=Estante
+tile.brick.name=Tijolos
+tile.button.name=Botão
+tile.cactus.name=Cacto
+tile.chainCommandBlock.name=Bloco de comando em cadeia
+tile.chest.name=Baú
+tile.chestTrap.name=Baú com armadilha
+tile.chorusFlower.name=Flor do coro
+tile.chorusPlant.name=Planta do coro
+tile.clay.name=Argila
+tile.clayHardened.name=Terracota
+tile.clayHardenedStained.black.name=Terracota preta
+tile.clayHardenedStained.blue.name=Terracota azul
+tile.clayHardenedStained.brown.name=Terracota marrom
+tile.clayHardenedStained.cyan.name=Terracota ciano
+tile.clayHardenedStained.gray.name=Terracota cinza
+tile.clayHardenedStained.green.name=Terracota verde
+tile.clayHardenedStained.lightBlue.name=Terracota azul-clara
+tile.clayHardenedStained.lime.name=Terracota verde-limão
+tile.clayHardenedStained.magenta.name=Terracota magenta
+tile.clayHardenedStained.orange.name=Terracota laranja
+tile.clayHardenedStained.pink.name=Terracota rosa
+tile.clayHardenedStained.purple.name=Terracota roxa
+tile.clayHardenedStained.red.name=Terracota vermelha
+tile.clayHardenedStained.silver.name=Terracota cinza-clara
+tile.clayHardenedStained.white.name=Terracota branca
+tile.clayHardenedStained.yellow.name=Terracota amarela
+tile.cloth.black.name=Lã preta
+tile.cloth.blue.name=Lã azul
+tile.cloth.brown.name=Lã marrom
+tile.cloth.cyan.name=Lã ciano
+tile.cloth.gray.name=Lã cinza
+tile.cloth.green.name=Lã verde
+tile.cloth.lightBlue.name=Lã azul-clara
+tile.cloth.lime.name=Lã verde-limão
+tile.cloth.magenta.name=Lã magenta
+tile.cloth.orange.name=Lã laranja
+tile.cloth.pink.name=Lã rosa
+tile.cloth.purple.name=Lã roxa
+tile.cloth.red.name=Lã vermelha
+tile.cloth.silver.name=Lã cinza-clara
+tile.cloth.white.name=Lã branca
+tile.cloth.yellow.name=Lã amarela
+tile.cobbleWall.mossy.name=Muro de pedregulho musgoso
+tile.cobbleWall.normal.name=Muro de pedregulho
+tile.commandBlock.name=Bloco de comando
+tile.concrete.black.name=Concreto preto
+tile.concrete.blue.name=Concreto azul
+tile.concrete.brown.name=Concreto marrom
+tile.concrete.cyan.name=Concreto ciano
+tile.concrete.gray.name=Concreto cinza
+tile.concrete.green.name=Concreto verde
+tile.concrete.lightBlue.name=Concreto azul-claro
+tile.concrete.lime.name=Concreto verde-limão
+tile.concrete.magenta.name=Concreto magenta
+tile.concrete.orange.name=Concreto laranja
+tile.concrete.pink.name=Concreto rosa
+tile.concrete.purple.name=Concreto roxo
+tile.concrete.red.name=Concreto vermelho
+tile.concrete.silver.name=Concreto cinza-claro
+tile.concrete.white.name=Concreto branco
+tile.concrete.yellow.name=Concreto amarelo
+tile.concretePowder.black.name=Cimento preto
+tile.concretePowder.blue.name=Cimento azul
+tile.concretePowder.brown.name=Cimento marrom
+tile.concretePowder.cyan.name=Cimento ciano
+tile.concretePowder.gray.name=Cimento cinza
+tile.concretePowder.green.name=Cimento verde
+tile.concretePowder.lightBlue.name=Cimento azul-claro
+tile.concretePowder.lime.name=Cimento verde-limão
+tile.concretePowder.magenta.name=Cimento magenta
+tile.concretePowder.orange.name=Cimento laranja
+tile.concretePowder.pink.name=Cimento rosa
+tile.concretePowder.purple.name=Cimento roxo
+tile.concretePowder.red.name=Cimento vermelho
+tile.concretePowder.silver.name=Cimento cinza-claro
+tile.concretePowder.white.name=Cimento branco
+tile.concretePowder.yellow.name=Cimento amarelo
+tile.darkOakFence.name=Cerca de carvalho escuro
+tile.darkOakFenceGate.name=Portão de carvalho escuro
+tile.daylightDetector.name=Sensor de luz solar
+tile.deadbush.name=Arbusto morto
+tile.detectorRail.name=Trilho detector
+tile.dirt.coarse.name=Terra grossa
+tile.dirt.default.name=Terra
+tile.dirt.podzol.name=Podzol
+tile.dispenser.name=Ejetor
+tile.doublePlant.fern.name=Samambaia grande
+tile.doublePlant.grass.name=Grama alta
+tile.doublePlant.paeonia.name=Peônia
+tile.doublePlant.rose.name=Roseira
+tile.doublePlant.sunflower.name=Girassol
+tile.doublePlant.syringa.name=Lilás
+tile.dragonEgg.name=Ovo de dragão
+tile.dropper.name=Liberador
+tile.enchantmentTable.name=Mesa de encantamentos
+tile.endBricks.name=Tijolos de pedra do End
+tile.endPortalFrame.name=Portal do End
+tile.endRod.name=Lâmpada do End
+tile.enderChest.name=Baú de ender
+tile.farmland.name=Terra arada
+tile.fence.name=Cerca de carvalho
+tile.fenceGate.name=Portão de carvalho
+tile.fenceIron.name=Grades de ferro
+tile.fire.name=Fogo
+tile.flower1.dandelion.name=Dente-de-leão
+tile.flower2.allium.name=Hortênsia
+tile.flower2.blueOrchid.name=Orquídea azul
+tile.flower2.houstonia.name=Flor silvestre azul
+tile.flower2.oxeyeDaisy.name=Margarida
+tile.flower2.poppy.name=Papoula
+tile.flower2.tulipOrange.name=Tulipa laranja
+tile.flower2.tulipPink.name=Tulipa rosa
+tile.flower2.tulipRed.name=Tulipa vermelha
+tile.flower2.tulipWhite.name=Tulipa branca
+tile.furnace.name=Fornalha
+tile.glass.name=Vidro
+tile.glazedTerracottaBlack.name=Azulejo preto
+tile.glazedTerracottaBlue.name=Azulejo azul
+tile.glazedTerracottaBrown.name=Azulejo marrom
+tile.glazedTerracottaCyan.name=Azulejo ciano
+tile.glazedTerracottaGray.name=Azulejo cinza
+tile.glazedTerracottaGreen.name=Azulejo verde
+tile.glazedTerracottaLightBlue.name=Azulejo azul-claro
+tile.glazedTerracottaLime.name=Azulejo verde-limão
+tile.glazedTerracottaMagenta.name=Azulejo magenta
+tile.glazedTerracottaOrange.name=Azulejo laranja
+tile.glazedTerracottaPink.name=Azulejo rosa
+tile.glazedTerracottaPurple.name=Azulejo roxo
+tile.glazedTerracottaRed.name=Azulejo vermelho
+tile.glazedTerracottaSilver.name=Azulejo cinza-claro
+tile.glazedTerracottaWhite.name=Azulejo branco
+tile.glazedTerracottaYellow.name=Azulejo amarelo
+tile.goldenRail.name=Trilho elétrico
+tile.grass.name=Bloco de grama
+tile.grassPath.name=Caminho de grama
+tile.gravel.name=Cascalho
+tile.hayBlock.name=Fardo de feno
+tile.hellrock.name=Netherrack
+tile.hellsand.name=Areia de almas
+tile.hopper.name=Funil
+tile.ice.name=Gelo
+tile.icePacked.name=Gelo compactado
+tile.ironTrapdoor.name=Alçapão de ferro
+tile.jukebox.name=Toca-discos
+tile.jungleFence.name=Cerca de madeira da selva
+tile.jungleFenceGate.name=Portão de madeira da selva
+tile.ladder.name=Escada
+tile.lava.name=Lava
+tile.leaves.acacia.name=Folhas de acácia
+tile.leaves.big_oak.name=Folhas de carvalho escuro
+tile.leaves.birch.name=Folhas de eucalipto
+tile.leaves.jungle.name=Folhas da selva
+tile.leaves.oak.name=Folhas de carvalho
+tile.leaves.spruce.name=Folhas de pinheiro
+tile.lever.name=Alavanca
+tile.lightgem.name=Pedra luminosa
+tile.litpumpkin.name=Abóbora de Halloween
+tile.log.acacia.name=Madeira de acácia
+tile.log.big_oak.name=Madeira de carvalho escuro
+tile.log.birch.name=Madeira de eucalipto
+tile.log.jungle.name=Madeira da selva
+tile.log.oak.name=Madeira de carvalho
+tile.log.spruce.name=Madeira de pinheiro
+tile.magma.name=Bloco de magma
+tile.melon.name=Melancia
+tile.mobSpawner.name=Gerador de monstros
+tile.monsterStoneEgg.brick.name=Tijolos de pedra com traça
+tile.monsterStoneEgg.chiseledbrick.name=Tijolos de pedra talhados com traça
+tile.monsterStoneEgg.cobble.name=Pedregulho com traça
+tile.monsterStoneEgg.crackedbrick.name=Tijolos de pedra rachados com traça
+tile.monsterStoneEgg.mossybrick.name=Tijolos de pedra musgosa com traça
+tile.monsterStoneEgg.stone.name=Pedra com traça
+tile.mushroom.name=Cogumelo
+tile.musicBlock.name=Bloco musical
+tile.mycel.name=Micélio
+tile.netherBrick.name=Tijolos do Nether
+tile.netherFence.name=Cerca de tijolos do Nether
+tile.netherStalk.name=Fungo do Nether
+tile.netherWartBlock.name=Bloco de fungos do Nether
+tile.netherquartz.name=Minério de quartzo do Nether
+tile.notGate.name=Tocha de redstone
+tile.observer.name=Observador
+tile.obsidian.name=Obsidiana
+tile.oreCoal.name=Minério de carvão
+tile.oreDiamond.name=Minério de diamante
+tile.oreEmerald.name=Minério de esmeralda
+tile.oreGold.name=Minério de ouro
+tile.oreIron.name=Minério de ferro
+tile.oreLapis.name=Minério de lápis-lazúli
+tile.oreRedstone.name=Minério de redstone
+tile.pistonBase.name=Pistão
+tile.pistonStickyBase.name=Pistão grudento
+tile.portal.name=Portal
+tile.pressurePlateStone.name=Placa de pressão de pedra
+tile.pressurePlateWood.name=Placa de pressão de madeira
+tile.prismarine.bricks.name=Tijolos de prismarinho
+tile.prismarine.dark.name=Prismarinho escuro
+tile.prismarine.rough.name=Prismarinho
+tile.pumpkin.name=Abóbora
+tile.purpurBlock.name=Bloco de púrpura
+tile.purpurPillar.name=Pilar de púrpura
+tile.purpurSlab.name=Laje de púrpura
+tile.quartzBlock.chiseled.name=Bloco de quartzo talhado
+tile.quartzBlock.default.name=Bloco de quartzo
+tile.quartzBlock.lines.name=Pilar de quartzo
+tile.rail.name=Trilho
+tile.redNetherBrick.name=Tijolos vermelhos do Nether
+tile.redSandStone.chiseled.name=Arenito vermelho talhado
+tile.redSandStone.default.name=Arenito vermelho
+tile.redSandStone.smooth.name=Arenito vermelho liso
+tile.redstoneLight.name=Lâmpada de redstone
+tile.repeatingCommandBlock.name=Bloco de comando em repetição
+tile.sand.default.name=Areia
+tile.sand.red.name=Areia vermelha
+tile.sandStone.chiseled.name=Arenito talhado
+tile.sandStone.default.name=Arenito
+tile.sandStone.smooth.name=Arenito liso
+tile.sapling.acacia.name=Muda de acácia
+tile.sapling.big_oak.name=Muda de carvalho escuro
+tile.sapling.birch.name=Muda de eucalipto
+tile.sapling.jungle.name=Muda de árvore da selva
+tile.sapling.oak.name=Muda de carvalho
+tile.sapling.spruce.name=Muda de pinheiro
+tile.seaLantern.name=Lanterna do mar
+tile.shulkerBoxBlack.name=Caixa de shulker preta
+tile.shulkerBoxBlue.name=Caixa de shulker azul
+tile.shulkerBoxBrown.name=Caixa de shulker marrom
+tile.shulkerBoxCyan.name=Caixa de shulker ciano
+tile.shulkerBoxGray.name=Caixa de shulker cinza
+tile.shulkerBoxGreen.name=Caixa de shulker verde
+tile.shulkerBoxLightBlue.name=Caixa de shulker azul-clara
+tile.shulkerBoxLime.name=Caixa de shulker verde-limão
+tile.shulkerBoxMagenta.name=Caixa de shulker magenta
+tile.shulkerBoxOrange.name=Caixa de shulker laranja
+tile.shulkerBoxPink.name=Caixa de shulker rosa
+tile.shulkerBoxPurple.name=Caixa de shulker roxa
+tile.shulkerBoxRed.name=Caixa de shulker vermelha
+tile.shulkerBoxSilver.name=Caixa de shulker cinza-clara
+tile.shulkerBoxWhite.name=Caixa de shulker branca
+tile.shulkerBoxYellow.name=Caixa de shulker amarela
+tile.slime.name=Bloco de slime
+tile.snow.name=Neve
+tile.sponge.dry.name=Esponja
+tile.sponge.wet.name=Esponja molhada
+tile.spruceFence.name=Cerca de pinheiro
+tile.spruceFenceGate.name=Portão de pinheiro
+tile.stainedGlass.black.name=Vidro preto
+tile.stainedGlass.blue.name=Vidro azul
+tile.stainedGlass.brown.name=Vidro marrom
+tile.stainedGlass.cyan.name=Vidro ciano
+tile.stainedGlass.gray.name=Vidro cinza
+tile.stainedGlass.green.name=Vidro verde
+tile.stainedGlass.lightBlue.name=Vidro azul-claro
+tile.stainedGlass.lime.name=Vidro verde-limão
+tile.stainedGlass.magenta.name=Vidro magenta
+tile.stainedGlass.orange.name=Vidro laranja
+tile.stainedGlass.pink.name=Vidro rosa
+tile.stainedGlass.purple.name=Vidro roxo
+tile.stainedGlass.red.name=Vidro vermelho
+tile.stainedGlass.silver.name=Vidro cinza-claro
+tile.stainedGlass.white.name=Vidro branco
+tile.stainedGlass.yellow.name=Vidro amarelo
+tile.stairsBrick.name=Escadas de tijolos
+tile.stairsNetherBrick.name=Escadas de tijolos do Nether
+tile.stairsPurpur.name=Escadas de púrpura
+tile.stairsQuartz.name=Escadas de quartzo
+tile.stairsRedSandStone.name=Escadas de arenito vermelho
+tile.stairsSandStone.name=Escadas de arenito
+tile.stairsStone.name=Escadas de pedregulho
+tile.stairsStoneBrickSmooth.name=Escadas de tijolos de pedra
+tile.stairsWood.name=Escadas de carvalho
+tile.stairsWoodAcacia.name=Escadas de acácia
+tile.stairsWoodBirch.name=Escadas de eucalipto
+tile.stairsWoodDarkOak.name=Escadas de carvalho escuro
+tile.stairsWoodJungle.name=Escadas de madeira da selva
+tile.stairsWoodSpruce.name=Escadas de pinheiro
+tile.stone.andesite.name=Andesito
+tile.stone.andesiteSmooth.name=Andesito polido
+tile.stone.diorite.name=Diorito
+tile.stone.dioriteSmooth.name=Diorito polido
+tile.stone.granite.name=Granito
+tile.stone.graniteSmooth.name=Granito polido
+tile.stone.stone.name=Pedra
+tile.stoneMoss.name=Pedra musgosa
+tile.stoneSlab.brick.name=Laje de tijolos
+tile.stoneSlab.cobble.name=Laje de pedregulho
+tile.stoneSlab.netherBrick.name=Laje de tijolos do Nether
+tile.stoneSlab.quartz.name=Laje de quartzo
+tile.stoneSlab.sand.name=Laje de arenito
+tile.stoneSlab.smoothStoneBrick.name=Laje de tijolos de pedra
+tile.stoneSlab.stone.name=Laje de pedra
+tile.stoneSlab.wood.name=Laje de madeira
+tile.stoneSlab2.red_sandstone.name=Laje de arenito vermelho
+tile.stonebrick.name=Pedregulho
+tile.stonebricksmooth.chiseled.name=Tijolos de pedra talhados
+tile.stonebricksmooth.cracked.name=Tijolos de pedra rachados
+tile.stonebricksmooth.default.name=Tijolos de pedra
+tile.stonebricksmooth.mossy.name=Tijolos de pedra musgosa
+tile.structureBlock.name=Bloco de estrutura
+tile.structureVoid.name=Vazio da estrutura
+tile.tallgrass.fern.name=Samambaia
+tile.tallgrass.grass.name=Grama
+tile.tallgrass.shrub.name=Arbusto
+tile.thinGlass.name=Painel de vidro
+tile.thinStainedGlass.black.name=Painel de vidro preto
+tile.thinStainedGlass.blue.name=Painel de vidro azul
+tile.thinStainedGlass.brown.name=Painel de vidro marrom
+tile.thinStainedGlass.cyan.name=Painel de vidro ciano
+tile.thinStainedGlass.gray.name=Painel de vidro cinza
+tile.thinStainedGlass.green.name=Painel de vidro verde
+tile.thinStainedGlass.lightBlue.name=Painel de vidro azul-claro
+tile.thinStainedGlass.lime.name=Painel de vidro verde-limão
+tile.thinStainedGlass.magenta.name=Painel de vidro magenta
+tile.thinStainedGlass.orange.name=Painel de vidro laranja
+tile.thinStainedGlass.pink.name=Painel de vidro rosa
+tile.thinStainedGlass.purple.name=Painel de vidro roxo
+tile.thinStainedGlass.red.name=Painel de vidro vermelho
+tile.thinStainedGlass.silver.name=Painel de vidro cinza-claro
+tile.thinStainedGlass.white.name=Painel de vidro branco
+tile.thinStainedGlass.yellow.name=Painel de vidro amarelo
+tile.tnt.name=Dinamite
+tile.torch.name=Tocha
+tile.trapdoor.name=Alçapão de madeira
+tile.tripWireSource.name=Gancho de armadilha
+tile.vine.name=Trepadeiras
+tile.water.name=Água
+tile.waterlily.name=Vitória-régia
+tile.web.name=Teia de aranha
+tile.weightedPlate_heavy.name=Placa de pressão de pesagem (pesada)
+tile.weightedPlate_light.name=Placa de pressão de pesagem (leve)
+tile.whiteStone.name=Pedra do End
+tile.wood.acacia.name=Tábuas de acácia
+tile.wood.big_oak.name=Tábuas de carvalho escuro
+tile.wood.birch.name=Tábuas de eucalipto
+tile.wood.jungle.name=Tábuas de madeira da selva
+tile.wood.oak.name=Tábuas de carvalho
+tile.wood.spruce.name=Tábuas de pinheiro
+tile.woodSlab.acacia.name=Laje de acácia
+tile.woodSlab.big_oak.name=Laje de carvalho escuro
+tile.woodSlab.birch.name=Laje de eucalipto
+tile.woodSlab.jungle.name=Laje de madeira da selva
+tile.woodSlab.oak.name=Laje de carvalho
+tile.woodSlab.spruce.name=Laje de pinheiro
+tile.woolCarpet.black.name=Carpete preto
+tile.woolCarpet.blue.name=Carpete azul
+tile.woolCarpet.brown.name=Carpete marrom
+tile.woolCarpet.cyan.name=Carpete ciano
+tile.woolCarpet.gray.name=Carpete cinza
+tile.woolCarpet.green.name=Carpete verde
+tile.woolCarpet.lightBlue.name=Carpete azul-claro
+tile.woolCarpet.lime.name=Carpete verde-limão
+tile.woolCarpet.magenta.name=Carpete magenta
+tile.woolCarpet.orange.name=Carpete laranja
+tile.woolCarpet.pink.name=Carpete rosa
+tile.woolCarpet.purple.name=Carpete roxo
+tile.woolCarpet.red.name=Carpete vermelho
+tile.woolCarpet.silver.name=Carpete cinza-claro
+tile.woolCarpet.white.name=Carpete branco
+tile.woolCarpet.yellow.name=Carpete amarelo
+tile.workbench.name=Bancada de trabalho
+tipped_arrow.effect.awkward=Flecha com efeito
+tipped_arrow.effect.empty=Flecha com efeito não fabricável
+tipped_arrow.effect.fire_resistance=Flecha de resistência ao fogo
+tipped_arrow.effect.harming=Flecha de dano
+tipped_arrow.effect.healing=Flecha de cura
+tipped_arrow.effect.invisibility=Flecha de invisibilidade
+tipped_arrow.effect.leaping=Flecha de salto
+tipped_arrow.effect.luck=Flecha de sorte
+tipped_arrow.effect.mundane=Flecha com efeito
+tipped_arrow.effect.night_vision=Flecha de visão noturna
+tipped_arrow.effect.poison=Flecha de veneno
+tipped_arrow.effect.regeneration=Flecha de regeneração
+tipped_arrow.effect.slowness=Flecha de lentidão
+tipped_arrow.effect.strength=Flecha de força
+tipped_arrow.effect.swiftness=Flecha de agilidade
+tipped_arrow.effect.thick=Flecha com efeito
+tipped_arrow.effect.water=Flecha sem efeito
+tipped_arrow.effect.water_breathing=Flecha de respiração aquática
+tipped_arrow.effect.weakness=Flecha de fraqueza
