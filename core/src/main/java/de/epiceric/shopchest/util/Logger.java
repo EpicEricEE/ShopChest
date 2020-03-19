@@ -2,37 +2,37 @@ package de.epiceric.shopchest.util;
 
 import java.util.logging.Level;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class Logger {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("ShopChest");
 
-    public void info(String message, Object... args) {
+    private Logger() {
+    }
+
+    public static void info(String message, Object... args) {
         log(Level.INFO, message, args);
     }
 
-    public void info(Throwable throwable) {
+    public static void info(Throwable throwable) {
         log(Level.INFO, throwable);
     }
     
-    public void warning(String message, Object... args) {
+    public static void warning(String message, Object... args) {
         log(Level.WARNING, message, args);
     }
 
-    public void warning(Throwable throwable) {
+    public static void warning(Throwable throwable) {
         log(Level.WARNING, throwable);
     }
 
-    public void severe(String message, Object... args) {
+    public static void severe(String message, Object... args) {
         log(Level.SEVERE, message, args);
     }
 
-    public void severe(Throwable throwable) {
+    public static void severe(Throwable throwable) {
         log(Level.SEVERE, throwable);
     }
 
-    public void log(Level logLevel, String message, Object... args) {
+    public static void log(Level logLevel, String message, Object... args) {
         if (args.length > 0) {
             LOGGER.log(logLevel, message, args);
         } else {
@@ -40,7 +40,7 @@ public class Logger {
         }
     }
 
-    public void log(Level logLevel, Throwable throwable) {
+    public static void log(Level logLevel, Throwable throwable) {
         LOGGER.log(logLevel, throwable.getMessage(), throwable);
     }
 }

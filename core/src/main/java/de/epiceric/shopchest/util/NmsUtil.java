@@ -6,10 +6,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class NmsUtil {
+    private NmsUtil() {
+    }
 
     /**
      * Gets the current server version with revision number
@@ -18,7 +17,7 @@ public class NmsUtil {
      * 
      * @return the server version
      */
-    public String getServerVersion() {
+    public static String getServerVersion() {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         return packageName.substring(packageName.lastIndexOf('.') + 1);
     }
@@ -30,7 +29,7 @@ public class NmsUtil {
      * 
      * @return the revision
      */
-    public int getRevision() {
+    public static int getRevision() {
         String version = getServerVersion();
         return Integer.parseInt(version.substring(version.length() - 1));
     }
@@ -40,7 +39,7 @@ public class NmsUtil {
      * <p>
      * (e.g. 9 for v1_9_R2, 10 for v1_10_R1)
      */
-    public int getMajorVersion() {
+    public static int getMajorVersion() {
         return Integer.parseInt(getServerVersion().split("_")[1]);
     }
 
@@ -50,7 +49,7 @@ public class NmsUtil {
      * @param className the name of the class
      * @return the class or {@code null} if it was not found
      */
-    public Class<?> getNmsClass(String className) {
+    public static Class<?> getNmsClass(String className) {
         try {
             return Class.forName("net.minecraft.server." + getServerVersion() + "." + className);
         } catch (ClassNotFoundException e) {
@@ -64,7 +63,7 @@ public class NmsUtil {
      * @param className the name of the class
      * @return the class or {@code null} if it was not found
      */
-    public Class<?> getCraftClass(String className) {
+    public static Class<?> getCraftClass(String className) {
         try {
             return Class.forName("org.bukkit.craftbukkit." + getServerVersion() + "." + className);
         } catch (ClassNotFoundException e) {
@@ -102,7 +101,7 @@ public class NmsUtil {
      * @param player the player to whom the packet should be sent
      * @return whether the packet has successfully been sent
      */
-    public boolean sendPacket(Object packet, Player player) {
+    public static boolean sendPacket(Object packet, Player player) {
         try {
             if (packet == null) {
                 Logger.severe("Failed to send packet to {0}: Packet is null", player.getName());
@@ -134,7 +133,7 @@ public class NmsUtil {
      * @param player the player
      * @param jsonMessage the JSON message
      */
-    public void sendJsonMessage(Player player, String jsonMessage) {
+    public static void sendJsonMessage(Player player, String jsonMessage) {
         try {
             Class<?> chatSerializerClass = getServerVersion().equals("v1_8_R1")
                     ? getNmsClass("ChatSerializer")

@@ -2,10 +2,9 @@ package de.epiceric.shopchest.util;
 
 import org.bukkit.inventory.ItemStack;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class ItemUtil {
+    private ItemUtil() {
+    }
 
     /**
      * Gets whether the given item stacks are equal not considering their amount
@@ -14,7 +13,7 @@ public class ItemUtil {
      * @param itemStack2 the other item stack
      * @return whether the item stacks are equal
      */
-    public boolean isEqual(ItemStack itemStack1, ItemStack itemStack2) {
+    public static boolean isEqual(ItemStack itemStack1, ItemStack itemStack2) {
         if (itemStack1 == null || itemStack2 == null) {
             return false;
         }
@@ -23,5 +22,4 @@ public class ItemUtil {
 
         return itemStack1.isSimilar(itemStack2);
     }
-
 }
