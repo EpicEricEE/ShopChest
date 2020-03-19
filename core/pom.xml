@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.epiceric.shopchest</groupId>
-    <artifactId>shopchest-new</artifactId>
+    <artifactId>shopchest</artifactId>
     <version>1.13-SNAPSHOT</version>
 
     <name>ShopChest</name>

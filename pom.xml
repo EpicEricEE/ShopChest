@@ -11,7 +11,7 @@
 
     <modules>
         <module>api</module>
-        <module>new-implementation</module>
+        <module>core</module>
         <module>nms</module>
     </modules>
 
