@@ -8,25 +8,25 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import io.netty.buffer.Unpooled;
-import net.minecraft.server.v1_15_R1.DataWatcher;
-import net.minecraft.server.v1_15_R1.DataWatcherObject;
-import net.minecraft.server.v1_15_R1.Entity;
-import net.minecraft.server.v1_15_R1.EntityArmorStand;
-import net.minecraft.server.v1_15_R1.EntityTypes;
-import net.minecraft.server.v1_15_R1.IChatBaseComponent;
-import net.minecraft.server.v1_15_R1.IRegistry;
-import net.minecraft.server.v1_15_R1.Packet;
-import net.minecraft.server.v1_15_R1.PacketDataSerializer;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_15_R1.PacketPlayOutSpawnEntity;
-import net.minecraft.server.v1_15_R1.PlayerConnection;
-import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_14_R1.DataWatcher;
+import net.minecraft.server.v1_14_R1.DataWatcherObject;
+import net.minecraft.server.v1_14_R1.Entity;
+import net.minecraft.server.v1_14_R1.EntityArmorStand;
+import net.minecraft.server.v1_14_R1.EntityTypes;
+import net.minecraft.server.v1_14_R1.IChatBaseComponent;
+import net.minecraft.server.v1_14_R1.IRegistry;
+import net.minecraft.server.v1_14_R1.Packet;
+import net.minecraft.server.v1_14_R1.PacketDataSerializer;
+import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_14_R1.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_14_R1.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_14_R1.PacketPlayOutSpawnEntity;
+import net.minecraft.server.v1_14_R1.PlayerConnection;
+import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
 
 public class HologramLine implements IHologramLine {
     private PacketPlayOutSpawnEntity spawnPacket;
@@ -148,7 +148,7 @@ public class HologramLine implements IHologramLine {
     @SuppressWarnings("unchecked")
     private DataWatcher createDataWatcher() {
         try {
-            Field fEntityFlags = Entity.class.getDeclaredField("T");
+            Field fEntityFlags = Entity.class.getDeclaredField("W");
             Field fAirTicks = Entity.class.getDeclaredField("AIR_TICKS");
             Field fNameVisible = Entity.class.getDeclaredField("aA");
             Field fCustomName = Entity.class.getDeclaredField("az");

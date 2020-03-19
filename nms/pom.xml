@@ -12,7 +12,7 @@
     <modules>
         <module>interfaces</module>
         <module>v8r1</module>
-        <!-- <module>v8r2</module>
+        <module>v8r2</module>
         <module>v8r3</module>
         <module>v9r1</module>
         <module>v9r2</module>
@@ -21,7 +21,7 @@
         <module>v12r1</module>
         <module>v13r1</module>
         <module>v13r2</module>
-        <module>v14r1</module> -->
+        <module>v14r1</module>
         <module>v15r1</module>
     </modules>
 
