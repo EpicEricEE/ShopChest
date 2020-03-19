@@ -8,7 +8,7 @@
     <artifactId>shopchest-api</artifactId>
     <version>1.13-SNAPSHOT</version>
 
-    <name>ShopChest-API</name>
+    <name>ShopChest API</name>
 
     <parent>
         <groupId>de.epiceric.shopchest</groupId>

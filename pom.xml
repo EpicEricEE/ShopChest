@@ -16,6 +16,8 @@
         <module>nms</module>
     </modules>
 
+    <name>ShopChest Parent</name>
+
     <properties>
         <!-- Encoding Properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
