@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.shop.hologram;
+package de.epiceric.shopchest.shop.hologram.v1_11_R1;
 
 import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import de.epiceric.shopchest.shop.hologram.IHologramLine;
 import io.netty.buffer.Unpooled;
 import net.minecraft.server.v1_11_R1.DataWatcher;
 import net.minecraft.server.v1_11_R1.DataWatcherObject;

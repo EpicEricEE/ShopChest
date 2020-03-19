@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.shop.hologram;
+package de.epiceric.shopchest.shop.hologram.v1_13_R1;
 
 import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
@@ -8,22 +8,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import de.epiceric.shopchest.shop.hologram.IHologramLine;
 import io.netty.buffer.Unpooled;
-import net.minecraft.server.v1_9_R1.DataWatcher;
-import net.minecraft.server.v1_9_R1.DataWatcherObject;
-import net.minecraft.server.v1_9_R1.Entity;
-import net.minecraft.server.v1_9_R1.EntityArmorStand;
-import net.minecraft.server.v1_9_R1.IChatBaseComponent;
-import net.minecraft.server.v1_9_R1.Packet;
-import net.minecraft.server.v1_9_R1.PacketDataSerializer;
-import net.minecraft.server.v1_9_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_9_R1.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_9_R1.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_9_R1.PacketPlayOutSpawnEntity;
-import net.minecraft.server.v1_9_R1.PlayerConnection;
+import net.minecraft.server.v1_13_R1.DataWatcher;
+import net.minecraft.server.v1_13_R1.DataWatcherObject;
+import net.minecraft.server.v1_13_R1.Entity;
+import net.minecraft.server.v1_13_R1.EntityArmorStand;
+import net.minecraft.server.v1_13_R1.IChatBaseComponent;
+import net.minecraft.server.v1_13_R1.Packet;
+import net.minecraft.server.v1_13_R1.PacketDataSerializer;
+import net.minecraft.server.v1_13_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_13_R1.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_13_R1.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_13_R1.PacketPlayOutSpawnEntity;
+import net.minecraft.server.v1_13_R1.PlayerConnection;
+import net.minecraft.server.v1_13_R1.IChatBaseComponent.ChatSerializer;
 
 public class HologramLine implements IHologramLine {
     private PacketPlayOutSpawnEntity spawnPacket;
@@ -66,7 +68,7 @@ public class HologramLine implements IHologramLine {
         this.text = text;
 
         dataWatcher.register(nameVisible, !text.isEmpty());
-        dataWatcher.register(customName, text);
+        dataWatcher.register(customName, Optional.ofNullable(ChatSerializer.b(text)));
 
         Packet<?> metadataPacket = new PacketPlayOutEntityMetadata(id, dataWatcher, true);
         location.getWorld().getPlayers().forEach(player -> sendPackets(player, metadataPacket));
@@ -150,24 +152,27 @@ public class HologramLine implements IHologramLine {
     @SuppressWarnings("unchecked")
     private DataWatcher createDataWatcher() {
         try {
-            Field fEntityFlags = Entity.class.getDeclaredField("ax");
-            Field fAirTicks = Entity.class.getDeclaredField("ay");
-            Field fNameVisible = Entity.class.getDeclaredField("aA");
-            Field fCustomName = Entity.class.getDeclaredField("az");
+            Field fEntityFlags = Entity.class.getDeclaredField("ac");
+            Field fAirTicks = Entity.class.getDeclaredField("aD");
+            Field fNameVisible = Entity.class.getDeclaredField("aF");
+            Field fCustomName = Entity.class.getDeclaredField("aE");
+            Field fNoGravity = Entity.class.getDeclaredField("aH");
 
-            setAccessible(fEntityFlags, fAirTicks, fNameVisible, fCustomName);
+            setAccessible(fEntityFlags, fAirTicks, fNameVisible, fCustomName, fNoGravity);
 
             nameVisible = (DataWatcherObject<Boolean>) fNameVisible.get(null);
             customName = (DataWatcherObject<Optional<IChatBaseComponent>>) fCustomName.get(null);
             DataWatcherObject<Byte> entityFlags = (DataWatcherObject<Byte>) fEntityFlags.get(null);
             DataWatcherObject<Integer> airTicks = (DataWatcherObject<Integer>) fAirTicks.get(null);
+            DataWatcherObject<Boolean> noGravity = (DataWatcherObject<Boolean>) fNoGravity.get(null);
             DataWatcherObject<Byte> armorStandFlags = EntityArmorStand.a;
 
             DataWatcher dataWatcher = new DataWatcher(null);
             dataWatcher.register(entityFlags, (byte) 0b100000);
             dataWatcher.register(airTicks, 300);
             dataWatcher.register(nameVisible, !text.isEmpty());
-            dataWatcher.register(customName, text);
+            dataWatcher.register(customName, Optional.ofNullable(ChatSerializer.b(text))); // TODO: Json
+            dataWatcher.register(noGravity, true);
             dataWatcher.register(armorStandFlags, (byte) 0b10000);
 
             return dataWatcher;

@@ -1,22 +1,22 @@
-package de.epiceric.shopchest.shop.hologram;
+package de.epiceric.shopchest.shop.hologram.v1_8_R1;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import de.epiceric.shopchest.shop.hologram.IHologramLine;
 import io.netty.buffer.Unpooled;
-import net.minecraft.server.v1_8_R2.DataWatcher;
-import net.minecraft.server.v1_8_R2.MathHelper;
-import net.minecraft.server.v1_8_R2.Packet;
-import net.minecraft.server.v1_8_R2.PacketDataSerializer;
-import net.minecraft.server.v1_8_R2.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R2.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_8_R2.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_8_R2.PacketPlayOutSpawnEntity;
-import net.minecraft.server.v1_8_R2.PlayerConnection;
+import net.minecraft.server.v1_8_R1.DataWatcher;
+import net.minecraft.server.v1_8_R1.MathHelper;
+import net.minecraft.server.v1_8_R1.Packet;
+import net.minecraft.server.v1_8_R1.PacketDataSerializer;
+import net.minecraft.server.v1_8_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R1.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_8_R1.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_8_R1.PacketPlayOutSpawnEntity;
+import net.minecraft.server.v1_8_R1.PlayerConnection;
 
 public class HologramLine implements IHologramLine {
     private PacketPlayOutSpawnEntity spawnPacket;
@@ -43,10 +43,10 @@ public class HologramLine implements IHologramLine {
         updatePacket();
 
         int x = MathHelper.floor(location.getX() * 32d);
-        int y = MathHelper.floor((location.getY() + 1.975) * 32d);
+        int y = MathHelper.floor(location.getY() * 32d);
         int z = MathHelper.floor(location.getZ() * 32d);
 
-        Packet<?> teleportPacket = new PacketPlayOutEntityTeleport(id, x, y, z, (byte) 0, (byte) 0, true);
+        Packet teleportPacket = new PacketPlayOutEntityTeleport(id, x, y, z, (byte) 0, (byte) 0, true);
         location.getWorld().getPlayers().forEach(player -> sendPackets(player, teleportPacket));
     }
 
@@ -62,13 +62,13 @@ public class HologramLine implements IHologramLine {
         dataWatcher.a(2, this.text); // custom name
         dataWatcher.a(3, (byte) (this.text.isEmpty() ? 0 : 1)); // name visible
 
-        Packet<?> metadataPacket = new PacketPlayOutEntityMetadata(id, dataWatcher, true);
+        Packet metadataPacket = new PacketPlayOutEntityMetadata(id, dataWatcher, true);
         location.getWorld().getPlayers().forEach(player -> sendPackets(player, metadataPacket));
     }
 
     @Override
     public String getText() {
-        return this.text;
+        return text;
     }
 
     @Override
@@ -89,29 +89,23 @@ public class HologramLine implements IHologramLine {
         sendPackets(player, new PacketPlayOutEntityDestroy(id));
     }
 
-    private void sendPackets(Player player, Packet<?>... packets) {
+    private void sendPackets(Player player, Packet... packets) {
         PlayerConnection con = ((CraftPlayer) player).getHandle().playerConnection;
         Arrays.stream(packets).forEach(packet -> con.sendPacket(packet));
     }
 
     private void updatePacket() {
-        PacketDataSerializer s = new PacketDataSerializer(Unpooled.buffer());
-        s.b(id); // id
-        s.writeByte(78); // entity type
-        s.writeInt(MathHelper.floor(location.getX() * 32d)); // x
-        s.writeInt(MathHelper.floor((location.getY() + 1.975) * 32d)); // y
-        s.writeInt(MathHelper.floor(location.getZ() * 32d)); // z
-        s.writeByte(0); // pitch
-        s.writeByte(0); // yaw
-        s.writeInt(0); // has motion (?)
-        
-        try {
-            spawnPacket.a(s);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            s.release();
-        }
+        PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
+        serializer.b(id); // id
+        serializer.writeByte(78); // entity type
+        serializer.writeInt(MathHelper.floor(location.getX() * 32d)); // x
+        serializer.writeInt(MathHelper.floor(location.getY() * 32d)); // y
+        serializer.writeInt(MathHelper.floor(location.getZ() * 32d)); // z
+        serializer.writeByte(0); // pitch
+        serializer.writeByte(0); // yaw
+        serializer.writeInt(0); // has motion (?)
+        this.spawnPacket.a(serializer);
+        serializer.release();
     }
 
     private DataWatcher createDataWatcher() {
@@ -120,7 +114,7 @@ public class HologramLine implements IHologramLine {
         dataWatcher.a(1, (short) 300); // air ticks
         dataWatcher.a(2, text); // custom name
         dataWatcher.a(3, (byte) (text.isEmpty() ? 0 : 1)); // name visible
-        dataWatcher.a(10, (byte) 0b10000); // armor stand flags
+        dataWatcher.a(10, (byte) 0); // armor stand flags
         return dataWatcher;
     }
 }

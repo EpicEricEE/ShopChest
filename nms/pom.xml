@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.epiceric.shopchest</groupId>
-    <artifactId>shopchest-nms</artifactId>
+    <artifactId>shopchest-nms-parent</artifactId>
     <version>1.13-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
+        <module>aggregator</module>
         <module>interfaces</module>
         <module>v8r1</module>
         <module>v8r2</module>
@@ -25,7 +26,7 @@
         <module>v15r1</module>
     </modules>
 
-    <name>ShopChest NMS</name>
+    <name>ShopChest NMS Parent</name>
 
     <parent>
         <groupId>de.epiceric.shopchest</groupId>

@@ -118,6 +118,11 @@
             <version>1.13-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms</artifactId>
+            <version>1.13-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.codemc.worldguardwrapper</groupId>
             <artifactId>worldguardwrapper</artifactId>
             <version>1.1.6-SNAPSHOT</version>

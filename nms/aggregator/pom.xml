@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.epiceric.shopchest</groupId>
+    <artifactId>shopchest-nms</artifactId>
+    <version>1.13-SNAPSHOT</version>
+
+    <name>ShopChest NMS</name>
+
+    <parent>
+        <groupId>de.epiceric.shopchest</groupId>
+        <artifactId>shopchest-nms-parent</artifactId>
+        <version>1.13-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-interfaces</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v8r1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v8r2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v8r3</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v9r1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v9r2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v10r1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v11r1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v12r1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v13r1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v13r2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v14r1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-nms-v15r1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>

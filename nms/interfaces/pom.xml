@@ -12,7 +12,7 @@
 
     <parent>
         <groupId>de.epiceric.shopchest</groupId>
-        <artifactId>shopchest-nms</artifactId>
+        <artifactId>shopchest-nms-parent</artifactId>
         <version>1.13-SNAPSHOT</version>
     </parent>
 </project>

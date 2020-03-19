@@ -1,22 +1,23 @@
-package de.epiceric.shopchest.shop.hologram;
+package de.epiceric.shopchest.shop.hologram.v1_8_R2;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import de.epiceric.shopchest.shop.hologram.IHologramLine;
 import io.netty.buffer.Unpooled;
-import net.minecraft.server.v1_8_R3.DataWatcher;
-import net.minecraft.server.v1_8_R3.MathHelper;
-import net.minecraft.server.v1_8_R3.Packet;
-import net.minecraft.server.v1_8_R3.PacketDataSerializer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
+import net.minecraft.server.v1_8_R2.DataWatcher;
+import net.minecraft.server.v1_8_R2.MathHelper;
+import net.minecraft.server.v1_8_R2.Packet;
+import net.minecraft.server.v1_8_R2.PacketDataSerializer;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_8_R2.PacketPlayOutSpawnEntity;
+import net.minecraft.server.v1_8_R2.PlayerConnection;
 
 public class HologramLine implements IHologramLine {
     private PacketPlayOutSpawnEntity spawnPacket;
@@ -104,7 +105,7 @@ public class HologramLine implements IHologramLine {
         s.writeByte(0); // pitch
         s.writeByte(0); // yaw
         s.writeInt(0); // has motion (?)
-
+        
         try {
             spawnPacket.a(s);
         } catch (IOException e) {

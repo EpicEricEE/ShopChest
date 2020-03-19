@@ -1,4 +1,4 @@
-package de.epiceric.shopchest.shop.hologram;
+package de.epiceric.shopchest.shop.hologram.v1_9_R2;
 
 import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import de.epiceric.shopchest.shop.hologram.IHologramLine;
 import io.netty.buffer.Unpooled;
 import net.minecraft.server.v1_9_R2.DataWatcher;
 import net.minecraft.server.v1_9_R2.DataWatcherObject;
@@ -25,7 +26,7 @@ import net.minecraft.server.v1_9_R2.PacketPlayOutEntityTeleport;
 import net.minecraft.server.v1_9_R2.PacketPlayOutSpawnEntity;
 import net.minecraft.server.v1_9_R2.PlayerConnection;
 
-public class HologramLine implements IHologramLine {
+public class HologramLine implements IHologramLine{
     private PacketPlayOutSpawnEntity spawnPacket;
     private DataWatcher dataWatcher;
 
