@@ -1,40 +1,44 @@
 package de.epiceric.shopchest.shop.hologram.v1_8_R1;
 
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-import de.epiceric.shopchest.shop.hologram.IHologramLine;
+import de.epiceric.shopchest.shop.hologram.IHologramItem;
 import net.minecraft.server.v1_8_R1.DataWatcher;
 import net.minecraft.server.v1_8_R1.MathHelper;
 import net.minecraft.server.v1_8_R1.Packet;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_8_R1.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_8_R1.PacketPlayOutEntityVelocity;
 import net.minecraft.server.v1_8_R1.PacketPlayOutSpawnEntity;
 
-public class HologramLine implements IHologramLine {
+public class HologramItem implements IHologramItem {
     private PacketPlayOutSpawnEntity spawnPacket;
     private DataWatcher dataWatcher;
 
     private int id;
     private Location location;
-    private String text;
+    private ItemStack itemStack;
 
-    public HologramLine(Location location, String text) {
+    public HologramItem(Location location, ItemStack itemStack) {
         this.id = HologramUtil.getFreeEntityId();
         this.location = location.clone();
-        this.text = text == null ? "" : text;
+        this.itemStack = itemStack.clone();
+        this.itemStack.setAmount(1);
 
         this.spawnPacket = new PacketPlayOutSpawnEntity();
         this.dataWatcher = createDataWatcher();
 
-        HologramUtil.updateSpawnPacket(id, 78, spawnPacket, location);
+        HologramUtil.updateSpawnPacket(id, 2, spawnPacket, location);
     }
 
     @Override
     public void setLocation(Location location) {
         this.location = location.clone();
-        HologramUtil.updateSpawnPacket(id, 78, spawnPacket, location);
+        HologramUtil.updateSpawnPacket(id, 2, spawnPacket, location);
 
         int x = MathHelper.floor(location.getX() * 32d);
         int y = MathHelper.floor(location.getY() * 32d);
@@ -50,19 +54,19 @@ public class HologramLine implements IHologramLine {
     }
 
     @Override
-    public void setText(String text) {
-        this.text = text == null ? "" : text;
+    public void setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack.clone();
+        this.itemStack.setAmount(1);
 
-        dataWatcher.a(2, this.text); // custom name
-        dataWatcher.a(3, (byte) (this.text.isEmpty() ? 0 : 1)); // name visible
+        dataWatcher.a(10, getNmsItemStack()); // item stack
 
         Packet metadataPacket = new PacketPlayOutEntityMetadata(id, dataWatcher, true);
         location.getWorld().getPlayers().forEach(player -> HologramUtil.sendPackets(player, metadataPacket));
     }
 
     @Override
-    public String getText() {
-        return text;
+    public ItemStack getItemStack() {
+        return this.itemStack.clone();
     }
 
     @Override
@@ -71,7 +75,9 @@ public class HologramLine implements IHologramLine {
             return;
         }
 
-        HologramUtil.sendPackets(player, spawnPacket, new PacketPlayOutEntityMetadata(id, dataWatcher, true));
+        Packet metadataPacket = new PacketPlayOutEntityMetadata(id, dataWatcher, true);
+        Packet velocityPacket = new PacketPlayOutEntityVelocity(id, 0, 0, 0);
+        HologramUtil.sendPackets(player, spawnPacket, metadataPacket, velocityPacket);
     }
 
     @Override
@@ -85,11 +91,15 @@ public class HologramLine implements IHologramLine {
 
     private DataWatcher createDataWatcher() {
         DataWatcher dataWatcher = new DataWatcher(null);
-        dataWatcher.a(0, 0b100000); // entity flags
+        dataWatcher.a(0, 0); // entity flags
         dataWatcher.a(1, (short) 300); // air ticks
-        dataWatcher.a(2, text); // custom name
-        dataWatcher.a(3, (byte) (text.isEmpty() ? 0 : 1)); // name visible
-        dataWatcher.a(10, (byte) 0); // armor stand flags
+        dataWatcher.a(2, ""); // custom name
+        dataWatcher.a(3, 0); // name visible
+        dataWatcher.a(10, getNmsItemStack()); // item stack
         return dataWatcher;
+    }
+
+    private net.minecraft.server.v1_8_R1.ItemStack getNmsItemStack() {
+        return CraftItemStack.asNMSCopy(itemStack);
     }
 }

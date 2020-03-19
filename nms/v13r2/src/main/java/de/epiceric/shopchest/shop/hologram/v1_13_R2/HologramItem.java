@@ -3,53 +3,52 @@ package de.epiceric.shopchest.shop.hologram.v1_13_R2;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Optional;
 
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-import de.epiceric.shopchest.shop.hologram.IHologramLine;
+import de.epiceric.shopchest.shop.hologram.IHologramItem;
 import net.minecraft.server.v1_13_R2.DataWatcher;
 import net.minecraft.server.v1_13_R2.DataWatcherObject;
 import net.minecraft.server.v1_13_R2.Entity;
-import net.minecraft.server.v1_13_R2.EntityArmorStand;
-import net.minecraft.server.v1_13_R2.IChatBaseComponent;
-import net.minecraft.server.v1_13_R2.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_13_R2.EntityItem;
 import net.minecraft.server.v1_13_R2.Packet;
 import net.minecraft.server.v1_13_R2.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_13_R2.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_13_R2.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_13_R2.PacketPlayOutEntityVelocity;
 import net.minecraft.server.v1_13_R2.PacketPlayOutSpawnEntity;
 
-public class HologramLine implements IHologramLine {
+public class HologramItem implements IHologramItem {
     private PacketPlayOutSpawnEntity spawnPacket;
     private DataWatcher dataWatcher;
 
-    private DataWatcherObject<Boolean> nameVisible;
-    private DataWatcherObject<Optional<IChatBaseComponent>> customName;
+    private DataWatcherObject<net.minecraft.server.v1_13_R2.ItemStack> item;
 
     private int id;
     private Location location;
-    private String text;
+    private ItemStack itemStack;
 
-    public HologramLine(Location location, String text) {
-        this.id = 5;
+    public HologramItem(Location location, ItemStack itemStack) {
+        this.id = HologramUtil.getFreeEntityId();
         this.location = location.clone();
-        this.text = text;
+        this.itemStack = itemStack.clone();
+        this.itemStack.setAmount(1);
 
         this.spawnPacket = new PacketPlayOutSpawnEntity();
         this.dataWatcher = createDataWatcher();
 
-        HologramUtil.updateSpawnPacket(id, 78, spawnPacket, location);
+        HologramUtil.updateSpawnPacket(id, 2, spawnPacket, location);
     }
 
     @Override
     public void setLocation(Location location) {
         this.location = location.clone();
-        HologramUtil.updateSpawnPacket(id, 78, spawnPacket, location);
+        HologramUtil.updateSpawnPacket(id, 2, spawnPacket, location);
 
-        PacketPlayOutEntityTeleport packet = HologramUtil.createTeleportPacket(id, location, true);
-        location.getWorld().getPlayers().forEach(player -> HologramUtil.sendPackets(player, packet));
+        Packet<?> teleportPacket = HologramUtil.createTeleportPacket(id, location, false);
+        location.getWorld().getPlayers().forEach(player -> HologramUtil.sendPackets(player, teleportPacket));
     }
 
     @Override
@@ -58,19 +57,19 @@ public class HologramLine implements IHologramLine {
     }
 
     @Override
-    public void setText(String text) {
-        this.text = text;
+    public void setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack.clone();
+        this.itemStack.setAmount(1);
 
-        dataWatcher.register(nameVisible, !text.isEmpty());
-        dataWatcher.register(customName, Optional.ofNullable(ChatSerializer.b(text)));
+        dataWatcher.register(item, getNmsItemStack()); // item stack
 
         Packet<?> metadataPacket = new PacketPlayOutEntityMetadata(id, dataWatcher, true);
         location.getWorld().getPlayers().forEach(player -> HologramUtil.sendPackets(player, metadataPacket));
     }
 
     @Override
-    public String getText() {
-        return this.text;
+    public ItemStack getItemStack() {
+        return this.itemStack.clone();
     }
 
     @Override
@@ -79,7 +78,9 @@ public class HologramLine implements IHologramLine {
             return;
         }
 
-        HologramUtil.sendPackets(player, spawnPacket, new PacketPlayOutEntityMetadata(id, dataWatcher, true));
+        Packet<?> metadataPacket = new PacketPlayOutEntityMetadata(id, dataWatcher, true);
+        Packet<?> velocityPacket = new PacketPlayOutEntityVelocity(id, 0, 0, 0);
+        HologramUtil.sendPackets(player, spawnPacket, metadataPacket, velocityPacket);
     }
 
     @Override
@@ -94,28 +95,20 @@ public class HologramLine implements IHologramLine {
     @SuppressWarnings("unchecked")
     private DataWatcher createDataWatcher() {
         try {
-            Field fEntityFlags = Entity.class.getDeclaredField("ac");
             Field fAirTicks = Entity.class.getDeclaredField("aD");
-            Field fNameVisible = Entity.class.getDeclaredField("aF");
-            Field fCustomName = Entity.class.getDeclaredField("aE");
             Field fNoGravity = Entity.class.getDeclaredField("aH");
+            Field fItem = EntityItem.class.getDeclaredField("b");
 
-            setAccessible(fEntityFlags, fAirTicks, fNameVisible, fCustomName, fNoGravity);
+            setAccessible(fAirTicks, fNoGravity, fItem);
 
-            nameVisible = (DataWatcherObject<Boolean>) fNameVisible.get(null);
-            customName = (DataWatcherObject<Optional<IChatBaseComponent>>) fCustomName.get(null);
-            DataWatcherObject<Byte> entityFlags = (DataWatcherObject<Byte>) fEntityFlags.get(null);
+            item = (DataWatcherObject<net.minecraft.server.v1_13_R2.ItemStack>) fItem.get(null);
             DataWatcherObject<Integer> airTicks = (DataWatcherObject<Integer>) fAirTicks.get(null);
             DataWatcherObject<Boolean> noGravity = (DataWatcherObject<Boolean>) fNoGravity.get(null);
-            DataWatcherObject<Byte> armorStandFlags = EntityArmorStand.a;
 
             DataWatcher dataWatcher = new DataWatcher(null);
-            dataWatcher.register(entityFlags, (byte) 0b100000);
             dataWatcher.register(airTicks, 300);
-            dataWatcher.register(nameVisible, !text.isEmpty());
-            dataWatcher.register(customName, Optional.ofNullable(ChatSerializer.b(text))); // TODO: Json
             dataWatcher.register(noGravity, true);
-            dataWatcher.register(armorStandFlags, (byte) 0b10000);
+            dataWatcher.register(item, getNmsItemStack());
 
             return dataWatcher;
         } catch (ReflectiveOperationException e) {
@@ -123,6 +116,10 @@ public class HologramLine implements IHologramLine {
         }
 
         return null;
+    }
+
+    private net.minecraft.server.v1_13_R2.ItemStack getNmsItemStack() {
+        return CraftItemStack.asNMSCopy(itemStack);
     }
 
     private void setAccessible(AccessibleObject... args) {
