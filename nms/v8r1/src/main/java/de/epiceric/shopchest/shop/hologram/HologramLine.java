@@ -50,6 +50,11 @@ public class HologramLine implements IHologramLine {
     }
 
     @Override
+    public Location getLocation() {
+        return this.location.clone();
+    }
+
+    @Override
     public void setText(String text) {
         this.text = text == null ? "" : text;
 
@@ -58,6 +63,11 @@ public class HologramLine implements IHologramLine {
 
         Packet metadataPacket = new PacketPlayOutEntityMetadata(id, dataWatcher, true);
         location.getWorld().getPlayers().forEach(player -> sendPackets(player, metadataPacket));
+    }
+
+    @Override
+    public String getText() {
+        return text;
     }
 
     @Override
@@ -76,11 +86,6 @@ public class HologramLine implements IHologramLine {
         }
 
         sendPackets(player, new PacketPlayOutEntityDestroy(id));
-    }
-
-    @Override
-    public void destroy() {
-         location.getWorld().getPlayers().forEach(player -> hidePlayer(player));
     }
 
     private void sendPackets(Player player, Packet... packets) {
