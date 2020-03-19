@@ -10,7 +10,7 @@
 
     <name>ShopChest</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
-    <description>Let your players create their own nice-looking shops to sell their stuff to other players!</description>
+    <description>A Bukkit plugin letting players create custom chest shops.</description>
 
     <parent>
         <groupId>de.epiceric.shopchest</groupId>
@@ -97,6 +97,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>bentobox</artifactId>
+            <version>1.11.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.palmergames</groupId>
             <artifactId>Towny</artifactId>
             <version>0.93.1.0</version>
@@ -130,7 +136,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.5</version>
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -141,12 +147,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.26</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.8</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
