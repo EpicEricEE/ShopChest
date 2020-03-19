@@ -175,11 +175,11 @@ message.buy-price-too-low=&cThe buy price must be higher than %MIN-PRICE%.
 # Usable Placeholders: %MIN-PRICE%
 message.sell-price-too-low=&cThe sell price must be higher than %MIN-PRICE%.
 
-# Set the message when the entered buy price is below the maximum price.
+# Set the message when the entered buy price is above the maximum price.
 # Usable Placeholders: %MAX-PRICE%
 message.buy-price-too-high=&cThe buy price must be lower than %MAX-PRICE%.
 
-# Set the message when the entered sell price is below the maximum price.
+# Set the message when the entered sell price is above the maximum price.
 # Usable Placeholders: %MAX-PRICE%
 message.sell-price-too-high=&cThe sell price must be lower than %MAX-PRICE%.
 
