@@ -14,6 +14,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -69,6 +70,7 @@ public class ShopChestImpl extends ShopChest {
             return;
         }
 
+        loadMetrics();
         registerCommand();
         registerEvents();
         loadDatabase();
@@ -116,6 +118,13 @@ public class ShopChestImpl extends ShopChest {
         }
         this.economy = rsp.getProvider();
         return this.economy != null;
+    }
+
+    private void loadMetrics() {
+        Metrics metrics = new Metrics(this, 1726);
+        metrics.addCustomChart(new Metrics.SimplePie("database_type", () -> Config.DATABASE_TYPE.get().toString()));
+        metrics.addCustomChart(new Metrics.SimplePie("creative_setting", () ->
+                Config.FEATURES_CREATIVE_ITEM_SELECTION.get() ? "Enabled" : "Disabled"));
     }
 
     private void registerEvents() {
