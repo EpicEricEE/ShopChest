@@ -123,6 +123,7 @@ public class EditSubCommand extends SubCommand {
     public List<String> onTabComplete(CommandSender sender, String... args) {
         String[] argsWithoutLast = Arrays.copyOf(args, Math.max(0, args.length - 1));
 
+        boolean isItemSet = !getNamedArgs(ITEM_ARGS, argsWithoutLast).isEmpty();
         boolean isAmountSet = !getNamedArgs(AMOUNT_ARGS, argsWithoutLast).isEmpty();
         boolean isBuyPriceSet = !getNamedArgs(BUY_PRICE_ARGS, argsWithoutLast).isEmpty();
         boolean isSellPriceSet = !getNamedArgs(SELL_PRICE_ARGS, argsWithoutLast).isEmpty();
@@ -130,6 +131,10 @@ public class EditSubCommand extends SubCommand {
         String lastArg = args[args.length - 1].toLowerCase(Locale.US);
 
         List<String> ret = new ArrayList<>();
+
+        if (!isItemSet) {
+            ITEM_ARGS.stream().filter(arg -> arg.startsWith(lastArg)).findFirst().ifPresent(ret::add);
+        }
 
         if (!isAmountSet) {
             AMOUNT_ARGS.stream().filter(arg -> arg.startsWith(lastArg)).findFirst().ifPresent(ret::add);
