@@ -64,7 +64,7 @@ public class HologramUtil {
         double yLift = entityType.equals(EntityTypes.ARMOR_STAND) ? 1.975 : 0;
 
         PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
-        serializer.b(id); // id
+        serializer.d(id); // id
         serializer.a(UUID.randomUUID()); // uuid
         serializer.d(IRegistry.ENTITY_TYPE.a(entityType)); // type
         serializer.writeDouble(location.getX()); // x
@@ -72,7 +72,10 @@ public class HologramUtil {
         serializer.writeDouble(location.getZ()); // z
         serializer.writeByte(0); // pitch
         serializer.writeByte(0); // yaw
-        serializer.writeInt(0); // has motion (?)
+        serializer.writeInt(0); // has motion
+        serializer.writeShort(0); // mot x
+        serializer.writeShort(0); // mot y
+        serializer.writeShort(0); // mot z
 
         try {
             spawnPacket.a(serializer);

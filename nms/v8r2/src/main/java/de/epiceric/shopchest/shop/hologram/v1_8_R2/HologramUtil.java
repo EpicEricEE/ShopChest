@@ -68,7 +68,7 @@ public class HologramUtil {
         serializer.writeInt(MathHelper.floor(location.getZ() * 32d)); // z
         serializer.writeByte(0); // pitch
         serializer.writeByte(0); // yaw
-        serializer.writeInt(0); // has motion (?)
+        serializer.writeInt(0); // has motion
 
         try {
             spawnPacket.a(serializer);

@@ -70,7 +70,10 @@ public class HologramUtil {
         serializer.writeDouble(location.getZ()); // z
         serializer.writeByte(0); // pitch
         serializer.writeByte(0); // yaw
-        serializer.writeInt(0); // has motion (?)
+        serializer.writeInt(0); // has motion
+        serializer.writeShort(0); // mot x
+        serializer.writeShort(0); // mot y
+        serializer.writeShort(0); // mot z
 
         try {
             spawnPacket.a(serializer);
