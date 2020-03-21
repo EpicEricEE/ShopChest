@@ -32,7 +32,7 @@ public class HologramLine implements IHologramLine {
     private String text;
 
     public HologramLine(Location location, String text) {
-        this.id = 5;
+        this.id = HologramUtil.getFreeEntityId();
         this.location = location.clone();
         this.text = text;
 
