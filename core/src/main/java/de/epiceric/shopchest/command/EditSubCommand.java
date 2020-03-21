@@ -132,10 +132,6 @@ public class EditSubCommand extends SubCommand {
 
         List<String> ret = new ArrayList<>();
 
-        if (!isItemSet) {
-            ITEM_ARGS.stream().filter(arg -> arg.startsWith(lastArg)).findFirst().ifPresent(ret::add);
-        }
-
         if (!isAmountSet) {
             AMOUNT_ARGS.stream().filter(arg -> arg.startsWith(lastArg)).findFirst().ifPresent(ret::add);
         }
@@ -150,6 +146,10 @@ public class EditSubCommand extends SubCommand {
 
         // Add equals signs
         ret.replaceAll(arg -> arg + "=");
+
+        if (!isItemSet) {
+            ITEM_ARGS.stream().filter(arg -> arg.startsWith(lastArg)).findFirst().ifPresent(ret::add);
+        }
 
         return ret;
     }
