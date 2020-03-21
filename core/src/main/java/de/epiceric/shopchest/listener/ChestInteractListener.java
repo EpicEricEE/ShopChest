@@ -6,6 +6,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -39,6 +40,62 @@ public class ChestInteractListener implements Listener {
         this.plugin = plugin;
     }
 
+    private void handleShopUse(Shop shop, ShopPlayer player, Type type, Cancellable e) {
+        if (player.ownsShop(shop)) {
+            return; // vendors cannot use their own shops
+        }
+        
+        e.setCancelled(true);
+
+        if (player.getBukkitPlayer().getGameMode() == GameMode.CREATIVE) {
+            player.sendMessage("§cYou cannot use a shop in creative mode."); // TODO: i18n
+            return;
+        }
+
+        if (Config.CORE_INVERT_MOUSE_BUTTONS.get()) {
+            type = type == Type.BUY ? Type.SELL : Type.BUY;
+        }
+
+        double price = type == Type.BUY ? shop.getBuyPrice() : shop.getSellPrice();
+        if (price <= 0) {
+            String typeStr = type == Type.BUY ? "buy" : "sell";
+            player.sendMessage("§cYou cannot {0} at this shop.", typeStr); // TODO: i18n
+            return;
+        }
+
+        plugin.getServer().getPluginManager()
+                .callEvent(new ShopBuySellEvent(player, shop, type, shop.getProduct().getAmount(), price));
+    }
+
+    private void handleFlags(ShopPlayer player, Shop shop, Cancellable e) {
+        if (!player.getFlag().isPresent()) {
+            return;
+        }
+
+        Flag flag = player.getFlag().get();
+        player.removeFlag();
+
+        if (flag instanceof InfoFlag) {
+            plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shop));
+            e.setCancelled(true);
+        } else if (flag instanceof RemoveFlag) {
+            plugin.getServer().getPluginManager().callEvent(new ShopRemoveEvent(player, shop));
+            e.setCancelled(true);
+        } else if (flag instanceof OpenFlag) {
+            ShopOpenEvent event = new ShopOpenEvent(player, shop);
+            plugin.getServer().getPluginManager().callEvent(event);
+            e.setCancelled(event.isCancelled());
+        } else if (flag instanceof EditFlag) {
+            EditFlag editFlag = (EditFlag) flag;
+            plugin.getServer().getPluginManager().callEvent(new ShopEditEvent(player, shop, editFlag.getItemStack(),
+                    editFlag.getAmount(), editFlag.getBuyPrice(), editFlag.getSellPrice()));
+            e.setCancelled(true);
+        } else if (flag instanceof CreateFlag) {
+            e.setCancelled(true);
+            player.sendMessage("§cThis chest already is a shop."); // TODO: i18n
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent e) {
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK) {
@@ -60,56 +117,25 @@ public class ChestInteractListener implements Listener {
         if (shopOpt.isPresent()) {
             Shop shop = shopOpt.get();
             if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                
                 if (player.getFlag().isPresent()) {
-                    Flag flag = player.getFlag().get();
-                    if (flag instanceof InfoFlag) {
-                        plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shop));
-                        e.setCancelled(true);
-                    } else if (flag instanceof RemoveFlag) {
-                        plugin.getServer().getPluginManager().callEvent(new ShopRemoveEvent(player, shop));
-                        e.setCancelled(true);
-                    } else if (flag instanceof OpenFlag) {
-                        ShopOpenEvent event = new ShopOpenEvent(player, shop);
-                        plugin.getServer().getPluginManager().callEvent(event);
-                        e.setCancelled(event.isCancelled());
-                    } else if (flag instanceof EditFlag) {
-                        EditFlag editFlag = (EditFlag) flag;
-                        plugin.getServer().getPluginManager().callEvent(new ShopEditEvent(player, shop, editFlag.getItemStack(),
-                                editFlag.getAmount(), editFlag.getBuyPrice(), editFlag.getSellPrice()));
-                        e.setCancelled(true);
-                    } else if (flag instanceof CreateFlag) {
-                        e.setCancelled(true);
-                        player.sendMessage("§cThis chest already is a shop."); // TODO: i18n
-                    }
-                    player.removeFlag();
+                    // handle flags
+                    handleFlags(player, shop, e);
                 } else if (e.hasItem() && e.getItem().getType() == Config.CORE_SHOP_INFO_ITEM.get()) {
+                    // handle shop interaction item
                     plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shopOpt.get()));
                     e.setCancelled(true);
                     return;
+                } else {
+                    // handle buy
+                    handleShopUse(shop, player, Type.BUY, e);
                 }
             } else {
-                if (player.ownsShop(shop)) {
-                    return; // vendors cannot buy at their own shops
-                }
-                e.setCancelled(true);
-                if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
-                    player.sendMessage("§cYou cannot use a shop in creative mode."); // TODO: i18n
-                    return;
-                }
-                Type type = e.getAction() == Action.RIGHT_CLICK_BLOCK ? Type.BUY : Type.SELL;
-                if (Config.CORE_INVERT_MOUSE_BUTTONS.get()) {
-                    type = type == Type.BUY ? Type.SELL : Type.BUY;
-                }
-                double price = type == Type.BUY ? shop.getBuyPrice() : shop.getSellPrice();
-                if (price <= 0) {
-                    String typeStr = type == Type.BUY ? "buy" : "sell";
-                    player.sendMessage("§cYou cannot {0} at this shop.", typeStr); // TODO: i18n
-                    return;
-                }
-                plugin.getServer().getPluginManager()
-                        .callEvent(new ShopBuySellEvent(player, shop, type, shop.getProduct().getAmount(), price));
+                // handle sell
+                handleShopUse(shop, player, Type.SELL, e);
             }
         } else {
+            // handle create
             if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 player.getFlag().filter(flag -> flag instanceof CreateFlag).ifPresent(f -> {
                     e.setCancelled(true);
@@ -119,10 +145,8 @@ public class ChestInteractListener implements Listener {
                     plugin.getServer().getPluginManager().callEvent(new ShopCreateEvent(player,
                             new ShopImpl(vendor, flag.getProduct(), location, flag.getBuyPrice(), flag.getSellPrice()),
                             Config.SHOP_CREATION_PRICE.get()));
-                });
-                
+                });   
             }
         }
     }
-
 }
