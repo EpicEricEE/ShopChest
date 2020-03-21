@@ -28,12 +28,12 @@ public class Config {
     public static final Property<MaterialDoubleMap> SHOP_CREATION_MINIMUM_PRICES = new Property<>(MaterialDoubleMap.class, "shop_creation", "minimum_prices", new MaterialDoubleMap());
     public static final Property<MaterialDoubleMap> SHOP_CREATION_MAXIMUM_PRICES = new Property<>(MaterialDoubleMap.class, "shop_creation", "maximum_prices", new MaterialDoubleMap());
 
-    public static final Property<Boolean> FEATURES_CONFIRM_SHOPPING = new Property<>(Boolean.class, "feature", "confirm_shopping", false);
-    public static final Property<Boolean> FEATURES_CREATIVE_ITEM_SELECTION = new Property<>(Boolean.class, "feature", "creative_item_selection", true);
-    public static final Property<Boolean> FEATURES_REFUND_SHOP_CREATION = new Property<>(Boolean.class, "feature", "refund_shop_creation", false);
-    public static final Property<Boolean> FEATURES_VENDOR_MESSAGES = new Property<>(Boolean.class, "feature", "vendor_messages", true);
-    public static final Property<Boolean> FEATURES_VENDOR_MONEY_PROTECTION = new Property<>(Boolean.class, "feature", "vendor_money_protection", true);
-    public static final Property<Boolean> FEATURES_AUTO_ADJUST_ITEM_AMOUNT = new Property<>(Boolean.class, "feature", "auto_adjust_item_amount", false);
+    public static final Property<Boolean> FEATURES_CONFIRM_SHOPPING = new Property<>(Boolean.class, "features", "confirm_shopping", false);
+    public static final Property<Boolean> FEATURES_CREATIVE_ITEM_SELECTION = new Property<>(Boolean.class, "features", "creative_item_selection", true);
+    public static final Property<Boolean> FEATURES_REFUND_SHOP_CREATION = new Property<>(Boolean.class, "features", "refund_shop_creation", false);
+    public static final Property<Boolean> FEATURES_VENDOR_MESSAGES = new Property<>(Boolean.class, "features", "vendor_messages", true);
+    public static final Property<Boolean> FEATURES_VENDOR_MONEY_PROTECTION = new Property<>(Boolean.class, "features", "vendor_money_protection", true);
+    public static final Property<Boolean> FEATURES_AUTO_ADJUST_ITEM_AMOUNT = new Property<>(Boolean.class, "features", "auto_adjust_item_amount", false);
 
     public static final Property<Double> HOLOGRAM_MAXIMUM_DISTANCE = new Property<>(Double.class, "hologram", "maximum_distance", 2.5);
     public static final Property<Double> HOLOGRAM_ADDITIONAL_LIFT = new Property<>(Double.class, "hologram", "additional_lift", 0d);
