@@ -17,11 +17,14 @@ import de.epiceric.shopchest.api.ShopChest;
 import de.epiceric.shopchest.api.config.Config;
 import de.epiceric.shopchest.api.event.ShopBuySellEvent;
 import de.epiceric.shopchest.api.event.ShopCreateEvent;
+import de.epiceric.shopchest.api.event.ShopEditEvent;
 import de.epiceric.shopchest.api.event.ShopInfoEvent;
 import de.epiceric.shopchest.api.event.ShopOpenEvent;
 import de.epiceric.shopchest.api.event.ShopRemoveEvent;
 import de.epiceric.shopchest.api.event.ShopBuySellEvent.Type;
 import de.epiceric.shopchest.api.flag.CreateFlag;
+import de.epiceric.shopchest.api.flag.EditFlag;
+import de.epiceric.shopchest.api.flag.Flag;
 import de.epiceric.shopchest.api.flag.InfoFlag;
 import de.epiceric.shopchest.api.flag.OpenFlag;
 import de.epiceric.shopchest.api.flag.RemoveFlag;
@@ -57,7 +60,8 @@ public class ChestInteractListener implements Listener {
         if (shopOpt.isPresent()) {
             Shop shop = shopOpt.get();
             if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                player.getFlag().ifPresent(flag -> {
+                if (player.getFlag().isPresent()) {
+                    Flag flag = player.getFlag().get();
                     if (flag instanceof InfoFlag) {
                         plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shop));
                         e.setCancelled(true);
@@ -68,15 +72,21 @@ public class ChestInteractListener implements Listener {
                         ShopOpenEvent event = new ShopOpenEvent(player, shop);
                         plugin.getServer().getPluginManager().callEvent(event);
                         e.setCancelled(event.isCancelled());
+                    } else if (flag instanceof EditFlag) {
+                        EditFlag editFlag = (EditFlag) flag;
+                        plugin.getServer().getPluginManager().callEvent(new ShopEditEvent(player, shop, editFlag.getItemStack(),
+                                editFlag.getAmount(), editFlag.getBuyPrice(), editFlag.getSellPrice()));
+                        e.setCancelled(true);
                     } else if (flag instanceof CreateFlag) {
                         e.setCancelled(true);
                         player.sendMessage("§cThis chest already is a shop."); // TODO: i18n
                     }
                     player.removeFlag();
-                });
-            } else if (e.hasItem() && e.getItem().getType() == Config.CORE_SHOP_INFO_ITEM.get()) {
-                plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shopOpt.get()));
-                e.setCancelled(true);
+                } else if (e.hasItem() && e.getItem().getType() == Config.CORE_SHOP_INFO_ITEM.get()) {
+                    plugin.getServer().getPluginManager().callEvent(new ShopInfoEvent(player, shopOpt.get()));
+                    e.setCancelled(true);
+                    return;
+                }
             } else {
                 if (player.ownsShop(shop)) {
                     return; // vendors cannot buy at their own shops
