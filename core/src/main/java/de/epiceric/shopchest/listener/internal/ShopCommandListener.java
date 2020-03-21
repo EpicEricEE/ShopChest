@@ -133,7 +133,7 @@ public class ShopCommandListener implements Listener {
 
             // Check if buy price is higher than sell price
             boolean buyHigherSell = Config.FEATURES_VENDOR_MONEY_PROTECTION.get();
-            if (buyHigherSell && e.getBuyPrice() < e.getSellPrice()) {
+            if (e.getBuyPrice() > 0 && buyHigherSell && e.getBuyPrice() < e.getSellPrice()) {
                 e.setCancelled(true);
                 player.sendMessage("§cThe buy price must at least be as high as the sell price to prevent players from stealing your money."); // TODO: i18n
                 return;
