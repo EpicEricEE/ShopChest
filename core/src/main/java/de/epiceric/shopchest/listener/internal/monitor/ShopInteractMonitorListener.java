@@ -85,7 +85,7 @@ public class ShopInteractMonitorListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onShopRemove(ShopRemoveEvent e) {
-        ((ShopChestImpl) plugin).getDatabase().removeShop(e.getShop())
+        plugin.getShopManager().removeShop(e.getShop())
                 .thenRun(() -> e.getPlayer().sendMessage("§aShop has been removed.")) // TODO: i18n
                 .exceptionally(ex -> {
                     Logger.severe("Failed to remove shop");
