@@ -69,6 +69,14 @@ public abstract class Database {
 
     abstract String getQueryGetTable();
 
+    private <T> void completeSync(CompletableFuture<T> future, T value) {
+        plugin.getServer().getScheduler().runTask(plugin, () -> future.complete(value));
+    }
+
+    private void completeExceptionallySync(CompletableFuture<?> future, Throwable throwable) {
+        plugin.getServer().getScheduler().runTask(plugin, () -> future.completeExceptionally(throwable));
+    }
+
     private ItemStack decodeItemStack(String encoded) {
         YamlConfiguration config = new YamlConfiguration();
         try {
@@ -282,14 +290,14 @@ public abstract class Database {
             try {
                 dataSource = getDataSource();
             } catch (Exception e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 return;
             }
 
             if (dataSource == null) {
                 Exception e = new IllegalStateException("Data source is null");
                 Logger.severe("Failed to get data source: {0}", e.getMessage());
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 return;
             }
 
@@ -330,13 +338,13 @@ public abstract class Database {
                     if (rs.next()) {
                         int count = rs.getInt(1);
                         initialized = true;
-                        result.complete(count);
+                        completeSync(result, count);
                     } else {
                         throw new SQLException("Count result set has no entries");
                     }
                 }
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to initialize or connect to database");
                 Logger.severe(e);
             }
@@ -359,9 +367,9 @@ public abstract class Database {
                     PreparedStatement ps = con.prepareStatement("DELETE FROM " + tableShops + " WHERE id = ?")) {
                 ps.setInt(1, shop.getId());
                 ps.executeUpdate();
-                result.complete(null);
+                completeSync(result, null);
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to remove shop from database");
                 Logger.severe(e);
             }
@@ -389,9 +397,9 @@ public abstract class Database {
                     shopAmounts.put(uuid, rs.getInt("count"));
                 }
 
-                result.complete(shopAmounts);
+                completeSync(result, shopAmounts);
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to get shop amounts from database");
                 Logger.severe(e);
             }
@@ -496,7 +504,7 @@ public abstract class Database {
                         shops.add(new ShopImpl(id, vendor, product, location, buyPrice, sellPrice));
                     }
                 } catch (SQLException e) {
-                    result.completeExceptionally(e);
+                    completeExceptionallySync(result, e);
                     Logger.severe("Failed to get shops from database");
                     Logger.severe(e);
 
@@ -504,7 +512,7 @@ public abstract class Database {
                 }
             }
 
-            result.complete(shops);
+            completeSync(result, shops);
         });
 
         return result;
@@ -554,9 +562,9 @@ public abstract class Database {
                     ((ShopImpl) shop).setId(shopId);
                 }
 
-                result.complete(shop.getId());
+                completeSync(result, shop.getId());
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to add shop to database");
                 Logger.severe(e);
             }
@@ -591,9 +599,9 @@ public abstract class Database {
                 ps.setString(11, shop.isAdminShop() ? "ADMIN" : "NORMAL");
                 ps.executeUpdate();
 
-                result.complete(null);
+                completeSync(result, null);
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to update shop in database");
                 Logger.severe(e);
             }
@@ -647,9 +655,9 @@ public abstract class Database {
                 ps.setString(17, type.toString());
                 ps.executeUpdate();
 
-                result.complete(null);
+                completeSync(result, null);
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to log economy transaction to database");
                 Logger.severe(e);
             }
@@ -682,9 +690,9 @@ public abstract class Database {
                 s.executeUpdate(queryCleanUpLog);
                 s2.executeUpdate(queryCleanUpPlayers);
                 Logger.info("Cleaned up economy log entries older than {0} days", cleanupDays);
-                result.complete(null);
+                completeSync(result, null);
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to clean up economy log");
                 Logger.severe(e);
             }
@@ -725,9 +733,9 @@ public abstract class Database {
                     }
                 }
 
-                result.complete(revenue);
+                completeSync(result, revenue);
             } catch (SQLException e) {
-                result.complete(null);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to get revenue of {0} from database", player.getName());
                 Logger.severe(e);
             }
@@ -751,9 +759,9 @@ public abstract class Database {
                 ps.setString(1, player.getUniqueId().toString());
                 ps.setLong(2, System.currentTimeMillis());
                 ps.executeUpdate();
-                result.complete(null);
+                completeSync(result, null);
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to log last logout to database");
                 Logger.severe(e);
             }
@@ -776,9 +784,9 @@ public abstract class Database {
                     PreparedStatement ps = con.prepareStatement("SELECT * FROM " + tableLogouts + " WHERE player = ?")) {
                 ps.setString(1, player.getUniqueId().toString());
                 ResultSet rs = ps.executeQuery();
-                result.complete(rs.next() ? rs.getLong("time") : -1L);
+                completeSync(result, rs.next() ? rs.getLong("time") : -1L);
             } catch (SQLException e) {
-                result.completeExceptionally(e);
+                completeExceptionallySync(result, e);
                 Logger.severe("Failed to get last logout from database");
                 Logger.severe(e);
             }
