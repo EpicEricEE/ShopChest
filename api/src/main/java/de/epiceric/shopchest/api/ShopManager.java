@@ -3,7 +3,6 @@ package de.epiceric.shopchest.api;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -80,7 +79,7 @@ public interface ShopManager {
      * @param sellPrice     the price a player can sell the product for.
      * @return a completable future returning the new shop
      * @since 1.13
-     * @see ShopManager#addAdminShop(ShopProduct, Location, double, double, Consumer, Consumer)
+     * @see ShopManager#addAdminShop(ShopProduct, Location, double, double)
      */
     CompletableFuture<Shop> addShop(OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice);
 
@@ -98,7 +97,7 @@ public interface ShopManager {
      * @param sellPrice     the price a player can sell the product for.
      * @return a completable future returning the new shop
      * @since 1.13
-     * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double, Consumer, Consumer)
+     * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double)
      */
     CompletableFuture<Shop> addAdminShop(ShopProduct product, Location location, double buyPrice, double sellPrice);
 

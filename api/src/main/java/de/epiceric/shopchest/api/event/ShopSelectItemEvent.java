@@ -140,7 +140,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * Gets either the shop type of the shop being created, or whether the shop
      * is being edited
      * 
-     * @return the shop type or {@link Type#EDIT}
+     * @return the shop type or {@link SelectFlag.Type#EDIT}
      */
     public SelectFlag.Type getType() {
         return type;

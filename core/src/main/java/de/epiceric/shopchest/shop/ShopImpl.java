@@ -145,7 +145,7 @@ public class ShopImpl implements Shop {
      * To update the shop in the database, it is necessary to update the shop in the database.
      * 
      * @param product the product
-     * @see Database#updateShop(Shop, Runnable, java.util.function.Consumer)
+     * @see Database#updateShop(Shop)
      */
     public void setProduct(ShopProduct product) {
         this.product = product;
@@ -189,7 +189,7 @@ public class ShopImpl implements Shop {
      * 
      * @param buyPrice the buy price
      * @throws IllegalStateException when a player can neither buy nor sell from this shop
-     * @see Database#updateShop(Shop, Runnable, java.util.function.Consumer)
+     * @see Database#updateShop(Shop)
      * @since 1.13
      */
     public void setBuyPrice(double buyPrice) {
@@ -213,7 +213,7 @@ public class ShopImpl implements Shop {
      * 
      * @param sellPrice the sell price
      * @throws IllegalStateException when a player can neither buy nor sell from this shop
-     * @see Database#updateShop(Shop, Runnable, java.util.function.Consumer)
+     * @see Database#updateShop(Shop)
      * @since 1.13
      */
     public void setSellPrice(double sellPrice) {

@@ -799,6 +799,8 @@ public abstract class Database {
 
     /**
      * Gets whether the database has been fully initialized
+     * 
+     * @return whether the database is initialized
      */
     public boolean isInitialized() {
         return initialized;

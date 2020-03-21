@@ -23,6 +23,8 @@ public final class Counter {
 
     /**
      * Increments the counter by one and returns itself
+     * 
+     * @return this counter
      */
     public final Counter increment() {
         this.value++;
@@ -31,6 +33,8 @@ public final class Counter {
 
     /**
      * Decrements the counter by one if its value is greater than zero and returns itself
+     * 
+     * @return this counter
      */
     public final Counter decrement() {
         this.value = Math.max(0, this.value - 1);
@@ -39,7 +43,9 @@ public final class Counter {
 
     /**
      * Sets the counter's value to the given value or zero if the given value is negative
+     * 
      * @param value the value to set the counter to
+     * @return this counter
      */
     public final Counter set(int value) {
         this.value = Math.max(0, value);
@@ -48,6 +54,8 @@ public final class Counter {
 
     /**
      * Returns the current value
+     * 
+     * @return the current value
      */
     public final int get() {
         return value;

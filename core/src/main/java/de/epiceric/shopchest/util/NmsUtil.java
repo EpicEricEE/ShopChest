@@ -38,6 +38,8 @@ public class NmsUtil {
      * Gets the major version of the server
      * <p>
      * (e.g. 9 for v1_9_R2, 10 for v1_10_R1)
+     * 
+     * @return the major version
      */
     public static int getMajorVersion() {
         return Integer.parseInt(getServerVersion().split("_")[1]);

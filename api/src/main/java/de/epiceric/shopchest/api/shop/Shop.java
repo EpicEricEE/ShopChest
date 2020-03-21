@@ -1,7 +1,6 @@
 package de.epiceric.shopchest.api.shop;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -15,8 +14,8 @@ import de.epiceric.shopchest.api.exceptions.ChestNotFoundException;
  * Represents a shop
  * 
  * @since 1.13
- * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double, Consumer, Consumer)
- * @see ShopManager#addAdminShop(ShopProduct, Location, double, double, Consumer, Consumer)
+ * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double)
+ * @see ShopManager#addAdminShop(ShopProduct, Location, double, double)
  */
 public interface Shop {
 
