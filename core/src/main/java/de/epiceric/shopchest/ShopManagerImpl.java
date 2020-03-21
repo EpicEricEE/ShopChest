@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,9 +69,11 @@ public class ShopManagerImpl implements ShopManager {
      * Destoys all shops and clears the cache
      */
     public void clearShops() {
-        shopsInWorld.values().stream().flatMap(map -> map.values().stream())
-                .forEach(shop -> ((ShopImpl) shop).destroy());
-        shopsInWorld.clear();
+        synchronized (shopsInWorld) {
+            shopsInWorld.values().stream().flatMap(map -> map.values().stream())
+                    .forEach(shop -> ((ShopImpl) shop).destroy());
+            shopsInWorld.clear();
+        }
     }
 
     /**
@@ -79,56 +81,52 @@ public class ShopManagerImpl implements ShopManager {
      * <p>
      * This will fire a {@link ShopLoadedEvent}.
      * 
-     * @param chunks a collection
+     * @param chunks the chunks whose shops will be loaded
+     * @return a completable future returning the loaded shops
      */
-    public void loadShops(Chunk[] chunks, Consumer<Collection<Shop>> callback, Consumer<Throwable> errorCallback) {
-        plugin.getDatabase().connect(
-            amount -> {
-                plugin.getDatabase().getShops(chunks,
-                    shops -> {
-                        for (Iterator<Shop> it = shops.iterator(); it.hasNext();) {
-                            Shop shop = it.next();
+    public CompletableFuture<Collection<Shop>> loadShops(Chunk[] chunks) {
+        return plugin.getDatabase().getShops(chunks).thenApply(shops -> {
+            for (Iterator<Shop> it = shops.iterator(); it.hasNext();) {
+                Shop shop = it.next();
 
-                            if (getShop(shop.getLocation()).isPresent()) {
-                                // A shop is already loaded at the location, which should be the same.
-                                it.remove();
-                                continue;
-                            }
+                if (getShop(shop.getLocation()).isPresent()) {
+                    // A shop is already loaded at the location, which should be the same.
+                    it.remove();
+                    continue;
+                }
 
-                            String worldName = shop.getWorld().getName();
-                            if (!shopsInWorld.containsKey(worldName)) {
-                                shopsInWorld.put(worldName, new HashMap<>());
-                            }
+                synchronized (shopsInWorld) {
+                    String worldName = shop.getWorld().getName();
+                    if (!shopsInWorld.containsKey(worldName)) {
+                        shopsInWorld.put(worldName, new HashMap<>());
+                    }
 
-                            ((ShopImpl) shop).create();
+                    ((ShopImpl) shop).create();
 
-                            shopsInWorld.get(worldName).put(toBlockLocation(shop.getLocation()), shop);
-                            ((ShopImpl) shop).getOtherLocation().ifPresent(otherLoc ->
-                                    shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop));
-                        }
-                        
-                        callback.accept(Collections.unmodifiableCollection(shops));
-                        plugin.getServer().getPluginManager().callEvent(new ShopLoadedEvent(shops));
-                    },
-                    errorCallback
-                );
-            },
-            errorCallback
-        );
+                    shopsInWorld.get(worldName).put(toBlockLocation(shop.getLocation()), shop);
+                    ((ShopImpl) shop).getOtherLocation().ifPresent(otherLoc ->
+                            shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop));
+                }
+            }
+
+            Collection<Shop> unmodifiableShops = Collections.unmodifiableCollection(shops);
+            plugin.getServer().getPluginManager().callEvent(new ShopLoadedEvent(unmodifiableShops));
+            return unmodifiableShops;
+        });
     }
 
     /**
      * Loads all players' shop amounts from the database
+     * 
+     * @return a completable future returning nothing
      */
-    public void loadShopAmounts(Consumer<Map<UUID, Integer>> callback, Consumer<Throwable> errorCallback) {
-        plugin.getDatabase().getShopAmounts(
-            shopAmounts -> {
+    public CompletableFuture<Void> loadShopAmounts() {
+        return plugin.getDatabase().getShopAmounts().thenAccept(shopAmounts -> {
+            synchronized (shopAmounts) {
                 this.shopAmounts.clear();
                 shopAmounts.forEach((uuid, amount) -> this.shopAmounts.put(uuid, new Counter(amount)));
-                callback.accept(shopAmounts);
-            },
-            errorCallback
-        );
+            }
+        });
     }
 
     /**
@@ -139,15 +137,19 @@ public class ShopManagerImpl implements ShopManager {
      * @see ShopPlayer#getShopAmount()
      */
     public int getShopAmount(OfflinePlayer player) {
-        return shopAmounts.getOrDefault(player.getUniqueId(), new Counter()).get();
+        synchronized (shopAmounts) {
+            return shopAmounts.getOrDefault(player.getUniqueId(), new Counter()).get();
+        }
     }
 
     /* API Implementation */
 
     @Override
     public Collection<Shop> getShops() {
-        return shopsInWorld.values().stream().flatMap((map) -> map.values().stream()).distinct()
-                .collect(Collectors.toList());
+        synchronized (shopsInWorld) {
+            return shopsInWorld.values().stream().flatMap((map) -> map.values().stream()).distinct()
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
@@ -161,8 +163,10 @@ public class ShopManagerImpl implements ShopManager {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(shopsInWorld.get(location.getWorld().getName()))
-                .map(map -> map.get(toBlockLocation(location)));
+        synchronized (shopsInWorld) {
+            return Optional.ofNullable(shopsInWorld.get(location.getWorld().getName()))
+                    .map(map -> map.get(toBlockLocation(location)));
+        }
     }
 
     @Override
@@ -174,72 +178,79 @@ public class ShopManagerImpl implements ShopManager {
 
     @Override
     public Collection<Shop> getShops(World world) {
-        if (!shopsInWorld.containsKey(world.getName())) {
-            return new ArrayList<>();
-        }
+        synchronized (shopsInWorld) {
+            if (!shopsInWorld.containsKey(world.getName())) {
+                return new ArrayList<>();
+            }
 
-        return shopsInWorld.get(world.getName()).values().stream().distinct().collect(Collectors.toList());
+            return shopsInWorld.get(world.getName()).values().stream().distinct().collect(Collectors.toList());
+        }
     }
 
     @Override
-    public void addShop(OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice, Consumer<Shop> callback, Consumer<Throwable> errorCallback) {
-        Shop shop = new ShopImpl(vendor, product, location, buyPrice, sellPrice); 
-        plugin.getDatabase().addShop(shop,
-            id -> {
-                ((ShopImpl) shop).create();
+    public CompletableFuture<Shop> addShop(OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice) {
+        ShopImpl shop = new ShopImpl(vendor, product, location, buyPrice, sellPrice); 
+        return plugin.getDatabase().addShop(shop).thenApply(id -> {
+            shop.create();
+            shop.setId(id);
 
+            synchronized (shopsInWorld) {
                 String worldName = location.getWorld().getName();
                 if (!shopsInWorld.containsKey(worldName)) {
                     shopsInWorld.put(worldName, new HashMap<>());
                 }
                 shopsInWorld.get(worldName).put(toBlockLocation(location), shop);
 
-                ((ShopImpl) shop).getOtherLocation().ifPresent(otherLoc ->
+                shop.getOtherLocation().ifPresent(otherLoc ->
                         shopsInWorld.get(worldName).put(toBlockLocation(otherLoc), shop));
+            }
 
-                if (vendor != null) {
+            if (vendor != null) {
+                synchronized (shopAmounts) {
                     shopAmounts.compute(vendor.getUniqueId(), (uuid, counter) -> {
                         return counter == null ? new Counter(1) : counter.increment();
                     });
                 }
+            }
 
-                callback.accept(shop);
-            },
-            errorCallback
-        );
+            return shop;
+        });
     }
 
     @Override
-    public void addAdminShop(ShopProduct product, Location location, double buyPrice, double sellPrice, Consumer<Shop> callback, Consumer<Throwable> errorCallback) {
-        addShop(null, product, location, buyPrice, sellPrice, callback, errorCallback);
+    public CompletableFuture<Shop> addAdminShop(ShopProduct product, Location location, double buyPrice, double sellPrice) {
+        return addShop(null, product, location, buyPrice, sellPrice);
     }
 
     @Override
-    public void removeShop(Shop shop, Runnable callback, Consumer<Throwable> errorCallback) {
-        ((ShopImpl) shop).destroy();
-        shopsInWorld.get(shop.getWorld().getName()).remove(shop.getLocation());
+    public CompletableFuture<Void> removeShop(Shop shop) {
+        return plugin.getDatabase().removeShop(shop).thenRun(() -> {
+            ((ShopImpl) shop).destroy();
 
-        getRemainingShopLocation(shop.getId(), shop.getWorld()).ifPresent(otherLoc ->
-            shopsInWorld.get(shop.getWorld().getName()).remove(otherLoc));
-
+            synchronized (shopsInWorld) {
+                shopsInWorld.get(shop.getWorld().getName()).remove(shop.getLocation());
         
-        shop.getVendor().ifPresent(vendor -> {
-            shopAmounts.compute(vendor.getUniqueId(), (uuid, counter) -> {
-                return counter == null ? new Counter() : counter.decrement();
+                getRemainingShopLocation(shop.getId(), shop.getWorld()).ifPresent(otherLoc ->
+                    shopsInWorld.get(shop.getWorld().getName()).remove(otherLoc));
+            }
+    
+            shop.getVendor().ifPresent(vendor -> {
+                synchronized (shopAmounts) {
+                    shopAmounts.compute(vendor.getUniqueId(), (uuid, counter) -> {
+                        return counter == null ? new Counter() : counter.decrement();
+                    });
+                }
             });
         });
-
-        plugin.getDatabase().removeShop(shop, callback, errorCallback);
     }
 
     @Override
-    public void reloadShops(Consumer<Integer> callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Collection<Shop>> reloadShops() {
+        clearShops();
+
         Chunk[] chunks = plugin.getServer().getWorlds().stream().map(World::getLoadedChunks)
                 .flatMap(Stream::of).toArray(Chunk[]::new);
 
-        loadShops(chunks,
-            shops -> callback.accept(shops.size()),
-            errorCallback
-        );
+        return loadShops(chunks);
     }
 }

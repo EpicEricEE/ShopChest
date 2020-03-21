@@ -6,15 +6,12 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Chunk;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.SimpleCommandMap;
@@ -26,7 +23,6 @@ import de.epiceric.shopchest.api.ShopManager;
 import de.epiceric.shopchest.api.command.ShopCommand;
 import de.epiceric.shopchest.api.config.Config;
 import de.epiceric.shopchest.api.database.DatabaseType;
-import de.epiceric.shopchest.api.event.ShopLoadedEvent;
 import de.epiceric.shopchest.api.player.ShopPlayer;
 import de.epiceric.shopchest.command.ShopCommandImpl;
 import de.epiceric.shopchest.config.ConfigManager;
@@ -182,31 +178,21 @@ public class ShopChestImpl extends ShopChest {
             database = new MySQL(this);
         }
 
-        ((ShopManagerImpl) getShopManager()).loadShopAmounts(
-            shopAmounts -> {
-                Logger.info("Loaded shop amounts from the database");
-            },
-            error -> {
-                Logger.severe("Failed to load shops amounts from the database");
-                Logger.severe("Shop limits will not be working correctly");
-                Logger.severe(error);
-            }
-        );
-
-        Chunk[] chunks = getServer().getWorlds().stream().map(World::getLoadedChunks)
-                .flatMap(Stream::of).toArray(Chunk[]::new);
-
-        ((ShopManagerImpl) getShopManager()).loadShops(chunks,
-            shops -> {
-                getServer().getPluginManager().callEvent(new ShopLoadedEvent(shops));
-                Logger.info("Loaded {0} shops from the database", shops.size());
-            },
-            error -> {
-                Logger.severe("Failed to load shops from the database");
-                Logger.severe(error);
-                getServer().getPluginManager().disablePlugin(this);
-            }
-        );
+        getDatabase().connect()
+                .thenCompose(amount -> ((ShopManagerImpl) getShopManager()).loadShopAmounts())
+                .thenCompose(shopAmounts -> {
+                    Logger.info("Loaded shop amounts from the database");
+                    return getShopManager().reloadShops();
+                })
+                .thenAccept(shops -> {
+                    Logger.info("Loaded {0} shops from the database", shops.size());
+                })
+                .exceptionally(ex -> {
+                    Logger.severe("Failed to load shops from the database");
+                    Logger.severe(ex);
+                    getServer().getPluginManager().disablePlugin(this);
+                    return null;
+                });
     }
 
     private void unloadDatabase() {

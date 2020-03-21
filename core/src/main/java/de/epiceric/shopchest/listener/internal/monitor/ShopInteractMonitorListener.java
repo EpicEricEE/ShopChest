@@ -46,15 +46,23 @@ public class ShopInteractMonitorListener implements Listener {
     public void onShopCreate(ShopCreateEvent e) {
         Shop shop = e.getShop();
         if (shop.isAdminShop()) {
-            plugin.getShopManager().addAdminShop(shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), 
-                newShop -> e.getPlayer().sendMessage("§aAdmin shop has been added with ID {0}.", newShop.getId()), // TODO: i18n
-                error -> e.getPlayer().sendMessage("§cFailed to add admin shop: {0}", error.getMessage())
-            );
+            plugin.getShopManager().addAdminShop(shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice())
+                    .thenAccept(newShop -> e.getPlayer().sendMessage("§aAdmin shop has been added with ID {0}.", newShop.getId()))
+                    .exceptionally(ex -> { // TODO: i18n
+                        Logger.severe("Failed to add admin shop");
+                        Logger.severe(ex);
+                        e.getPlayer().sendMessage("§cFailed to add admin shop: {0}", ex.getMessage());
+                        return null;
+                    });
         } else {
-            plugin.getShopManager().addShop(shop.getVendor().get(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice(), 
-                newShop -> e.getPlayer().sendMessage("§aShop has been added with ID {0}.", newShop.getId()), // TODO: i18n
-                error -> e.getPlayer().sendMessage("§cFailed to add shop: {0}", error.getMessage())
-            );
+            plugin.getShopManager().addShop(shop.getVendor().get(), shop.getProduct(), shop.getLocation(), shop.getBuyPrice(), shop.getSellPrice())
+                    .thenAccept(newShop -> e.getPlayer().sendMessage("§aShop has been added with ID {0}.", newShop.getId()))
+                    .exceptionally(ex -> { // TODO: i18n
+                        Logger.severe("Failed to add shop");
+                        Logger.severe(ex);
+                        e.getPlayer().sendMessage("§cFailed to add shop: {0}", ex.getMessage());
+                        return null;
+                    });
         }
     }
 
@@ -65,18 +73,26 @@ public class ShopInteractMonitorListener implements Listener {
         shop.setSellPrice(e.getSellPrice());
         shop.setProduct(new ShopProductImpl(e.getItemStack(), e.getAmount()));
 
-        ((ShopChestImpl) plugin).getDatabase().updateShop(shop,
-            () -> e.getPlayer().sendMessage("§aShop has been edited."), // TODO: i18n
-            error -> e.getPlayer().sendMessage("§cFailed to save edit: {0}", error.getMessage())
-        );
+        ((ShopChestImpl) plugin).getDatabase().updateShop(shop)
+                .thenRun(() -> e.getPlayer().sendMessage("§aShop has been edited.")) // TODO: i18n
+                .exceptionally(ex -> {
+                    Logger.severe("Failed to save shop edit");
+                    Logger.severe(ex);
+                    e.getPlayer().sendMessage("§cFailed to save edit: {0}", ex.getMessage());
+                    return null;
+                });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onShopRemove(ShopRemoveEvent e) {
-        plugin.getShopManager().removeShop(e.getShop(),
-            () -> e.getPlayer().sendMessage("§aShop has been removed."), // TODO: i18n
-            error -> e.getPlayer().sendMessage("§cFailed to remove shop: {0}", error.getMessage())
-        );
+        ((ShopChestImpl) plugin).getDatabase().removeShop(e.getShop())
+                .thenRun(() -> e.getPlayer().sendMessage("§aShop has been removed.")) // TODO: i18n
+                .exceptionally(ex -> {
+                    Logger.severe("Failed to remove shop");
+                    Logger.severe(ex);
+                    e.getPlayer().sendMessage("§cFailed to remove shop: {0}", ex.getMessage());
+                    return null;
+                });
     }
 
     private String getProductJson(ShopProduct product) {

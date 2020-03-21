@@ -2,6 +2,7 @@ package de.epiceric.shopchest.api;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import org.bukkit.Location;
@@ -77,12 +78,11 @@ public interface ShopManager {
      *                      Can be either chest if it's on a double chest
      * @param buyPrice      the price a player can buy the product for.
      * @param sellPrice     the price a player can sell the product for.
-     * @param callback      the callback returning the created shop on success
-     * @param errorCallback the callback returning the error if one occurred
+     * @return a completable future returning the new shop
      * @since 1.13
      * @see ShopManager#addAdminShop(ShopProduct, Location, double, double, Consumer, Consumer)
      */
-    void addShop(OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice, Consumer<Shop> callback, Consumer<Throwable> errorCallback);
+    CompletableFuture<Shop> addShop(OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice);
 
     /**
      * Creates an admin shop and adds it to the database
@@ -96,32 +96,29 @@ public interface ShopManager {
      *                      Can be either chest if it's on a double chest
      * @param buyPrice      the price a player can buy the product for.
      * @param sellPrice     the price a player can sell the product for.
-     * @param callback      the callback returning the created shop on success
-     * @param errorCallback the callback returning the error if one occurred
+     * @return a completable future returning the new shop
      * @since 1.13
      * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double, Consumer, Consumer)
      */
-    void addAdminShop(ShopProduct product, Location location, double buyPrice, double sellPrice, Consumer<Shop> callback, Consumer<Throwable> errorCallback);
+    CompletableFuture<Shop> addAdminShop(ShopProduct product, Location location, double buyPrice, double sellPrice);
 
     /**
      * Removes a shop from the database
      * 
      * @param shop the shop to remove
-     * @param callback      the callback returning nothing on success
-     * @param errorCallback the callback returning the error if one occurred
+     * @return a completable future returning nothing
      * @since 1.13
      */
-    void removeShop(Shop shop, Runnable callback, Consumer<Throwable> errorCallback);
+    CompletableFuture<Void> removeShop(Shop shop);
 
     /**
      * Removes all shops and reloads the shops in currently loaded chunks
      * <p>
      * This does not trigger the {@link ShopReloadEvent}.
      * 
-     * @param callback      the callback returning the amount of shops on success
-     * @param errorCallback the callback returning the error if one occurred
+     * @return a completable future returning the loaded shops
      * @since 1.13
      */
-    void reloadShops(Consumer<Integer> callback, Consumer<Throwable> errorCallback);
+    CompletableFuture<Collection<Shop>> reloadShops();
 
 }

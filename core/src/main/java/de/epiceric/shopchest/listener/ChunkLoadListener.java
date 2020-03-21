@@ -35,13 +35,14 @@ public class ChunkLoadListener implements Listener {
         if (newLoadedChunks.isEmpty()) {
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 int chunkCount = newLoadedChunks.size();
-                ((ShopManagerImpl) plugin.getShopManager()).loadShops(newLoadedChunks.toArray(new Chunk[chunkCount]),
-                    shops -> {},
-                    error -> {
-                        Logger.severe("Failed to load shops in newly loaded chunks");
-                        Logger.severe(error);
-                    }
-                );
+                
+                ((ShopManagerImpl) plugin.getShopManager()).loadShops(newLoadedChunks.toArray(new Chunk[chunkCount]))
+                        .exceptionally(ex -> {
+                            Logger.severe("Failed to load shops in newly loaded chunks");
+                            Logger.severe(ex);
+                            return null;
+                        });
+
                 newLoadedChunks.clear();
             }, 10L);
         }

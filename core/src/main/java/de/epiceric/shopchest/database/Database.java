@@ -29,14 +29,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -56,36 +55,6 @@ public abstract class Database {
 
     protected Database(ShopChestImpl plugin) {
         this.plugin = plugin;
-    }
-
-    protected <T> void callSyncResult(Runnable callback) {
-        if (callback == null) return;
-
-        if (plugin.getServer().isPrimaryThread()) {
-            callback.run();
-        } else {
-            plugin.getServer().getScheduler().runTask(plugin, () -> callback.run());
-        }
-    }
-
-    protected <T> void callSyncResult(Consumer<T> callback, T result) {
-        if (callback == null) return;
-
-        if (plugin.getServer().isPrimaryThread()) {
-            callback.accept(result);
-        } else {
-            plugin.getServer().getScheduler().runTask(plugin, () -> callback.accept(result));
-        }
-    }
-
-    protected void callSyncError(Consumer<Throwable> callback, Throwable error) {
-        if (callback == null) return;
-
-        if (plugin.getServer().isPrimaryThread()) {
-            callback.accept(error);
-        } else {
-            plugin.getServer().getScheduler().runTask(plugin, () -> callback.accept(error));
-        }
     }
 
     abstract HikariDataSource getDataSource();
@@ -284,15 +253,16 @@ public abstract class Database {
     }
 
     /**
-     * <p>(Re-)Connects to the the database and initializes it.</p>
+     * Connects or reconnects to the the database and initializes it
+     * <p>
+     * All tables are created if necessary. If the database structure has to be updated,
+     * that is done as well.
      * 
-     * All tables are created if necessary and if the database
-     * structure has to be updated, that is done as well.
-     * 
-     * @param callback Callback that - if succeeded - returns the amount of shops
-     *                 that were found (as {@code int})
+     * @return a completable future that returns the amount of shops found in the database
      */
-    public void connect(Consumer<Integer> callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Integer> connect() {
+        CompletableFuture<Integer> result = new CompletableFuture<>();
+
         if (!Config.DATABASE_TABLE_PREFIX.get().matches("^([a-zA-Z0-9\\-\\_]+)?$")) {
             // Only letters, numbers dashes and underscores are allowed
             Logger.severe("Database table prefix contains illegal letters, using 'shopchest_' prefix.");
@@ -312,14 +282,14 @@ public abstract class Database {
             try {
                 dataSource = getDataSource();
             } catch (Exception e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 return;
             }
 
             if (dataSource == null) {
                 Exception e = new IllegalStateException("Data source is null");
                 Logger.severe("Failed to get data source: {0}", e.getMessage());
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 return;
             }
 
@@ -360,76 +330,83 @@ public abstract class Database {
                     if (rs.next()) {
                         int count = rs.getInt(1);
                         initialized = true;
-                        callSyncResult(callback, count);
+                        result.complete(count);
                     } else {
                         throw new SQLException("Count result set has no entries");
                     }
                 }
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 Logger.severe("Failed to initialize or connect to database");
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**
-     * Remove a shop from the database
+     * Removes the given shop from the database
      *
-     * @param shop     Shop to remove
-     * @param callback Callback that - if succeeded - returns {@code null}
+     * @param shop the shop to remove
+     * @return a completable future returning nothing
      */
-    public void removeShop(Shop shop, Runnable callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Void> removeShop(Shop shop) {
+        CompletableFuture<Void> result = new CompletableFuture<>();
+
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try (Connection con = dataSource.getConnection();
                     PreparedStatement ps = con.prepareStatement("DELETE FROM " + tableShops + " WHERE id = ?")) {
                 ps.setInt(1, shop.getId());
                 ps.executeUpdate();
-                callSyncResult(callback);
+                result.complete(null);
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 Logger.severe("Failed to remove shop from database");
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**
-     * Get shop amounts for each player
+     * Gets shop amounts for each player
      * 
-     * @param callback Callback that returns a map of each player's shop amount
+     * @return a completable future returning a map of each player's shop amounts
      */
-    public void getShopAmounts(Consumer<Map<UUID, Integer>> callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Map<UUID, Integer>> getShopAmounts() {
+        CompletableFuture<Map<UUID, Integer>> result = new CompletableFuture<>();
+
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try (Connection con = dataSource.getConnection();
                     Statement s = con.createStatement()) {
                 ResultSet rs = s.executeQuery("SELECT vendor, COUNT(*) AS count FROM " + tableShops + " WHERE shoptype = 'NORMAL' GROUP BY vendor");
 
-                Map<UUID, Integer> result = new HashMap<>();
+                Map<UUID, Integer> shopAmounts = new HashMap<>();
                 while (rs.next()) {
                     UUID uuid = UUID.fromString(rs.getString("vendor"));
-                    result.put(uuid, rs.getInt("count"));
+                    shopAmounts.put(uuid, rs.getInt("count"));
                 }
 
-                callSyncResult(callback, result);
+                result.complete(shopAmounts);
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 Logger.severe("Failed to get shop amounts from database");
                 Logger.severe(e);
-            }        
+            }
         });
+
+        return result;
     }
 
     /**
-     * Get all shops from the database
+     * Gets the shops in the given chunks from the database
      * 
-     * @param showConsoleMessages Whether console messages (errors or warnings)
-     *                            should be shown
-     * @param callback            Callback that - if succeeded - returns a read-only
-     *                            collection of all shops (as
-     *                            {@code Collection<Shop>})
+     * @param chunks the chunks whose shops will be retrieved
+     * @return a completable future returning the shops
      */
-    public void getShops(Chunk[] chunks, Consumer<Collection<Shop>> callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Collection<Shop>> getShops(Chunk[] chunks) {
         // Split chunks into packages containing each {splitSize} chunks at max
         int splitSize = 80;
         int parts = (int) Math.ceil(chunks.length / (double) splitSize);
@@ -440,6 +417,8 @@ public abstract class Database {
             System.arraycopy(chunks, i * splitSize, tmp, 0, size);
             splitChunks[i] = tmp;
         }
+
+        CompletableFuture<Collection<Shop>> result = new CompletableFuture<>();
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             List<Shop> shops = new ArrayList<>();
@@ -517,7 +496,7 @@ public abstract class Database {
                         shops.add(new ShopImpl(id, vendor, product, location, buyPrice, sellPrice));
                     }
                 } catch (SQLException e) {
-                    callSyncError(errorCallback, e);
+                    result.completeExceptionally(e);
                     Logger.severe("Failed to get shops from database");
                     Logger.severe(e);
 
@@ -525,20 +504,23 @@ public abstract class Database {
                 }
             }
 
-            callSyncResult(callback, Collections.unmodifiableCollection(shops));
+            result.complete(shops);
         });
+
+        return result;
     }
 
     /**
-     * Adds a shop to the database
+     * Adds the given shop to the database
      * 
-     * @param shop     Shop to add
-     * @param callback Callback that - if succeeded - returns the ID the shop was
-     *                 given (as {@code int})
+     * @param shop the shop to add
+     * @return a completable future returning the added shop's ID
      */
-    public void addShop(Shop shop, Consumer<Integer> callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Integer> addShop(Shop shop) {
         final String queryNoId = "REPLACE INTO " + tableShops + " (vendor,product,amount,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?)";
         final String queryWithId = "REPLACE INTO " + tableShops + " (id,vendor,product,amount,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+
+        CompletableFuture<Integer> result = new CompletableFuture<>();
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             String query = shop.getId() != -1 ? queryWithId : queryNoId;
@@ -572,24 +554,26 @@ public abstract class Database {
                     ((ShopImpl) shop).setId(shopId);
                 }
 
-                callSyncResult(callback, shop.getId());
+                result.complete(shop.getId());
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 Logger.severe("Failed to add shop to database");
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**
-     * Updates a shop in the database
+     * Updates the given shop in the database
      * 
      * @param shop shop to update
-     * @param callback callback that runs on success
-     * @param errorCallback callback that returns an error if one occurred
+     * @return a completable future that returns nothing
      */
-    public void updateShop(Shop shop, Runnable callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Void> updateShop(Shop shop) {
         final String query = "REPLACE INTO " + tableShops + " (id,vendor,product,amount,world,x,y,z,buyprice,sellprice,shoptype) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+        CompletableFuture<Void> result = new CompletableFuture<>();
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try (Connection con = dataSource.getConnection();
@@ -607,33 +591,36 @@ public abstract class Database {
                 ps.setString(11, shop.isAdminShop() ? "ADMIN" : "NORMAL");
                 ps.executeUpdate();
 
-                callSyncResult(callback);
+                result.complete(null);
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 Logger.severe("Failed to update shop in database");
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**
-     * Log an economy transaction to the database
+     * Logs an economy transaction to the database
      * 
-     * @param executor Player who bought/sold something
-     * @param shop The {@link Shop} the player bought from or sold to
-     * @param product The {@link ItemStack} that was bought/sold
-     * @param price The price the product was bought or sold for
-     * @param type Whether the executor bought or sold
-     * @param callback Callback that - if succeeded - returns {@code null}
+     * @param executor the player who bought/sold something
+     * @param shop the shop the player bought from or sold to
+     * @param product the item that was bought/sold
+     * @param price the price the product was bought or sold for
+     * @param type whether the executor bought or sold
+     * @return a completable future returning nothing
      */
-    public void logEconomy(Player executor, Shop shop, ShopProduct product, double price, Type type, Runnable callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Void> logEconomy(Player executor, Shop shop, ShopProduct product, double price, Type type) {
         if (!Config.ECONOMY_LOG_ENABLE.get()) {
-            callSyncResult(callback);
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
         final String query = "INSERT INTO " + tableLogs + " (shop_id,timestamp,time,player_name,player_uuid,product_name,product,amount,"
                 + "vendor_name,vendor_uuid,admin,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        CompletableFuture<Void> result = new CompletableFuture<>();
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try (Connection con = dataSource.getConnection();
@@ -660,22 +647,28 @@ public abstract class Database {
                 ps.setString(17, type.toString());
                 ps.executeUpdate();
 
-                callSyncResult(callback);
+                result.complete(null);
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 Logger.severe("Failed to log economy transaction to database");
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**
      * Cleans up the economy log to reduce file size
+     * 
+     * @return a completable future returning nothing
      */
-    public void cleanUpEconomy() {
+    public CompletableFuture<Void> cleanUpEconomy() {
         if (!Config.ECONOMY_LOG_CLEANUP.get()) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
+
+        CompletableFuture<Void> result = new CompletableFuture<>();
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             int cleanupDays = Config.ECONOMY_LOG_CLEANUP_DAYS.get();
@@ -689,22 +682,27 @@ public abstract class Database {
                 s.executeUpdate(queryCleanUpLog);
                 s2.executeUpdate(queryCleanUpPlayers);
                 Logger.info("Cleaned up economy log entries older than {0} days", cleanupDays);
+                result.complete(null);
             } catch (SQLException e) {
+                result.completeExceptionally(e);
                 Logger.severe("Failed to clean up economy log");
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**
-     * Get the revenue a player got while he was offline
+     * Gets the revenue a player got while he was offline
      * 
-     * @param player     Player whose revenue to get
-     * @param logoutTime Time in milliseconds when he logged out the last time
-     * @param callback   Callback that - if succeeded - returns the revenue the
-     *                   player made while offline (as {@code double})
+     * @param player the player whose revenue to get
+     * @param logoutTime the system time in milliseconds when he logged out the last time
+     * @return a completable future returning the revenue
      */
-    public void getRevenue(Player player, long logoutTime, Consumer<Double> callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Double> getRevenue(Player player, long logoutTime) {
+        CompletableFuture<Double> result = new CompletableFuture<>();
+
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             double revenue = 0;
 
@@ -727,58 +725,66 @@ public abstract class Database {
                     }
                 }
 
-                callSyncResult(callback, revenue);
+                result.complete(revenue);
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.complete(null);
                 Logger.severe("Failed to get revenue of {0} from database", player.getName());
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**
-     * Log a logout to the database
+     * Logs the given player's logout to the database
      * 
-     * @param player    Player who logged out
-     * @param callback  Callback that - if succeeded - returns {@code null}
+     * @param player the player who logged out
+     * @return a completable future returning nothing
      */
-    public void logLogout(Player player, Runnable callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Void> logLogout(Player player) {
+        CompletableFuture<Void> result = new CompletableFuture<>();
+
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try (Connection con = dataSource.getConnection();
                     PreparedStatement ps = con.prepareStatement("REPLACE INTO " + tableLogouts + " (player,time) VALUES(?,?)")) {
                 ps.setString(1, player.getUniqueId().toString());
                 ps.setLong(2, System.currentTimeMillis());
                 ps.executeUpdate();
-                callSyncResult(callback);
+                result.complete(null);
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 Logger.severe("Failed to log last logout to database");
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**
-     * Get the last logout of a player
+     * Gets the system time in milliseconds when the given player logged out last
      * 
-     * @param player   Player who logged out
-     * @param callback Callback that - if succeeded - returns the time in
-     *                 milliseconds the player logged out (as {@code long})
-     *                 or {@code -1} if the player has not logged out yet.
+     * @param player the player who logged out
+     * @return a completable future returning the time or -1 if no recent logout has been found
      */
-    public void getLastLogout(Player player, Consumer<Long> callback, Consumer<Throwable> errorCallback) {
+    public CompletableFuture<Long> getLastLogout(Player player) {
+        CompletableFuture<Long> result = new CompletableFuture<>();
+
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try (Connection con = dataSource.getConnection();
                     PreparedStatement ps = con.prepareStatement("SELECT * FROM " + tableLogouts + " WHERE player = ?")) {
                 ps.setString(1, player.getUniqueId().toString());
                 ResultSet rs = ps.executeQuery();
-                callSyncResult(callback, rs.next() ? rs.getLong("time") : -1L);
+                result.complete(rs.next() ? rs.getLong("time") : -1L);
             } catch (SQLException e) {
-                callSyncError(errorCallback, e);
+                result.completeExceptionally(e);
                 Logger.severe("Failed to get last logout from database");
                 Logger.severe(e);
             }
         });
+
+        return result;
     }
 
     /**

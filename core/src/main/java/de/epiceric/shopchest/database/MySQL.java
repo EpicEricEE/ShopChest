@@ -43,7 +43,7 @@ public class MySQL extends Database {
                     s.execute("/* ping */ SELECT 1");
                 } catch (SQLException ex) {
                     Logger.severe("Failed to ping MySQL server. Trying to reconnect...");
-                    connect(null, null);
+                    connect();
                 }
             }
         }.runTaskAsynchronously(plugin);
