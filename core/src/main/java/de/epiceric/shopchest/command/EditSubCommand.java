@@ -82,12 +82,14 @@ public class EditSubCommand extends SubCommand {
         }
 
         int amount = -1;
-        try {
-            amount = Integer.parseInt(amountArgs.get(0).split("=")[1]);
-            if (amount <= 0) throw new NumberFormatException();
-        } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            sender.sendMessage("§cThe amount you entered is not valid."); // i18n
-            return;
+        if (amountArgs.size() > 0) {
+            try {
+                amount = Integer.parseInt(amountArgs.get(0).split("=")[1]);
+                if (amount <= 0) throw new NumberFormatException();
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                sender.sendMessage("§cThe amount you entered is not valid."); // i18n
+                return;
+            }
         }
 
         double buyPrice = -1;
