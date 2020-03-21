@@ -192,7 +192,6 @@ public class ShopManagerImpl implements ShopManager {
         ShopImpl shop = new ShopImpl(vendor, product, location, buyPrice, sellPrice); 
         return plugin.getDatabase().addShop(shop).thenApply(id -> {
             shop.create();
-            shop.setId(id);
 
             synchronized (shopsInWorld) {
                 String worldName = location.getWorld().getName();
