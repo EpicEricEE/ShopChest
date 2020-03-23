@@ -9,10 +9,13 @@ import java.util.Set;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -26,6 +29,28 @@ public class ShopUpdateListener implements Listener {
 
     public ShopUpdateListener(ShopChest plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInventoryUpdate(InventoryMoveItemEvent e) {
+        if (!plugin.getHologramFormat().isDynamic()) return;
+
+        Location loc = null;
+
+        if (e.getSource().getHolder() instanceof Chest) {
+            loc =  ((Chest) e.getSource().getHolder()).getLocation();
+        } else if (e.getSource().getHolder() instanceof DoubleChest) {
+            loc =  ((DoubleChest) e.getSource().getHolder()).getLocation();
+        } else if (e.getDestination().getHolder() instanceof Chest) {
+            loc =  ((Chest) e.getDestination().getHolder()).getLocation();
+        } else if (e.getDestination().getHolder() instanceof DoubleChest) {
+            loc =  ((DoubleChest) e.getDestination().getHolder()).getLocation();
+        }
+
+        if (loc != null) {
+            Shop shop = plugin.getShopUtils().getShop(loc);
+            if (shop != null) shop.updateHologramText();
+        }
     }
 
     @EventHandler
