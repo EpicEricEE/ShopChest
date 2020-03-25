@@ -81,7 +81,7 @@ message.noPermission.extend-protected=&cDu hast keine Berechtigung diesen Shop n
 message.commandDescription.header=&6==== &c/%COMMAND% &6Hilfe
 message.commandDescription.footer=&6==== Ende
 message.commandDescription.create=&a/%COMMAND% create <amount> <buy-price> <sell-price> - Erstelle einen Shop.
-message.commandDescription.create-admin=&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Erstelle einen Shop.
+message.commandDescription.create-admin=&a/%COMMAND% create <amount> <buy-price> <sell-price> [admin] - Erstelle einen Shop.
 message.commandDescription.remove=&a/%COMMAND% remove - Entferne einen Shop.
 message.commandDescription.info=&a/%COMMAND% info - Rufe Informationen über den Shop ab.
 message.commandDescription.removeall=&a/%COMMAND% removeall - Entferne alle Shops eines Spielers.

@@ -16,7 +16,6 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 
 class ShopTabCompleter implements TabCompleter {
-
     private ShopChest plugin;
 
     ShopTabCompleter(ShopChest plugin) {
@@ -27,7 +26,7 @@ class ShopTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase(Config.mainCommandName)) {
 
-            List<String> createSubCommands = Arrays.asList("admin", "normal");
+            List<String> createSubCommands = Arrays.asList("admin");
             List<String> configSubCommands = Arrays.asList("add", "remove", "set");
             List<String> areaShopRemoveEvents = Arrays.asList("DELETE", "RESELL", "SELL", "UNRENT");
             List<String> townyShopPlots = Arrays.asList("ARENA", "COMMERCIAL", "EMBASSY", "FARM", "INN", "JAIL", "RESIDENTIAL", "SPLEEF", "WILDS");
