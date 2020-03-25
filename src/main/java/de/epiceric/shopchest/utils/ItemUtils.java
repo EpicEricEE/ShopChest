@@ -1,5 +1,8 @@
 package de.epiceric.shopchest.utils;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -7,9 +10,6 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
-
-import java.util.Arrays;
-import java.util.Map;
 
 public class ItemUtils {
 

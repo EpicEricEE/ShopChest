@@ -1,8 +1,5 @@
 package de.epiceric.shopchest.sql;
 
-import de.epiceric.shopchest.ShopChest;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,6 +8,8 @@ import java.sql.Statement;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import de.epiceric.shopchest.ShopChest;
 
 public class SQLite extends Database {
 

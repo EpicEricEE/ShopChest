@@ -1,5 +1,7 @@
 package de.epiceric.shopchest.external;
 
+import java.util.Locale;
+
 import com.github.intellectualsites.plotsquared.plot.flag.Flag;
 import com.github.intellectualsites.plotsquared.plot.flag.Flags;
 import com.github.intellectualsites.plotsquared.plot.object.Plot;
@@ -7,8 +9,6 @@ import com.github.intellectualsites.plotsquared.plot.object.Plot;
 import org.bukkit.entity.Player;
 
 import de.epiceric.shopchest.ShopChest;
-
-import java.util.Locale;
 
 public class PlotSquaredShopFlag {
 

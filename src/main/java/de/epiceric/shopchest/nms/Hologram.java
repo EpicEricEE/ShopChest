@@ -1,19 +1,22 @@
 package de.epiceric.shopchest.nms;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 
 public class Hologram {
     // concurrent since update task is in async thread
-    // since this is a fake entity, hologram is hidden per default
-    private final Set<UUID> viewers = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
+    private final Set<UUID> viewers = ConcurrentHashMap.newKeySet();
     private final List<ArmorStandWrapper> wrappers = new ArrayList<>();
     private final Location location;
     private final ShopChest plugin;

@@ -1,12 +1,12 @@
 package de.epiceric.shopchest.command;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ShopSubCommand {
     private String name;

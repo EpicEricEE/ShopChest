@@ -1,9 +1,5 @@
 package de.epiceric.shopchest.listeners;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.utils.Callback;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +17,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.utils.Callback;
 
 public class ShopUpdateListener implements Listener {
 
