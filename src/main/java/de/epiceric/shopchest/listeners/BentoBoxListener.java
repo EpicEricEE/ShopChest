@@ -70,7 +70,7 @@ public class BentoBoxListener implements Listener {
         if (!Config.enableBentoBoxIntegration)
             return;
             
-        Collection<Shop> shops = plugin.getShopUtils().getShopsCopy();
+        Collection<Shop> shops = plugin.getShopUtils().getShops();
         for (Shop shop : shops) {
             if (!shop.getLocation().getWorld().getName().equals(world.getName())) {
                 continue;

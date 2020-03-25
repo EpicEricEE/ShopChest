@@ -202,9 +202,8 @@ class ShopCommandExecutor implements CommandExecutor {
         plugin.getUpdater().restart();
 
         // Remove all shops
-        Iterator<Shop> iter = shopUtils.getShops().iterator();
-        while (iter.hasNext()) {
-            shopUtils.removeShop(iter.next(), false);
+        for (Shop shop : shopUtils.getShops()) {
+            shopUtils.removeShop(shop, false);
         }
 
         Chunk[] loadedChunks = Bukkit.getWorlds().stream().map(World::getLoadedChunks)

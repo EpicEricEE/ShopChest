@@ -65,23 +65,24 @@ public class ShopUtils {
     }
 
     /**
-     * Get all shops
-     * Do not use for removing while iteration!
+     * Get a collection of all loaded shops
+     * <p>
+     * This collection is safe to use for looping over and removing shops.
      *
-     * @see #getShopsCopy()
-     * @return Read-only collection of all shops, may contain duplicates
+     * @return Read-only collection of all shops, may contain duplicates for double chests
      */
     public Collection<Shop> getShops() {
-        return shopLocationValues;
+        return Collections.unmodifiableCollection(new ArrayList<>(shopLocationValues));
     }
 
     /**
      * Get all shops
-     * Same as {@link #getShops()} but this is safe to remove while iterating
      *
      * @see #getShops()
      * @return Copy of collection of all shops, may contain duplicates
+     * @deprecated Use {@link #getShops()} instead
      */
+    @Deprecated
     public Collection<Shop> getShopsCopy() {
         return new ArrayList<>(getShops());
     }

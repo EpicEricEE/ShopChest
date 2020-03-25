@@ -249,7 +249,7 @@ public class ShopChest extends JavaPlugin {
             shopCreationThreadPool.shutdown();
         }
         
-        for (Shop shop : shopUtils.getShopsCopy()) {
+        for (Shop shop : shopUtils.getShops()) {
             shopUtils.removeShop(shop, false);
             debug("Removed shop (#" + shop.getID() + ")");
         }
