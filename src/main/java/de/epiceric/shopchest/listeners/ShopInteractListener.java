@@ -464,10 +464,16 @@ public class ShopInteractListener implements Listener {
         Inventory inventory = event.getInventory();
         if (!inventory.getType().equals(InventoryType.CHEST)) return;
 
+        Location location;
         InventoryHolder holder = inventory.getHolder();
-        if (!(holder instanceof Chest || holder instanceof DoubleChest)) return;
+        if (holder instanceof Chest) {
+            location = ((Chest) holder).getLocation();
+        } else if (holder instanceof DoubleChest) {
+            location = ((DoubleChest) holder).getLocation();
+        } else {
+            return;
+        }
 
-        Location location = ((BlockState) holder).getLocation();
         Shop shop = plugin.getShopUtils().getShop(location);
         if (shop == null) return;
 
