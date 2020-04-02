@@ -509,7 +509,7 @@ public abstract class Database {
      */
     public void logEconomy(final Player executor, Shop shop, ShopProduct product, double price, double taxedPrice, Type type, final Callback<Void> callback) {
         final String query = "INSERT INTO " + tableLogs + " (shop_id,timestamp,time,player_name,player_uuid,product_name,product,amount,"
-                + "vendor_name,vendor_uuid,admin,world,x,y,z,price,taxed_price,type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "vendor_name,vendor_uuid,admin,world,x,y,z,price,taxed_price,type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         if (Config.enableEconomyLog) {
             new BukkitRunnable() {
