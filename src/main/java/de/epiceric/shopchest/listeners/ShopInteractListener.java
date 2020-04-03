@@ -37,7 +37,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
@@ -59,8 +58,10 @@ import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.IWrappedFlag;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -479,7 +480,7 @@ public class ShopInteractListener implements Listener {
 
         ItemStack product = shop.getProduct().getItemStack();
         ItemStack[] contents = inventory.getContents();
-        Set<ItemStack> removed = new HashSet<>(contents.length);
+        List<ItemStack> removed = new ArrayList<>(contents.length);
 
         for (int i = 0; i < contents.length; i++) {
             ItemStack itemStack = contents[i];
