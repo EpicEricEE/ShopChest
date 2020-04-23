@@ -9,6 +9,7 @@ import de.epiceric.shopchest.exceptions.NotEnoughSpaceException;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.nms.Hologram;
 import de.epiceric.shopchest.utils.ItemUtils;
+import de.epiceric.shopchest.utils.PluginMessageTask;
 import de.epiceric.shopchest.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,6 +26,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.util.*;
 
 public class Shop {
@@ -471,6 +474,22 @@ public class Shop {
         }
 
         return null;
+    }
+
+    public void sendbungeeMessage(String player, String message) {
+        try {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(b);
+
+            out.writeUTF("Message");
+            out.writeUTF(player);
+            out.writeUTF(message);
+
+            new PluginMessageTask(plugin, b).runTaskAsynchronously(plugin);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

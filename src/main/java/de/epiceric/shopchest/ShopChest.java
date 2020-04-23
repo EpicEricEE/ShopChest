@@ -99,6 +99,7 @@ public class ShopChest extends JavaPlugin {
     private ShopUpdater updater;
     private ExecutorService shopCreationThreadPool;
 
+
     /**
      * @return An instance of ShopChest
      */
@@ -210,6 +211,8 @@ public class ShopChest extends JavaPlugin {
         registerListeners();
         registerExternalListeners();
         initializeShops();
+
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         updater = new ShopUpdater(this);
         updater.start();
