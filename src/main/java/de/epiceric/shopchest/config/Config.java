@@ -220,7 +220,7 @@ public class Config {
     public static boolean enableVendorMessages;
 
     /**
-     * Whether the vendor of the shop should get messages about buys and sells
+     * Whether the vendor of the shop should get messages on all servers about buys and sells
      **/
     public static boolean enableVendorBungeeMessages;
 

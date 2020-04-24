@@ -476,20 +476,4 @@ public class Shop {
         return null;
     }
 
-    public void sendbungeeMessage(String player, String message) {
-        try {
-            ByteArrayOutputStream b = new ByteArrayOutputStream();
-            DataOutputStream out = new DataOutputStream(b);
-
-            out.writeUTF("Message");
-            out.writeUTF(player);
-            out.writeUTF(message);
-
-            new PluginMessageTask(plugin, b).runTaskAsynchronously(plugin);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }

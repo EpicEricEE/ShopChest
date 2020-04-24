@@ -99,7 +99,6 @@ public class ShopChest extends JavaPlugin {
     private ShopUpdater updater;
     private ExecutorService shopCreationThreadPool;
 
-
     /**
      * @return An instance of ShopChest
      */

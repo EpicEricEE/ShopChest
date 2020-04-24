@@ -20,11 +20,7 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
-import de.epiceric.shopchest.utils.ClickType;
-import de.epiceric.shopchest.utils.ItemUtils;
-import de.epiceric.shopchest.utils.Permissions;
-import de.epiceric.shopchest.utils.ShopUtils;
-import de.epiceric.shopchest.utils.Utils;
+import de.epiceric.shopchest.utils.*;
 import de.epiceric.shopchest.utils.ClickType.CreateClickType;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.milkbowl.vault.economy.Economy;
@@ -54,6 +50,8 @@ import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.IWrappedFlag;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -342,7 +340,7 @@ public class ShopInteractListener implements Listener {
                                                 String message = LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
                                                         new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
                                                         new Replacement(Placeholder.ITEM_NAME, shop.getProduct().getLocalizedName()));
-                                                shop.sendbungeeMessage(shop.getVendor().getName(), message);
+                                                sendbungeeMessage(shop.getVendor().getName(), message);
                                             }
                                             plugin.debug("Shop is out of stock");
                                         }
@@ -826,7 +824,7 @@ public class ShopInteractListener implements Listener {
                                 String message = LanguageUtils.getMessage( Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                         new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName()));
-                                shop.sendbungeeMessage(shop.getVendor().getName(),message);
+                                sendbungeeMessage(shop.getVendor().getName(),message);
                             }
 
                         } else {
@@ -994,7 +992,7 @@ public class ShopInteractListener implements Listener {
                                 String message = LanguageUtils.getMessage( Message.SOMEONE_SOLD, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                         new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName()));
-                                shop.sendbungeeMessage(shop.getVendor().getName(),message);
+                                sendbungeeMessage(shop.getVendor().getName(),message);
                             }
 
                         } else {
@@ -1172,4 +1170,19 @@ public class ShopInteractListener implements Listener {
         return (removed == amount);
     }
 
+    public void sendbungeeMessage(String player, String message) {
+        try {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(b);
+
+            out.writeUTF("Message");
+            out.writeUTF(player);
+            out.writeUTF(message);
+
+            new PluginMessageTask(plugin, b).runTaskAsynchronously(plugin);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
