@@ -15,6 +15,7 @@ import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.ShopCreateEvent;
 import de.epiceric.shopchest.event.ShopExtendEvent;
+import de.epiceric.shopchest.external.PlotSquaredOldShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.utils.Utils;
 
@@ -65,9 +66,21 @@ public class PlotSquaredListener implements Listener {
     // }
 
     private boolean handleForLocation(Player player, org.bukkit.Location loc, Cancellable e) {
-        Location plotLocation = new Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        Plot plot = plotLocation.getOwnedPlot();
-        if (!PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, player)) {
+        boolean isAllowed = false;
+
+        try {
+            Class.forName("com.plotsquared.core.PlotSquared");
+            Location plotLocation = new Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            Plot plot = plotLocation.getOwnedPlot();
+            isAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, player);
+        } catch (ClassNotFoundException ex) {
+            com.github.intellectualsites.plotsquared.plot.object.Location plotLocation = new com.github.intellectualsites.plotsquared.plot.object.Location(
+                    loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            com.github.intellectualsites.plotsquared.plot.object.Plot plot = plotLocation.getOwnedPlot();
+            isAllowed = PlotSquaredOldShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredOldShopFlag.CREATE_SHOP, player);
+        }
+
+        if (!isAllowed) {
             e.setCancelled(true);
             plugin.debug("Cancel Reason: PlotSquared");
             return true;

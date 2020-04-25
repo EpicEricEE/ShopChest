@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.JsonPrimitive;
-import com.plotsquared.core.plot.Plot;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -44,6 +43,7 @@ import de.epiceric.shopchest.event.ShopCreateEvent;
 import de.epiceric.shopchest.event.ShopInfoEvent;
 import de.epiceric.shopchest.event.ShopOpenEvent;
 import de.epiceric.shopchest.event.ShopRemoveEvent;
+import de.epiceric.shopchest.external.PlotSquaredOldShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
@@ -254,10 +254,18 @@ public class ShopInteractListener implements Listener {
                             boolean externalPluginsAllowed = true;
 
                             if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                com.plotsquared.core.location.Location plotLocation =
-                                        new com.plotsquared.core.location.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
-                                Plot plot = plotLocation.getOwnedPlot();
-                                externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.USE_SHOP, p);
+                                try {
+                                    Class.forName("com.plotsquared.core.PlotSquared");
+                                    com.plotsquared.core.location.Location plotLocation =
+                                            new com.plotsquared.core.location.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    com.plotsquared.core.plot.Plot plot = plotLocation.getOwnedPlot();
+                                    externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.USE_SHOP, p);
+                                } catch (ClassNotFoundException ex) {
+                                    com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                                            new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    com.github.intellectualsites.plotsquared.plot.object.Plot plot = plotLocation.getOwnedPlot();
+                                    externalPluginsAllowed = PlotSquaredOldShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredOldShopFlag.USE_SHOP, p);
+                                }
                             }
 
                             if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
@@ -366,10 +374,18 @@ public class ShopInteractListener implements Listener {
                             boolean externalPluginsAllowed = true;
 
                             if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                com.plotsquared.core.location.Location plotLocation =
-                                        new com.plotsquared.core.location.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
-                                Plot plot = plotLocation.getOwnedPlot();
-                                externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.USE_SHOP, p);
+                                try {
+                                    Class.forName("com.plotsquared.core.PlotSquared");
+                                    com.plotsquared.core.location.Location plotLocation =
+                                            new com.plotsquared.core.location.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    com.plotsquared.core.plot.Plot plot = plotLocation.getOwnedPlot();
+                                    externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.USE_SHOP, p);
+                                } catch (ClassNotFoundException ex) {
+                                    com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                                            new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    com.github.intellectualsites.plotsquared.plot.object.Plot plot = plotLocation.getOwnedPlot();
+                                    externalPluginsAllowed = PlotSquaredOldShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredOldShopFlag.USE_SHOP, p);
+                                }
                             }
 
                             if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {

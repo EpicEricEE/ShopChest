@@ -162,6 +162,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/IslandWorld-8.5.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.github.intellectualsites.plotsquared</groupId>
+            <artifactId>PlotSquared-API</artifactId>
+            <version>4.495</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/PlotSquared-Bukkit-4.4.495.jar</systemPath>
+        </dependency>
         
         <!-- Shaded dependencies -->
         <dependency>

@@ -35,6 +35,7 @@ import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.event.ShopInitializedEvent;
 import de.epiceric.shopchest.external.BentoBoxShopFlag;
+import de.epiceric.shopchest.external.PlotSquaredOldShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.external.listeners.ASkyBlockListener;
@@ -318,14 +319,12 @@ public class ShopChest extends JavaPlugin {
             WorldGuardWrapper.getInstance().registerEvents(this);
         }
 
-        if (getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
+        if (hasPlotSquared()) {
             try {
                 Class.forName("com.plotsquared.core.PlotSquared");
                 PlotSquaredShopFlag.register(this);
             } catch (ClassNotFoundException ex) {
-                String ver = getServer().getPluginManager().getPlugin("PlotSquared").getDescription().getVersion();
-                debug("PlotSquared v5 required. Installed: " + ver);
-                getLogger().warning("PlotSquared v5 required. You have version " + ver);
+                PlotSquaredOldShopFlag.register(this);
             }
         }
 
@@ -627,14 +626,6 @@ public class ShopChest extends JavaPlugin {
             // Supported PlotSquared versions don't support versions below 1.13
             return false;
         }
-
-        try {
-            // Check for PlotSquared v5
-            Class.forName("com.plotsquared.core.PlotSquared");
-        } catch (ClassNotFoundException ex) {
-            return false;
-        }
-
         Plugin p = getServer().getPluginManager().getPlugin("PlotSquared");
         return p != null && p.isEnabled();
     }
