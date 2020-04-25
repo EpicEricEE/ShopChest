@@ -2,8 +2,8 @@ package de.epiceric.shopchest.external.listeners;
 
 import java.util.Set;
 
-import com.github.intellectualsites.plotsquared.plot.object.Location;
-import com.github.intellectualsites.plotsquared.plot.object.Plot;
+import com.plotsquared.core.location.Location;
+import com.plotsquared.core.plot.Plot;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -51,15 +51,12 @@ public class PlotSquaredListener implements Listener {
     // public void onBuySell(ShopBuySellEvent e) {
     //     if (!Config.enablePlotsquaredIntegration)
     //         return;
-            
-    //     ShopType shopType = e.getShop().getShopType();
-    //     GroupFlag flag = shopType == ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
 
     //     Set<org.bukkit.Location> chestLocations = Utils.getChestLocations(e.getShop());
     //     for (org.bukkit.Location loc : chestLocations) {
     //         Location plotLocation = new Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     //         Plot plot = plotLocation.getOwnedPlot();
-    //         if (!isFlagAllowed(plot, flag, e.getPlayer())) {
+    //         if (!isFlagAllowed(plot, PlotSquaredShopFlag.USE_SHOP, e.getPlayer())) {
     //             e.setCancelled(true);
     //             plugin.debug("Cancel Reason: PlotSquared");
     //             return;

@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import com.palmergames.bukkit.towny.Towny;
+import com.plotsquared.core.PlotSquared;
 import com.wasteofplastic.askyblock.ASkyBlock;
 
 import org.bstats.bukkit.Metrics;
@@ -317,8 +318,15 @@ public class ShopChest extends JavaPlugin {
             WorldGuardWrapper.getInstance().registerEvents(this);
         }
 
-        if (hasPlotSquared()) {
-            PlotSquaredShopFlag.register(this);
+        if (getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
+            try {
+                Class.forName("com.plotsquared.core.PlotSquared");
+                PlotSquaredShopFlag.register(this);
+            } catch (ClassNotFoundException ex) {
+                String ver = getServer().getPluginManager().getPlugin("PlotSquared").getDescription().getVersion();
+                debug("PlotSquared v5 required. Installed: " + ver);
+                getLogger().warning("PlotSquared v5 required. You have version " + ver);
+            }
         }
 
         if (hasBentoBox()) {
@@ -619,6 +627,14 @@ public class ShopChest extends JavaPlugin {
             // Supported PlotSquared versions don't support versions below 1.13
             return false;
         }
+
+        try {
+            // Check for PlotSquared v5
+            Class.forName("com.plotsquared.core.PlotSquared");
+        } catch (ClassNotFoundException ex) {
+            return false;
+        }
+
         Plugin p = getServer().getPluginManager().getPlugin("PlotSquared");
         return p != null && p.isEnabled();
     }

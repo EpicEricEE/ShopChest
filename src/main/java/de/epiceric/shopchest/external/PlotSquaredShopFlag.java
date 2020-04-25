@@ -1,33 +1,42 @@
 package de.epiceric.shopchest.external;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 
-import com.github.intellectualsites.plotsquared.plot.flag.Flag;
-import com.github.intellectualsites.plotsquared.plot.flag.Flags;
-import com.github.intellectualsites.plotsquared.plot.object.Plot;
+import com.plotsquared.core.configuration.Caption;
+import com.plotsquared.core.configuration.Captions;
+import com.plotsquared.core.configuration.StaticCaption;
+import com.plotsquared.core.plot.Plot;
+import com.plotsquared.core.plot.flag.FlagParseException;
+import com.plotsquared.core.plot.flag.GlobalFlagContainer;
+import com.plotsquared.core.plot.flag.PlotFlag;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import de.epiceric.shopchest.ShopChest;
 
 public class PlotSquaredShopFlag {
-
-    private static boolean registered = false;
-
     public enum Group {
         OWNERS, MEMBERS, TRUSTED, EVERYONE, NONE
     }
 
-    public static GroupFlag CREATE_SHOP = new GroupFlag("create-shop");
-    public static GroupFlag USE_SHOP = new GroupFlag("use-shop");
-    public static GroupFlag USE_ADMIN_SHOP = new GroupFlag("use-admin-shop");
+    private static final String[] lowercaseValues = Arrays.asList(Group.values()).stream()
+            .map(value -> String.valueOf(value).toLowerCase(Locale.ENGLISH))
+            .toArray(String[]::new);
+
+    private static boolean registered = false;
+
+    public static final CreateShopFlag CREATE_SHOP = new CreateShopFlag(Group.MEMBERS);
+    public static final UseShopFlag USE_SHOP = new UseShopFlag(Group.EVERYONE);
 
     public static void register(ShopChest plugin) {
-        if (registered) return;
+        if (registered)
+            return;
 
-        Flags.registerFlag(CREATE_SHOP);
-        Flags.registerFlag(USE_SHOP);
-        Flags.registerFlag(USE_ADMIN_SHOP);
+        GlobalFlagContainer.getInstance().addFlag(CREATE_SHOP);
+        GlobalFlagContainer.getInstance().addFlag(USE_SHOP);
         registered = true;
 
         plugin.debug("Registered custom PlotSquared flags");
@@ -35,14 +44,15 @@ public class PlotSquaredShopFlag {
 
     /**
      * Check if a flag is allowed for a player on a plot from PlotSquared
+     * 
      * @param plot Plot from PlotSquared
      * @param flag Flag to check
      * @param p Player to check
      * @return Whether the flag is allowed for the player
      */
-    public static boolean isFlagAllowedOnPlot(Plot plot, GroupFlag flag, Player p) {
+    public static boolean isFlagAllowedOnPlot(Plot plot, GroupFlag<?> flag, Player p) {
         if (plot != null && flag != null) {
-            Group group = plot.getFlag(flag, PlotSquaredShopFlag.Group.NONE);
+            Group group = plot.getFlag(flag);
             ShopChest.getInstance().debug("Flag " + flag.getName() + " is set to " + group);
 
             switch (group) {
@@ -64,51 +74,80 @@ public class PlotSquaredShopFlag {
         return true;
     }
 
-    public static class GroupFlag extends Flag<Group> {
-
-        public GroupFlag(String name) {
-            super(name);
+    public static class CreateShopFlag extends GroupFlag<CreateShopFlag> {
+        public CreateShopFlag(Group value) {
+            super(value, new StaticCaption("Set to the group that is allowed to create shops."));
         }
 
         @Override
-        public String valueToString(Object value) {
-            return String.valueOf(value);
+        protected CreateShopFlag flagOf(@NotNull Group value) {
+            return new CreateShopFlag(value);
+        }
+    }
+
+    public static class UseShopFlag extends GroupFlag<UseShopFlag> {
+        public UseShopFlag(Group value) {
+            super(value, new StaticCaption("Set to the group that is allowed to use shops."));
         }
 
         @Override
-        public Group parseValue(String s) {
-            String val = s.toLowerCase(Locale.ENGLISH);
+        protected UseShopFlag flagOf(@NotNull Group value) {
+            return new UseShopFlag(value);
+        }
+    }
 
-            switch (val) {
+    public abstract static class GroupFlag<F extends PlotFlag<Group, F>> extends PlotFlag<Group, F> {
+        public GroupFlag(Group value, Caption description) {
+            super(value, Captions.FLAG_CATEGORY_ENUM, description);
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(getValue()).toLowerCase(Locale.ENGLISH);
+        }
+
+        @Override
+        public String getExample() {
+            return "members";
+        }
+
+        @Override
+        public F merge(@NotNull Group newValue) {
+            return flagOf(newValue);
+        }
+
+        @Override
+        public F parse(@NotNull String input) throws FlagParseException {
+            switch (input.toLowerCase(Locale.ENGLISH)) {
                 case "owners":
                 case "owner":
-                    return Group.OWNERS;
+                    return this.flagOf(Group.OWNERS);
                 case "members":
                 case "member":
                 case "helpers":
                 case "helper":
-                    return Group.MEMBERS;
+                    return this.flagOf(Group.MEMBERS);
                 case "trusted":
-                    return Group.TRUSTED;
+                    return this.flagOf(Group.TRUSTED);
                 case "everyone":
                 case "all":
-                    return Group.EVERYONE;
+                    return this.flagOf(Group.EVERYONE);
                 case "deny":
+                case "disallow":
                 case "false":
                 case "no":
                 case "0":
                 case "none":
                 case "noone":
-                    return Group.NONE;
+                    return this.flagOf(Group.NONE);
             }
 
-            return null;
+            throw new FlagParseException(this, input, Captions.FLAG_ERROR_ENUM, (Object[]) lowercaseValues);
         }
 
         @Override
-        public String getValueDescription() {
-            return "Flag value must be a group: 'owner' , 'members', 'trusted', 'everyone' or 'none'";
+        public Collection<String> getTabCompletions() {
+            return Arrays.asList(lowercaseValues);
         }
     }
-
 }
