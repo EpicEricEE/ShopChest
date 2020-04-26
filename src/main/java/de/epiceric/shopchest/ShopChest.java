@@ -256,7 +256,7 @@ public class ShopChest extends JavaPlugin {
             debug("Removed shop (#" + shop.getID() + ")");
         }
 
-        if (database != null) {
+        if (database != null && database.isInitialized()) {
             if (database instanceof SQLite) {
                 ((SQLite) database).vacuum();
             }
