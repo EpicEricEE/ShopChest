@@ -26,14 +26,13 @@ public class PlotSquaredShopFlag {
             .map(value -> String.valueOf(value).toLowerCase(Locale.ENGLISH))
             .toArray(String[]::new);
 
+    public static final GroupFlag<?> CREATE_SHOP = new CreateShopFlag(Group.MEMBERS);
+    public static final GroupFlag<?> USE_SHOP = new UseShopFlag(Group.EVERYONE);
+
     private static boolean registered = false;
 
-    public static final CreateShopFlag CREATE_SHOP = new CreateShopFlag(Group.MEMBERS);
-    public static final UseShopFlag USE_SHOP = new UseShopFlag(Group.EVERYONE);
-
     public static void register(ShopChest plugin) {
-        if (registered)
-            return;
+        if (registered) return;
 
         GlobalFlagContainer.getInstance().addFlag(CREATE_SHOP);
         GlobalFlagContainer.getInstance().addFlag(USE_SHOP);

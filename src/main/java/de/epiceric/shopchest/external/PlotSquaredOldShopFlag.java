@@ -11,16 +11,15 @@ import de.epiceric.shopchest.ShopChest;
 import java.util.Locale;
 
 public class PlotSquaredOldShopFlag {
-
-    private static boolean registered = false;
-
     public enum Group {
         OWNERS, MEMBERS, TRUSTED, EVERYONE, NONE
     }
 
-    public static GroupFlag CREATE_SHOP = new GroupFlag("create-shop");
-    public static GroupFlag USE_SHOP = new GroupFlag("use-shop");
-    public static GroupFlag USE_ADMIN_SHOP = new GroupFlag("use-admin-shop");
+    public static final GroupFlag CREATE_SHOP = new GroupFlag("create-shop");
+    public static final GroupFlag USE_SHOP = new GroupFlag("use-shop");
+    public static final GroupFlag USE_ADMIN_SHOP = new GroupFlag("use-admin-shop");
+
+    private static boolean registered = false;
 
     public static void register(ShopChest plugin) {
         if (registered) return;
@@ -42,7 +41,7 @@ public class PlotSquaredOldShopFlag {
      */
     public static boolean isFlagAllowedOnPlot(Plot plot, GroupFlag flag, Player p) {
         if (plot != null && flag != null) {
-            Group group = plot.getFlag(flag, PlotSquaredOldShopFlag.Group.NONE);
+            Group group = plot.getFlag(flag, Group.NONE);
             ShopChest.getInstance().debug("Flag " + flag.getName() + " is set to " + group);
 
             switch (group) {
@@ -65,7 +64,6 @@ public class PlotSquaredOldShopFlag {
     }
 
     public static class GroupFlag extends Flag<Group> {
-
         public GroupFlag(String name) {
             super(name);
         }
@@ -94,6 +92,7 @@ public class PlotSquaredOldShopFlag {
                 case "all":
                     return Group.EVERYONE;
                 case "deny":
+                case "disallow":
                 case "false":
                 case "no":
                 case "0":
@@ -110,5 +109,4 @@ public class PlotSquaredOldShopFlag {
             return "Flag value must be a group: 'owner' , 'members', 'trusted', 'everyone' or 'none'";
         }
     }
-
 }
