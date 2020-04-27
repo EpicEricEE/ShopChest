@@ -1,18 +1,20 @@
 package de.epiceric.shopchest.config;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.utils.Operator;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.utils.Operator;
 
 public class HologramFormat {
 

@@ -1,12 +1,8 @@
 package de.epiceric.shopchest.language;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.config.LanguageConfiguration;
-import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.nms.CustomBookMeta;
-import de.epiceric.shopchest.nms.SpawnEggMeta;
-import de.epiceric.shopchest.utils.Utils;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.StringJoiner;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,9 +17,13 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.StringJoiner;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.LanguageConfiguration;
+import de.epiceric.shopchest.config.Placeholder;
+import de.epiceric.shopchest.nms.CustomBookMeta;
+import de.epiceric.shopchest.nms.SpawnEggMeta;
+import de.epiceric.shopchest.utils.Utils;
 
 public class LanguageUtils {
 
@@ -2265,7 +2265,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_HEADER, langConfig.getString("message.commandDescription.header", "&6==== &c/%COMMAND% &6Help")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_FOOTER, langConfig.getString("message.commandDescription.footer", "&6==== End")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop.")));
-        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [admin] - Create a shop.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "&a/%COMMAND% remove - Remove a shop.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "&a/%COMMAND% info - Retrieve shop information.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_REMOVEALL, langConfig.getString("message.commandDescription.removeall", "&a/%COMMAND% removeall - Remove all shops of a player.")));

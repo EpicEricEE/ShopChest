@@ -1,7 +1,5 @@
 package de.epiceric.shopchest.utils;
 
-import de.epiceric.shopchest.ShopChest;
-
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -9,6 +7,8 @@ import java.net.URLConnection;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import de.epiceric.shopchest.ShopChest;
 
 public class UpdateChecker {
 

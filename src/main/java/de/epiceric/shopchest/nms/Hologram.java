@@ -1,44 +1,22 @@
 package de.epiceric.shopchest.nms;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
 
 public class Hologram {
-
-    private static final List<Hologram> HOLOGRAMS = new ArrayList<>();
-
-    /**
-     * @param armorStand Armor stand that's part of a hologram
-     * @return Hologram, the armor stand is part of
-     */
-    public static Hologram getHologram(ArmorStand armorStand) {
-        for (Hologram hologram : HOLOGRAMS) {
-            if (hologram.contains(armorStand)) {
-                return hologram;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param armorStand Armor stand to check
-     * @return Whether the armor stand is part of a hologram
-     */
-    public static boolean isPartOfHologram(ArmorStand armorStand) {
-        return getHologram(armorStand) != null;
-    }
-
     // concurrent since update task is in async thread
-    // since this is a fake entity, hologram is hidden per default
-    private final Set<UUID> viewers = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
+    private final Set<UUID> viewers = ConcurrentHashMap.newKeySet();
     private final List<ArmorStandWrapper> wrappers = new ArrayList<>();
     private final Location location;
     private final ShopChest plugin;
@@ -54,7 +32,6 @@ public class Hologram {
         }
 
         this.exists = true;
-        HOLOGRAMS.add(this);
     }
 
     /**
@@ -148,7 +125,6 @@ public class Hologram {
         wrappers.clear();
 
         exists = false;
-        HOLOGRAMS.remove(this);
     }
 
     /**

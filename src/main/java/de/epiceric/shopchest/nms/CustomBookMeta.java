@@ -1,10 +1,11 @@
 package de.epiceric.shopchest.nms;	
 	
-import de.epiceric.shopchest.ShopChest;	
-import de.epiceric.shopchest.utils.Utils;	
-import org.bukkit.inventory.ItemStack;	
-	
-import java.lang.reflect.InvocationTargetException;	
+import java.lang.reflect.InvocationTargetException;
+
+import org.bukkit.inventory.ItemStack;
+
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.utils.Utils;
 	
 // For versions below 1.9.4, since Bukkit's BookMeta	
 // didn't have generations in those versions	

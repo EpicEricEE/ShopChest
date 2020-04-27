@@ -1,13 +1,14 @@
 package de.epiceric.shopchest.nms;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.utils.Utils;
+import java.lang.reflect.Field;
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
-import java.util.UUID;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.utils.Utils;
 
 public class ArmorStandWrapper {
     

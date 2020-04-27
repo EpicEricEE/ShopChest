@@ -1,10 +1,15 @@
 package de.epiceric.shopchest.utils;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.event.ShopsLoadedEvent;
-import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.shop.Shop.ShopType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -17,9 +22,11 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.event.ShopsLoadedEvent;
+import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 
 public class ShopUtils {
 
@@ -58,23 +65,24 @@ public class ShopUtils {
     }
 
     /**
-     * Get all shops
-     * Do not use for removing while iteration!
+     * Get a collection of all loaded shops
+     * <p>
+     * This collection is safe to use for looping over and removing shops.
      *
-     * @see #getShopsCopy()
-     * @return Read-only collection of all shops, may contain duplicates
+     * @return Read-only collection of all shops, may contain duplicates for double chests
      */
     public Collection<Shop> getShops() {
-        return shopLocationValues;
+        return Collections.unmodifiableCollection(new ArrayList<>(shopLocationValues));
     }
 
     /**
      * Get all shops
-     * Same as {@link #getShops()} but this is safe to remove while iterating
      *
      * @see #getShops()
      * @return Copy of collection of all shops, may contain duplicates
+     * @deprecated Use {@link #getShops()} instead
      */
+    @Deprecated
     public Collection<Shop> getShopsCopy() {
         return new ArrayList<>(getShops());
     }
