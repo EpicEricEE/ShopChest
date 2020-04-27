@@ -220,6 +220,11 @@ public class Config {
     public static boolean enableVendorMessages;
 
     /**
+     * Whether the vendor of the shop should get messages on all servers about buys and sells
+     **/
+    public static boolean enableVendorBungeeMessages;
+
+    /**
      * Whether the extension of a potion or tipped arrow (if available) should be appended to the item name.
      **/
     public static boolean appendPotionLevelToItemName;
@@ -486,6 +491,7 @@ public class Config {
         enableGriefPreventionIntegration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
         enableAreaShopIntegration = plugin.getConfig().getBoolean("enable-areashop-integration");
         enableVendorMessages = plugin.getConfig().getBoolean("enable-vendor-messages");
+        enableVendorBungeeMessages = plugin.getConfig().getBoolean("enable-vendor-bungee-messages");
         onlyShowShopsInSight = plugin.getConfig().getBoolean("only-show-shops-in-sight");
         appendPotionLevelToItemName = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
         removeShopOnError = plugin.getConfig().getBoolean("remove-shop-on-error");

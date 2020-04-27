@@ -1,5 +1,7 @@
 package de.epiceric.shopchest.listeners;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -343,6 +345,11 @@ public class ShopInteractListener implements Listener {
                                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
                                                         new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
                                                                 new Replacement(Placeholder.ITEM_NAME, shop.getProduct().getLocalizedName())));
+                                            } else if(!shop.getVendor().isOnline() && Config.enableVendorBungeeMessages){
+                                                String message = LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
+                                                        new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                                                        new Replacement(Placeholder.ITEM_NAME, shop.getProduct().getLocalizedName()));
+                                                sendBungeeMessage(shop.getVendor().getName(), message);
                                             }
                                             plugin.debug("Shop is out of stock");
                                         }
@@ -827,6 +834,11 @@ public class ShopInteractListener implements Listener {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                         new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName())));
+                            } else if(!shop.getVendor().isOnline() && Config.enableVendorBungeeMessages){
+                                String message = LanguageUtils.getMessage( Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                        new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.PLAYER, executor.getName()));
+                                sendBungeeMessage(shop.getVendor().getName(),message);
                             }
 
                         } else {
@@ -990,6 +1002,11 @@ public class ShopInteractListener implements Listener {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_SOLD, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                         new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName())));
+                            } else if(!shop.getVendor().isOnline() && Config.enableVendorBungeeMessages){
+                                String message = LanguageUtils.getMessage( Message.SOMEONE_SOLD, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                        new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.PLAYER, executor.getName()));
+                                sendBungeeMessage(shop.getVendor().getName(),message);
                             }
 
                         } else {
@@ -1167,4 +1184,25 @@ public class ShopInteractListener implements Listener {
         return (removed == amount);
     }
 
+    public void sendBungeeMessage(String player, String message) {
+        try {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(b);
+
+            out.writeUTF("Message");
+            out.writeUTF(player);
+            out.writeUTF(message);
+
+            if (!plugin.getServer().getOnlinePlayers().isEmpty()) {
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Player p = plugin.getServer().getOnlinePlayers().iterator().next();
+                    p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
+                });
+            }
+        } catch (Exception e) {
+            plugin.debug("Failed to send bungee message");
+            plugin.debug(e);
+            plugin.getLogger().warning("Failed to send BungeeCord message");
+        }
+    }
 }

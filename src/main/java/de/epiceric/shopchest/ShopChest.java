@@ -214,6 +214,8 @@ public class ShopChest extends JavaPlugin {
         registerExternalListeners();
         initializeShops();
 
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         updater = new ShopUpdater(this);
         updater.start();
     }
