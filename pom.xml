@@ -73,7 +73,7 @@
         </repository>
         <repository>
             <id>uskyblock-repo</id>
-            <url>https://www.uskyblock.ovh/maven/uskyblock/</url>
+            <url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
         </repository>
         <repository>
             <id>tastybento-repo</id>
@@ -86,6 +86,10 @@
         <repository>
             <id>nlthijs48-repo</id>
             <url>http://maven.wiefferink.me</url>
+        </repository>
+        <repository>
+            <id>plotsquared-repo</id>
+            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -109,9 +113,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.intellectualsites.plotsquared</groupId>
-            <artifactId>PlotSquared-API</artifactId>
-            <version>4.226</version>
+            <groupId>com.plotsquared</groupId>
+            <artifactId>PlotSquared</artifactId>
+            <version>5.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -158,7 +162,14 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/IslandWorld-8.5.jar</systemPath>
         </dependency>
-        
+        <dependency>
+            <groupId>com.github.intellectualsites.plotsquared</groupId>
+            <artifactId>PlotSquared-API</artifactId>
+            <version>4.495</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/PlotSquared-Bukkit-4.4.495.jar</systemPath>
+        </dependency>
+
         <!-- Shaded dependencies -->
         <dependency>
             <groupId>org.codemc.worldguardwrapper</groupId>
@@ -195,7 +206,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.3</version>
+                <version>3.2.2</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

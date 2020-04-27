@@ -20,7 +20,11 @@ import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
-import de.epiceric.shopchest.utils.*;
+import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ItemUtils;
+import de.epiceric.shopchest.utils.Permissions;
+import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.Utils;
 import de.epiceric.shopchest.utils.ClickType.CreateClickType;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.milkbowl.vault.economy.Economy;
@@ -340,7 +344,7 @@ public class ShopInteractListener implements Listener {
                                                 String message = LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
                                                         new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
                                                         new Replacement(Placeholder.ITEM_NAME, shop.getProduct().getLocalizedName()));
-                                                sendbungeeMessage(shop.getVendor().getName(), message);
+                                                sendBungeeMessage(shop.getVendor().getName(), message);
                                             }
                                             plugin.debug("Shop is out of stock");
                                         }
@@ -824,7 +828,7 @@ public class ShopInteractListener implements Listener {
                                 String message = LanguageUtils.getMessage( Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                         new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName()));
-                                sendbungeeMessage(shop.getVendor().getName(),message);
+                                sendBungeeMessage(shop.getVendor().getName(),message);
                             }
 
                         } else {
@@ -992,7 +996,7 @@ public class ShopInteractListener implements Listener {
                                 String message = LanguageUtils.getMessage( Message.SOMEONE_SOLD, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                         new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName()));
-                                sendbungeeMessage(shop.getVendor().getName(),message);
+                                sendBungeeMessage(shop.getVendor().getName(),message);
                             }
 
                         } else {
@@ -1170,7 +1174,7 @@ public class ShopInteractListener implements Listener {
         return (removed == amount);
     }
 
-    public void sendbungeeMessage(String player, String message) {
+    public void sendBungeeMessage(String player, String message) {
         try {
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream(b);
@@ -1179,10 +1183,16 @@ public class ShopInteractListener implements Listener {
             out.writeUTF(player);
             out.writeUTF(message);
 
-            new PluginMessageTask(plugin, b).runTaskAsynchronously(plugin);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+            if (!plugin.getServer().getOnlinePlayers().isEmpty()) {
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Player p = plugin.getServer().getOnlinePlayers().iterator().next();
+                    p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
+                });
+            }
+        } catch (Exception e) {
+            plugin.debug("Failed to send bungee message");
+            plugin.debug(e);
+            plugin.getLogger().warning("Failed to send BungeeCord message");
         }
     }
 }
