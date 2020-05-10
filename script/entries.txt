@@ -30,6 +30,8 @@ block.minecraft.barrel
 block.minecraft.barrier
 block.minecraft.beacon
 block.minecraft.bedrock
+block.minecraft.bee_nest
+block.minecraft.beehive
 block.minecraft.beetroots
 block.minecraft.bell
 block.minecraft.birch_button
@@ -251,6 +253,8 @@ block.minecraft.green_wool
 block.minecraft.grindstone
 block.minecraft.hay_block
 block.minecraft.heavy_weighted_pressure_plate
+block.minecraft.honey_block
+block.minecraft.honeycomb_block
 block.minecraft.hopper
 block.minecraft.horn_coral
 block.minecraft.horn_coral_block
@@ -716,6 +720,7 @@ item.minecraft.armor_stand
 item.minecraft.arrow
 item.minecraft.baked_potato
 item.minecraft.bat_spawn_egg
+item.minecraft.bee_spawn_egg
 item.minecraft.beef
 item.minecraft.beetroot
 item.minecraft.beetroot_seeds
@@ -848,6 +853,8 @@ item.minecraft.green_dye
 item.minecraft.guardian_spawn_egg
 item.minecraft.gunpowder
 item.minecraft.heart_of_the_sea
+item.minecraft.honey_bottle
+item.minecraft.honeycomb
 item.minecraft.hopper_minecart
 item.minecraft.horse_spawn_egg
 item.minecraft.husk_spawn_egg

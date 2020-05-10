@@ -1,10 +1,5 @@
 package de.epiceric.shopchest.nms;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.utils.Utils;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +9,12 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.utils.Utils;
 
 public class JsonBuilder {
 
@@ -108,7 +109,7 @@ public class JsonBuilder {
         }
     }
     
-    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fl-oL-OkK0-9])+)([^§]*)");
+    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fk-oK-OrR0-9])+)([^§]*)");
 
     private Part rootPart;
     private ShopChest plugin;
@@ -147,7 +148,7 @@ public class JsonBuilder {
 
         matcher.reset();
 
-        PartArray array = new PartArray();
+        PartArray array = new PartArray(new Part());
         int lastEndIndex = 0;
 
         while (matcher.find()) {

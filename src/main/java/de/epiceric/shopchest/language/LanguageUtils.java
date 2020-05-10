@@ -1,12 +1,8 @@
 package de.epiceric.shopchest.language;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.config.LanguageConfiguration;
-import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.nms.CustomBookMeta;
-import de.epiceric.shopchest.nms.SpawnEggMeta;
-import de.epiceric.shopchest.utils.Utils;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.StringJoiner;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,8 +17,13 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import java.util.ArrayList;
-import java.util.Map;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.LanguageConfiguration;
+import de.epiceric.shopchest.config.Placeholder;
+import de.epiceric.shopchest.nms.CustomBookMeta;
+import de.epiceric.shopchest.nms.SpawnEggMeta;
+import de.epiceric.shopchest.utils.Utils;
 
 public class LanguageUtils {
 
@@ -1946,6 +1947,16 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.valueOf("WALL_SIGN"), langConfig.getString("block.minecraft.wall_sign", "Wall Sign")));
         }
 
+        if (Utils.getMajorVersion() >= 15) {
+            itemNames.add(new ItemName(Material.BEE_NEST, langConfig.getString("block.minecraft.bee_nest", "Bee Nest")));
+            itemNames.add(new ItemName(Material.BEE_SPAWN_EGG, langConfig.getString("item.minecraft.bee_spawn_egg", "Bee Spawn Egg")));
+            itemNames.add(new ItemName(Material.BEEHIVE, langConfig.getString("block.minecraft.beehive", "Beehive")));
+            itemNames.add(new ItemName(Material.HONEY_BLOCK, langConfig.getString("block.minecraft.honey_block", "Honey Block")));
+            itemNames.add(new ItemName(Material.HONEY_BOTTLE, langConfig.getString("item.minecraft.honey_bottle", "Honey Bottle")));
+            itemNames.add(new ItemName(Material.HONEYCOMB, langConfig.getString("item.minecraft.honeycomb", "Honeycomb")));
+            itemNames.add(new ItemName(Material.HONEYCOMB_BLOCK, langConfig.getString("block.minecraft.honeycomb_block", "Honeycomb Block")));
+        }
+
         // Add Enchantment Names
         enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_ALL, langConfig.getString("enchantment.minecraft.sharpness", "Sharpness")));
         enchantmentNames.add(new EnchantmentName(Enchantment.DAMAGE_UNDEAD, langConfig.getString("enchantment.minecraft.smite", "Smite")));
@@ -2254,7 +2265,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_HEADER, langConfig.getString("message.commandDescription.header", "&6==== &c/%COMMAND% &6Help")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_FOOTER, langConfig.getString("message.commandDescription.footer", "&6==== End")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop.")));
-        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [admin] - Create a shop.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "&a/%COMMAND% remove - Remove a shop.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "&a/%COMMAND% info - Retrieve shop information.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_REMOVEALL, langConfig.getString("message.commandDescription.removeall", "&a/%COMMAND% removeall - Remove all shops of a player.")));
@@ -2407,21 +2418,13 @@ public class LanguageUtils {
      */
     public static String getEnchantmentString(Map<Enchantment, Integer> enchantmentMap) {
         if (enchantmentMap == null) return null;
-        Enchantment[] enchantments = enchantmentMap.keySet().toArray(new Enchantment[enchantmentMap.size()]);
-        StringBuilder enchantmentList = new StringBuilder();
+        StringJoiner joiner = new StringJoiner(", ");
 
-        for (int i = 0; i < enchantments.length; i++) {
-            Enchantment enchantment = enchantments[i];
-
-            if (i == enchantments.length - 1) {
-                enchantmentList.append(LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)));
-            } else {
-                enchantmentList.append(LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)));
-                enchantmentList.append(", ");
-            }
+        for (Enchantment enchantment : enchantmentMap.keySet()) {
+            joiner.add(LanguageUtils.getEnchantmentName(enchantment, enchantmentMap.get(enchantment)));
         }
 
-        return enchantmentList.toString();
+        return joiner.toString();
     }
 
     /**

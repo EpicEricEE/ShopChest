@@ -1,14 +1,5 @@
 package de.epiceric.shopchest.config;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.sql.Database;
-import de.epiceric.shopchest.utils.ItemUtils;
-import de.epiceric.shopchest.utils.Utils;
-
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.inventory.ItemStack;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +9,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.inventory.ItemStack;
+
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.sql.Database;
+import de.epiceric.shopchest.utils.ItemUtils;
+import de.epiceric.shopchest.utils.Utils;
 
 public class Config {
 
@@ -195,6 +195,11 @@ public class Config {
     public static boolean enableASkyblockIntegration;
 
     /**
+     * Whether BentoBox integration should be enabled
+     **/
+    public static boolean enableBentoBoxIntegration;
+
+    /**
      * Whether IslandWorld integration should be enabled
      **/
     public static boolean enableIslandWorldIntegration;
@@ -213,6 +218,11 @@ public class Config {
      * Whether the vendor of the shop should get messages about buys and sells
      **/
     public static boolean enableVendorMessages;
+
+    /**
+     * Whether the vendor of the shop should get messages on all servers about buys and sells
+     **/
+    public static boolean enableVendorBungeeMessages;
 
     /**
      * Whether the extension of a potion or tipped arrow (if available) should be appended to the item name.
@@ -486,10 +496,12 @@ public class Config {
         enablePlotsquaredIntegration = plugin.getConfig().getBoolean("enable-plotsquared-integration");
         enableUSkyblockIntegration = plugin.getConfig().getBoolean("enable-uskyblock-integration");
         enableASkyblockIntegration = plugin.getConfig().getBoolean("enable-askyblock-integration");
+        enableBentoBoxIntegration = plugin.getConfig().getBoolean("enable-bentobox-integration");
         enableIslandWorldIntegration = plugin.getConfig().getBoolean("enable-islandworld-integration");
         enableGriefPreventionIntegration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
         enableAreaShopIntegration = plugin.getConfig().getBoolean("enable-areashop-integration");
         enableVendorMessages = plugin.getConfig().getBoolean("enable-vendor-messages");
+        enableVendorBungeeMessages = plugin.getConfig().getBoolean("enable-vendor-bungee-messages");
         onlyShowShopsInSight = plugin.getConfig().getBoolean("only-show-shops-in-sight");
         appendPotionLevelToItemName = plugin.getConfig().getBoolean("append-potion-level-to-item-name");
         removeShopOnError = plugin.getConfig().getBoolean("remove-shop-on-error");

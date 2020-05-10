@@ -1,5 +1,22 @@
 package de.epiceric.shopchest.command;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Placeholder;
@@ -13,30 +30,17 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.shop.Shop.ShopType;
+import de.epiceric.shopchest.shop.ShopProduct;
 import de.epiceric.shopchest.utils.Callback;
 import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ClickType.CreateClickType;
+import de.epiceric.shopchest.utils.ClickType.SelectClickType;
 import de.epiceric.shopchest.utils.ItemUtils;
 import de.epiceric.shopchest.utils.Permissions;
 import de.epiceric.shopchest.utils.ShopUtils;
 import de.epiceric.shopchest.utils.UpdateChecker;
 import de.epiceric.shopchest.utils.Utils;
-import de.epiceric.shopchest.utils.ClickType.CreateClickType;
-import de.epiceric.shopchest.utils.ClickType.SelectClickType;
-
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class ShopCommandExecutor implements CommandExecutor {
 
@@ -191,12 +195,39 @@ class ShopCommandExecutor implements CommandExecutor {
             return;
         }
 
-        shopUtils.reloadShops(true, true, new Callback<Integer>(plugin) {
+        // Reload configurations
+        plugin.getShopChestConfig().reload(false, true, true);
+        plugin.getHologramFormat().reload();
+        plugin.getUpdater().restart();
+
+        // Remove all shops
+        for (Shop shop : shopUtils.getShops()) {
+            shopUtils.removeShop(shop, false);
+        }
+
+        Chunk[] loadedChunks = Bukkit.getWorlds().stream().map(World::getLoadedChunks)
+                .flatMap(Stream::of).toArray(Chunk[]::new);
+
+        // Reconnect to the database and re-load shops in loaded chunks
+        plugin.getShopDatabase().connect(new Callback<Integer>(plugin) {
             @Override
             public void onResult(Integer result) {
-                sender.sendMessage(LanguageUtils.getMessage(Message.RELOADED_SHOPS,
-                        new Replacement(Placeholder.AMOUNT, String.valueOf(result))));
-                plugin.debug(sender.getName() + " has reloaded " + result + " shops");
+                shopUtils.loadShops(loadedChunks, new Callback<Integer>(plugin) {
+                    @Override
+                    public void onResult(Integer result) {
+                        sender.sendMessage(LanguageUtils.getMessage(Message.RELOADED_SHOPS,
+                                new Replacement(Placeholder.AMOUNT, String.valueOf(result))));
+                        plugin.debug(sender.getName() + " has reloaded " + result + " shops");
+                    }
+        
+                    @Override
+                    public void onError(Throwable throwable) {
+                        sender.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, 
+                                new Replacement(Placeholder.ERROR, "Failed to load shops from database")));
+                        plugin.getLogger().severe("Failed to load shops");
+                        if (throwable != null) plugin.getLogger().severe(throwable.getMessage());
+                    }
+                });
             }
 
             @Override
@@ -512,27 +543,34 @@ class ShopCommandExecutor implements CommandExecutor {
 
         plugin.debug(sender.getName() + " is removing all shops of " + vendor.getName());
 
-        List<Shop> shops = new ArrayList<>();
+        plugin.getShopUtils().getShops(vendor, new Callback<Collection<Shop>>(plugin) {
+            @Override
+            public void onResult(Collection<Shop> result) {
+                List<Shop> shops = new ArrayList<>(result);
 
-        for (Shop shop : shopUtils.getShops()) {
-            if (shop.getVendor().getUniqueId().equals(vendor.getUniqueId())) {
-                shops.add(shop);
+                ShopRemoveAllEvent event = new ShopRemoveAllEvent(sender, vendor, shops);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()){
+                    plugin.debug("Remove all event cancelled");
+                    return;
+                }
+        
+                for (Shop shop : shops) {
+                    shopUtils.removeShop(shop, true);
+                }
+        
+                sender.sendMessage(LanguageUtils.getMessage(Message.ALL_SHOPS_REMOVED,
+                        new Replacement(Placeholder.AMOUNT, String.valueOf(shops.size())),
+                        new Replacement(Placeholder.VENDOR, vendor.getName())));
             }
-        }
 
-        ShopRemoveAllEvent event = new ShopRemoveAllEvent(sender, vendor, shops);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()){
-            plugin.debug("Remove all event cancelled");
-            return;
-        }
+            @Override
+            public void onError(Throwable throwable) {
+                sender.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED,
+                        new Replacement(Placeholder.ERROR, "Failed to get player's shops")));
+            }
+        });
 
-        for (Shop shop : shops) {
-            shopUtils.removeShop(shop, true);
-        }
-
-        sender.sendMessage(LanguageUtils.getMessage(Message.ALL_SHOPS_REMOVED,
-                new Replacement(Placeholder.AMOUNT, String.valueOf(shops.size())),
-                new Replacement(Placeholder.VENDOR, vendor.getName())));
+        
     }
 }

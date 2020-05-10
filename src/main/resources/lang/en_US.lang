@@ -285,7 +285,7 @@ message.commandDescription.create=&a/%COMMAND% create <amount> <buy-price> <sell
 
 # Set the command description message for '/shop create' when you type '/shop' and have permission "shopchest.create.admin"
 # Usable Placeholders: %COMMAND%
-message.commandDescription.create-admin=&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.
+message.commandDescription.create-admin=&a/%COMMAND% create <amount> <buy-price> <sell-price> [admin] - Create a shop.
 
 # Set the command description message for '/shop remove' when you type '/shop'.
 # Usable Placeholders: %COMMAND%
@@ -946,6 +946,10 @@ block.minecraft.bell=Bell
 block.minecraft.lantern=Lantern
 block.minecraft.sweet_berry_bush=Sweet Berry Bush
 block.minecraft.campfire=Campfire
+block.minecraft.beehive=Beehive
+block.minecraft.bee_nest=Bee Nest
+block.minecraft.honey_block=Honey Block
+block.minecraft.honeycomb_block=Honeycomb Block
 item.minecraft.name_tag=Name Tag
 item.minecraft.lead=Lead
 item.minecraft.iron_shovel=Iron Shovel
@@ -1167,6 +1171,7 @@ item.minecraft.brewing_stand=Brewing Stand
 item.minecraft.ender_eye=Eye of Ender
 item.minecraft.glistering_melon_slice=Glistering Melon Slice
 item.minecraft.bat_spawn_egg=Bat Spawn Egg
+item.minecraft.bee_spawn_egg=Bee Spawn Egg
 item.minecraft.blaze_spawn_egg=Blaze Spawn Egg
 item.minecraft.cat_spawn_egg=Cat Spawn Egg
 item.minecraft.cave_spider_spawn_egg=Cave Spider Spawn Egg
@@ -1286,6 +1291,8 @@ item.minecraft.flower_banner_pattern.desc=Flower Charge
 item.minecraft.mojang_banner_pattern.desc=Thing
 item.minecraft.globe_banner_pattern.desc=Globe
 item.minecraft.sweet_berries=Sweet Berries
+item.minecraft.honey_bottle=Honey Bottle
+item.minecraft.honeycomb=Honeycomb
 effect.minecraft.speed=Speed
 effect.minecraft.slowness=Slowness
 effect.minecraft.haste=Haste

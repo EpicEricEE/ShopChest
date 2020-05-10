@@ -25,8 +25,7 @@ confirm-shopping: false
 
 # Set whether players should be able to select the shop item from the
 # creative inventory if they don't hold an item in their hand.
-# !! This feature may be exploitable, players could get access to creative mode!
-creative-select-item: false
+creative-select-item: true
 
 # Set whether the (current) shop creation price should be refunded
 # when the shop is removed by its creator.
@@ -58,6 +57,7 @@ enable-authme-integration: true
 enable-plotsquared-integration: true
 enable-uskyblock-integration: true
 enable-askyblock-integration: true
+enable-bentobox-integration: true
 enable-islandworld-integration: true
 enable-griefprevention-integration: true
 enable-areashop-integration: true
@@ -70,6 +70,10 @@ inactive-time: 30
 # Set whether the vendor of a shop should get messages when players buy
 # or sell something from/to his shop or when his shop is out of stock.
 enable-vendor-messages: true
+
+# Set whether the vendor of a shop should get messages on all servers when players
+# buy or sell something from/to his shop or when his shop is out of stock.
+enable-vendor-bungee-messages: false
 
 # Set whether only the shop a player is pointing at should be shown.
 # If set to false, every shop near the player (with the specified

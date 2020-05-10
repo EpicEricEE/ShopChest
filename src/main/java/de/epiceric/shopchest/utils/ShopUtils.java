@@ -1,9 +1,18 @@
 package de.epiceric.shopchest.utils;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.shop.Shop;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
@@ -13,11 +22,15 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.event.ShopsLoadedEvent;
+import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
 
 public class ShopUtils {
+
+    private final Map<UUID, Counter> playerShopAmount = new HashMap<>();
 
     // concurrent since it is updated in async task
     private final Map<UUID, Location> playerLocation = new ConcurrentHashMap<>();
@@ -52,23 +65,24 @@ public class ShopUtils {
     }
 
     /**
-     * Get all shops
-     * Do not use for removing while iteration!
+     * Get a collection of all loaded shops
+     * <p>
+     * This collection is safe to use for looping over and removing shops.
      *
-     * @see #getShopsCopy()
-     * @return Read-only collection of all shops, may contain duplicates
+     * @return Read-only collection of all shops, may contain duplicates for double chests
      */
     public Collection<Shop> getShops() {
-        return shopLocationValues;
+        return Collections.unmodifiableCollection(new ArrayList<>(shopLocationValues));
     }
 
     /**
      * Get all shops
-     * Same as {@link #getShops()} but this is safe to remove while iterating
      *
      * @see #getShops()
      * @return Copy of collection of all shops, may contain duplicates
+     * @deprecated Use {@link #getShops()} instead
      */
+    @Deprecated
     public Collection<Shop> getShopsCopy() {
         return new ArrayList<>(getShops());
     }
@@ -99,6 +113,9 @@ public class ShopUtils {
         }
 
         if (addToDatabase) {
+            if (shop.getShopType() != ShopType.ADMIN) {
+                playerShopAmount.compute(shop.getVendor().getUniqueId(), (uuid, amount) -> amount == null ? new Counter(1) : amount.increment());
+            }
             plugin.getShopDatabase().addShop(shop, callback);
         } else {
             if (callback != null) callback.callSyncResult(shop.getID());
@@ -124,23 +141,28 @@ public class ShopUtils {
     public void removeShop(Shop shop, boolean removeFromDatabase, Callback<Void> callback) {
         plugin.debug("Removing shop (#" + shop.getID() + ")");
 
-        InventoryHolder ih = shop.getInventoryHolder();
+        if (shop.isCreated()) {
+            InventoryHolder ih = shop.getInventoryHolder();
 
-        if (ih instanceof DoubleChest) {
-            DoubleChest dc = (DoubleChest) ih;
-            Chest r = (Chest) dc.getRightSide();
-            Chest l = (Chest) dc.getLeftSide();
+            if (ih instanceof DoubleChest) {
+                DoubleChest dc = (DoubleChest) ih;
+                Chest r = (Chest) dc.getRightSide();
+                Chest l = (Chest) dc.getLeftSide();
 
-            shopLocation.remove(r.getLocation());
-            shopLocation.remove(l.getLocation());
-        } else {
-            shopLocation.remove(shop.getLocation());
+                shopLocation.remove(r.getLocation());
+                shopLocation.remove(l.getLocation());
+            } else {
+                shopLocation.remove(shop.getLocation());
+            }
+
+            shop.removeItem();
+            shop.removeHologram();
         }
 
-        shop.removeItem();
-        shop.removeHologram();
-
         if (removeFromDatabase) {
+            if (shop.getShopType() != ShopType.ADMIN) {
+                playerShopAmount.compute(shop.getVendor().getUniqueId(), (uuid, amount) -> amount == null ? new Counter() : amount.decrement());
+            }
             plugin.getShopDatabase().removeShop(shop, callback);
         } else {
             if (callback != null) callback.callSyncResult(null);
@@ -182,8 +204,15 @@ public class ShopUtils {
             shop.removeHologram();
         });
 
+        Shop first = toRemove.values().iterator().next();
+        boolean isAdmin = first.getShopType() == ShopType.ADMIN;
+        UUID vendorUuid = first.getVendor().getUniqueId();
+
         // Database#removeShop removes shop by ID so this only needs to be called once
         if (removeFromDatabase) {
+            if (!isAdmin) {
+                playerShopAmount.compute(vendorUuid, (uuid, amount) -> amount == null ? new Counter() : amount.decrement());
+            }
             plugin.getShopDatabase().removeShop(toRemove.values().iterator().next(), callback);
         } else {
             if (callback != null) callback.callSyncResult(null);
@@ -246,69 +275,109 @@ public class ShopUtils {
      * @return The amount of a shops a player has (if {@link Config#excludeAdminShops} is true, admin shops won't be counted)
      */
     public int getShopAmount(OfflinePlayer p) {
-        float shopCount = 0;
-
-        for (Shop shop : getShops()) {
-            if (shop.getVendor().equals(p)) {
-                if (shop.getShopType() != Shop.ShopType.ADMIN) {
-                    shopCount++;
-
-                    InventoryHolder ih = shop.getInventoryHolder();
-
-                    if (ih instanceof DoubleChest)
-                        shopCount -= 0.5;
-                }
-            }
-        }
-
-        return Math.round(shopCount);
+        return playerShopAmount.getOrDefault(p.getUniqueId(), new Counter()).get();
     }
 
     /**
-     * Reload the shops
-     * @param reloadConfig Whether the configuration should also be reloaded
-     * @param showConsoleMessages Whether messages about the language file should be shown in the console
-     * @param callback Callback that - if succeeded - returns the amount of shops that were reloaded (as {@code int})
+     * Get all shops of a player from the database without loading them
+     * @param p Player, whose shops should be get
+     * @param callback Callback that returns a collection of the given player's shops
      */
-    public void reloadShops(boolean reloadConfig, final boolean showConsoleMessages, final Callback<Integer> callback) {
-        plugin.debug("Reloading shops...");
-
-        if (reloadConfig) {
-            plugin.getShopChestConfig().reload(false, true, showConsoleMessages);
-            plugin.getHologramFormat().reload();
-            plugin.getUpdater().restart();
-        }
-
-        plugin.getShopDatabase().connect(new Callback<Integer>(plugin) {
+    public void getShops(OfflinePlayer p, Callback<Collection<Shop>> callback) {
+        plugin.getShopDatabase().getShops(p.getUniqueId(), new Callback<Collection<Shop>>(plugin) {
             @Override
-            public void onResult(Integer result) {
-                for (Shop shop : getShopsCopy()) {
-                    removeShop(shop, false);
-                    plugin.debug("Removed shop (#" + shop.getID() + ")");
+            public void onResult(Collection<Shop> result) {
+                Set<Shop> shops = new HashSet<>();
+                for (Shop playerShop : result) {
+                    Shop loadedShop = getShop(playerShop.getLocation());
+                    if (loadedShop != null && loadedShop.equals(playerShop)) {
+                        shops.add(loadedShop);
+                    } else {
+                        shops.add(playerShop);
+                    }
                 }
-
-                plugin.getShopDatabase().getShops(showConsoleMessages, new Callback<Collection<Shop>>(plugin) {
-                    @Override
-                    public void onResult(Collection<Shop> result) {
-                        for (Shop shop : result) {
-                            if (shop.create(showConsoleMessages)) {
-                                addShop(shop, false);
-                            }
-                        }
-
-                        if (callback != null) callback.callSyncResult(result.size());
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        if (callback != null) callback.callSyncError(throwable);
-                    }
-                });
+                if (callback != null) callback.onResult(shops);
             }
 
             @Override
             public void onError(Throwable throwable) {
-                if (callback != null) callback.callSyncError(throwable);
+                if (callback != null) callback.onError(throwable);
+            }
+        });
+    }
+
+    /**
+     * Loads the amount of shops for each player
+     * @param callback Callback that returns the amount of shops for each player
+     */
+    public void loadShopAmounts(final Callback<Map<UUID, Integer>> callback) {
+        plugin.getShopDatabase().getShopAmounts(new Callback<Map<UUID,Integer>>(plugin) {
+            @Override
+            public void onResult(Map<UUID, Integer> result) {
+                playerShopAmount.clear();
+                result.forEach((uuid, amount) -> playerShopAmount.put(uuid, new Counter(amount)));
+                if (callback != null) callback.onResult(result);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                if (callback != null) callback.onError(throwable);
+            }
+        });
+    }
+
+    /**
+     * Gets all shops in the given chunk from the database and adds them to the server
+     * @param chunk The chunk to load shops from
+     * @param callback Callback that returns the amount of shops added if succeeded
+     * @see ShopUtils#loadShops(Chunk[], Callback)
+     */
+    public void loadShops(final Chunk chunk, final Callback<Integer> callback) {
+        loadShops(new Chunk[] {chunk}, callback);
+    }
+
+    /**
+     * Gets all shops in the given chunks from the database and adds them to the server
+     * @param chunk The chunks to load shops from
+     * @param callback Callback that returns the amount of shops added if succeeded
+     * @see ShopUtils#loadShops(Chunk Callback)
+     */
+    public void loadShops(final Chunk[] chunks, final Callback<Integer> callback) {
+        plugin.getShopDatabase().getShopsInChunks(chunks, new Callback<Collection<Shop>>(plugin) {
+            @Override
+            public void onResult(Collection<Shop> result) {
+                Collection<Shop> loadedShops = new HashSet<>();
+
+                for (Shop shop : result) {
+                    Location loc = shop.getLocation();
+
+                    // Don't add shop if shop is already loaded
+                    if (shopLocation.containsKey(loc)) {
+                        continue;
+                    }
+
+                    int x = loc.getBlockX() / 16;
+                    int z = loc.getBlockZ() / 16;
+                    
+                    // Don't add shop if chunk is no longer loaded
+                    if (!loc.getWorld().isChunkLoaded(x, z)) {
+                        continue;
+                    }
+
+                    if (shop.create(true)) {
+                        addShop(shop, false);
+                        loadedShops.add(shop);
+                    }
+                }
+
+                if (callback != null) callback.onResult(loadedShops.size());
+
+                Bukkit.getPluginManager().callEvent(new ShopsLoadedEvent(Collections.unmodifiableCollection(loadedShops)));
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                if (callback != null) callback.onError(throwable);
             }
         });
     }

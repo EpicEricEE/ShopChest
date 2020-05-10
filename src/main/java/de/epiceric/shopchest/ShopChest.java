@@ -1,12 +1,42 @@
 package de.epiceric.shopchest;
 
 import com.earth2me.essentials.Essentials;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 import com.palmergames.bukkit.towny.Towny;
+import com.plotsquared.core.PlotSquared;
 import com.wasteofplastic.askyblock.ASkyBlock;
+
+import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+
 import de.epiceric.shopchest.command.ShopCommand;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.HologramFormat;
 import de.epiceric.shopchest.event.ShopInitializedEvent;
+import de.epiceric.shopchest.external.BentoBoxShopFlag;
+import de.epiceric.shopchest.external.PlotSquaredOldShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.external.listeners.ASkyBlockListener;
@@ -17,6 +47,7 @@ import de.epiceric.shopchest.external.listeners.TownyListener;
 import de.epiceric.shopchest.external.listeners.USkyBlockListener;
 import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.listeners.AreaShopListener;
+import de.epiceric.shopchest.listeners.BentoBoxListener;
 import de.epiceric.shopchest.listeners.BlockExplodeListener;
 import de.epiceric.shopchest.listeners.ChestProtectListener;
 import de.epiceric.shopchest.listeners.CreativeModeListener;
@@ -42,30 +73,9 @@ import fr.xephi.authme.AuthMe;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.wiefferink.areashop.AreaShop;
 import net.milkbowl.vault.economy.Economy;
-import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.codemc.worldguardwrapper.WorldGuardWrapper;
-
 import pl.islandworld.IslandWorld;
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import world.bentobox.bentobox.BentoBox;
 
 public class ShopChest extends JavaPlugin {
 
@@ -89,6 +99,7 @@ public class ShopChest extends JavaPlugin {
     private IslandWorld islandWorld;
     private GriefPrevention griefPrevention;
     private AreaShop areaShop;
+    private BentoBox bentoBox;
     private ShopUpdater updater;
     private ExecutorService shopCreationThreadPool;
     private Essentials essentials;
@@ -174,6 +185,7 @@ public class ShopChest extends JavaPlugin {
             case "v1_13_R1":
             case "v1_13_R2":
             case "v1_14_R1":
+            case "v1_15_R1":
                 break;
             default:
                 debug("Server version not officially supported: " + Utils.getServerVersion() + "!");
@@ -204,6 +216,8 @@ public class ShopChest extends JavaPlugin {
         registerExternalListeners();
         initializeShops();
 
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         updater = new ShopUpdater(this);
         updater.start();
     }
@@ -226,6 +240,10 @@ public class ShopChest extends JavaPlugin {
             return;
         }
 
+        if (getShopCommand() != null) {
+            getShopCommand().unregister();
+        }
+
         ClickType.clear();
 
         if (updater != null) {
@@ -237,14 +255,14 @@ public class ShopChest extends JavaPlugin {
             shopCreationThreadPool.shutdown();
         }
         
-        for (Shop shop : shopUtils.getShopsCopy()) {
+        for (Shop shop : shopUtils.getShops()) {
             shopUtils.removeShop(shop, false);
             debug("Removed shop (#" + shop.getID() + ")");
         }
 
-        if (database != null) {
+        if (database != null && database.isInitialized()) {
             if (database instanceof SQLite) {
-                ((SQLite) database).vacuum(false);
+                ((SQLite) database).vacuum();
             }
 
             database.disconnect();
@@ -296,12 +314,26 @@ public class ShopChest extends JavaPlugin {
             areaShop = (AreaShop) areaShopPlugin;
         }
 
+        Plugin bentoBoxPlugin = getServer().getPluginManager().getPlugin("BentoBox");
+        if (bentoBoxPlugin instanceof BentoBox) {
+            bentoBox = (BentoBox) bentoBoxPlugin;
+        }
+
         if (hasWorldGuard()) {
             WorldGuardWrapper.getInstance().registerEvents(this);
         }
 
         if (hasPlotSquared()) {
-            PlotSquaredShopFlag.register(this);
+            try {
+                Class.forName("com.plotsquared.core.PlotSquared");
+                PlotSquaredShopFlag.register(this);
+            } catch (ClassNotFoundException ex) {
+                PlotSquaredOldShopFlag.register(this);
+            }
+        }
+
+        if (hasBentoBox()) {
+            BentoBoxShopFlag.register(this);
         }
         Plugin essPlugin = Bukkit.getServer().getPluginManager().getPlugin("Essentials");
         if (essPlugin instanceof Essentials){
@@ -312,7 +344,7 @@ public class ShopChest extends JavaPlugin {
     private void loadMetrics() {
         debug("Initializing Metrics...");
 
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics(this, 1726);
         metrics.addCustomChart(new Metrics.SimplePie("creative_setting", () -> Config.creativeSelectItem ? "Enabled" : "Disabled"));
         metrics.addCustomChart(new Metrics.SimplePie("database_type", () -> Config.databaseType.toString()));
         metrics.addCustomChart(new Metrics.AdvancedPie("shop_type", () -> {
@@ -419,6 +451,10 @@ public class ShopChest extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(new AreaShopListener(this), this);
             }
         }
+
+        if (hasBentoBox()) {
+            getServer().getPluginManager().registerEvents(new BentoBoxListener(this), this);
+        }
     }
 
     private void registerExternalListeners() {
@@ -436,19 +472,48 @@ public class ShopChest extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new USkyBlockListener(this), this);
         if (hasWorldGuard())
             getServer().getPluginManager().registerEvents(new de.epiceric.shopchest.external.listeners.WorldGuardListener(this), this);
+        if (hasBentoBox())
+            getServer().getPluginManager().registerEvents(new de.epiceric.shopchest.external.listeners.BentoBoxListener(this), this);
     }
 
     /**
      * Initializes the shops
      */
     private void initializeShops() {
-        debug("Initializing Shops...");
-        shopUtils.reloadShops(false, true, new Callback<Integer>(this) {
+        getShopDatabase().connect(new Callback<Integer>(this) {
             @Override
             public void onResult(Integer result) {
-                Bukkit.getServer().getPluginManager().callEvent(new ShopInitializedEvent(result));
-                getLogger().info("Initialized " + result + " Shops");
-                debug("Initialized " + result + " Shops");
+                Chunk[] loadedChunks = getServer().getWorlds().stream().map(World::getLoadedChunks)
+                        .flatMap(Stream::of).toArray(Chunk[]::new);
+
+                shopUtils.loadShopAmounts(new Callback<Map<UUID,Integer>>(ShopChest.this) {
+                    @Override
+                    public void onResult(Map<UUID, Integer> result) {
+                        getLogger().info("Loaded shop amounts");
+                        debug("Loaded shop amounts");
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        getLogger().severe("Failed to load shop amounts. Shop limits will not be working correctly!");
+                        if (throwable != null) getLogger().severe(throwable.getMessage());
+                    }
+                });
+
+                shopUtils.loadShops(loadedChunks, new Callback<Integer>(ShopChest.this) {
+                    @Override
+                    public void onResult(Integer result) {
+                        getServer().getPluginManager().callEvent(new ShopInitializedEvent(result));
+                        getLogger().info("Loaded " + result + " shops in already loaded chunks");
+                        debug("Loaded " + result + " shops in already loaded chunks");
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        getLogger().severe("Failed to load shops in already loaded chunks");
+                        if (throwable != null) getLogger().severe(throwable.getMessage());
+                    }
+                });
             }
 
             @Override
@@ -591,6 +656,13 @@ public class ShopChest extends JavaPlugin {
      */
     public boolean hasWorldGuard() {
         return worldGuard != null && worldGuard.isEnabled();
+    }
+
+    /**
+     * @return Whether the plugin 'WorldGuard' is enabled
+     */
+    public boolean hasBentoBox() {
+        return bentoBox != null && bentoBox.isEnabled();
     }
 
     /**

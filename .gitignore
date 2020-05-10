@@ -1,18 +1,12 @@
 /bin/
-/out/
 /target/
-/ShopChest/target/
-/ShopChest NMS-Abstract/target/
-/ShopChest NMS-v1_8_R1/target/
-/ShopChest NMS-v1_8_R2/target/
-/ShopChest NMS-v1_8_R3/target/
-/ShopChest NMS-v1_9_R1/target/
-/ShopChest NMS-v1_9_R2/target/
-/ShopChest NMS-v1_10_R1/target/
+
 /.idea/
+*.iml
+
 /.settings/
-/.vscode/
 .classpath
 .project
-*.iml
-debug.log
+.factorypath
+
+/.vscode/
