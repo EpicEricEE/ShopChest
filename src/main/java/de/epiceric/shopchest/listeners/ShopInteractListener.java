@@ -66,6 +66,7 @@ import de.epiceric.shopchest.utils.Utils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import java.util.logging.Logger;
 
 public class ShopInteractListener implements Listener {
     private static final Pattern COLOR_CODE_PATTERN = Pattern.compile(".*([§]([a-fA-F0-9]))");
@@ -661,16 +662,16 @@ public class ShopInteractListener implements Listener {
         executor.sendMessage(priceString);
         executor.sendMessage(shopType);
         if (essentials != null) {
-            var user = essentials.getUser(shop.getVendor().getUniqueId());
+            User user = essentials.getUser(shop.getVendor().getUniqueId());
             if (!user.getBase().isOnline()) {
-                var logout = user.getLastLogout();
-                var expireDay = DateUtil.parseDateDiff(Config.inactiveDays + "d", false);
+                long logout = user.getLastLogout();
+                long expireDay = DateUtil.parseDateDiff(Config.inactiveDays + "d", false);
                 String seen;
                 seen = expireDay > logout ? "§c": "§a";
                 seen = seen+DateUtil.formatDateDiff(logout);
                 executor.sendMessage("§6Online: §eLast seen " + seen + "§e ago");
                 if ((Config.removeInactive) && (expireDay > (logout))) {
-                    var log = plugin.getLogger();
+                    Logger log = plugin.getLogger();
                     log.info("Removed inactive shop of " + shop.getVendor().getName());
                     remove(executor, shop, true);
                 }
