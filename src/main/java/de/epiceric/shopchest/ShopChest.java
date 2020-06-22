@@ -15,6 +15,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.api.ResidenceApi;
 import com.palmergames.bukkit.towny.Towny;
 import com.plotsquared.core.PlotSquared;
 import com.wasteofplastic.askyblock.ASkyBlock;
@@ -55,6 +57,7 @@ import de.epiceric.shopchest.listeners.ShopInteractListener;
 import de.epiceric.shopchest.listeners.ShopItemListener;
 import de.epiceric.shopchest.listeners.ShopUpdateListener;
 import de.epiceric.shopchest.listeners.WorldGuardListener;
+import de.epiceric.shopchest.listeners.ResidenceRentListener;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
 import de.epiceric.shopchest.sql.Database;
@@ -97,6 +100,7 @@ public class ShopChest extends JavaPlugin {
     private ASkyBlock aSkyBlock;
     private IslandWorld islandWorld;
     private GriefPrevention griefPrevention;
+    private ResidenceApi residence;
     private AreaShop areaShop;
     private BentoBox bentoBox;
     private ShopUpdater updater;
@@ -307,6 +311,11 @@ public class ShopChest extends JavaPlugin {
             griefPrevention = (GriefPrevention) griefPreventionPlugin;
         }
 
+        Plugin residencePlugin = Bukkit.getServer().getPluginManager().getPlugin("Residence");
+        if (residencePlugin instanceof Residence) {
+            residence = ((Residence) residencePlugin).getAPI();
+        }
+
         Plugin areaShopPlugin = Bukkit.getServer().getPluginManager().getPlugin("AreaShop");
         if (areaShopPlugin instanceof AreaShop) {
             areaShop = (AreaShop) areaShopPlugin;
@@ -456,6 +465,8 @@ public class ShopChest extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new ASkyBlockListener(this), this);
         if (hasGriefPrevention())
             getServer().getPluginManager().registerEvents(new GriefPreventionListener(this), this);
+        if (hasResidence())
+            getServer().getPluginManager().registerEvents(new ResidenceRentListener(this), this);
         if (hasIslandWorld())
             getServer().getPluginManager().registerEvents(new IslandWorldListener(this), this);
         if (hasPlotSquared())
@@ -591,6 +602,21 @@ public class ShopChest extends JavaPlugin {
      */
     public GriefPrevention getGriefPrevention() {
         return griefPrevention;
+    }
+
+    /**
+     * @return Whether the plugin 'Residence' is enabled
+     */
+    public boolean hasResidence() {
+        Plugin p = getServer().getPluginManager().getPlugin("Residence");
+        return p != null && p.isEnabled();
+    }
+
+    /**
+     * @return An instance of {@link ResidenceApi} or {@code null} if Residence is not enabled
+     */
+    public ResidenceApi getResidence() {
+        return residence;
     }
 
     /**

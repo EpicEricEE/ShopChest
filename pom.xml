@@ -169,6 +169,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/PlotSquared-Bukkit-4.4.495.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.bekvon.bukkit.residence</groupId>
+            <artifactId>Residence</artifactId>
+            <version>4.9.0.6</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Residence4.9.0.6.jar</systemPath>
+        </dependency>
 
         <!-- Shaded dependencies -->
         <dependency>
