@@ -60,6 +60,7 @@ enable-askyblock-integration: true
 enable-bentobox-integration: true
 enable-islandworld-integration: true
 enable-griefprevention-integration: true
+enable-residence-integration: true
 enable-areashop-integration: true
 
 # Set whether the vendor of a shop should get messages when players buy
@@ -166,6 +167,13 @@ areashop-remove-shops:
   - "UNRENT"
   - "RESELL"
   - "SELL"
+
+# Set the residence rent event types to check for shop removal
+# Valid values are: RENT, UNRENT, RENTABLE, UNRENTABLE, RENT_EXPIRE
+residence-remove-shops:
+  - "RENT_EXPIRE"
+  - "UNRENT"
+  - "UNRENTABLE"
 
 # Set whether the custom WorldGuard flags should be allowed by default.
 worldguard-default-flag-values:

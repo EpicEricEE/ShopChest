@@ -62,6 +62,11 @@ public class Config {
     public static List<String> areashopRemoveShopEvents;
 
     /**
+     * The event types of Residence rent event that should be checked to remove shops
+     */
+    public static List<String> residenceRemoveShopEventTypes;
+
+    /**
      * The hostname used in ShopChest's MySQL database
      **/
     public static String databaseMySqlHost;
@@ -208,6 +213,11 @@ public class Config {
      * Whether GriefPrevention integration should be enabled
      **/
     public static boolean enableGriefPreventionIntegration;
+
+    /**
+     * Whether Residence integration should be enabled
+     **/
+    public static boolean enableResidenceIntegration;
 
     /**
      * Whether AreaShop integration should be enabled
@@ -458,6 +468,7 @@ public class Config {
         townyShopPlotsMayor = plugin.getConfig().getStringList("towny-shop-plots.mayor");
         townyShopPlotsKing = plugin.getConfig().getStringList("towny-shop-plots.king");
         areashopRemoveShopEvents = plugin.getConfig().getStringList("areashop-remove-shops");
+        residenceRemoveShopEventTypes = plugin.getConfig().getStringList("residence-remove-shops");
         databaseMySqlPingInterval = plugin.getConfig().getInt("database.mysql.ping-interval");
         databaseMySqlHost = plugin.getConfig().getString("database.mysql.hostname");
         databaseMySqlPort = plugin.getConfig().getInt("database.mysql.port");
@@ -489,6 +500,7 @@ public class Config {
         enableBentoBoxIntegration = plugin.getConfig().getBoolean("enable-bentobox-integration");
         enableIslandWorldIntegration = plugin.getConfig().getBoolean("enable-islandworld-integration");
         enableGriefPreventionIntegration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
+        enableResidenceIntegration = plugin.getConfig().getBoolean("enable-residence-integration");
         enableAreaShopIntegration = plugin.getConfig().getBoolean("enable-areashop-integration");
         enableVendorMessages = plugin.getConfig().getBoolean("enable-vendor-messages");
         enableVendorBungeeMessages = plugin.getConfig().getBoolean("enable-vendor-bungee-messages");
