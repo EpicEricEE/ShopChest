@@ -69,7 +69,7 @@ public class SpawnEggMeta {
 	
         switch (nbtEntityID) {	
             case "PigZombie":	
-                return EntityType.PIG_ZOMBIE;	
+                return EntityType.valueOf("PIG_ZOMBIE");	
             case "CaveSpider":	
                 return EntityType.CAVE_SPIDER;	
             case "LavaSlime":	
