@@ -229,6 +229,24 @@ public class ShopUtils {
     }
 
     /**
+     * Edit the prices of a shop (will not make any changes if the values are unchanged)
+     * @param shop The shop to edit
+     * @param newBuyPrice The new buy price for the shop
+     * @param newSellPrice The new sell price of the shop
+     */
+    public void editShop(Shop shop, double newBuyPrice, double newSellPrice, Callback<Void> callback) {
+        final double oldBuyPrice = shop.getBuyPrice();
+        final double oldSellPrice = shop.getSellPrice();
+
+        if (newBuyPrice == oldBuyPrice && newSellPrice == oldSellPrice) {
+            plugin.debug("Shop prices identical, no changes required");
+            return;
+        }
+
+        plugin.getShopDatabase().editShop(shop, newBuyPrice, newSellPrice, callback);
+    }
+
+    /**
      * Get the shop limits of a player
      * @param p Player, whose shop limits should be returned
      * @return The shop limits of the given player

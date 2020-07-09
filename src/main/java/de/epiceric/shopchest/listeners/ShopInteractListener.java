@@ -2,17 +2,13 @@ package de.epiceric.shopchest.listeners;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.JsonPrimitive;
 
+import de.epiceric.shopchest.event.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -40,11 +36,6 @@ import org.codemc.worldguardwrapper.flag.WrappedState;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.event.ShopBuySellEvent;
-import de.epiceric.shopchest.event.ShopCreateEvent;
-import de.epiceric.shopchest.event.ShopInfoEvent;
-import de.epiceric.shopchest.event.ShopOpenEvent;
-import de.epiceric.shopchest.event.ShopRemoveEvent;
 import de.epiceric.shopchest.external.PlotSquaredOldShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
 import de.epiceric.shopchest.language.LanguageUtils;
@@ -110,6 +101,31 @@ public class ShopInteractListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerInteractEdit(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
+
+        // TODO preconditions?
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) { return; }
+        if (block.getType() != Material.CHEST && block.getType() != Material.TRAPPED_CHEST) { return; }
+        if (!shopUtils.isShop(block.getLocation())) { return; }
+        if (!Objects.equals(shopUtils.getShop(block.getLocation()).getVendor().getPlayer(), player)) { return; }
+        if (!((ClickType.getPlayerClickType(player)) instanceof ClickType.EditClickType)) { return; }
+
+        ClickType.EditClickType clickType = (ClickType.EditClickType) ClickType.getPlayerClickType(player);
+        if (clickType != null) {
+            Shop shop = shopUtils.getShop(block.getLocation());
+            if (shop != null) {
+                double newBuyPrice = clickType.getNewBuyPrice();
+                double newSellPrice = clickType.getNewSellPrice();
+                edit(player, shop, newBuyPrice, newSellPrice);
+                event.setCancelled(true);
+                ClickType.removePlayerClickType(player);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteractCreate(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         Block b = e.getClickedBlock();
@@ -153,7 +169,6 @@ public class ShopInteractListener implements Listener {
     }
 
     private Map<UUID, Set<Integer>> needsConfirmation = new HashMap<>();
-
     private void handleInteractEvent(PlayerInteractEvent e) {
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
@@ -563,6 +578,36 @@ public class ShopInteractListener implements Listener {
 
         shopUtils.removeShop(shop, true);
         plugin.debug("Removed shop (#" + shop.getID() + ")");
+    }
+
+    /**
+     * Edit a shop
+     * @param executor Player, who executed the command and will receive the message
+     * @param shop Shop to be edited
+     * @param newBuyPrice The new buy price of the shop
+     * @param newSellPrice The new sell price of the shop
+     */
+    private void edit(Player executor, Shop shop, final double newBuyPrice, final double newSellPrice) {
+        if (!executor.getUniqueId().equals(shop.getVendor().getUniqueId()) && !executor.hasPermission(Permissions.EDIT_OTHER)) {
+            executor.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_EDIT_OTHERS));
+            return;
+        }
+
+        plugin.debug(executor.getName() + " is editing " + shop.getVendor().getName() + "'s shop (#" + shop.getID() + ")");
+        ShopEditEvent event = new ShopEditEvent(executor, shop, newBuyPrice, newSellPrice);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            plugin.debug("Edit event cancelled (# " + shop.getID() + ")");
+            return;
+        }
+
+        shopUtils.editShop(shop, newBuyPrice, newSellPrice, null);
+        shop.setBuyPrice(newBuyPrice);
+        shop.setSellPrice(newSellPrice);
+        shop.updateHologramText();
+        plugin.debug(" Edited shop (# " + shop.getID() + ")");
+        executor.sendMessage(LanguageUtils.getMessage(Message.SHOP_EDITED,
+                new Replacement(Placeholder.VENDOR, shop.getVendor().getName())));
     }
 
     /**

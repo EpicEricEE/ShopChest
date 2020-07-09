@@ -54,16 +54,15 @@ public class Shop {
     private final OfflinePlayer vendor;
     private final ShopProduct product;
     private final Location location;
-    private final double buyPrice;
-    private final double sellPrice;
     private final ShopType shopType;
-
+    private double buyPrice;
+    private double sellPrice;
     private boolean created;
+
     private int id;
     private Hologram hologram;
     private Location holoLocation;
     private ShopItem item;
-
     public Shop(int id, ShopChest plugin, OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice, ShopType shopType) {
         this.id = id;
         this.plugin = plugin;
@@ -188,7 +187,7 @@ public class Shop {
     }
 
     /**
-     * Runs everything that needs to be called synchronously in order 
+     * Runs everything that needs to be called synchronously in order
      * to prepare creating the hologram.
      */
     private PreCreateResult preCreateHologram() {
@@ -433,6 +432,18 @@ public class Shop {
     public double getSellPrice() {
         return sellPrice;
     }
+
+    /**
+     * Sets the new buy price of the shop
+     * @param buyPrice The new buy price
+     */
+    public void setBuyPrice(double buyPrice) { this.buyPrice = buyPrice; }
+
+    /**
+     * Sets the new sell price of the shop
+     * @param sellPrice The new sell price
+     */
+    public void setSellPrice(double sellPrice) { this.sellPrice = sellPrice; }
 
     /**
      * @return Type of the shop

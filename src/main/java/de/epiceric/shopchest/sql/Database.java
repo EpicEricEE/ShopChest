@@ -368,6 +368,35 @@ public abstract class Database {
     }
 
     /**
+     * Edit a shop in the database
+     *
+     * @param shop The shop to edit
+     * @param callback Callback that, if succeeded, returns {@code null}
+     */
+    public void editShop(final Shop shop, final double newBuyPrice, final double newSellPrice, final Callback<Void> callback) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try (Connection connection = dataSource.getConnection()) {
+                    PreparedStatement ps = connection.prepareStatement("UPDATE " + tableShops + " SET buyprice = ?, sellprice = ? WHERE id = ?");
+                    ps.setFloat(1, (float) newBuyPrice);
+                    ps.setFloat(2, (float) newSellPrice);
+                    ps.setInt(3, shop.getID());
+                    ps.executeUpdate();
+                } catch (SQLException exception) {
+                    if (callback != null) {
+                        callback.callSyncError(exception);
+                    }
+
+                    plugin.getLogger().severe("Failed to edit a shop from the database");
+                    plugin.debug("Failed to remove shop from the database (# " + shop.getID() + ")");
+                    plugin.debug(exception);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    /**
      * Get shop amounts for each player
      * 
      * @param callback Callback that returns a map of each player's shop amount

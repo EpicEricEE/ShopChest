@@ -90,6 +90,13 @@ public class ShopCommand {
             }
         });
 
+        addSubCommand(new ShopSubCommand("edit", true, executor, tabCompleter) {
+            @Override
+            public String getHelpMessage(CommandSender sender) {
+                return LanguageUtils.getMessage(Message.COMMAND_DESC_EDIT, cmdReplacement);
+            }
+        });
+
         addSubCommand(new ShopSubCommand("info", true, executor, tabCompleter) {
             @Override
             public String getHelpMessage(CommandSender sender) {

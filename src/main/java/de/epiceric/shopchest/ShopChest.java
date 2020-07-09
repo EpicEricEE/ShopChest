@@ -188,6 +188,7 @@ public class ShopChest extends JavaPlugin {
             case "v1_13_R2":
             case "v1_14_R1":
             case "v1_15_R1":
+            case "v1_16_R1":
                 break;
             default:
                 debug("Server version not officially supported: " + Utils.getServerVersion() + "!");
