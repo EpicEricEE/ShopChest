@@ -169,6 +169,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/PlotSquared-Bukkit-4.4.495.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.github.OmerBenGera</groupId>
+            <artifactId>SuperiorSkyblockAPI</artifactId>
+            <version>api-version</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/SuperiorSkyblockAPI.jar</systemPath>
+        </dependency>
 
         <!-- Shaded dependencies -->
         <dependency>

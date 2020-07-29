@@ -198,6 +198,11 @@ public class Config {
      * Whether BentoBox integration should be enabled
      **/
     public static boolean enableBentoBoxIntegration;
+    
+    /**
+     * Whether SuperiorSkyblock integration should be enabled
+     **/
+    public static boolean enableSuperiorSkyblockIntegration;
 
     /**
      * Whether IslandWorld integration should be enabled
@@ -312,6 +317,16 @@ public class Config {
      * The language configuration of the currently selected language file
      */
     public static LanguageConfiguration langConfig;
+    
+    /**
+     * Name of the IslandPrivilage... SuperiorSkyblock 
+     **/
+    public static String SuperiorSkyblockIslandPrivilegeName;
+    
+    /**
+     * Whether IslandPrivilage option should be enabled... SuperiorSkyblock 
+     **/
+    public static boolean SuperiorSkyblockEnableIslandPrivilege;
 
     private ShopChest plugin;
 
@@ -487,6 +502,9 @@ public class Config {
         enableUSkyblockIntegration = plugin.getConfig().getBoolean("enable-uskyblock-integration");
         enableASkyblockIntegration = plugin.getConfig().getBoolean("enable-askyblock-integration");
         enableBentoBoxIntegration = plugin.getConfig().getBoolean("enable-bentobox-integration");
+        enableSuperiorSkyblockIntegration = plugin.getConfig().getBoolean("enable-superiorskyblock-integration");
+        SuperiorSkyblockIslandPrivilegeName = plugin.getConfig().getString("superiorskyblock.islandprivilege-name");
+        SuperiorSkyblockEnableIslandPrivilege = plugin.getConfig().getBoolean("superiorskyblock.enable-islandprivilege");
         enableIslandWorldIntegration = plugin.getConfig().getBoolean("enable-islandworld-integration");
         enableGriefPreventionIntegration = plugin.getConfig().getBoolean("enable-griefprevention-integration");
         enableAreaShopIntegration = plugin.getConfig().getBoolean("enable-areashop-integration");
