@@ -1,6 +1,5 @@
 package de.epiceric.shopchest.language;
 
-
 import org.bukkit.potion.PotionType;
 
 public class PotionName {

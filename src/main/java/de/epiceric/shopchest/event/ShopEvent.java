@@ -1,9 +1,10 @@
 package de.epiceric.shopchest.event;
 
-import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import de.epiceric.shopchest.shop.Shop;
 
 public abstract class ShopEvent extends Event {
 

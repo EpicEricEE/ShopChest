@@ -1,29 +1,9 @@
 package de.epiceric.shopchest.command;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.event.ShopPreCreateEvent;
-import de.epiceric.shopchest.event.ShopPreInfoEvent;
-import de.epiceric.shopchest.event.ShopPreOpenEvent;
-import de.epiceric.shopchest.event.ShopPreRemoveEvent;
-import de.epiceric.shopchest.event.ShopReloadEvent;
-import de.epiceric.shopchest.event.ShopRemoveAllEvent;
-import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.Message;
-import de.epiceric.shopchest.language.Replacement;
-import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.shop.ShopProduct;
-import de.epiceric.shopchest.shop.Shop.ShopType;
-import de.epiceric.shopchest.utils.Callback;
-import de.epiceric.shopchest.utils.ClickType;
-import de.epiceric.shopchest.utils.ItemUtils;
-import de.epiceric.shopchest.utils.Permissions;
-import de.epiceric.shopchest.utils.ShopUtils;
-import de.epiceric.shopchest.utils.UpdateChecker;
-import de.epiceric.shopchest.utils.Utils;
-import de.epiceric.shopchest.utils.ClickType.CreateClickType;
-import de.epiceric.shopchest.utils.ClickType.SelectClickType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -37,11 +17,30 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Stream;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.Placeholder;
+import de.epiceric.shopchest.event.ShopPreCreateEvent;
+import de.epiceric.shopchest.event.ShopPreInfoEvent;
+import de.epiceric.shopchest.event.ShopPreOpenEvent;
+import de.epiceric.shopchest.event.ShopPreRemoveEvent;
+import de.epiceric.shopchest.event.ShopReloadEvent;
+import de.epiceric.shopchest.event.ShopRemoveAllEvent;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
+import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
+import de.epiceric.shopchest.shop.ShopProduct;
+import de.epiceric.shopchest.utils.Callback;
+import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ClickType.CreateClickType;
+import de.epiceric.shopchest.utils.ClickType.SelectClickType;
+import de.epiceric.shopchest.utils.ItemUtils;
+import de.epiceric.shopchest.utils.Permissions;
+import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.UpdateChecker;
+import de.epiceric.shopchest.utils.Utils;
 
 class ShopCommandExecutor implements CommandExecutor {
 
@@ -202,9 +201,8 @@ class ShopCommandExecutor implements CommandExecutor {
         plugin.getUpdater().restart();
 
         // Remove all shops
-        Iterator<Shop> iter = shopUtils.getShops().iterator();
-        while (iter.hasNext()) {
-            shopUtils.removeShop(iter.next(), false);
+        for (Shop shop : shopUtils.getShops()) {
+            shopUtils.removeShop(shop, false);
         }
 
         Chunk[] loadedChunks = Bukkit.getWorlds().stream().map(World::getLoadedChunks)

@@ -1,12 +1,8 @@
 package de.epiceric.shopchest.language;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.config.LanguageConfiguration;
-import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.nms.CustomBookMeta;
-import de.epiceric.shopchest.nms.SpawnEggMeta;
-import de.epiceric.shopchest.utils.Utils;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.StringJoiner;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,9 +17,13 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.StringJoiner;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.LanguageConfiguration;
+import de.epiceric.shopchest.config.Placeholder;
+import de.epiceric.shopchest.nms.CustomBookMeta;
+import de.epiceric.shopchest.nms.SpawnEggMeta;
+import de.epiceric.shopchest.utils.Utils;
 
 public class LanguageUtils {
 
@@ -793,7 +793,7 @@ public class LanguageUtils {
         entityNames.add(new EntityName(EntityType.ZOMBIE, langConfig.getString("entity.Zombie.name", "Zombie")));
         entityNames.add(new EntityName(EntityType.SLIME, langConfig.getString("entity.Slime.name", "Slime")));
         entityNames.add(new EntityName(EntityType.GHAST, langConfig.getString("entity.Ghast.name", "Ghast")));
-        entityNames.add(new EntityName(EntityType.PIG_ZOMBIE, langConfig.getString("entity.PigZombie.name", "Zombie Pigman")));
+        entityNames.add(new EntityName(EntityType.valueOf("PIG_ZOMBIE"), langConfig.getString("entity.PigZombie.name", "Zombie Pigman")));
         entityNames.add(new EntityName(EntityType.ENDERMAN, langConfig.getString("entity.Enderman.name", "Enderman")));
         entityNames.add(new EntityName(EntityType.CAVE_SPIDER, langConfig.getString("entity.CaveSpider.name", "Cave Spider")));
         entityNames.add(new EntityName(EntityType.SILVERFISH, langConfig.getString("entity.Silverfish.name", "Silverfish")));
@@ -1778,7 +1778,6 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.WOLF_SPAWN_EGG, langConfig.getString("item.minecraft.wolf_spawn_egg", "Wolf Spawn Egg")));
         itemNames.add(new ItemName(Material.ZOMBIE_SPAWN_EGG, langConfig.getString("item.minecraft.zombie_spawn_egg", "Zombie Spawn Egg")));
         itemNames.add(new ItemName(Material.ZOMBIE_HORSE_SPAWN_EGG, langConfig.getString("item.minecraft.zombie_horse_spawn_egg", "Zombie Horse Spawn Egg")));
-        itemNames.add(new ItemName(Material.ZOMBIE_PIGMAN_SPAWN_EGG, langConfig.getString("item.minecraft.zombie_pigman_spawn_egg", "Zombie Pigman Spawn Egg")));
         itemNames.add(new ItemName(Material.ZOMBIE_VILLAGER_SPAWN_EGG, langConfig.getString("item.minecraft.zombie_villager_spawn_egg", "Zombie Villager Spawn Egg")));
         itemNames.add(new ItemName(Material.EXPERIENCE_BOTTLE, langConfig.getString("item.minecraft.experience_bottle", "Bottle o' Enchanting")));
         itemNames.add(new ItemName(Material.FIRE_CHARGE, langConfig.getString("item.minecraft.fire_charge", "Fire Charge")));
@@ -1955,6 +1954,114 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.HONEY_BOTTLE, langConfig.getString("item.minecraft.honey_bottle", "Honey Bottle")));
             itemNames.add(new ItemName(Material.HONEYCOMB, langConfig.getString("item.minecraft.honeycomb", "Honeycomb")));
             itemNames.add(new ItemName(Material.HONEYCOMB_BLOCK, langConfig.getString("block.minecraft.honeycomb_block", "Honeycomb Block")));
+        }
+
+        if (Utils.getMajorVersion() >= 16) {
+            itemNames.add(new ItemName(Material.ANCIENT_DEBRIS, langConfig.getString("block.minecraft.ancient_debris", "Ancient Debris")));
+            itemNames.add(new ItemName(Material.BASALT, langConfig.getString("block.minecraft.basalt", "Basalt")));
+            itemNames.add(new ItemName(Material.BLACKSTONE, langConfig.getString("block.minecraft.blackstone", "Blackstone")));
+            itemNames.add(new ItemName(Material.BLACKSTONE_SLAB, langConfig.getString("block.minecraft.blackstone_slab", "Blackstone Slab")));
+            itemNames.add(new ItemName(Material.BLACKSTONE_STAIRS, langConfig.getString("block.minecraft.blackstone_stairs", "Blackstone Stairs")));
+            itemNames.add(new ItemName(Material.BLACKSTONE_WALL, langConfig.getString("block.minecraft.blackstone_wall", "Blackstone Wall")));
+            itemNames.add(new ItemName(Material.CHAIN, langConfig.getString("block.minecraft.chain", "Chain")));
+            itemNames.add(new ItemName(Material.CHISELED_NETHER_BRICKS, langConfig.getString("block.minecraft.chiseled_nether_bricks", "Chiseled Nether Bricks")));
+            itemNames.add(new ItemName(Material.CHISELED_POLISHED_BLACKSTONE, langConfig.getString("block.minecraft.chiseled_polished_blackstone", "Chiseled Polished Blackstone")));
+            itemNames.add(new ItemName(Material.CRACKED_NETHER_BRICKS, langConfig.getString("block.minecraft.cracked_nether_bricks", "Cracked Nether Bricks")));
+            itemNames.add(new ItemName(Material.CRACKED_POLISHED_BLACKSTONE_BRICKS, langConfig.getString("block.minecraft.cracked_polished_blackstone_bricks", "Cracked Polished Blackstone Bricks")));
+            itemNames.add(new ItemName(Material.CRIMSON_BUTTON, langConfig.getString("block.minecraft.crimson_button", "Crimson Button")));
+            itemNames.add(new ItemName(Material.CRIMSON_DOOR, langConfig.getString("block.minecraft.crimson_door", "Crimson Door")));
+            itemNames.add(new ItemName(Material.CRIMSON_FENCE, langConfig.getString("block.minecraft.crimson_fence", "Crimson Fence")));
+            itemNames.add(new ItemName(Material.CRIMSON_FENCE_GATE, langConfig.getString("block.minecraft.crimson_fence_gate", "Crimson Fence Gate")));
+            itemNames.add(new ItemName(Material.CRIMSON_FUNGUS, langConfig.getString("block.minecraft.crimson_fungus", "Crimson Fungus")));
+            itemNames.add(new ItemName(Material.CRIMSON_HYPHAE, langConfig.getString("block.minecraft.crimson_hyphae", "Crimson Hyphae")));
+            itemNames.add(new ItemName(Material.CRIMSON_NYLIUM, langConfig.getString("block.minecraft.crimson_nylium", "Crimson Nylium")));
+            itemNames.add(new ItemName(Material.CRIMSON_PLANKS, langConfig.getString("block.minecraft.crimson_planks", "Crimson Planks")));
+            itemNames.add(new ItemName(Material.CRIMSON_PRESSURE_PLATE, langConfig.getString("block.minecraft.crimson_pressure_plate", "Crimson Pressure Plate")));
+            itemNames.add(new ItemName(Material.CRIMSON_ROOTS, langConfig.getString("block.minecraft.crimson_roots", "Crimson Roots")));
+            itemNames.add(new ItemName(Material.CRIMSON_SIGN, langConfig.getString("block.minecraft.crimson_sign", "Crimson Sign")));
+            itemNames.add(new ItemName(Material.CRIMSON_SLAB, langConfig.getString("block.minecraft.crimson_slab", "Crimson Slab")));
+            itemNames.add(new ItemName(Material.CRIMSON_STAIRS, langConfig.getString("block.minecraft.crimson_stairs", "Crimson Stairs")));
+            itemNames.add(new ItemName(Material.CRIMSON_STEM, langConfig.getString("block.minecraft.crimson_stem", "Crimson Stem")));
+            itemNames.add(new ItemName(Material.CRIMSON_TRAPDOOR, langConfig.getString("block.minecraft.crimson_trapdoor", "Crimson Trapdoor")));
+            itemNames.add(new ItemName(Material.CRIMSON_WALL_SIGN, langConfig.getString("block.minecraft.crimson_wall_sign", "Crimson Wall Sign")));
+            itemNames.add(new ItemName(Material.CRYING_OBSIDIAN, langConfig.getString("block.minecraft.crying_obsidian", "Crying Obsidian")));
+            itemNames.add(new ItemName(Material.GILDED_BLACKSTONE, langConfig.getString("block.minecraft.gilded_blackstone", "Gilded Blackstone")));
+            itemNames.add(new ItemName(Material.HOGLIN_SPAWN_EGG, langConfig.getString("item.minecraft.hoglin_spawn_egg", "Hoglin Spawn Egg")));
+            itemNames.add(new ItemName(Material.LODESTONE, langConfig.getString("block.minecraft.lodestone", "Lodestone")));
+            // itemNames.add(new ItemName(Material.LODESTONE_COMPASS, langConfig.getString("item.minecraft.lodestone_compass", "Lodestone Compass")));
+            itemNames.add(new ItemName(Material.MUSIC_DISC_PIGSTEP, langConfig.getString("item.minecraft.music_disc_pigstep", "Music Disc")));
+            itemNames.add(new ItemName(Material.NETHER_GOLD_ORE, langConfig.getString("block.minecraft.nether_gold_ore", "Nether Gold Ore")));
+            itemNames.add(new ItemName(Material.NETHER_SPROUTS, langConfig.getString("block.minecraft.nether_sprouts", "Nether Sprouts")));
+            itemNames.add(new ItemName(Material.NETHERITE_AXE, langConfig.getString("item.minecraft.netherite_axe", "Netherite Axe")));
+            itemNames.add(new ItemName(Material.NETHERITE_BLOCK, langConfig.getString("block.minecraft.netherite_block", "Netherite Block")));
+            itemNames.add(new ItemName(Material.NETHERITE_BOOTS, langConfig.getString("item.minecraft.netherite_boots", "Netherite Boots")));
+            itemNames.add(new ItemName(Material.NETHERITE_CHESTPLATE, langConfig.getString("item.minecraft.netherite_chestplate", "Netherite Chestplate")));
+            itemNames.add(new ItemName(Material.NETHERITE_HELMET, langConfig.getString("item.minecraft.netherite_helmet", "Netherite Helmet")));
+            itemNames.add(new ItemName(Material.NETHERITE_HOE, langConfig.getString("item.minecraft.netherite_hoe", "Netherite Hoe")));
+            itemNames.add(new ItemName(Material.NETHERITE_INGOT, langConfig.getString("item.minecraft.netherite_ingot", "Netherite Ingot")));
+            itemNames.add(new ItemName(Material.NETHERITE_LEGGINGS, langConfig.getString("item.minecraft.netherite_leggings", "Netherite Leggings")));
+            itemNames.add(new ItemName(Material.NETHERITE_PICKAXE, langConfig.getString("item.minecraft.netherite_pickaxe", "Netherite Pickaxe")));
+            itemNames.add(new ItemName(Material.NETHERITE_SCRAP, langConfig.getString("item.minecraft.netherite_scrap", "Netherite Scrap")));
+            itemNames.add(new ItemName(Material.NETHERITE_SHOVEL, langConfig.getString("item.minecraft.netherite_shovel", "Netherite Shovel")));
+            itemNames.add(new ItemName(Material.NETHERITE_SWORD, langConfig.getString("item.minecraft.netherite_sword", "Netherite Sword")));
+            itemNames.add(new ItemName(Material.PIGLIN_SPAWN_EGG, langConfig.getString("item.minecraft.piglin_spawn_egg", "Piglin Spawn Egg")));
+            itemNames.add(new ItemName(Material.POLISHED_BASALT, langConfig.getString("block.minecraft.polished_basalt", "Polished Basalt")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE, langConfig.getString("block.minecraft.polished_blackstone", "Polished Blackstone")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_BRICK_SLAB, langConfig.getString("block.minecraft.polished_blackstone_brick_slab", "Polished Blackstone Brick Slab")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_BRICK_STAIRS, langConfig.getString("block.minecraft.polished_blackstone_brick_stairs", "Polished Blackstone Brick Stairs")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_BRICK_WALL, langConfig.getString("block.minecraft.polished_blackstone_brick_wall", "Polished Blackstone Brick Wall")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_BRICKS, langConfig.getString("block.minecraft.polished_blackstone_bricks", "Polished Blackstone Bricks")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_BUTTON, langConfig.getString("block.minecraft.polished_blackstone_button", "Polished Blackstone Button")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE, langConfig.getString("block.minecraft.polished_blackstone_pressure_plate", "Polished Blackstone Pressure Plate")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_SLAB, langConfig.getString("block.minecraft.polished_blackstone_slab", "Polished Blackstone Slab")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_STAIRS, langConfig.getString("block.minecraft.polished_blackstone_stairs", "Polished Blackstone Stairs")));
+            itemNames.add(new ItemName(Material.POLISHED_BLACKSTONE_WALL, langConfig.getString("block.minecraft.polished_blackstone_wall", "Polished Blackstone Wall")));
+            itemNames.add(new ItemName(Material.POTTED_CRIMSON_FUNGUS, langConfig.getString("block.minecraft.potted_crimson_fungus", "Potted Crimson Fungus")));
+            itemNames.add(new ItemName(Material.POTTED_CRIMSON_ROOTS, langConfig.getString("block.minecraft.potted_crimson_roots", "Potted Crimson Roots")));
+            itemNames.add(new ItemName(Material.POTTED_WARPED_FUNGUS, langConfig.getString("block.minecraft.potted_warped_fungus", "Potted Warped Fungus")));
+            itemNames.add(new ItemName(Material.POTTED_WARPED_ROOTS, langConfig.getString("block.minecraft.potted_warped_roots", "Potted Warped Roots")));
+            itemNames.add(new ItemName(Material.QUARTZ_BRICKS, langConfig.getString("block.minecraft.quartz_bricks", "Quartz Bricks")));
+            itemNames.add(new ItemName(Material.RESPAWN_ANCHOR, langConfig.getString("block.minecraft.respawn_anchor", "Respawn Anchor")));
+            itemNames.add(new ItemName(Material.SHROOMLIGHT, langConfig.getString("block.minecraft.shroomlight", "Shroomlight")));
+            itemNames.add(new ItemName(Material.SOUL_CAMPFIRE, langConfig.getString("block.minecraft.soul_campfire", "Soul Campfire")));
+            itemNames.add(new ItemName(Material.SOUL_FIRE, langConfig.getString("block.minecraft.soul_fire", "Soul Fire")));
+            itemNames.add(new ItemName(Material.SOUL_LANTERN, langConfig.getString("block.minecraft.soul_lantern", "Soul Lantern")));
+            itemNames.add(new ItemName(Material.SOUL_SOIL, langConfig.getString("block.minecraft.soul_soil", "Soul Soil")));
+            itemNames.add(new ItemName(Material.SOUL_TORCH, langConfig.getString("block.minecraft.soul_torch", "Soul Torch")));
+            itemNames.add(new ItemName(Material.SOUL_WALL_TORCH, langConfig.getString("block.minecraft.soul_wall_torch", "Soul Wall Torch")));
+            itemNames.add(new ItemName(Material.STRIDER_SPAWN_EGG, langConfig.getString("item.minecraft.strider_spawn_egg", "Strider Spawn Egg")));
+            itemNames.add(new ItemName(Material.STRIPPED_CRIMSON_HYPHAE, langConfig.getString("block.minecraft.stripped_crimson_hyphae", "Stripped Crimson Hyphae")));
+            itemNames.add(new ItemName(Material.STRIPPED_CRIMSON_STEM, langConfig.getString("block.minecraft.stripped_crimson_stem", "Stripped Crimson Stem")));
+            itemNames.add(new ItemName(Material.STRIPPED_WARPED_HYPHAE, langConfig.getString("block.minecraft.stripped_warped_hyphae", "Stripped Warped Hyphae")));
+            itemNames.add(new ItemName(Material.STRIPPED_WARPED_STEM, langConfig.getString("block.minecraft.stripped_warped_stem", "Stripped Warped Stem")));
+            itemNames.add(new ItemName(Material.TARGET, langConfig.getString("block.minecraft.target", "Target")));
+            itemNames.add(new ItemName(Material.TWISTING_VINES, langConfig.getString("block.minecraft.twisting_vines", "Twisting Vines")));
+            itemNames.add(new ItemName(Material.TWISTING_VINES_PLANT, langConfig.getString("block.minecraft.twisting_vines_plant", "Twisting Vines Plant")));
+            itemNames.add(new ItemName(Material.WARPED_BUTTON, langConfig.getString("block.minecraft.warped_button", "Warped Button")));
+            itemNames.add(new ItemName(Material.WARPED_DOOR, langConfig.getString("block.minecraft.warped_door", "Warped Door")));
+            itemNames.add(new ItemName(Material.WARPED_FENCE, langConfig.getString("block.minecraft.warped_fence", "Warped Fence")));
+            itemNames.add(new ItemName(Material.WARPED_FENCE_GATE, langConfig.getString("block.minecraft.warped_fence_gate", "Warped Fence Gate")));
+            itemNames.add(new ItemName(Material.WARPED_FUNGUS, langConfig.getString("block.minecraft.warped_fungus", "Warped Fungus")));
+            itemNames.add(new ItemName(Material.WARPED_FUNGUS_ON_A_STICK, langConfig.getString("item.minecraft.warped_fungus_on_a_stick", "Warped Fungus on a Stick")));
+            itemNames.add(new ItemName(Material.WARPED_HYPHAE, langConfig.getString("block.minecraft.warped_hyphae", "Warped Hyphae")));
+            itemNames.add(new ItemName(Material.WARPED_NYLIUM, langConfig.getString("block.minecraft.warped_nylium", "Warped Nylium")));
+            itemNames.add(new ItemName(Material.WARPED_PLANKS, langConfig.getString("block.minecraft.warped_planks", "Warped Planks")));
+            itemNames.add(new ItemName(Material.WARPED_PRESSURE_PLATE, langConfig.getString("block.minecraft.warped_pressure_plate", "Warped Pressure Plate")));
+            itemNames.add(new ItemName(Material.WARPED_ROOTS, langConfig.getString("block.minecraft.warped_roots", "Warped Roots")));
+            itemNames.add(new ItemName(Material.WARPED_SIGN, langConfig.getString("block.minecraft.warped_sign", "Warped Sign")));
+            itemNames.add(new ItemName(Material.WARPED_SLAB, langConfig.getString("block.minecraft.warped_slab", "Warped Slab")));
+            itemNames.add(new ItemName(Material.WARPED_STAIRS, langConfig.getString("block.minecraft.warped_stairs", "Warped Stairs")));
+            itemNames.add(new ItemName(Material.WARPED_STEM, langConfig.getString("block.minecraft.warped_stem", "Warped Stem")));
+            itemNames.add(new ItemName(Material.WARPED_TRAPDOOR, langConfig.getString("block.minecraft.warped_trapdoor", "Warped Trapdoor")));
+            itemNames.add(new ItemName(Material.WARPED_WALL_SIGN, langConfig.getString("block.minecraft.warped_wall_sign", "Warped Wall Sign")));
+            itemNames.add(new ItemName(Material.WARPED_WART_BLOCK, langConfig.getString("block.minecraft.warped_wart_block", "Warped Wart Block")));
+            itemNames.add(new ItemName(Material.WEEPING_VINES, langConfig.getString("block.minecraft.weeping_vines", "Weeping Vines")));
+            itemNames.add(new ItemName(Material.WEEPING_VINES_PLANT, langConfig.getString("block.minecraft.weeping_vines_plant", "Weeping Vines Plant")));
+            itemNames.add(new ItemName(Material.ZOGLIN_SPAWN_EGG, langConfig.getString("item.minecraft.zoglin_spawn_egg", "Zoglin Spawn Egg")));
+            itemNames.add(new ItemName(Material.ZOMBIFIED_PIGLIN_SPAWN_EGG, langConfig.getString("item.minecraft.zombified_piglin_spawn_egg", "Zombified Piglin Spawn Egg")));
+        } else {
+            // Add pre-1.16 item names that don't exist anymore
+            itemNames.add(new ItemName(Material.valueOf("ZOMBIE_PIGMAN_SPAWN_EGG"), langConfig.getString("item.minecraft.zombie_pigman_spawn_egg", "Zombie Pigman Spawn Egg")));
         }
 
         // Add Enchantment Names
@@ -2162,6 +2269,10 @@ public class LanguageUtils {
         musicDiscNames.add(new MusicDiscName(Material.MUSIC_DISC_11, langConfig.getString("item.minecraft.music_disc_11.desc", "C418 - 11")));
         musicDiscNames.add(new MusicDiscName(Material.MUSIC_DISC_WAIT, langConfig.getString("item.minecraft.music_disc_wait.desc", "C418 - wait")));
 
+        if (Utils.getMajorVersion() >= 16) {
+            musicDiscNames.add(new MusicDiscName(Material.MUSIC_DISC_PIGSTEP, langConfig.getString("item.minecraft.music_disc_pigstep.desc", "Lena Raine - Pigstep")));
+        }
+
         if (Utils.getMajorVersion() >= 14) {
             // Add Banner Pattern Names
             bannerPatternNames.add(new BannerPatternName(Material.CREEPER_BANNER_PATTERN, langConfig.getString("item.minecraft.creeper_banner_pattern.desc", "Creeper Charge")));
@@ -2169,6 +2280,10 @@ public class LanguageUtils {
             bannerPatternNames.add(new BannerPatternName(Material.FLOWER_BANNER_PATTERN, langConfig.getString("item.minecraft.flower_banner_pattern.desc", "Flower Charge")));
             bannerPatternNames.add(new BannerPatternName(Material.MOJANG_BANNER_PATTERN, langConfig.getString("item.minecraft.mojang_banner_pattern.desc", "Thing")));
             bannerPatternNames.add(new BannerPatternName(Material.GLOBE_BANNER_PATTERN, langConfig.getString("item.minecraft.globe_banner_pattern.desc", "Globe")));
+
+            if (Utils.getMajorVersion() >= 16) {
+                bannerPatternNames.add(new BannerPatternName(Material.PIGLIN_BANNER_PATTERN, langConfig.getString("item.minecraft.piglin_banner_pattern.desc", "Snout")));
+            }
         }
 
         // Add Book Generation Names
@@ -2265,7 +2380,7 @@ public class LanguageUtils {
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_HEADER, langConfig.getString("message.commandDescription.header", "&6==== &c/%COMMAND% &6Help")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_FOOTER, langConfig.getString("message.commandDescription.footer", "&6==== End")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE, langConfig.getString("message.commandDescription.create", "&a/%COMMAND% create <amount> <buy-price> <sell-price> - Create a shop.")));
-        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.")));
+        messages.add(new LocalizedMessage(Message.COMMAND_DESC_CREATE_ADMIN, langConfig.getString("message.commandDescription.create-admin", "&a/%COMMAND% create <amount> <buy-price> <sell-price> [admin] - Create a shop.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_REMOVE, langConfig.getString("message.commandDescription.remove", "&a/%COMMAND% remove - Remove a shop.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_INFO, langConfig.getString("message.commandDescription.info", "&a/%COMMAND% info - Retrieve shop information.")));
         messages.add(new LocalizedMessage(Message.COMMAND_DESC_REMOVEALL, langConfig.getString("message.commandDescription.removeall", "&a/%COMMAND% removeall - Remove all shops of a player.")));

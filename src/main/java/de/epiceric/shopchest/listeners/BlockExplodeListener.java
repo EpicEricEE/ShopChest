@@ -1,13 +1,14 @@
 package de.epiceric.shopchest.listeners;
 
-import de.epiceric.shopchest.ShopChest;
+import java.util.ArrayList;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 
-import java.util.ArrayList;
+import de.epiceric.shopchest.ShopChest;
 
 public class BlockExplodeListener implements Listener {
 

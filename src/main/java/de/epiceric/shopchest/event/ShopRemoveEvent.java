@@ -1,8 +1,9 @@
 package de.epiceric.shopchest.event;
 
-import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+
+import de.epiceric.shopchest.shop.Shop;
 
 /**
  * Called when a player removes a shop (clicks on a chest)

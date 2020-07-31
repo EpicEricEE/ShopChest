@@ -1,11 +1,12 @@
 package de.epiceric.shopchest.nms;	
 	
-import de.epiceric.shopchest.ShopChest;	
-import de.epiceric.shopchest.utils.Utils;	
-import org.bukkit.entity.EntityType;	
-import org.bukkit.inventory.ItemStack;	
-	
-import java.lang.reflect.InvocationTargetException;	
+import java.lang.reflect.InvocationTargetException;
+
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
+
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.utils.Utils;
 	
 public class SpawnEggMeta {	
 	
@@ -68,7 +69,7 @@ public class SpawnEggMeta {
 	
         switch (nbtEntityID) {	
             case "PigZombie":	
-                return EntityType.PIG_ZOMBIE;	
+                return EntityType.valueOf("PIG_ZOMBIE");	
             case "CaveSpider":	
                 return EntityType.CAVE_SPIDER;	
             case "LavaSlime":	

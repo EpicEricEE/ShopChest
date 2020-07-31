@@ -87,13 +87,17 @@
             <id>nlthijs48-repo</id>
             <url>http://maven.wiefferink.me</url>
         </repository>
+        <repository>
+            <id>plotsquared-repo</id>
+            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.15-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -109,9 +113,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.intellectualsites.plotsquared</groupId>
-            <artifactId>PlotSquared-API</artifactId>
-            <version>4.226</version>
+            <groupId>com.plotsquared</groupId>
+            <artifactId>PlotSquared</artifactId>
+            <version>5.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -158,7 +162,14 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/IslandWorld-8.5.jar</systemPath>
         </dependency>
-        
+        <dependency>
+            <groupId>com.github.intellectualsites.plotsquared</groupId>
+            <artifactId>PlotSquared-API</artifactId>
+            <version>4.495</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/PlotSquared-Bukkit-4.4.495.jar</systemPath>
+        </dependency>
+
         <!-- Shaded dependencies -->
         <dependency>
             <groupId>org.codemc.worldguardwrapper</groupId>

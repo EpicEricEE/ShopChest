@@ -1,19 +1,20 @@
 package de.epiceric.shopchest.nms;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.utils.Utils;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.utils.Utils;
 
 public class JsonBuilder {
 
@@ -116,6 +117,7 @@ public class JsonBuilder {
     private Class<?> iChatBaseComponentClass = Utils.getNMSClass("IChatBaseComponent");
     private Class<?> packetPlayOutChatClass = Utils.getNMSClass("PacketPlayOutChat");
     private Class<?> chatSerializerClass;
+    private Class<?> chatMessageTypeClass;
 
     public JsonBuilder(ShopChest plugin) {
         this.plugin = plugin;
@@ -124,6 +126,10 @@ public class JsonBuilder {
             chatSerializerClass = Utils.getNMSClass("ChatSerializer");
         } else {
             chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");
+        }
+
+        if (Utils.getMajorVersion() >= 16) {
+            chatMessageTypeClass = Utils.getNMSClass("ChatMessageType");
         }
 
         Class<?>[] requiredClasses = new Class<?>[] {
@@ -221,12 +227,14 @@ public class JsonBuilder {
     public void sendJson(Player p) {        
         try {
             Object iChatBaseComponent = chatSerializerClass.getMethod("a", String.class).invoke(null, toString());
-            Object packetPlayOutChat = packetPlayOutChatClass.getConstructor(iChatBaseComponentClass).newInstance(iChatBaseComponent);
+            Object packetPlayOutChat = Utils.getMajorVersion() < 16
+                ? packetPlayOutChatClass.getConstructor(iChatBaseComponentClass).newInstance(iChatBaseComponent)
+                : packetPlayOutChatClass.getConstructor(iChatBaseComponentClass, chatMessageTypeClass, UUID.class)
+                        .newInstance(iChatBaseComponent, chatMessageTypeClass.getField("CHAT").get(null), UUID.randomUUID());
             
             Utils.sendPacket(plugin, packetPlayOutChat, p);
             plugin.debug("Sent JSON: " + toString());
-        } catch (InstantiationException | InvocationTargetException |
-                IllegalAccessException | NoSuchMethodException e) {
+        } catch (ReflectiveOperationException e) {
             plugin.getLogger().severe("Failed to send JSON with reflection");
             plugin.debug("Failed to send JSON with reflection: " + toString());
             plugin.debug(e);

@@ -292,7 +292,7 @@ message.commandDescription.create=&a/%COMMAND% create <amount> <buy-price> <sell
 
 # Set the command description message for '/shop create' when you type '/shop' and have permission "shopchest.create.admin"
 # Usable Placeholders: %COMMAND%
-message.commandDescription.create-admin=&a/%COMMAND% create <amount> <buy-price> <sell-price> [normal|admin] - Create a shop.
+message.commandDescription.create-admin=&a/%COMMAND% create <amount> <buy-price> <sell-price> [admin] - Create a shop.
 
 # Set the command description message for '/shop remove' when you type '/shop'.
 # Usable Placeholders: %COMMAND%

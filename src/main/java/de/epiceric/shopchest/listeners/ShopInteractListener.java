@@ -1,34 +1,19 @@
 package de.epiceric.shopchest.listeners;
 
-import com.github.intellectualsites.plotsquared.plot.object.Plot;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.gson.JsonPrimitive;
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.config.Config;
-import de.epiceric.shopchest.config.Placeholder;
-import de.epiceric.shopchest.event.ShopBuySellEvent;
-import de.epiceric.shopchest.event.ShopCreateEvent;
-import de.epiceric.shopchest.event.ShopInfoEvent;
-import de.epiceric.shopchest.event.ShopOpenEvent;
-import de.epiceric.shopchest.event.ShopRemoveEvent;
-import de.epiceric.shopchest.external.PlotSquaredShopFlag;
-import de.epiceric.shopchest.external.PlotSquaredShopFlag.GroupFlag;
-import de.epiceric.shopchest.language.LanguageUtils;
-import de.epiceric.shopchest.language.Message;
-import de.epiceric.shopchest.language.Replacement;
-import de.epiceric.shopchest.nms.JsonBuilder;
-import de.epiceric.shopchest.shop.Shop;
-import de.epiceric.shopchest.shop.ShopProduct;
-import de.epiceric.shopchest.shop.Shop.ShopType;
-import de.epiceric.shopchest.sql.Database;
-import de.epiceric.shopchest.utils.ClickType;
-import de.epiceric.shopchest.utils.ItemUtils;
-import de.epiceric.shopchest.utils.Permissions;
-import de.epiceric.shopchest.utils.ShopUtils;
-import de.epiceric.shopchest.utils.Utils;
-import de.epiceric.shopchest.utils.ClickType.CreateClickType;
-import fr.xephi.authme.api.v3.AuthMeApi;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -58,16 +43,33 @@ import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.IWrappedFlag;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.config.Placeholder;
+import de.epiceric.shopchest.event.ShopBuySellEvent;
+import de.epiceric.shopchest.event.ShopCreateEvent;
+import de.epiceric.shopchest.event.ShopInfoEvent;
+import de.epiceric.shopchest.event.ShopOpenEvent;
+import de.epiceric.shopchest.event.ShopRemoveEvent;
+import de.epiceric.shopchest.external.PlotSquaredOldShopFlag;
+import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.language.LanguageUtils;
+import de.epiceric.shopchest.language.Message;
+import de.epiceric.shopchest.language.Replacement;
+import de.epiceric.shopchest.nms.JsonBuilder;
+import de.epiceric.shopchest.shop.Shop;
+import de.epiceric.shopchest.shop.Shop.ShopType;
+import de.epiceric.shopchest.shop.ShopProduct;
+import de.epiceric.shopchest.sql.Database;
+import de.epiceric.shopchest.utils.ClickType;
+import de.epiceric.shopchest.utils.ClickType.CreateClickType;
+import de.epiceric.shopchest.utils.ItemUtils;
+import de.epiceric.shopchest.utils.Permissions;
+import de.epiceric.shopchest.utils.ShopUtils;
+import de.epiceric.shopchest.utils.Utils;
+import fr.xephi.authme.api.v3.AuthMeApi;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 public class ShopInteractListener implements Listener {
     private static final Pattern COLOR_CODE_PATTERN = Pattern.compile(".*([§]([a-fA-F0-9]))");
@@ -260,13 +262,18 @@ public class ShopInteractListener implements Listener {
                             boolean externalPluginsAllowed = true;
 
                             if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
-                                        new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
-
-                                Plot plot = plotLocation.getOwnedPlot();
-                                GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
-
-                                externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
+                                try {
+                                    Class.forName("com.plotsquared.core.PlotSquared");
+                                    com.plotsquared.core.location.Location plotLocation =
+                                            new com.plotsquared.core.location.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    com.plotsquared.core.plot.Plot plot = plotLocation.getOwnedPlot();
+                                    externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.USE_SHOP, p);
+                                } catch (ClassNotFoundException ex) {
+                                    com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                                            new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    com.github.intellectualsites.plotsquared.plot.object.Plot plot = plotLocation.getOwnedPlot();
+                                    externalPluginsAllowed = PlotSquaredOldShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredOldShopFlag.USE_SHOP, p);
+                                }
                             }
 
                             if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
@@ -344,6 +351,11 @@ public class ShopInteractListener implements Listener {
                                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
                                                         new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
                                                                 new Replacement(Placeholder.ITEM_NAME, shop.getProduct().getLocalizedName())));
+                                            } else if(!shop.getVendor().isOnline() && Config.enableVendorBungeeMessages){
+                                                String message = LanguageUtils.getMessage(Message.VENDOR_OUT_OF_STOCK,
+                                                        new Replacement(Placeholder.AMOUNT, String.valueOf(shop.getProduct().getAmount())),
+                                                        new Replacement(Placeholder.ITEM_NAME, shop.getProduct().getLocalizedName()));
+                                                sendBungeeMessage(shop.getVendor().getName(), message);
                                             }
                                             plugin.debug("Shop is out of stock");
                                         }
@@ -375,13 +387,18 @@ public class ShopInteractListener implements Listener {
                             boolean externalPluginsAllowed = true;
 
                             if (plugin.hasPlotSquared() && Config.enablePlotsquaredIntegration) {
-                                com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
-                                        new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
-
-                                Plot plot = plotLocation.getOwnedPlot();
-                                GroupFlag flag = shop.getShopType() == Shop.ShopType.ADMIN ? PlotSquaredShopFlag.USE_ADMIN_SHOP : PlotSquaredShopFlag.USE_SHOP;
-                                
-                                externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, flag, p);
+                                try {
+                                    Class.forName("com.plotsquared.core.PlotSquared");
+                                    com.plotsquared.core.location.Location plotLocation =
+                                            new com.plotsquared.core.location.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    com.plotsquared.core.plot.Plot plot = plotLocation.getOwnedPlot();
+                                    externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.USE_SHOP, p);
+                                } catch (ClassNotFoundException ex) {
+                                    com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                                            new com.github.intellectualsites.plotsquared.plot.object.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                    com.github.intellectualsites.plotsquared.plot.object.Plot plot = plotLocation.getOwnedPlot();
+                                    externalPluginsAllowed = PlotSquaredOldShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredOldShopFlag.USE_SHOP, p);
+                                }
                             }
 
                             if (externalPluginsAllowed && plugin.hasWorldGuard() && Config.enableWorldGuardIntegration) {
@@ -861,6 +878,11 @@ public class ShopInteractListener implements Listener {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                         new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName())));
+                            } else if(!shop.getVendor().isOnline() && Config.enableVendorBungeeMessages){
+                                String message = LanguageUtils.getMessage( Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                        new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.PLAYER, executor.getName()));
+                                sendBungeeMessage(shop.getVendor().getName(),message);
                             }
 
                         } else {
@@ -1024,6 +1046,11 @@ public class ShopInteractListener implements Listener {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_SOLD, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
                                         new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName())));
+                            } else if(!shop.getVendor().isOnline() && Config.enableVendorBungeeMessages){
+                                String message = LanguageUtils.getMessage( Message.SOMEONE_SOLD, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
+                                        new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.SELL_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.PLAYER, executor.getName()));
+                                sendBungeeMessage(shop.getVendor().getName(),message);
                             }
 
                         } else {
@@ -1201,4 +1228,25 @@ public class ShopInteractListener implements Listener {
         return (removed == amount);
     }
 
+    public void sendBungeeMessage(String player, String message) {
+        try {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(b);
+
+            out.writeUTF("Message");
+            out.writeUTF(player);
+            out.writeUTF(message);
+
+            if (!plugin.getServer().getOnlinePlayers().isEmpty()) {
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Player p = plugin.getServer().getOnlinePlayers().iterator().next();
+                    p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
+                });
+            }
+        } catch (Exception e) {
+            plugin.debug("Failed to send bungee message");
+            plugin.debug(e);
+            plugin.getLogger().warning("Failed to send BungeeCord message");
+        }
+    }
 }
