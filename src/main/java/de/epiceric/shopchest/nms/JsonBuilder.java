@@ -109,7 +109,8 @@ public class JsonBuilder {
         }
     }
     
-    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fk-oK-OrR0-9])+)([^§]*)");
+    private static final Pattern PART_PATTERN = Pattern.compile("((§(?:[a-fA-Fk-oK-OrR0-9]|#[a-fA-F0-9]{6}))+)([^§]*)");
+    private static final Pattern HEX_PATTERN = Pattern.compile("(§[a-fA-F0-9]){6}");
 
     private Part rootPart;
     private ShopChest plugin;
@@ -145,6 +146,12 @@ public class JsonBuilder {
     }
 
     public static Part parse(String text) {
+        Matcher hexMatcher = HEX_PATTERN.matcher(text);
+        while (hexMatcher.find()) {
+            String hexCode = hexMatcher.group(0).replace("§", "");
+            text = text.replace(hexMatcher.group(0), "§#" + hexCode);
+        }
+
         Matcher matcher = PART_PATTERN.matcher(text);
         
         if (!matcher.find()) {
@@ -200,7 +207,11 @@ public class JsonBuilder {
                         part.removeValue("color");
                         break;
                     default:
-                        part.setValue("color", new Part(ChatColor.getByChar(f).name().toLowerCase()));
+                        if (f.startsWith("#")) {
+                            part.setValue("color", new Part(f));
+                        } else {
+                            part.setValue("color", new Part(ChatColor.getByChar(f).name().toLowerCase()));
+                        }
                 }
             }
 
