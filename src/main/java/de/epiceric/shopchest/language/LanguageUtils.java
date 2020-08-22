@@ -2059,6 +2059,11 @@ public class LanguageUtils {
             itemNames.add(new ItemName(Material.WEEPING_VINES_PLANT, langConfig.getString("block.minecraft.weeping_vines_plant", "Weeping Vines Plant")));
             itemNames.add(new ItemName(Material.ZOGLIN_SPAWN_EGG, langConfig.getString("item.minecraft.zoglin_spawn_egg", "Zoglin Spawn Egg")));
             itemNames.add(new ItemName(Material.ZOMBIFIED_PIGLIN_SPAWN_EGG, langConfig.getString("item.minecraft.zombified_piglin_spawn_egg", "Zombified Piglin Spawn Egg")));
+
+            if (Utils.getMajorVersion() > 16 || Utils.getRevision() >= 2) {
+                // Add 1.16.2 item names
+                itemNames.add(new ItemName(Material.PIGLIN_BRUTE_SPAWN_EGG, langConfig.getString("item.minecraft.piglin_brute_spawn_egg", "Piglin Brute Spawn Egg")));
+            }
         } else {
             // Add pre-1.16 item names that don't exist anymore
             itemNames.add(new ItemName(Material.valueOf("ZOMBIE_PIGMAN_SPAWN_EGG"), langConfig.getString("item.minecraft.zombie_pigman_spawn_egg", "Zombie Pigman Spawn Egg")));
