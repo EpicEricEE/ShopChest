@@ -31,7 +31,7 @@ public class HologramFormat {
     // e.g.: "STONE" == "DIAMOND_SWORD"
     private static final Pattern SIMPLE_STRING_CONDITION = Pattern.compile("^\"([^\"]*)\" ([=!]=) \"([^\"]*)\"$");
 
-    private ScriptEngineManager manager = new ScriptEngineManager();
+    private ScriptEngineManager manager = new ScriptEngineManager(null);
     private ScriptEngine engine = manager.getEngineByName("JavaScript");
 
     private ShopChest plugin;
