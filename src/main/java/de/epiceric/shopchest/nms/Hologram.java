@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
+import de.epiceric.shopchest.exceptions.ShopChestException;
+import static org.white_sdev.white_validations.parameters.ParameterValidator.notNullValidation;
 
 public class Hologram {
     // concurrent since update task is in async thread
@@ -137,9 +139,16 @@ public class Hologram {
     }
 
     private void togglePlayer(Player p, boolean visible) {
-        for (ArmorStandWrapper wrapper : wrappers) {
-            wrapper.setVisible(p, visible);
-        }
+	notNullValidation(new Object[]{p,visible},"the provided Player and visible must be specified to toggle the player visibility.");
+	try{
+	    plugin.getLogger().fine("Hologram::togglePlayer(Player,visible): Starting:");
+	    for (ArmorStandWrapper wrapper : wrappers) {
+		if(wrapper!=null) wrapper.setVisible(p, visible);
+	    }
+	}catch(Exception e){
+	    plugin.getLogger().severe("Hologram::togglePlayer(Player,visible): Error: When -toggleqing Player- [hologram visibility?]");
+	    throw new ShopChestException("Error when -toggleqing Player- [hologram visibility?]",e);
+	}
     }
 
     /**
@@ -167,42 +176,48 @@ public class Hologram {
     }
 
     private void addLine(int line, String text, boolean forceUpdateLine) {
-        if (text == null || text.isEmpty()) return;
+	try{
+	    plugin.getLogger().fine("Hologram::addLine(line,text,forceUpdateLine): Starting:");
+	    if (text == null || text.isEmpty()) return;
 
-        if (line >= wrappers.size()) {
-            line = wrappers.size();
-        }
+	    if (line >= wrappers.size()) {
+		line = wrappers.size();
+	    }
 
-        text = ChatColor.translateAlternateColorCodes('&', text);
+	    text = ChatColor.translateAlternateColorCodes('&', text);
 
-        if (Config.hologramFixedBottom) {
-            for (int i = 0; i < line; i++) {
-                ArmorStandWrapper wrapper = wrappers.get(i);
-                wrapper.setLocation(wrapper.getLocation().add(0, 0.25, 0));
-            }
-        } else {
-            for (int i = line; i < wrappers.size(); i++) {
-                ArmorStandWrapper wrapper = wrappers.get(i);
-                wrapper.setLocation(wrapper.getLocation().subtract(0, 0.25, 0));
-            }
-        }
+	    if (Config.hologramFixedBottom) {
+		for (int i = 0; i < line; i++) {
+		    ArmorStandWrapper wrapper = wrappers.get(i);
+		    wrapper.setLocation(wrapper.getLocation().add(0, 0.25, 0));
+		}
+	    } else {
+		for (int i = line; i < wrappers.size(); i++) {
+		    ArmorStandWrapper wrapper = wrappers.get(i);
+		    wrapper.setLocation(wrapper.getLocation().subtract(0, 0.25, 0));
+		}
+	    }
 
-        Location loc = getLocation();
+	    Location loc = getLocation();
 
-        if (!Config.hologramFixedBottom) {
-            loc.subtract(0, line * 0.25, 0);
-        }
+	    if (!Config.hologramFixedBottom) {
+		loc.subtract(0, line * 0.25, 0);
+	    }
 
-        ArmorStandWrapper wrapper = new ArmorStandWrapper(plugin, loc, text, false);
-        wrappers.add(line, wrapper);
+	    ArmorStandWrapper wrapper = new ArmorStandWrapper(plugin, loc, text, false);
+	    wrappers.add(line, wrapper);
 
-        if (forceUpdateLine) {
-            for (Player player : location.getWorld().getPlayers()) {
-                if (viewers.contains(player.getUniqueId())) {
-                    wrapper.setVisible(player, true);
-                }
-            }
-        }
+	    if (forceUpdateLine) {
+		for (Player player : location.getWorld().getPlayers()) {
+		    if (viewers.contains(player.getUniqueId())) {
+			wrapper.setVisible(player, true);
+		    }
+		}
+	    }
+	}catch(Exception e){
+	    plugin.getLogger().severe("Hologram::addLine(line,text,forceUpdateLine): Error: When -adding line- [on holograms?]");
+	    throw new ShopChestException("Error when -adding line- [on holograms?]",e);
+	}
     }
 
     /**

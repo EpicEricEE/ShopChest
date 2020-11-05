@@ -6,7 +6,7 @@
 
     <groupId>de.epiceric</groupId>
     <artifactId>ShopChest</artifactId>
-    <version>1.13-SNAPSHOT</version>
+    <version>1.16.4-R0.1-SNAPSHOT-0.0.1</version>
 
     <name>ShopChest</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
@@ -94,12 +94,14 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.16.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
+	<!--                   SPIGOT                    -->
+	<!--Spigot API https://www.spigotmc.org/wiki/spigot-maven/-->
+	<dependency>
+	    <groupId>org.spigotmc</groupId>
+	    <artifactId>spigot-api</artifactId>
+	    <version>1.16.4-R0.1-SNAPSHOT</version> <!-- versions https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/spigot-api/ -->
+	    <scope>provided</scope>
+	</dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
@@ -112,12 +114,26 @@
             <version>5.4.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+	<!-- use "install_windows_maven_local_PlotSquared_dependency.bat" to install this dependency locally -->
+<!--        <dependency>
             <groupId>com.plotsquared</groupId>
             <artifactId>PlotSquared</artifactId>
             <version>5.1</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
+	<!-- PlotSquared Core API -->
+	<dependency>
+	    <groupId>com.plotsquared</groupId>
+	    <artifactId>PlotSquared-Core</artifactId>
+	    <version>5.13.3</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
+	<dependency>
+	    <groupId>org.jetbrains</groupId>
+	    <artifactId>annotations</artifactId>
+	    <version>16.0.1</version>
+	</dependency>
+
         <dependency>
             <groupId>com.github.rlf</groupId>
             <artifactId>uSkyBlock-API</artifactId>
@@ -191,6 +207,19 @@
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.26</version>
         </dependency>
+	
+	
+	<dependency>
+	    <groupId>com.github.white-sdev</groupId>
+	    <artifactId>White_Validations</artifactId>
+	    <version>1.0.2</version>
+	    <exclusions>
+		<exclusion>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		</exclusion>
+	    </exclusions>
+	</dependency>
     </dependencies>
 
     <build>

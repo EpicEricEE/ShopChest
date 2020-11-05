@@ -1,6 +1,6 @@
 package de.epiceric.shopchest.exceptions;
 
-public class WorldNotFoundException extends Exception {
+public class WorldNotFoundException extends ShopChestException {
     private static final long serialVersionUID = -555886332156936972L;
 
     public WorldNotFoundException(String worldName) {

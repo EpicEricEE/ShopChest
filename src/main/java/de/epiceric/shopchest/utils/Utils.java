@@ -41,8 +41,11 @@ import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.nms.CustomBookMeta;
 import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
+import java.util.logging.Level;
 
 public class Utils {
+    
+    public static ShopChest plugin;
 
     /**
      * Check if two items are similar to each other
@@ -341,8 +344,15 @@ public class Utils {
      */
     public static Class<?> getNMSClass(String className) {
         try {
-            return Class.forName("net.minecraft.server." + getServerVersion() + "." + className);
+	    if(plugin!=null)plugin.getLogger().fine("Utils::getNMSClass(className): Starting:");
+//	    org.bukkit.command.SimpleCommandMap test3;
+//	    net.minecraft.server.v1_15_R1.EntityHuman test2;
+//	    net.minecraft.server.v1_12_R1.EntityPlayer test;
+	    Class<?> clazz=Class.forName("net.minecraft.server." + getServerVersion() + "." + className);
+			if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::getNMSClass(className): obtained class: {0}", clazz);
+            return clazz;
         } catch (ClassNotFoundException e) {
+	    if(plugin!=null)plugin.getLogger().warning("Utils::getNMSClass(className): Impossible to obtain the NMSClass [net.minecraft.server." + getServerVersion() + ".className]");
             return null;
         }
     }
@@ -360,13 +370,14 @@ public class Utils {
     }
 
     /**
-     * Create a NMS data watcher object to send via a {@code PacketPlayOutEntityMetadata} packet.
-     * Gravity will be disabled and the custom name will be displayed if available.
+     * Create a NMS data watcher object to send via a {@code PacketPlayOutEntityMetadata} packet.Gravity will be disabled and the custom name will be displayed if available.
      * @param customName Custom Name of the entity or {@code null}
      * @param nmsItemStack NMS ItemStack or {@code null} if armor stand
+     * @return 
      */
     public static Object createDataWatcher(String customName, Object nmsItemStack) {
         String version = getServerVersion();
+			if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): Version={0}", version);
         int majorVersion = getMajorVersion();
 
         try {
@@ -380,6 +391,8 @@ public class Utils {
             byte armorStandFlags = nmsItemStack == null ? (byte) 0b10000 : 0; // marker (since 1.8_R2)
 
             Object dataWatcher = dataWatcherClass.getConstructor(entityClass).newInstance((Object) null);
+            if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): obtained dataWatcher Object : {0}", dataWatcher);
+	    
             if (majorVersion < 9) {
                 if (getRevision() == 1) armorStandFlags = 0; // Marker not supported on 1.8_R1
 
@@ -392,8 +405,12 @@ public class Utils {
                 a.invoke(dataWatcher, 10, nmsItemStack == null ? armorStandFlags : nmsItemStack); // item / armor stand flags
             } else {
                 Method register = dataWatcherClass.getMethod("register", dataWatcherObjectClass, Object.class);
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): IMPORTANT register: {0}", register);
                 String[] dataWatcherObjectFieldNames;
 
+		/*
+		 * https://wiki.vg/Pre-release_protocol#Entity_Metadata
+		 */
                 if ("v1_9_R1".equals(version)) {
                     dataWatcherObjectFieldNames = new String[] {"ax", "ay", "aA", "az", "aB", null, "c", "a"};
                 } else if ("v1_9_R2".equals(version)){
@@ -413,19 +430,35 @@ public class Utils {
                 } else if ("v1_16_R1".equals(version)) {
                     dataWatcherObjectFieldNames = new String[] {"T", "AIR_TICKS", "ay", "ax", "az", "aA", "ITEM", "b"};
                 } else if ("v1_16_R2".equals(version)) {
+			    if(plugin!=null)plugin.getLogger().fine("Utils::createDataWatcher(customName, nmsItemStack):: Using Version v1_16_R2");
+                    dataWatcherObjectFieldNames = new String[] {"S", "AIR_TICKS", "ar", "aq", "as", "at", "ITEM", "b"};
+                } else if ("v1_16_R3".equals(version)) { // 1.16.4 
+			    if(plugin!=null)plugin.getLogger().fine("Utils::createDataWatcher(customName, nmsItemStack):: Using Version v1_16_R2");
                     dataWatcherObjectFieldNames = new String[] {"S", "AIR_TICKS", "ar", "aq", "as", "at", "ITEM", "b"};
                 } else {
-                    return null;
+		    if(plugin!=null)plugin.getLogger().info("Utils::createDataWatcher(customName, nmsItemStack):: Using Not explicity supported Version");
+                    dataWatcherObjectFieldNames = new String[] {"S", "AIR_TICKS", "ar", "aq", "as", "at", "ITEM", "b"};
                 }
 
+		/*
+		 * https://github.com/Bukkit/mc-dev/blob/master/net/minecraft/server/Entity.java
+		 */
                 Field fEntityFlags = entityClass.getDeclaredField(dataWatcherObjectFieldNames[0]);
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): fEntityFlags : {0}", fEntityFlags);
                 Field fAirTicks = entityClass.getDeclaredField(dataWatcherObjectFieldNames[1]);
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): fAirTicks : {0}", fAirTicks);
                 Field fNameVisible = entityClass.getDeclaredField(dataWatcherObjectFieldNames[2]);
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): fNameVisible : {0}", fNameVisible);
                 Field fCustomName = entityClass.getDeclaredField(dataWatcherObjectFieldNames[3]);
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): fEntityFlags : {0}", fCustomName);
                 Field fSilent = entityClass.getDeclaredField(dataWatcherObjectFieldNames[4]);
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): fEntityFlags : {0}", fSilent);
                 Field fNoGravity = majorVersion >= 10 ? entityClass.getDeclaredField(dataWatcherObjectFieldNames[5]) : null;
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): fEntityFlags : {0}", fNoGravity);
                 Field fItem = entityItemClass.getDeclaredField(dataWatcherObjectFieldNames[6]);
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): fEntityFlags : {0}", fItem);
                 Field fArmorStandFlags = entityArmorStandClass.getDeclaredField(dataWatcherObjectFieldNames[7]);
+		    if(plugin!=null)plugin.getLogger().log(Level.FINE, "Utils::createDataWatcher(customName, nmsItemStack): fEntityFlags : {0}", fArmorStandFlags);
 
                 fEntityFlags.setAccessible(true);
                 fAirTicks.setAccessible(true);
