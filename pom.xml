@@ -89,7 +89,7 @@
         </repository>
         <repository>
             <id>plotsquared-repo</id>
-            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
+            <url>https://plotsquared.com/mvn/</url>
         </repository>
     </repositories>
 
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.16.2-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

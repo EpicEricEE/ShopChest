@@ -412,7 +412,7 @@ public class Utils {
                     dataWatcherObjectFieldNames = new String[] {"T", "AIR_TICKS", "aA", "az", "aB", "aC", "ITEM", "b"};
                 } else if ("v1_16_R1".equals(version)) {
                     dataWatcherObjectFieldNames = new String[] {"T", "AIR_TICKS", "ay", "ax", "az", "aA", "ITEM", "b"};
-                } else if ("v1_16_R2".equals(version)) {
+                } else if ("v1_16_R2".equals(version) || "v1_16_R3".equals(version)) {
                     dataWatcherObjectFieldNames = new String[] {"S", "AIR_TICKS", "ar", "aq", "as", "at", "ITEM", "b"};
                 } else {
                     return null;
