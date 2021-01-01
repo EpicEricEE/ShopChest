@@ -255,11 +255,9 @@ public class ShopChest extends JavaPlugin {
         if (shopCreationThreadPool != null) {
             shopCreationThreadPool.shutdown();
         }
-        
-        for (Shop shop : shopUtils.getShops()) {
-            shopUtils.removeShop(shop, false);
-            debug("Removed shop (#" + shop.getID() + ")");
-        }
+
+        shopUtils.removeShops();
+        debug("Removed shops");
 
         if (database != null && database.isInitialized()) {
             if (database instanceof SQLite) {
