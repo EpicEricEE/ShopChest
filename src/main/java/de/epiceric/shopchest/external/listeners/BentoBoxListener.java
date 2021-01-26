@@ -45,8 +45,12 @@ public class BentoBoxListener extends FlagListener {
     }
 
     private boolean handleForLocation(Player player, Location loc, Cancellable e) {
-        boolean allowed = checkIsland((Event) e, player, loc, BentoBoxShopFlag.SHOP_FLAG);
-        if (!allowed) {
+        boolean chest_allowed = checkIsland((Event) e, player, loc, BentoBoxShopFlag.SHOP_CHEST_FLAG);
+        boolean barrel_allowed = checkIsland((Event) e, player, loc, BentoBoxShopFlag.SHOP_BARREL_FLAG);
+        boolean shulker_allowed = checkIsland((Event) e, player, loc, BentoBoxShopFlag.SHOP_SHULKER_BOX_FLAG);
+        boolean trapped_chest_allowed = checkIsland((Event) e, player, loc, BentoBoxShopFlag.SHOP_TRAPPED_CHEST_FLAG);
+
+        if (!chest_allowed || !barrel_allowed || !shulker_allowed || !trapped_chest_allowed) {
             e.setCancelled(true);
             plugin.debug("Cancel Reason: BentoBox");
             return true;
