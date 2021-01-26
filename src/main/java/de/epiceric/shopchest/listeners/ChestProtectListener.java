@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
+import org.bukkit.block.*;
 import org.bukkit.block.data.type.Chest.Type;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -123,7 +120,7 @@ public class ChestProtectListener implements Listener {
     public void onEntityExplode(EntityExplodeEvent e) {
         ArrayList<Block> bl = new ArrayList<>(e.blockList());
         for (Block b : bl) {
-            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.SHULKER_BOX) || b.getType().equals(Material.BARREL) || b.getType().equals(Material.TRAPPED_CHEST)) {
                 if (shopUtils.isShop(b.getLocation())) e.blockList().remove(b);
             }
         }
@@ -134,11 +131,11 @@ public class ChestProtectListener implements Listener {
         final Player p = e.getPlayer();
         final Block b = e.getBlockPlaced();
 
-        if (!b.getType().equals(Material.CHEST) && !b.getType().equals(Material.TRAPPED_CHEST)) {
+        if (!b.getType().equals(Material.CHEST) && !b.getType().equals(Material.SHULKER_BOX) && !b.getType().equals(Material.BARREL) && !b.getType().equals(Material.TRAPPED_CHEST)) {
             return;
         }
         
-        Chest c = (Chest) b.getState();
+        Container c = (Container) b.getState();
         Block b2;
 
         // Can't use Utils::getChestLocations since inventory holder
@@ -160,9 +157,13 @@ public class ChestProtectListener implements Listener {
                 b2 = l.getBlock();
             }
         } else {
+            if (!(c instanceof Chest)) {
+                return;
+            }
+
             org.bukkit.block.data.type.Chest data = (org.bukkit.block.data.type.Chest) c.getBlockData();
 
-            if (data.getType() == Type.SINGLE) {
+            if (data.equals(Type.SINGLE)) {
                 return;
             }
 
@@ -228,7 +229,7 @@ public class ChestProtectListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onItemMove(InventoryMoveItemEvent e) {
-        if ((e.getSource().getType().equals(InventoryType.CHEST)) && (!e.getInitiator().getType().equals(InventoryType.PLAYER))) {
+        if ((e.getSource().getType().equals(InventoryType.CHEST) || e.getSource().getType().equals(InventoryType.SHULKER_BOX) || e.getSource().getType().equals(InventoryType.BARREL)) && (!e.getInitiator().getType().equals(InventoryType.PLAYER))) {
 
             if (e.getSource().getHolder() instanceof DoubleChest) {
                 DoubleChest dc = (DoubleChest) e.getSource().getHolder();
@@ -237,8 +238,8 @@ public class ChestProtectListener implements Listener {
 
                 if (shopUtils.isShop(r.getLocation()) || shopUtils.isShop(l.getLocation())) e.setCancelled(true);
 
-            } else if (e.getSource().getHolder() instanceof Chest) {
-                Chest c = (Chest) e.getSource().getHolder();
+            } else if (e.getSource().getHolder() instanceof Chest || e.getSource().getHolder() instanceof ShulkerBox || e.getSource().getHolder() instanceof Barrel) {
+                Container c = (Container) e.getSource().getHolder();
 
                 if (shopUtils.isShop(c.getLocation())) e.setCancelled(true);
             }

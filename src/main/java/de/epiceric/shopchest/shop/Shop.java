@@ -9,12 +9,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
+import org.bukkit.block.*;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -40,10 +38,10 @@ public class Shop {
 
     private static class PreCreateResult {
         private final Inventory inventory;
-        private final Chest[] chests;
+        private final BlockInventoryHolder[] chests;
         private final BlockFace face;
 
-        private PreCreateResult(Inventory inventory, Chest[] chests, BlockFace face) {
+        private PreCreateResult(Inventory inventory, BlockInventoryHolder[] chests, BlockFace face) {
             this.inventory = inventory;
             this.chests = chests;
             this.face = face;
@@ -113,7 +111,7 @@ public class Shop {
         plugin.debug("Creating shop (#" + id + ")");
 
         Block b = location.getBlock();
-        if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
+        if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST && b.getType() != Material.BARREL && b.getType() != Material.SHULKER_BOX) {
             ChestNotFoundException ex = new ChestNotFoundException(String.format("No Chest found in world '%s' at location: %d; %d; %d",
                     b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
             plugin.getShopUtils().removeShop(this, Config.removeShopOnError);
@@ -176,7 +174,7 @@ public class Shop {
 
     /**
      * <p>Creates the floating item of the shop</p>
-     * <b>Call this after {@link #createHologram()}, because it depends on the hologram's location</b>
+     * <b>Call this after {@link #createHologram(PreCreateResult)}, because it depends on the hologram's location</b>
      */
     private void createItem() {
         plugin.debug("Creating item (#" + id + ")");
@@ -198,7 +196,7 @@ public class Shop {
 
         if (ih == null) return null;
 
-        Chest[] chests = new Chest[2];
+        BlockInventoryHolder[] chests = new BlockInventoryHolder[2];
         BlockFace face;
 
         if (ih instanceof DoubleChest) {
@@ -209,13 +207,23 @@ public class Shop {
             chests[0] = r;
             chests[1] = l;
         } else {
-            chests[0] = (Chest) ih;
+            chests[0] = (BlockInventoryHolder) ih;
         }
 
         if (Utils.getMajorVersion() < 13) {
-            face = ((org.bukkit.material.Directional) chests[0].getData()).getFacing();
+            if (chests[0] instanceof Chest) {
+                Chest chest = (Chest) chests[0];
+                face = ((org.bukkit.material.Directional) chest.getData()).getFacing();
+            } else  {
+                face = null;
+            }
         } else {
-            face = ((Directional) chests[0].getBlockData()).getFacing();
+            if (chests[0] instanceof Chest) {
+                Chest chest = (Chest) chests[0];
+                face = ((Directional) chest.getBlockData()).getFacing();
+            } else {
+                face = null;
+            }
         }
 
         return new PreCreateResult(ih.getInventory(), chests, face);
@@ -325,7 +333,7 @@ public class Shop {
         return lines.toArray(new String[0]);
     }
 
-    private Location getHologramLocation(Chest[] chests, BlockFace face) {
+    private Location getHologramLocation(BlockInventoryHolder[] chests, BlockFace face) {
         World w = location.getWorld();
         int x = location.getBlockX();
         int y  = location.getBlockY();
@@ -338,21 +346,21 @@ public class Shop {
         if (Config.hologramFixedBottom) deltaY = -0.85;
 
         if (chests[1] != null) {
-            Chest c1 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[1] : chests[0];
-            Chest c2 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[0] : chests[1];
+            BlockInventoryHolder c1 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[1] : chests[0];
+            BlockInventoryHolder c2 = Utils.getMajorVersion() >= 13 && (face == BlockFace.NORTH || face == BlockFace.EAST) ? chests[0] : chests[1];
 
-            if (holoLocation.equals(c1.getLocation())) {
-                if (c1.getX() != c2.getX()) {
+            if (holoLocation.equals(c1.getBlock().getLocation())) {
+                if (c1.getBlock().getX() != c2.getBlock().getX()) {
                     holoLocation.add(0, deltaY, 0.5);
-                } else if (c1.getZ() != c2.getZ()) {
+                } else if (c1.getBlock().getZ() != c2.getBlock().getZ()) {
                     holoLocation.add(0.5, deltaY, 0);
                 } else {
                     holoLocation.add(0.5, deltaY, 0.5);
                 }
             } else {
-                if (c1.getX() != c2.getX()) {
+                if (c1.getBlock().getX() != c2.getBlock().getX()) {
                     holoLocation.add(1, deltaY, 0.5);
-                } else if (c1.getZ() != c2.getZ()) {
+                } else if (c1.getBlock().getZ() != c2.getBlock().getZ()) {
                     holoLocation.add(0.5, deltaY, 1);
                 } else {
                     holoLocation.add(0.5, deltaY, 0.5);
@@ -472,6 +480,16 @@ public class Shop {
         if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
             Chest chest = (Chest) b.getState();
             return chest.getInventory().getHolder();
+        }
+
+        if (b.getType() == Material.BARREL) {
+            Barrel barrel = (Barrel) b.getState();
+            return barrel.getInventory().getHolder();
+        }
+
+        if (b.getType() == Material.SHULKER_BOX) {
+            ShulkerBox shulkerBox = (ShulkerBox) b.getState();
+            return shulkerBox.getInventory().getHolder();
         }
 
         return null;

@@ -107,7 +107,7 @@ public class ShopUtils {
             shopLocation.put(r.getLocation(), shop);
             shopLocation.put(l.getLocation(), shop);
         } else {
-            plugin.debug("Added shop as single chest. (#" + shop.getID() + ")");
+            plugin.debug("Added shop as single container. (#" + shop.getID() + ")");
 
             shopLocation.put(shop.getLocation(), shop);
         }

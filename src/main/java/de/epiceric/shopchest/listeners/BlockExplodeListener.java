@@ -22,7 +22,7 @@ public class BlockExplodeListener implements Listener {
     public void onBlockExplode(BlockExplodeEvent e) {
         ArrayList<Block> bl = new ArrayList<>(e.blockList());
         for (Block b : bl) {
-            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST) || b.getType().equals(Material.SHULKER_BOX) || b.getType().equals(Material.BARREL)) {
                 if (plugin.getShopUtils().isShop(b.getLocation())) e.blockList().remove(b);
             }
         }

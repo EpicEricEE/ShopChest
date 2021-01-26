@@ -5,9 +5,9 @@ import java.util.Set;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
+import org.bukkit.block.*;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Shulker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -37,12 +37,12 @@ public class ShopUpdateListener implements Listener {
 
         Location loc = null;
 
-        if (e.getSource().getHolder() instanceof Chest) {
-            loc =  ((Chest) e.getSource().getHolder()).getLocation();
+        if (e.getSource().getHolder() instanceof Chest || e.getSource().getHolder() instanceof ShulkerBox || e.getSource().getHolder() instanceof Barrel) {
+            loc =  ((BlockState) e.getSource().getHolder()).getLocation();
         } else if (e.getSource().getHolder() instanceof DoubleChest) {
             loc =  ((DoubleChest) e.getSource().getHolder()).getLocation();
-        } else if (e.getDestination().getHolder() instanceof Chest) {
-            loc =  ((Chest) e.getDestination().getHolder()).getLocation();
+        } else if (e.getDestination().getHolder() instanceof Chest || e.getDestination().getHolder() instanceof ShulkerBox || e.getDestination().getHolder() instanceof Barrel) {
+            loc =  ((BlockState) e.getDestination().getHolder()).getLocation();
         } else if (e.getDestination().getHolder() instanceof DoubleChest) {
             loc =  ((DoubleChest) e.getDestination().getHolder()).getLocation();
         }
