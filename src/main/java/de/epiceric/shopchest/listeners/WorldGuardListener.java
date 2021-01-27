@@ -2,6 +2,7 @@ package de.epiceric.shopchest.listeners;
 
 import java.util.Optional;
 
+import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
@@ -69,7 +70,7 @@ public class WorldGuardListener implements Listener {
                 Block block = event.getBlocks().get(0);
                 Material type = block.getType();
                 
-                if (type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.SHULKER_BOX || type == Material.BARREL) {
+                if (ShopUtils.isShopMaterial(type)) {
                     if (isAllowed(player, block.getLocation())) {
                         event.setResult(Result.ALLOW);
                     }

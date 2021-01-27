@@ -11,10 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
@@ -320,6 +317,33 @@ public class ShopUtils {
         });
     }
 
+    /*
+     * Tells if the material given is a shop material
+     * @param material The material to test
+     */
+    public static boolean isShopMaterial(Material material) {
+        return material.equals(Material.CHEST) ||
+                material.equals(Material.TRAPPED_CHEST) ||
+                material.equals(Material.BARREL) ||
+                material.equals(Material.SHULKER_BOX) ||
+                material.equals(Material.BLACK_SHULKER_BOX) ||
+                material.equals(Material.BLUE_SHULKER_BOX) ||
+                material.equals(Material.BROWN_SHULKER_BOX) ||
+                material.equals(Material.CYAN_SHULKER_BOX) ||
+                material.equals(Material.GRAY_SHULKER_BOX) ||
+                material.equals(Material.GREEN_SHULKER_BOX) ||
+                material.equals(Material.LIGHT_BLUE_SHULKER_BOX) ||
+                material.equals(Material.LIGHT_GRAY_SHULKER_BOX) ||
+                material.equals(Material.LIME_SHULKER_BOX) ||
+                material.equals(Material.MAGENTA_SHULKER_BOX) ||
+                material.equals(Material.ORANGE_SHULKER_BOX) ||
+                material.equals(Material.PINK_SHULKER_BOX) ||
+                material.equals(Material.PURPLE_SHULKER_BOX) ||
+                material.equals(Material.RED_SHULKER_BOX) ||
+                material.equals(Material.WHITE_SHULKER_BOX) ||
+                material.equals(Material.YELLOW_SHULKER_BOX);
+    }
+
     /**
      * Loads the amount of shops for each player
      * @param callback Callback that returns the amount of shops for each player
@@ -352,9 +376,9 @@ public class ShopUtils {
 
     /**
      * Gets all shops in the given chunks from the database and adds them to the server
-     * @param chunk The chunks to load shops from
+     * @param chunks The chunks to load shops from
      * @param callback Callback that returns the amount of shops added if succeeded
-     * @see ShopUtils#loadShops(Chunk Callback)
+     * @see ShopUtils#loadShops(Chunk, Callback)
      */
     public void loadShops(final Chunk[] chunks, final Callback<Integer> callback) {
         plugin.getShopDatabase().getShopsInChunks(chunks, new Callback<Collection<Shop>>(plugin) {

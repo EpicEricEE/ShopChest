@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import de.epiceric.shopchest.utils.ShopUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -111,7 +112,7 @@ public class Shop {
         plugin.debug("Creating shop (#" + id + ")");
 
         Block b = location.getBlock();
-        if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST && b.getType() != Material.BARREL && b.getType() != Material.SHULKER_BOX) {
+        if (!ShopUtils.isShopMaterial(b.getType())) {
             ChestNotFoundException ex = new ChestNotFoundException(String.format("No Chest found in world '%s' at location: %d; %d; %d",
                     b.getWorld().getName(), b.getX(), b.getY(), b.getZ()));
             plugin.getShopUtils().removeShop(this, Config.removeShopOnError);
@@ -477,19 +478,9 @@ public class Shop {
     public InventoryHolder getInventoryHolder() {
         Block b = getLocation().getBlock();
 
-        if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
-            Chest chest = (Chest) b.getState();
-            return chest.getInventory().getHolder();
-        }
-
-        if (b.getType() == Material.BARREL) {
-            Barrel barrel = (Barrel) b.getState();
-            return barrel.getInventory().getHolder();
-        }
-
-        if (b.getType() == Material.SHULKER_BOX) {
-            ShulkerBox shulkerBox = (ShulkerBox) b.getState();
-            return shulkerBox.getInventory().getHolder();
+        if (ShopUtils.isShopMaterial(b.getType())) {
+            Container container = (Container) b.getState();
+            return container.getInventory().getHolder();
         }
 
         return null;

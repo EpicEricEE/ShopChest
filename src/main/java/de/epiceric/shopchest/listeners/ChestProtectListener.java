@@ -120,7 +120,7 @@ public class ChestProtectListener implements Listener {
     public void onEntityExplode(EntityExplodeEvent e) {
         ArrayList<Block> bl = new ArrayList<>(e.blockList());
         for (Block b : bl) {
-            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.SHULKER_BOX) || b.getType().equals(Material.BARREL) || b.getType().equals(Material.TRAPPED_CHEST)) {
+            if (ShopUtils.isShopMaterial(b.getType())) {
                 if (shopUtils.isShop(b.getLocation())) e.blockList().remove(b);
             }
         }
@@ -131,7 +131,7 @@ public class ChestProtectListener implements Listener {
         final Player p = e.getPlayer();
         final Block b = e.getBlockPlaced();
 
-        if (!b.getType().equals(Material.CHEST) && !b.getType().equals(Material.SHULKER_BOX) && !b.getType().equals(Material.BARREL) && !b.getType().equals(Material.TRAPPED_CHEST)) {
+        if (!ShopUtils.isShopMaterial(b.getType())) {
             return;
         }
         

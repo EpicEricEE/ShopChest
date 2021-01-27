@@ -24,6 +24,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -117,7 +119,7 @@ public class ShopInteractListener implements Listener {
         if (!(ClickType.getPlayerClickType(p) instanceof CreateClickType))
             return;
 
-        if (b.getType() != Material.CHEST && b.getType() != Material.SHULKER_BOX && b.getType() != Material.BARREL && b.getType() != Material.TRAPPED_CHEST)
+        if (!ShopUtils.isShopMaterial(b.getType()))
             return;
 
         if (ClickType.getPlayerClickType(p).getClickType() != ClickType.EnumClickType.CREATE)
@@ -162,7 +164,7 @@ public class ShopInteractListener implements Listener {
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK)
             return;
 
-        if (b.getType() != Material.CHEST && b.getType() != Material.SHULKER_BOX && b.getType() != Material.BARREL && b.getType() != Material.TRAPPED_CHEST)
+        if (!ShopUtils.isShopMaterial(b.getType()))
             return;
         
         ClickType clickType = ClickType.getPlayerClickType(p);
