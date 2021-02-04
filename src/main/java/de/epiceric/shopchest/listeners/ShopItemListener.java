@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +17,8 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
@@ -26,9 +29,11 @@ import de.epiceric.shopchest.utils.ShopUtils;
 public class ShopItemListener implements Listener {
 
     private ShopUtils shopUtils;
+    private final ShopChest plugin;
 
     public ShopItemListener(ShopChest plugin) {
         this.shopUtils = plugin.getShopUtils();
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -58,6 +63,29 @@ public class ShopItemListener implements Listener {
                 e.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onShulkerClose(InventoryCloseEvent e) {
+        if (e.getInventory().getType() != InventoryType.SHULKER_BOX) {
+            return;
+        }
+
+        Block block = e.getPlayer().getTargetBlockExact(7);
+
+        if (block == null || !(block.getState() instanceof ShulkerBox)) {
+            return;
+        }
+
+        if (!shopUtils.isShop(block.getLocation())) {
+            return;
+        }
+
+        Shop shop = shopUtils.getShop(block.getLocation());
+
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+          Bukkit.getOnlinePlayers().forEach(player -> shop.getItem().resetForPlayer(player));
+        }, 15);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
