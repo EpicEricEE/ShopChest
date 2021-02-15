@@ -23,6 +23,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -30,6 +31,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
@@ -78,6 +80,36 @@ public class Utils {
 
             itemStack1 = decode(encode(itemStack1));
             itemStack2 = decode(encode(itemStack2));
+        }
+
+        if (itemMeta1 instanceof EnchantmentStorageMeta && itemMeta2 instanceof EnchantmentStorageMeta) {
+            EnchantmentStorageMeta book1 = (EnchantmentStorageMeta)itemMeta1;
+            EnchantmentStorageMeta book2 = (EnchantmentStorageMeta)itemMeta2;
+
+            if (book1.hasStoredEnchants() != book2.hasStoredEnchants()) {
+                return false;
+            }
+
+            for (Map.Entry<Enchantment, Integer> enchantment: book1.getStoredEnchants().entrySet()) {
+                if (!book2.hasStoredEnchant(enchantment.getKey())) {
+                    return false;
+                }
+                if (book2.getStoredEnchantLevel(enchantment.getKey()) != enchantment.getValue()) {
+                    return false;
+                }
+            }
+
+            //Cross-check for set equivalence
+            for (Map.Entry<Enchantment, Integer> enchantment: book2.getStoredEnchants().entrySet()) {
+                if (!book1.hasStoredEnchant(enchantment.getKey())) {
+                    return false;
+                }
+                if (book1.getStoredEnchantLevel(enchantment.getKey()) != enchantment.getValue()) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         return itemStack1.isSimilar(itemStack2);
