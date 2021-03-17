@@ -1,23 +1,24 @@
 package de.epiceric.shopchest.external.listeners;
 
-import java.util.Set;
-
-import com.plotsquared.core.location.Location;
-import com.plotsquared.core.plot.Plot;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-
+import com.github.intellectualsites.plotsquared.bukkit.events.PlotClearEvent;
+import com.github.intellectualsites.plotsquared.bukkit.events.PlotDeleteEvent;
+import com.github.intellectualsites.plotsquared.plot.object.Location;
+import com.google.common.eventbus.Subscribe;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.ShopCreateEvent;
 import de.epiceric.shopchest.event.ShopExtendEvent;
 import de.epiceric.shopchest.external.PlotSquaredOldShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.utils.Utils;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+
+import java.util.Set;
 
 public class PlotSquaredListener implements Listener {
     private final ShopChest plugin;
@@ -46,6 +47,38 @@ public class PlotSquaredListener implements Listener {
         handleForLocation(e.getPlayer(), e.getNewChestLocation(), e);
     }
 
+    @Subscribe
+    public void onDeletePlot(PlotDeleteEvent event) {
+        for (Shop shop: plugin.getShopUtils().getShops()) {
+            org.bukkit.Location l = shop.getLocation();
+            Location location = new Location(l.getWorld().getName(),l.getBlockX(), l.getBlockY(), l.getBlockZ());
+            if (!location.isPlotArea()) {
+                continue;
+            }
+            if (!event.getPlot().getArea().contains(location)) {
+                return;
+            }
+
+            plugin.getShopUtils().removeShop(shop, true);
+        }
+    }
+
+    @Subscribe
+    public void onClearPlot(PlotClearEvent event) {
+        for (Shop shop: plugin.getShopUtils().getShops()) {
+            org.bukkit.Location l = shop.getLocation();
+            Location location = new Location(l.getWorld().getName(),l.getBlockX(), l.getBlockY(), l.getBlockZ());
+            if (!location.isPlotArea()) {
+                continue;
+            }
+            if (!event.getPlot().getArea().contains(location)) {
+                return;
+            }
+
+            plugin.getShopUtils().removeShop(shop, true);
+        }
+    }
+
     // TODO: Outsource shop use external permission
 
     // @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -70,8 +103,8 @@ public class PlotSquaredListener implements Listener {
 
         try {
             Class.forName("com.plotsquared.core.PlotSquared");
-            Location plotLocation = new Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-            Plot plot = plotLocation.getOwnedPlot();
+            com.plotsquared.core.location.Location plotLocation = new com.plotsquared.core.location.Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            com.plotsquared.core.plot.Plot plot = plotLocation.getOwnedPlot();
             isAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, player);
         } catch (ClassNotFoundException ex) {
             com.github.intellectualsites.plotsquared.plot.object.Location plotLocation = new com.github.intellectualsites.plotsquared.plot.object.Location(
