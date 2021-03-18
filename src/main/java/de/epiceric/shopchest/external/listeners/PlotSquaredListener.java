@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 
 import java.util.Set;
 
+@SuppressWarnings("UnstableApiUsage")
 public class PlotSquaredListener implements Listener {
     private final ShopChest plugin;
 
