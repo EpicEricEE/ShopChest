@@ -459,8 +459,11 @@ public class ShopChest extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new GriefPreventionListener(this), this);
         if (hasIslandWorld())
             getServer().getPluginManager().registerEvents(new IslandWorldListener(this), this);
-        if (hasPlotSquared())
-            getServer().getPluginManager().registerEvents(new PlotSquaredListener(this), this);
+        if (hasPlotSquared()) {
+            PlotSquaredListener psListener = new PlotSquaredListener(this);
+            getServer().getPluginManager().registerEvents(psListener, this);
+            PlotSquared.get().getEventDispatcher().registerListener(psListener);
+        }
         if (hasTowny())
             getServer().getPluginManager().registerEvents(new TownyListener(this), this);
         if (hasUSkyBlock())
