@@ -312,7 +312,17 @@ public class Config {
      * The language configuration of the currently selected language file
      */
     public static LanguageConfiguration langConfig;
-
+    /**
+     * If automatic removal of inactive
+     * players' shops in enabled.
+     */
+    public static boolean removeInactive;
+    /**
+     * How many days a player must be
+     * offline before auto-removal of
+     * shops.
+     */
+    public static int inactiveDays;
     private ShopChest plugin;
 
     public Config(ShopChest plugin) {
@@ -505,6 +515,9 @@ public class Config {
         defaultLimit = plugin.getConfig().getInt("shop-limits.default");
         mainCommandName = plugin.getConfig().getString("main-command-name");
         languageFile = plugin.getConfig().getString("language-file");
+        removeInactive = plugin.getConfig().getBoolean("enable-inactive-removal",true);
+        inactiveDays = plugin.getConfig().getInt("inactive-time",30);
+
 
         if (firstLoad || langReload) loadLanguageConfig(showMessages);
         if (!firstLoad && langReload) LanguageUtils.load();

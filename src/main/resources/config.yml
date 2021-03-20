@@ -62,6 +62,11 @@ enable-islandworld-integration: true
 enable-griefprevention-integration: true
 enable-areashop-integration: true
 
+# Enable or Disable automatic removal of inactive shops
+enable-inactive-removal: true
+# Number of days a user must be offline before shops are auto-removed
+inactive-time: 30
+
 # Set whether the vendor of a shop should get messages when players buy
 # or sell something from/to his shop or when his shop is out of stock.
 enable-vendor-messages: true

@@ -1,5 +1,6 @@
 package de.epiceric.shopchest;
 
+import com.earth2me.essentials.Essentials;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -101,6 +102,7 @@ public class ShopChest extends JavaPlugin {
     private BentoBox bentoBox;
     private ShopUpdater updater;
     private ExecutorService shopCreationThreadPool;
+    private Essentials essentials;
 
     /**
      * @return An instance of ShopChest
@@ -334,6 +336,10 @@ public class ShopChest extends JavaPlugin {
         if (hasBentoBox()) {
             BentoBoxShopFlag.register(this);
         }
+        Plugin essPlugin = Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+        if (essPlugin instanceof Essentials){
+            essentials = (Essentials) getServer().getPluginManager().getPlugin("Essentials");
+        }
     }
 
     private void loadMetrics() {
@@ -487,7 +493,7 @@ public class ShopChest extends JavaPlugin {
                         getLogger().info("Loaded shop amounts");
                         debug("Loaded shop amounts");
                     }
-                    
+
                     @Override
                     public void onError(Throwable throwable) {
                         getLogger().severe("Failed to load shop amounts. Shop limits will not be working correctly!");
@@ -732,4 +738,8 @@ public class ShopChest extends JavaPlugin {
     public Config getShopChestConfig() {
         return config;
     }
+
+	public Essentials getEssentials() {
+		return essentials;
+	}
 }

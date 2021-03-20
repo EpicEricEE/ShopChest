@@ -91,6 +91,10 @@
             <id>plotsquared-repo</id>
             <url>https://plotsquared.com/mvn/</url>
         </repository>
+        <repository>
+            <id>ess-repo</id>
+            <url>https://ci.ender.zone/plugin/repository/everything/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -168,6 +172,12 @@
             <version>4.495</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/PlotSquared-Bukkit-4.4.495.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.ess3</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.17.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Shaded dependencies -->

@@ -1,5 +1,8 @@
 package de.epiceric.shopchest.listeners;
 
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
+import com.earth2me.essentials.utils.DateUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.HashMap;
@@ -10,7 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.google.gson.JsonPrimitive;
 
 import org.bukkit.Bukkit;
@@ -64,6 +66,7 @@ import de.epiceric.shopchest.utils.Utils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import java.util.logging.Logger;
 
 public class ShopInteractListener implements Listener {
     private static final Pattern COLOR_CODE_PATTERN = Pattern.compile(".*([§]([a-fA-F0-9]))");
@@ -73,12 +76,14 @@ public class ShopInteractListener implements Listener {
     private Economy econ;
     private Database database;
     private ShopUtils shopUtils;
+    private Essentials essentials;
 
     public ShopInteractListener(ShopChest plugin) {
         this.plugin = plugin;
         this.econ = plugin.getEconomy();
         this.database = plugin.getShopDatabase();
         this.shopUtils = plugin.getShopUtils();
+        this.essentials = plugin.getEssentials();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -154,7 +159,7 @@ public class ShopInteractListener implements Listener {
 
     private Map<UUID, Set<Integer>> needsConfirmation = new HashMap<>();
 
-    private void handleInteractEvent(PlayerInteractEvent e) {
+    private void handleInteractEvent(PlayerInteractEvent e) throws Exception {
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
         boolean inverted = Config.invertMouseButtons;
@@ -178,7 +183,7 @@ public class ShopInteractListener implements Listener {
                 case CREATE:
                 case SELECT_ITEM:
                     break;
-                default: 
+                default:
                     if (shop == null) {
                         p.sendMessage(LanguageUtils.getMessage(Message.CHEST_NO_SHOP));
                         plugin.debug("Chest is not a shop");
@@ -466,7 +471,7 @@ public class ShopInteractListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent e) {
+    public void onPlayerInteract(PlayerInteractEvent e) throws Exception {
         if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(e.getPlayer())) return;
         handleInteractEvent(e);
     }
@@ -525,13 +530,27 @@ public class ShopInteractListener implements Listener {
      * @param shop Shop to be removed
      */
     private void remove(Player executor, Shop shop) {
+        remove(executor,shop,false);
+    }
+
+    /**
+     * Remove a shop checking for permission bypass flag
+     *
+     * Allows automatic removal of inactive shops
+     * by users without normal remove permission.
+     *
+     * @param executor Player executing command
+     * @param shop Shop to be removed
+     * @param bypass Bypass shop remove permission
+     */
+    private void remove(Player executor, Shop shop, boolean bypass) {
         if (shop.getShopType() == ShopType.ADMIN && !executor.hasPermission(Permissions.REMOVE_ADMIN)) {
             executor.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_ADMIN));
             return;
         }
 
         if (shop.getShopType() == ShopType.NORMAL && !executor.getUniqueId().equals(shop.getVendor().getUniqueId())
-                && !executor.hasPermission(Permissions.REMOVE_OTHER)) {
+                && !executor.hasPermission(Permissions.REMOVE_OTHER) && !bypass) {
             executor.sendMessage(LanguageUtils.getMessage(Message.NO_PERMISSION_REMOVE_OTHERS));
             return;
         }
@@ -596,7 +615,7 @@ public class ShopInteractListener implements Listener {
      * @param executor Player, who executed the command and will retrieve the information
      * @param shop Shop from which the information will be retrieved
      */
-    private void info(Player executor, Shop shop) {
+    private void info(Player executor, Shop shop) throws Exception {
         plugin.debug(executor.getName() + " is retrieving shop info (#" + shop.getID() + ")");
         ShopInfoEvent event = new ShopInfoEvent(executor, shop);
         Bukkit.getPluginManager().callEvent(event);
@@ -642,12 +661,30 @@ public class ShopInteractListener implements Listener {
         if (shop.getShopType() != ShopType.ADMIN && shop.getSellPrice() > 0) executor.sendMessage(chestSpace);
         executor.sendMessage(priceString);
         executor.sendMessage(shopType);
+        if (essentials != null) {
+            User user = essentials.getUser(shop.getVendor().getUniqueId());
+            if (!user.getBase().isOnline()) {
+                long logout = user.getLastLogout();
+                long expireDay = DateUtil.parseDateDiff(Config.inactiveDays + "d", false);
+                String seen;
+                seen = expireDay > logout ? "§c": "§a";
+                seen = seen+DateUtil.formatDateDiff(logout);
+                executor.sendMessage("§6Online: §eLast seen " + seen + "§e ago");
+                if ((Config.removeInactive) && (expireDay > (logout))) {
+                    Logger log = plugin.getLogger();
+                    log.info("Removed inactive shop of " + shop.getVendor().getName());
+                    remove(executor, shop, true);
+                }
+            } else
+                executor.sendMessage("§6Online: §eVendor is currently§a online");
+        }
         executor.sendMessage(" ");
     }
 
     /**
      * Create a {@link JsonBuilder} containing the shop info message for the product
      * in which you can hover the item name to get a preview.
+     *
      * @param product The product of the shop
      * @return A {@link JsonBuilder} that can send the message via {@link JsonBuilder#sendJson(Player)}
      */
