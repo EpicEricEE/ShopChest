@@ -43,10 +43,8 @@ public class LanguageConfiguration extends FileConfiguration {
 
     @Override
     public String getString(String path, String def) {
-        for (String key : values.keySet()) {
-            if (key.equals(path)) {
-                return values.get(key);
-            }
+        if (values.containsKey(path)) {
+            return values.get(path);
         }
             
         values.put(path, def);
