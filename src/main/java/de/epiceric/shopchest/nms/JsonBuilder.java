@@ -1,12 +1,12 @@
 package de.epiceric.shopchest.nms;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -109,7 +109,8 @@ public class JsonBuilder {
         }
     }
     
-    private static final Pattern PART_PATTERN = Pattern.compile("(([§][a-fA-Fk-oK-OrR0-9])+)([^§]*)");
+    private static final Pattern PART_PATTERN = Pattern.compile("((§(?:[a-fA-Fk-oK-OrR0-9]|#[a-fA-F0-9]{6}))+)([^§]*)");
+    private static final Pattern HEX_PATTERN = Pattern.compile("(§[a-fA-F0-9]){6}");
 
     private Part rootPart;
     private ShopChest plugin;
@@ -117,6 +118,7 @@ public class JsonBuilder {
     private Class<?> iChatBaseComponentClass = Utils.getNMSClass("IChatBaseComponent");
     private Class<?> packetPlayOutChatClass = Utils.getNMSClass("PacketPlayOutChat");
     private Class<?> chatSerializerClass;
+    private Class<?> chatMessageTypeClass;
 
     public JsonBuilder(ShopChest plugin) {
         this.plugin = plugin;
@@ -125,6 +127,10 @@ public class JsonBuilder {
             chatSerializerClass = Utils.getNMSClass("ChatSerializer");
         } else {
             chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");
+        }
+
+        if (Utils.getMajorVersion() >= 16) {
+            chatMessageTypeClass = Utils.getNMSClass("ChatMessageType");
         }
 
         Class<?>[] requiredClasses = new Class<?>[] {
@@ -140,6 +146,12 @@ public class JsonBuilder {
     }
 
     public static Part parse(String text) {
+        Matcher hexMatcher = HEX_PATTERN.matcher(text);
+        while (hexMatcher.find()) {
+            String hexCode = hexMatcher.group(0).replace("§", "");
+            text = text.replace(hexMatcher.group(0), "§#" + hexCode);
+        }
+
         Matcher matcher = PART_PATTERN.matcher(text);
         
         if (!matcher.find()) {
@@ -195,7 +207,11 @@ public class JsonBuilder {
                         part.removeValue("color");
                         break;
                     default:
-                        part.setValue("color", new Part(ChatColor.getByChar(f).name().toLowerCase()));
+                        if (f.startsWith("#")) {
+                            part.setValue("color", new Part(f));
+                        } else {
+                            part.setValue("color", new Part(ChatColor.getByChar(f).name().toLowerCase()));
+                        }
                 }
             }
 
@@ -222,12 +238,14 @@ public class JsonBuilder {
     public void sendJson(Player p) {        
         try {
             Object iChatBaseComponent = chatSerializerClass.getMethod("a", String.class).invoke(null, toString());
-            Object packetPlayOutChat = packetPlayOutChatClass.getConstructor(iChatBaseComponentClass).newInstance(iChatBaseComponent);
+            Object packetPlayOutChat = Utils.getMajorVersion() < 16
+                ? packetPlayOutChatClass.getConstructor(iChatBaseComponentClass).newInstance(iChatBaseComponent)
+                : packetPlayOutChatClass.getConstructor(iChatBaseComponentClass, chatMessageTypeClass, UUID.class)
+                        .newInstance(iChatBaseComponent, chatMessageTypeClass.getField("CHAT").get(null), UUID.randomUUID());
             
             Utils.sendPacket(plugin, packetPlayOutChat, p);
             plugin.debug("Sent JSON: " + toString());
-        } catch (InstantiationException | InvocationTargetException |
-                IllegalAccessException | NoSuchMethodException e) {
+        } catch (ReflectiveOperationException e) {
             plugin.getLogger().severe("Failed to send JSON with reflection");
             plugin.debug("Failed to send JSON with reflection: " + toString());
             plugin.debug(e);

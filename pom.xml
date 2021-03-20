@@ -89,7 +89,7 @@
         </repository>
         <repository>
             <id>plotsquared-repo</id>
-            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
+            <url>https://plotsquared.com/mvn/</url>
         </repository>
         <repository>
             <id>ess-repo</id>
@@ -99,9 +99,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.15-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

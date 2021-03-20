@@ -34,5 +34,5 @@ If you find any issues, please provide them in the [Issues Section](https://gith
 
 ## Download
 This resource/plugin is found on the official spigot page [here](https://www.spigotmc.org/resources/shopchest.11431/).
-You can also download the latest unstable builds on [this page](http://epiceric.square7.de/bukkit/plugins/).
+You can also download the latest unstable builds on [this page](https://ci.codemc.io/job/EpicEricEE/job/ShopChest/).
 
