@@ -1,9 +1,10 @@
 package de.epiceric.shopchest.external.listeners;
 
-import com.github.intellectualsites.plotsquared.bukkit.events.PlotClearEvent;
-import com.github.intellectualsites.plotsquared.bukkit.events.PlotDeleteEvent;
-import com.github.intellectualsites.plotsquared.plot.object.Location;
 import com.google.common.eventbus.Subscribe;
+import com.plotsquared.core.events.PlotClearEvent;
+import com.plotsquared.core.events.PlotDeleteEvent;
+import com.plotsquared.core.location.Location;
+import com.plotsquared.core.plot.Plot;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.ShopCreateEvent;
@@ -104,8 +105,8 @@ public class PlotSquaredListener implements Listener {
 
         try {
             Class.forName("com.plotsquared.core.PlotSquared");
-            com.plotsquared.core.location.Location plotLocation = new com.plotsquared.core.location.Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-            com.plotsquared.core.plot.Plot plot = plotLocation.getOwnedPlot();
+            Location plotLocation = new Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            Plot plot = plotLocation.getOwnedPlot();
             isAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, player);
         } catch (ClassNotFoundException ex) {
             com.github.intellectualsites.plotsquared.plot.object.Location plotLocation = new com.github.intellectualsites.plotsquared.plot.object.Location(
