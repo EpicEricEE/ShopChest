@@ -5,6 +5,8 @@ import com.plotsquared.core.events.PlotClearEvent;
 import com.plotsquared.core.events.PlotDeleteEvent;
 import com.plotsquared.core.location.Location;
 import com.plotsquared.core.plot.Plot;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.event.ShopCreateEvent;
@@ -51,33 +53,25 @@ public class PlotSquaredListener implements Listener {
 
     @Subscribe
     public void onDeletePlot(PlotDeleteEvent event) {
-        for (Shop shop: plugin.getShopUtils().getShops()) {
-            org.bukkit.Location l = shop.getLocation();
-            Location location = new Location(l.getWorld().getName(),l.getBlockX(), l.getBlockY(), l.getBlockZ());
-            if (!location.isPlotArea()) {
-                continue;
-            }
-            if (!event.getPlot().getArea().contains(location)) {
-                return;
-            }
-
-            plugin.getShopUtils().removeShop(shop, true);
-        }
+        removeShopsFromPlot(event.getPlot());
     }
 
     @Subscribe
     public void onClearPlot(PlotClearEvent event) {
-        for (Shop shop: plugin.getShopUtils().getShops()) {
-            org.bukkit.Location l = shop.getLocation();
-            Location location = new Location(l.getWorld().getName(),l.getBlockX(), l.getBlockY(), l.getBlockZ());
-            if (!location.isPlotArea()) {
-                continue;
-            }
-            if (!event.getPlot().getArea().contains(location)) {
-                return;
-            }
+        removeShopsFromPlot(event.getPlot());
+    }
 
-            plugin.getShopUtils().removeShop(shop, true);
+    private void removeShopsFromPlot(Plot plot) {
+        Set<CuboidRegion> regions = plot.getRegions();
+        for (Shop shop : plugin.getShopUtils().getShops()) {
+            for (CuboidRegion region : regions) {
+                org.bukkit.Location loc = shop.getLocation();
+                if (!region.contains(BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()))) {
+                    continue;
+                }
+
+                plugin.getShopUtils().removeShop(shop, true);
+            }
         }
     }
 
