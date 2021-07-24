@@ -1391,7 +1391,6 @@ public class LanguageUtils {
         itemNames.add(new ItemName(Material.PURPUR_SLAB, langConfig.getString("block.minecraft.purpur_slab", "Purpur Slab")));
         itemNames.add(new ItemName(Material.END_STONE_BRICKS, langConfig.getString("block.minecraft.end_stone_bricks", "End Stone Bricks")));
         itemNames.add(new ItemName(Material.BEETROOTS, langConfig.getString("block.minecraft.beetroots", "Beetroots")));
-        itemNames.add(new ItemName(Material.GRASS_PATH, langConfig.getString("block.minecraft.grass_path", "Grass Path")));
         itemNames.add(new ItemName(Material.MAGMA_BLOCK, langConfig.getString("block.minecraft.magma_block", "Magma Block")));
         itemNames.add(new ItemName(Material.NETHER_WART_BLOCK, langConfig.getString("block.minecraft.nether_wart_block", "Nether Wart Block")));
         itemNames.add(new ItemName(Material.RED_NETHER_BRICKS, langConfig.getString("block.minecraft.red_nether_bricks", "Red Nether Bricks")));
@@ -2067,6 +2066,12 @@ public class LanguageUtils {
         } else {
             // Add pre-1.16 item names that don't exist anymore
             itemNames.add(new ItemName(Material.valueOf("ZOMBIE_PIGMAN_SPAWN_EGG"), langConfig.getString("item.minecraft.zombie_pigman_spawn_egg", "Zombie Pigman Spawn Egg")));
+        }
+
+        if (Utils.getMajorVersion() >= 17) {
+            itemNames.add(new ItemName(Material.DIRT_PATH, langConfig.getString("block.minecraft.grass_path", "Grass Path")));
+        } else {
+            itemNames.add(new ItemName(Material.valueOf("GRASS_PATH"), langConfig.getString("block.minecraft.grass_path", "Grass Path")));
         }
 
         // Add Enchantment Names

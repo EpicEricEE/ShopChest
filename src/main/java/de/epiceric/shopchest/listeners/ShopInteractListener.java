@@ -36,6 +36,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.IWrappedFlag;
 import org.codemc.worldguardwrapper.flag.WrappedState;
+import org.inventivetalent.reflection.resolver.minecraft.NMSClassResolver;
+import org.inventivetalent.reflection.resolver.minecraft.OBCClassResolver;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
@@ -664,9 +666,12 @@ public class ShopInteractListener implements Listener {
         JsonBuilder.PartArray rootArray = new JsonBuilder.PartArray();
         
         try {
-            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");	
+            OBCClassResolver obcClassResolver = new OBCClassResolver();
+            NMSClassResolver nmsClassResolver = new NMSClassResolver();
+
+            Class<?> craftItemStackClass = obcClassResolver.resolveSilent("inventory.CraftItemStack");	
             Object nmsStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, product.getItemStack());	
-            Class<?> nbtTagCompoundClass = Utils.getNMSClass("NBTTagCompound");
+            Class<?> nbtTagCompoundClass = nmsClassResolver.resolveSilent("nbt.NBTTagCompound");
             Object nbtTagCompound = nbtTagCompoundClass.getConstructor().newInstance();
             nmsStack.getClass().getMethod("save", nbtTagCompoundClass).invoke(nmsStack, nbtTagCompound);
             jsonItem = new JsonPrimitive(nbtTagCompound.toString()).toString();

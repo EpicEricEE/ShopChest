@@ -1,5 +1,6 @@
 package de.epiceric.shopchest.utils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,6 +33,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
+import org.inventivetalent.reflection.minecraft.DataWatcher;
+import org.inventivetalent.reflection.resolver.ClassResolver;
+import org.inventivetalent.reflection.resolver.FieldResolver;
+import org.inventivetalent.reflection.resolver.minecraft.NMSClassResolver;
+import org.inventivetalent.reflection.resolver.minecraft.OBCClassResolver;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Placeholder;
@@ -43,6 +49,15 @@ import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 
 public class Utils {
+    static NMSClassResolver nmsClassResolver = new NMSClassResolver();
+    static Class<?> entityClass = nmsClassResolver.resolveSilent("world.entity.Entity");
+    static Class<?> entityArmorStandClass = nmsClassResolver.resolveSilent("world.entity.decoration.EntityArmorStand");
+    static Class<?> entityItemClass = nmsClassResolver.resolveSilent("world.entity.item.EntityItem");
+    static Class<?> dataWatcherClass = nmsClassResolver.resolveSilent("network.syncher.DataWatcher");
+    static Class<?> dataWatcherObjectClass = nmsClassResolver.resolveSilent("network.syncher.DataWatcherObject");
+    static Class<?> chatSerializerClass = nmsClassResolver.resolveSilent("ChatSerializer", "network.chat.IChatBaseComponent$ChatSerializer");
+
+    private Utils() {}
 
     /**
      * Check if two items are similar to each other
@@ -336,30 +351,6 @@ public class Utils {
     }
 
     /**
-     * @param className Name of the class
-     * @return Class in {@code net.minecraft.server.[VERSION]} package with the specified name or {@code null} if the class was not found
-     */
-    public static Class<?> getNMSClass(String className) {
-        try {
-            return Class.forName("net.minecraft.server." + getServerVersion() + "." + className);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    /**
-     * @param className Name of the class
-     * @return Class in {@code org.bukkit.craftbukkit.[VERSION]} package with the specified name or {@code null} if the class was not found
-     */
-    public static Class<?> getCraftClass(String className) {
-        try {
-            return Class.forName("org.bukkit.craftbukkit." + getServerVersion() + "." + className);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    /**
      * Create a NMS data watcher object to send via a {@code PacketPlayOutEntityMetadata} packet.
      * Gravity will be disabled and the custom name will be displayed if available.
      * @param customName Custom Name of the entity or {@code null}
@@ -370,12 +361,6 @@ public class Utils {
         int majorVersion = getMajorVersion();
 
         try {
-            Class<?> entityClass = getNMSClass("Entity");
-            Class<?> entityArmorStandClass = getNMSClass("EntityArmorStand");
-            Class<?> entityItemClass = getNMSClass("EntityItem");
-            Class<?> dataWatcherClass = getNMSClass("DataWatcher");
-            Class<?> dataWatcherObjectClass = getNMSClass("DataWatcherObject");
-
             byte entityFlags = nmsItemStack == null ? (byte) 0b100000 : 0; // invisible if armor stand
             byte armorStandFlags = nmsItemStack == null ? (byte) 0b10000 : 0; // marker (since 1.8_R2)
 
@@ -414,6 +399,8 @@ public class Utils {
                     dataWatcherObjectFieldNames = new String[] {"T", "AIR_TICKS", "ay", "ax", "az", "aA", "ITEM", "b"};
                 } else if ("v1_16_R2".equals(version) || "v1_16_R3".equals(version)) {
                     dataWatcherObjectFieldNames = new String[] {"S", "AIR_TICKS", "ar", "aq", "as", "at", "ITEM", "b"};
+                } else if ("v1_17_R1".equals(version)) {
+                    dataWatcherObjectFieldNames = new String[] {"Z", "aI", "aK", "aJ", "aL", "aM", "c", "bG"};
                 } else {
                     return null;
                 }
@@ -452,7 +439,6 @@ public class Utils {
                     register.invoke(dataWatcher, fNoGravity.get(null), true);
                     if (majorVersion >= 13) {
                         if (customName != null) {
-                            Class<?> chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");
                             Object iChatBaseComponent = chatSerializerClass.getMethod("a", String.class).invoke(null, JsonBuilder.parse(customName).toString());
                             register.invoke(dataWatcher, fCustomName.get(null), Optional.of(iChatBaseComponent));
                         } else {
@@ -477,8 +463,7 @@ public class Utils {
      */
     public static int getFreeEntityId() {
         try {
-            Class<?> entityClass = getNMSClass("Entity");
-            Field entityCountField = entityClass.getDeclaredField("entityCount");
+            Field entityCountField = new FieldResolver(entityClass).resolve("entityCount", "b");
             entityCountField.setAccessible(true);
             if (entityCountField.getType() == int.class) {
                 int id = entityCountField.getInt(null);
@@ -500,24 +485,45 @@ public class Utils {
      */
     public static Object createPacketSpawnEntity(ShopChest plugin, int id, UUID uuid, Location loc, EntityType type) {
         try {
-            Class<?> packetClass = getNMSClass("PacketPlayOutSpawnEntity");
-            Object packet = packetClass.getConstructor().newInstance();
+            Class<?> packetPlayOutSpawnEntityClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutSpawnEntity");
+            Class<?> entityTypesClass = nmsClassResolver.resolveSilent("world.entity.EntityTypes");
+            Class<?> vec3dClass = nmsClassResolver.resolveSilent("world.phys.Vec3D");
+
             boolean isPre9 = getMajorVersion() < 9;
             boolean isPre14 = getMajorVersion() < 14;
 
+            double y = loc.getY();
+            if (type == EntityType.ARMOR_STAND && !getServerVersion().equals("v1_8_R1")) {
+                // Marker armor stand => lift by normal armor stand height
+                y += 1.975;
+            }
+
+            if (getMajorVersion() >= 17) {
+                // Empty packet constructor does not exist anymore in 1.17+
+                Constructor<?> c = packetPlayOutSpawnEntityClass.getConstructor(int.class, UUID.class, double.class, double.class, double.class,
+                        float.class, float.class, entityTypesClass, int.class, vec3dClass);
+
+                Object vec3d = vec3dClass.getField("a").get(null);
+                Object entityType = entityTypesClass.getField(type == EntityType.ARMOR_STAND ? "c" : "Q").get(null);
+
+                return c.newInstance(id, uuid, loc.getX(), y, loc.getZ(), 0f, 0f, entityType, 0, vec3d);
+            }
+            
+            Object packet = packetPlayOutSpawnEntityClass.getConstructor().newInstance();
+
             Field[] fields = new Field[12];
-            fields[0] = packetClass.getDeclaredField("a"); // ID
-            fields[1] = packetClass.getDeclaredField("b"); // UUID (Only 1.9+)
-            fields[2] = packetClass.getDeclaredField(isPre9 ? "b" : "c"); // Loc X
-            fields[3] = packetClass.getDeclaredField(isPre9 ? "c" : "d"); // Loc Y
-            fields[4] = packetClass.getDeclaredField(isPre9 ? "d" : "e"); // Loc Z
-            fields[5] = packetClass.getDeclaredField(isPre9 ? "e" : "f"); // Mot X
-            fields[6] = packetClass.getDeclaredField(isPre9 ? "f" : "g"); // Mot Y
-            fields[7] = packetClass.getDeclaredField(isPre9 ? "g" : "h"); // Mot Z
-            fields[8] = packetClass.getDeclaredField(isPre9 ? "h" : "i"); // Pitch
-            fields[9] = packetClass.getDeclaredField(isPre9 ? "i" : "j"); // Yaw
-            fields[10] = packetClass.getDeclaredField(isPre9 ? "j" : "k"); // Type
-            fields[11] = packetClass.getDeclaredField(isPre9 ? "k" : "l"); // Data
+            fields[0] = packetPlayOutSpawnEntityClass.getDeclaredField("a"); // ID
+            fields[1] = packetPlayOutSpawnEntityClass.getDeclaredField("b"); // UUID (Only 1.9+)
+            fields[2] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "b" : "c"); // Loc X
+            fields[3] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "c" : "d"); // Loc Y
+            fields[4] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "d" : "e"); // Loc Z
+            fields[5] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "e" : "f"); // Mot X
+            fields[6] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "f" : "g"); // Mot Y
+            fields[7] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "g" : "h"); // Mot Z
+            fields[8] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "h" : "i"); // Pitch
+            fields[9] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "i" : "j"); // Yaw
+            fields[10] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "j" : "k"); // Type
+            fields[11] = packetPlayOutSpawnEntityClass.getDeclaredField(isPre9 ? "k" : "l"); // Data
 
             for (Field field : fields) {
                 field.setAccessible(true);
@@ -525,14 +531,7 @@ public class Utils {
 
             Object entityType = null;
             if (!isPre14) {
-                Class<?> entityTypesClass = getNMSClass("EntityTypes");
                 entityType = entityTypesClass.getField(type == EntityType.ARMOR_STAND ? "ARMOR_STAND" : "ITEM").get(null);
-            }
-
-            double y = loc.getY();
-            if (type == EntityType.ARMOR_STAND && !getServerVersion().equals("v1_8_R1")) {
-                // Marker armor stand => lift by normal armor stand height
-                y += 1.975;
             }
 
             fields[0].set(packet, id);
@@ -578,14 +577,15 @@ public class Utils {
                 return false;
             }
 
-            Class<?> packetClass = getNMSClass("Packet");
+            Class<?> packetClass = nmsClassResolver.resolveSilent("network.protocol.Packet");
             if (packetClass == null) {
                 plugin.debug("Failed to send packet: Could not find Packet class");
                 return false;
             }
 
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
-            Object playerConnection = nmsPlayer.getClass().getField("playerConnection").get(nmsPlayer);
+            Field fConnection = (new FieldResolver(nmsPlayer.getClass())).resolve("playerConnection", "b");
+            Object playerConnection = fConnection.get(nmsPlayer);
 
             playerConnection.getClass().getMethod("sendPacket", packetClass).invoke(playerConnection, packet);
 

@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.inventivetalent.reflection.resolver.FieldResolver;
+import org.inventivetalent.reflection.resolver.minecraft.NMSClassResolver;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.utils.Utils;
@@ -115,22 +117,17 @@ public class JsonBuilder {
     private Part rootPart;
     private ShopChest plugin;
 
-    private Class<?> iChatBaseComponentClass = Utils.getNMSClass("IChatBaseComponent");
-    private Class<?> packetPlayOutChatClass = Utils.getNMSClass("PacketPlayOutChat");
-    private Class<?> chatSerializerClass;
+    private final NMSClassResolver nmsClassResolver = new NMSClassResolver();
+    private Class<?> iChatBaseComponentClass = nmsClassResolver.resolveSilent("network.chat.IChatBaseComponent");
+    private Class<?> packetPlayOutChatClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutChat");
+    private Class<?> chatSerializerClass = nmsClassResolver.resolveSilent("ChatSerializer", "network.chat.IChatBaseComponent$ChatSerializer");
     private Class<?> chatMessageTypeClass;
 
     public JsonBuilder(ShopChest plugin) {
         this.plugin = plugin;
 
-        if (Utils.getServerVersion().equals("v1_8_R1")) {
-            chatSerializerClass = Utils.getNMSClass("ChatSerializer");
-        } else {
-            chatSerializerClass = Utils.getNMSClass("IChatBaseComponent$ChatSerializer");
-        }
-
         if (Utils.getMajorVersion() >= 16) {
-            chatMessageTypeClass = Utils.getNMSClass("ChatMessageType");
+            chatMessageTypeClass = nmsClassResolver.resolveSilent("network.chat.ChatMessageType");
         }
 
         Class<?>[] requiredClasses = new Class<?>[] {
@@ -241,7 +238,7 @@ public class JsonBuilder {
             Object packetPlayOutChat = Utils.getMajorVersion() < 16
                 ? packetPlayOutChatClass.getConstructor(iChatBaseComponentClass).newInstance(iChatBaseComponent)
                 : packetPlayOutChatClass.getConstructor(iChatBaseComponentClass, chatMessageTypeClass, UUID.class)
-                        .newInstance(iChatBaseComponent, chatMessageTypeClass.getField("CHAT").get(null), UUID.randomUUID());
+                        .newInstance(iChatBaseComponent, (new FieldResolver(chatMessageTypeClass)).resolve("CHAT", "a").get(null), UUID.randomUUID());
             
             Utils.sendPacket(plugin, packetPlayOutChat, p);
             plugin.debug("Sent JSON: " + toString());

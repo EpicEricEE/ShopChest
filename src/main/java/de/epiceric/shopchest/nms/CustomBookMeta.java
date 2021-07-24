@@ -3,14 +3,15 @@ package de.epiceric.shopchest.nms;
 import java.lang.reflect.InvocationTargetException;
 
 import org.bukkit.inventory.ItemStack;
+import org.inventivetalent.reflection.resolver.minecraft.OBCClassResolver;
 
 import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.utils.Utils;
 	
 // For versions below 1.9.4, since Bukkit's BookMeta	
 // didn't have generations in those versions	
 	
-public class CustomBookMeta {	
+public class CustomBookMeta {
+    private static final OBCClassResolver obcClassResolver = new OBCClassResolver();
 	
     public enum Generation {	
         ORIGINAL,	
@@ -21,7 +22,7 @@ public class CustomBookMeta {
 	
     public static Generation getGeneration(ItemStack book) {	
         try {	
-            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");	
+            Class<?> craftItemStackClass = obcClassResolver.resolveSilent("inventory.CraftItemStack");	
 	
             if (craftItemStackClass == null) {	
                 ShopChest.getInstance().debug("Failed to get NBTGeneration: Could not find CraftItemStack class");	
@@ -61,7 +62,7 @@ public class CustomBookMeta {
 	
     public static void setGeneration(ItemStack book, Generation generation) {	
         try {	
-            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");	
+            Class<?> craftItemStackClass = obcClassResolver.resolveSilent("inventory.CraftItemStack");	
 	
             if (craftItemStackClass == null) {	
                 ShopChest.getInstance().debug("Failed to get NBTGeneration: Could not find CraftItemStack class");	

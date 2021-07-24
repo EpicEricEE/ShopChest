@@ -91,13 +91,17 @@
             <id>plotsquared-repo</id>
             <url>https://plotsquared.com/mvn/</url>
         </repository>
+        <repository>
+            <id>inventive-repo</id>
+            <url>https://repo.inventivetalent.org/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.16.4-R0.1-SNAPSHOT</version>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -170,26 +174,38 @@
             <systemPath>${project.basedir}/lib/PlotSquared-Bukkit-4.4.495.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Shaded dependencies -->
         <dependency>
             <groupId>org.codemc.worldguardwrapper</groupId>
             <artifactId>worldguardwrapper</artifactId>
-            <version>1.1.6-SNAPSHOT</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.7</version>
+            <version>2.2.1</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>3.3.1</version>
+            <version>5.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.26</version>
+            <version>2.0.0-alpha2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.inventivetalent</groupId>
+            <artifactId>reflectionhelper</artifactId>
+            <version>1.18.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -219,7 +235,7 @@
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <relocations>
                         <relocation>
-                            <pattern>org.bstats.bukkit</pattern>
+                            <pattern>org.bstats</pattern>
                             <shadedPattern>de.epiceric.shopchest.dependencies.bstats</shadedPattern>
                         </relocation>
                         <relocation>
@@ -233,6 +249,10 @@
                         <relocation>
                             <pattern>org.slf4j</pattern>
                             <shadedPattern>de.epiceric.shopchest.dependencies.slf4j</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.inventivetalent.reflection</pattern>
+                            <shadedPattern>de.epiceric.shopchest.dependencies.reflectionhelper</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

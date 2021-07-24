@@ -193,7 +193,7 @@ public class Hologram {
             loc.subtract(0, line * 0.25, 0);
         }
 
-        ArmorStandWrapper wrapper = new ArmorStandWrapper(plugin, loc, text, false);
+        ArmorStandWrapper wrapper = new ArmorStandWrapper(plugin, loc, text);
         wrappers.add(line, wrapper);
 
         if (forceUpdateLine) {

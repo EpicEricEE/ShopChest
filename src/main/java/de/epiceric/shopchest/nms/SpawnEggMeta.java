@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.inventivetalent.reflection.resolver.minecraft.OBCClassResolver;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.utils.Utils;
@@ -11,8 +12,9 @@ import de.epiceric.shopchest.utils.Utils;
 public class SpawnEggMeta {	
 	
     private static String getNBTEntityID(ShopChest plugin, ItemStack stack) {	
-        try {	
-            Class<?> craftItemStackClass = Utils.getCraftClass("inventory.CraftItemStack");	
+        try {
+            OBCClassResolver obcClassResolver = new OBCClassResolver();
+            Class<?> craftItemStackClass = obcClassResolver.resolveSilent("inventory.CraftItemStack");	
 	
             if (craftItemStackClass == null) {	
                 plugin.debug("Failed to get NBTEntityID: Could not find CraftItemStack class");	

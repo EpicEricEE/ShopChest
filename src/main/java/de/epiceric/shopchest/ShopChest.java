@@ -20,6 +20,8 @@ import com.plotsquared.core.PlotSquared;
 import com.wasteofplastic.askyblock.ASkyBlock;
 
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -340,9 +342,9 @@ public class ShopChest extends JavaPlugin {
         debug("Initializing Metrics...");
 
         Metrics metrics = new Metrics(this, 1726);
-        metrics.addCustomChart(new Metrics.SimplePie("creative_setting", () -> Config.creativeSelectItem ? "Enabled" : "Disabled"));
-        metrics.addCustomChart(new Metrics.SimplePie("database_type", () -> Config.databaseType.toString()));
-        metrics.addCustomChart(new Metrics.AdvancedPie("shop_type", () -> {
+        metrics.addCustomChart(new SimplePie("creative_setting", () -> Config.creativeSelectItem ? "Enabled" : "Disabled"));
+        metrics.addCustomChart(new SimplePie("database_type", () -> Config.databaseType.toString()));
+        metrics.addCustomChart(new AdvancedPie("shop_type", () -> {
                 int normal = 0;
                 int admin = 0;
 
