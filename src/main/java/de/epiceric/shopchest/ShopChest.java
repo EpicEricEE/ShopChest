@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import com.palmergames.bukkit.towny.Towny;
-import com.plotsquared.core.PlotSquared;
 import com.wasteofplastic.askyblock.ASkyBlock;
 
 import org.bstats.bukkit.Metrics;
@@ -209,7 +208,7 @@ public class ShopChest extends JavaPlugin {
         hologramFormat = new HologramFormat(this);
         shopCommand = new ShopCommand(this);
         shopCreationThreadPool = new ThreadPoolExecutor(0, 8,
-                5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+                5L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         
         loadExternalPlugins();
         loadMetrics();
@@ -579,14 +578,14 @@ public class ShopChest extends JavaPlugin {
      * @return Whether the plugin 'AreaShop' is enabled
      */
     public boolean hasAreaShop() {
-        return areaShop != null && areaShop.isEnabled();
+        return Config.enableAreaShopIntegration && areaShop != null && areaShop.isEnabled();
     }
 
     /**
      * @return Whether the plugin 'GriefPrevention' is enabled
      */
     public boolean hasGriefPrevention() {
-        return griefPrevention != null && griefPrevention.isEnabled();
+        return Config.enableGriefPreventionIntegration && griefPrevention != null && griefPrevention.isEnabled();
     }
 
     /**
@@ -600,20 +599,20 @@ public class ShopChest extends JavaPlugin {
      * @return Whether the plugin 'IslandWorld' is enabled
      */
     public boolean hasIslandWorld() {
-        return islandWorld != null && islandWorld.isEnabled();
+        return Config.enableIslandWorldIntegration && islandWorld != null && islandWorld.isEnabled();
     }
     /**
      * @return Whether the plugin 'ASkyBlock' is enabled
      */
     public boolean hasASkyBlock() {
-        return aSkyBlock != null && aSkyBlock.isEnabled();
+        return Config.enableASkyblockIntegration && aSkyBlock != null && aSkyBlock.isEnabled();
     }
 
     /**
      * @return Whether the plugin 'uSkyBlock' is enabled
      */
     public boolean hasUSkyBlock() {
-        return uSkyBlock != null && uSkyBlock.isEnabled();
+        return Config.enableUSkyblockIntegration && uSkyBlock != null && uSkyBlock.isEnabled();
     }
 
     /**
@@ -627,6 +626,10 @@ public class ShopChest extends JavaPlugin {
      * @return Whether the plugin 'PlotSquared' is enabled
      */
     public boolean hasPlotSquared() {
+        if (!Config.enablePlotsquaredIntegration) {
+            return false;
+        }
+
         if (Utils.getMajorVersion() < 13) {
             // Supported PlotSquared versions don't support versions below 1.13
             return false;
@@ -639,27 +642,27 @@ public class ShopChest extends JavaPlugin {
      * @return Whether the plugin 'AuthMe' is enabled
      */
     public boolean hasAuthMe() {
-        return authMe != null && authMe.isEnabled();
+        return Config.enableAuthMeIntegration && authMe != null && authMe.isEnabled();
     }
     /**
      * @return Whether the plugin 'Towny' is enabled
      */
     public boolean hasTowny() {
-        return towny != null && towny.isEnabled();
+        return Config.enableTownyIntegration && towny != null && towny.isEnabled();
     }
 
     /**
      * @return Whether the plugin 'WorldGuard' is enabled
      */
     public boolean hasWorldGuard() {
-        return worldGuard != null && worldGuard.isEnabled();
+        return Config.enableWorldGuardIntegration && worldGuard != null && worldGuard.isEnabled();
     }
 
     /**
      * @return Whether the plugin 'WorldGuard' is enabled
      */
     public boolean hasBentoBox() {
-        return bentoBox != null && bentoBox.isEnabled();
+        return Config.enableBentoBoxIntegration && bentoBox != null && bentoBox.isEnabled();
     }
 
     /**

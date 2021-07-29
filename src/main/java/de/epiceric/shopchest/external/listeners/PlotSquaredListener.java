@@ -70,7 +70,7 @@ public class PlotSquaredListener implements Listener {
 
         try {
             Class.forName("com.plotsquared.core.PlotSquared");
-            Location plotLocation = new Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            Location plotLocation = Location.at(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
             Plot plot = plotLocation.getOwnedPlot();
             isAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.CREATE_SHOP, player);
         } catch (ClassNotFoundException ex) {

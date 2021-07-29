@@ -33,11 +33,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
-import org.inventivetalent.reflection.minecraft.DataWatcher;
-import org.inventivetalent.reflection.resolver.ClassResolver;
 import org.inventivetalent.reflection.resolver.FieldResolver;
 import org.inventivetalent.reflection.resolver.minecraft.NMSClassResolver;
-import org.inventivetalent.reflection.resolver.minecraft.OBCClassResolver;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Placeholder;

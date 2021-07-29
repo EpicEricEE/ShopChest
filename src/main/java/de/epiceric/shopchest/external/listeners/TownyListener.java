@@ -7,7 +7,8 @@ import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
+import com.palmergames.bukkit.towny.object.WorldCoord;
+import com.palmergames.bukkit.towny.TownyUniverse;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -50,11 +51,11 @@ public class TownyListener implements Listener {
     }
 
     private boolean handleForLocation(Player player, Location loc, Cancellable e) {
-        TownBlock townBlock = TownyUniverse.getTownBlock(loc);
-        if (townBlock == null)
-            return false;
-
         try {
+            TownBlock townBlock = TownyUniverse.getInstance().getTownBlock(WorldCoord.parseWorldCoord(loc));
+            if (townBlock == null)
+                return false;
+                
             Town town = townBlock.getTown();
             Optional<Resident> playerResident = town.getResidents().stream()
                     .filter(r -> r.getName().equals(player.getName()))

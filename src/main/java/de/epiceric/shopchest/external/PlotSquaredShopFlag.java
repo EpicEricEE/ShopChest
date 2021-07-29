@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
-import com.plotsquared.core.configuration.Caption;
-import com.plotsquared.core.configuration.Captions;
-import com.plotsquared.core.configuration.StaticCaption;
+import com.plotsquared.core.configuration.caption.Caption;
+import com.plotsquared.core.configuration.caption.StaticCaption;
+import com.plotsquared.core.configuration.caption.TranslatableCaption;
 import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.flag.FlagParseException;
 import com.plotsquared.core.plot.flag.GlobalFlagContainer;
@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import de.epiceric.shopchest.ShopChest;
+import net.kyori.adventure.text.minimessage.Template;
 
 public class PlotSquaredShopFlag {
     public enum Group {
@@ -75,7 +76,7 @@ public class PlotSquaredShopFlag {
 
     public static class CreateShopFlag extends GroupFlag<CreateShopFlag> {
         public CreateShopFlag(Group value) {
-            super(value, new StaticCaption("Set to the group that is allowed to create shops."));
+            super(value, StaticCaption.of("Set to the group that is allowed to create shops."));
         }
 
         @Override
@@ -86,7 +87,7 @@ public class PlotSquaredShopFlag {
 
     public static class UseShopFlag extends GroupFlag<UseShopFlag> {
         public UseShopFlag(Group value) {
-            super(value, new StaticCaption("Set to the group that is allowed to use shops."));
+            super(value, StaticCaption.of("Set to the group that is allowed to use shops."));
         }
 
         @Override
@@ -96,8 +97,8 @@ public class PlotSquaredShopFlag {
     }
 
     public abstract static class GroupFlag<F extends PlotFlag<Group, F>> extends PlotFlag<Group, F> {
-        public GroupFlag(Group value, Caption description) {
-            super(value, Captions.FLAG_CATEGORY_ENUM, description);
+        protected GroupFlag(Group value, Caption description) {
+            super(value, TranslatableCaption.of("flags.flag_category_enum"), description);
         }
 
         @Override
@@ -141,7 +142,8 @@ public class PlotSquaredShopFlag {
                     return this.flagOf(Group.NONE);
             }
 
-            throw new FlagParseException(this, input, Captions.FLAG_ERROR_ENUM, (Object[]) lowercaseValues);
+            throw new FlagParseException(this, input, TranslatableCaption.of("flags.flag_error_enum"),
+                    Template.of("list", String.join(", ", lowercaseValues)));
         }
 
         @Override

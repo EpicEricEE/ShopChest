@@ -261,7 +261,7 @@ public class ShopInteractListener implements Listener {
                                 try {
                                     Class.forName("com.plotsquared.core.PlotSquared");
                                     com.plotsquared.core.location.Location plotLocation =
-                                            new com.plotsquared.core.location.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                            com.plotsquared.core.location.Location.at(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
                                     com.plotsquared.core.plot.Plot plot = plotLocation.getOwnedPlot();
                                     externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.USE_SHOP, p);
                                 } catch (ClassNotFoundException ex) {
@@ -386,7 +386,7 @@ public class ShopInteractListener implements Listener {
                                 try {
                                     Class.forName("com.plotsquared.core.PlotSquared");
                                     com.plotsquared.core.location.Location plotLocation =
-                                            new com.plotsquared.core.location.Location(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
+                                            com.plotsquared.core.location.Location.at(b.getWorld().getName(), b.getX(), b.getY(), b.getZ());
                                     com.plotsquared.core.plot.Plot plot = plotLocation.getOwnedPlot();
                                     externalPluginsAllowed = PlotSquaredShopFlag.isFlagAllowedOnPlot(plot, PlotSquaredShopFlag.USE_SHOP, p);
                                 } catch (ClassNotFoundException ex) {

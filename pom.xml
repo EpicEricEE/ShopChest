@@ -68,12 +68,8 @@
             <url>http://maven.sk89q.com/artifactory/repo/</url>
         </repository>
         <repository>
-            <id>athion-repo</id>
-            <url>http://ci.athion.net/job/PlotSquared-Releases/ws/mvn/</url>
-        </repository>
-        <repository>
             <id>uskyblock-repo</id>
-            <url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
+            <url>https://www.uskyblock.ovh/maven/uskyblock/</url>
         </repository>
         <repository>
             <id>jitpack-repo</id>
@@ -84,12 +80,16 @@
             <url>http://maven.wiefferink.me</url>
         </repository>
         <repository>
-            <id>plotsquared-repo</id>
+            <id>plotsquared-legacy-repo</id>
             <url>https://plotsquared.com/mvn/</url>
         </repository>
         <repository>
             <id>inventive-repo</id>
             <url>https://repo.inventivetalent.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>intellectualsites-repo</id>
+            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -114,14 +114,14 @@
         </dependency>
         <dependency>
             <groupId>com.plotsquared</groupId>
-            <artifactId>PlotSquared</artifactId>
-            <version>5.1</version>
+            <artifactId>PlotSquared-Core</artifactId>
+            <version>6.0.8-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.rlf</groupId>
             <artifactId>uSkyBlock-API</artifactId>
-            <version>2.6.4</version>
+            <version>2.9.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -133,7 +133,7 @@
         <dependency>
             <groupId>com.github.TechFortress</groupId>
             <artifactId>GriefPrevention</artifactId>
-            <version>16.11.6</version>
+            <version>16.17.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -145,15 +145,20 @@
         <dependency>
             <groupId>world.bentobox</groupId>
             <artifactId>bentobox</artifactId>
-            <version>1.11.1</version>
+            <version>1.17.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.palmergames</groupId>
+            <groupId>com.github.intellectualsites.plotsquared</groupId>
+            <artifactId>PlotSquared-API</artifactId>
+            <version>4.514</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.TownyAdvanced</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.93.1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Towny-0.93.1.0.jar</systemPath>
+            <version>0.97.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>pl.gnacik</groupId>
@@ -162,14 +167,8 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/IslandWorld-8.5.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>com.github.intellectualsites.plotsquared</groupId>
-            <artifactId>PlotSquared-API</artifactId>
-            <version>4.495</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/PlotSquared-Bukkit-4.4.495.jar</systemPath>
-        </dependency>
 
+        <!-- Only required for build to succeed ? -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

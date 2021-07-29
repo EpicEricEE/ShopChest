@@ -12,12 +12,12 @@ import org.bukkit.util.BoundingBox;
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.config.Config;
 import de.epiceric.shopchest.shop.Shop;
-import world.bentobox.bentobox.api.events.island.IslandEvent.IslandBanEvent;
-import world.bentobox.bentobox.api.events.island.IslandEvent.IslandDeleteChunksEvent;
-import world.bentobox.bentobox.api.events.island.IslandEvent.IslandDeletedEvent;
-import world.bentobox.bentobox.api.events.island.IslandEvent.IslandResettedEvent;
-import world.bentobox.bentobox.api.events.team.TeamEvent.TeamKickEvent;
-import world.bentobox.bentobox.api.events.team.TeamEvent.TeamLeaveEvent;
+import world.bentobox.bentobox.api.events.island.IslandBanEvent;
+import world.bentobox.bentobox.api.events.island.IslandDeleteChunksEvent;
+import world.bentobox.bentobox.api.events.island.IslandDeletedEvent;
+import world.bentobox.bentobox.api.events.island.IslandResettedEvent;
+import world.bentobox.bentobox.api.events.team.TeamKickEvent;
+import world.bentobox.bentobox.api.events.team.TeamLeaveEvent;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.database.objects.IslandDeletion;
 
