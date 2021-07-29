@@ -1,15 +1,15 @@
 def get_required_entries(legacy: bool):
-    fileName = "entries-legacy.txt" if legacy else "entries.txt"
-    entries = set([line.strip(' "\t\r\n') for line in open(fileName)])
+    file = "entries-legacy.txt" if legacy else "entries.txt"
+    entries = set([line.strip(' "\t\r\n') for line in open(file)])
     return entries
 
 
 def json_to_shopchest(required_entries: set):
-    fileIn = input("JSON Input File: ")
-    fileOut = input("Output File: ")
+    file_in = input("JSON Input File: ")
+    file_out = input("Output File: ")
 
-    with open(fileOut, "w", encoding="utf-8") as out:
-        for line in open(fileIn, "r"):
+    with open(file_out, "w", encoding="utf-8") as out:
+        for line in open(file_in, "r"):
             new_line = line.strip(' "\t\r\n') # Trim whitespace (start and end)
             new_line = new_line.replace('": "', "=") # Replace ": " with = (middle part)
             new_line = new_line.replace('",', "") # Delete ", (end part)
@@ -29,11 +29,11 @@ def json_to_shopchest(required_entries: set):
 
 
 def lang_to_shopchest(required_entries: set):
-    fileIn = input("Input File: ")
-    fileOut = input("Output File: ")
+    file_in = input("Input File: ")
+    file_out = input("Output File: ")
 
-    with open(fileOut, "w", encoding="utf-8") as out:
-        for line in open(fileIn, encoding="utf-8"):
+    with open(file_out, "w", encoding="utf-8") as out:
+        for line in open(file_in, encoding="utf-8"):
             new_line = line.strip(' "\t\r\n') # Trim whitespace (start and end)
             prop_name = new_line.split("=")[0]
             if prop_name in required_entries:
