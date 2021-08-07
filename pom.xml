@@ -175,6 +175,13 @@
             <version>1.18.20</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.OmerBenGera</groupId>
+            <artifactId>SuperiorSkyblockAPI</artifactId>
+            <version>api-version</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/SuperiorSkyblockAPI.jar</systemPath>
+        </dependency>
 
         <!-- Shaded dependencies -->
         <dependency>

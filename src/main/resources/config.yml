@@ -58,6 +58,7 @@ enable-plotsquared-integration: true
 enable-uskyblock-integration: true
 enable-askyblock-integration: true
 enable-bentobox-integration: true
+enable-superiorskyblock-integration: true
 enable-islandworld-integration: true
 enable-griefprevention-integration: true
 enable-areashop-integration: true
@@ -222,3 +223,8 @@ database:
 
     # ...password you are going to login with
     password: ""
+
+superiorskyblock:
+  # Remember that if you want to enable this option, you have to add this element (https://hastebin.com/igogekiger.bash) item inside 'SuperiorSkyblock2/menus/permissions.yml' at the end!
+  enable-islandprivilege: false
+  islandprivilege-name: "SHOPCHEST"

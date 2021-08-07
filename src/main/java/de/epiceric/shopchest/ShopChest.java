@@ -38,6 +38,7 @@ import de.epiceric.shopchest.event.ShopInitializedEvent;
 import de.epiceric.shopchest.external.BentoBoxShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredOldShopFlag;
 import de.epiceric.shopchest.external.PlotSquaredShopFlag;
+import de.epiceric.shopchest.external.SuperiorSkyblockShopIslandPermission;
 import de.epiceric.shopchest.external.WorldGuardShopFlag;
 import de.epiceric.shopchest.external.listeners.ASkyBlockListener;
 import de.epiceric.shopchest.external.listeners.GriefPreventionListener;
@@ -55,6 +56,7 @@ import de.epiceric.shopchest.listeners.NotifyPlayerOnJoinListener;
 import de.epiceric.shopchest.listeners.ShopInteractListener;
 import de.epiceric.shopchest.listeners.ShopItemListener;
 import de.epiceric.shopchest.listeners.ShopUpdateListener;
+import de.epiceric.shopchest.listeners.SuperiorSkyblockListener;
 import de.epiceric.shopchest.listeners.WorldGuardListener;
 import de.epiceric.shopchest.shop.Shop;
 import de.epiceric.shopchest.shop.Shop.ShopType;
@@ -100,6 +102,7 @@ public class ShopChest extends JavaPlugin {
     private GriefPrevention griefPrevention;
     private AreaShop areaShop;
     private BentoBox bentoBox;
+    private boolean superiorskyblock;
     private ShopUpdater updater;
     private ExecutorService shopCreationThreadPool;
 
@@ -319,6 +322,13 @@ public class ShopChest extends JavaPlugin {
             bentoBox = (BentoBox) bentoBoxPlugin;
         }
 
+        if (getServer().getPluginManager().getPlugin("SuperiorSkyblock2").isEnabled()) {
+        	superiorskyblock = true;
+        }
+        else {
+        	superiorskyblock = false;
+        }
+
         if (hasWorldGuard()) {
             WorldGuardWrapper.getInstance().registerEvents(this);
         }
@@ -334,6 +344,10 @@ public class ShopChest extends JavaPlugin {
 
         if (hasBentoBox()) {
             BentoBoxShopFlag.register(this);
+        }
+
+        if (hasSuperiorSkyblock()) {
+        	SuperiorSkyblockShopIslandPermission.register(this);
         }
     }
 
@@ -451,6 +465,10 @@ public class ShopChest extends JavaPlugin {
         if (hasBentoBox()) {
             getServer().getPluginManager().registerEvents(new BentoBoxListener(this), this);
         }
+
+        if (hasSuperiorSkyblock())
+            getServer().getPluginManager().registerEvents(new SuperiorSkyblockListener(this), this);
+        
     }
 
     private void registerExternalListeners() {
@@ -470,6 +488,8 @@ public class ShopChest extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new de.epiceric.shopchest.external.listeners.WorldGuardListener(this), this);
         if (hasBentoBox())
             getServer().getPluginManager().registerEvents(new de.epiceric.shopchest.external.listeners.BentoBoxListener(this), this);
+        if (hasSuperiorSkyblock())
+            getServer().getPluginManager().registerEvents(new de.epiceric.shopchest.external.listeners.SuperiorSkyblockListener(this), this);
     }
 
     /**
@@ -663,6 +683,13 @@ public class ShopChest extends JavaPlugin {
      */
     public boolean hasBentoBox() {
         return Config.enableBentoBoxIntegration && bentoBox != null && bentoBox.isEnabled();
+    }
+
+    /**
+     * @return Whether the plugin 'SuperiorSkyblock' is enabled
+     */
+    public boolean hasSuperiorSkyblock() {
+        return superiorskyblock;
     }
 
     /**
