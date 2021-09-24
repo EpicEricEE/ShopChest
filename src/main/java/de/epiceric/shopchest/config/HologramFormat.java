@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import de.epiceric.shopchest.ShopChest;
 import de.epiceric.shopchest.utils.Operator;
+import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 public class HologramFormat {
 
@@ -31,8 +32,8 @@ public class HologramFormat {
     // e.g.: "STONE" == "DIAMOND_SWORD"
     private static final Pattern SIMPLE_STRING_CONDITION = Pattern.compile("^\"([^\"]*)\" ([=!]=) \"([^\"]*)\"$");
 
-    private ScriptEngineManager manager = new ScriptEngineManager();
-    private ScriptEngine engine = manager.getEngineByName("JavaScript");
+    private ScriptEngineFactory factory = new NashornScriptEngineFactory();
+    private ScriptEngine engine = factory.getScriptEngine();
 
     private ShopChest plugin;
     private File configFile;
