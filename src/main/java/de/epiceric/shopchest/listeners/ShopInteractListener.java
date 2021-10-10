@@ -2,8 +2,10 @@ package de.epiceric.shopchest.listeners;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
@@ -27,9 +30,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -471,6 +477,44 @@ public class ShopInteractListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(e.getPlayer())) return;
         handleInteractEvent(e);
+    }
+
+    @EventHandler
+    public void validateChestContents(InventoryCloseEvent event) {
+        Inventory inventory = event.getInventory();
+        if (!inventory.getType().equals(InventoryType.CHEST)) return;
+
+        Location location;
+        InventoryHolder holder = inventory.getHolder();
+        if (holder instanceof Chest) {
+            location = ((Chest) holder).getLocation();
+        } else if (holder instanceof DoubleChest) {
+            location = ((DoubleChest) holder).getLocation();
+        } else {
+            return;
+        }
+
+        Shop shop = plugin.getShopUtils().getShop(location);
+        if (shop == null) return;
+
+        ItemStack product = shop.getProduct().getItemStack();
+        ItemStack[] contents = inventory.getContents();
+        List<ItemStack> removed = new ArrayList<>(contents.length);
+
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack itemStack = contents[i];
+            if (itemStack != null && !ItemUtils.isAir(itemStack.getType()) && !product.isSimilar(itemStack)) {
+                contents[i] = null;
+                removed.add(itemStack);
+            }
+        }
+
+        inventory.setContents(contents);
+
+        World world = location.getWorld();
+        for (ItemStack itemStack : removed) {
+            world.dropItemNaturally(location, itemStack);
+        }
     }
 
     /**
