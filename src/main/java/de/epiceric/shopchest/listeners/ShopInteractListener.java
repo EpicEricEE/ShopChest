@@ -626,6 +626,7 @@ public class ShopInteractListener implements Listener {
 
         String priceString = LanguageUtils.getMessage(Message.SHOP_INFO_PRICE,
                 new Replacement(Placeholder.BUY_PRICE, (shop.getBuyPrice() > 0 ? String.valueOf(shop.getBuyPrice()) : disabled)),
+                new Replacement(Placeholder.BUY_TAXED_PRICE, (shop.getTaxedBuyPrice() > 0 ? String.valueOf(shop.getTaxedBuyPrice()) : disabled)),
                 new Replacement(Placeholder.SELL_PRICE, (shop.getSellPrice() > 0 ? String.valueOf(shop.getSellPrice()) : disabled)));
 
         String shopType = LanguageUtils.getMessage(shop.getShopType() == ShopType.NORMAL ?
@@ -743,12 +744,16 @@ public class ShopInteractListener implements Listener {
 
         String worldName = shop.getLocation().getWorld().getName();
 
-        double price = shop.getBuyPrice();
-        if (stack) price = (price / shop.getProduct().getAmount()) * amount;
+        double realPrice = shop.getBuyPrice();
+        double taxedPrice = shop.getTaxedBuyPrice();
+        if (stack) {
+            realPrice = (realPrice / shop.getProduct().getAmount()) * amount;
+            taxedPrice = (taxedPrice / shop.getProduct().getAmount()) * amount;
+        }
 
-        if (econ.getBalance(executor, worldName) >= price || Config.autoCalculateItemAmount) {
+        if (econ.getBalance(executor, worldName) >= taxedPrice || Config.autoCalculateItemAmount) {
 
-            int amountForMoney = (int) (amount / price * econ.getBalance(executor, worldName));
+            int amountForMoney = (int) (amount / taxedPrice * econ.getBalance(executor, worldName));
 
             if (amountForMoney == 0 && Config.autoCalculateItemAmount) {
                 executor.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_MONEY));
@@ -791,29 +796,30 @@ public class ShopInteractListener implements Listener {
             if (newAmount > amount) newAmount = amount;
 
             ShopProduct newProduct = new ShopProduct(product, newAmount);
-            double newPrice = (price / amount) * newAmount;
+            double newRealPrice = (realPrice / amount) * newAmount;
+            double newTaxedPrice = (taxedPrice / amount) * newAmount;
 
             if (freeSpace >= newAmount) {
                 plugin.debug(executor.getName() + " has enough inventory space for " + freeSpace + " items (#" + shop.getID() + ")");
 
-                EconomyResponse r = econ.withdrawPlayer(executor, worldName, newPrice);
+                EconomyResponse r = econ.withdrawPlayer(executor, worldName, newTaxedPrice);
 
                 if (r.transactionSuccess()) {
-                    EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), worldName, newPrice) : null;
+                    EconomyResponse r2 = (shop.getShopType() != ShopType.ADMIN) ? econ.depositPlayer(shop.getVendor(), worldName, newRealPrice) : null;
 
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
-                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY, newAmount, newPrice);
+                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY, newAmount, newRealPrice, newTaxedPrice);
                             Bukkit.getPluginManager().callEvent(event);
 
                             if (event.isCancelled()) {
-                                econ.depositPlayer(executor, worldName, newPrice);
-                                econ.withdrawPlayer(shop.getVendor(), worldName, newPrice);
+                                econ.depositPlayer(executor, worldName, newTaxedPrice);
+                                econ.withdrawPlayer(shop.getVendor(), worldName, newRealPrice);
                                 plugin.debug("Buy event cancelled (#" + shop.getID() + ")");
                                 return;
                             }
 
-                            database.logEconomy(executor, shop, newProduct, newPrice, ShopBuySellEvent.Type.BUY, null);
+                            database.logEconomy(executor, shop, newProduct, newRealPrice, newTaxedPrice, ShopBuySellEvent.Type.BUY, null);
 
                             addToInventory(inventory, newProduct);
                             removeFromInventory(c.getInventory(), newProduct);
@@ -830,14 +836,14 @@ public class ShopInteractListener implements Listener {
 
                             String vendorName = (shop.getVendor().getName() == null ? shop.getVendor().getUniqueId().toString() : shop.getVendor().getName());
                             executor.sendMessage(LanguageUtils.getMessage(Message.BUY_SUCCESS, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                    new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                    new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newTaxedPrice)),
                                     new Replacement(Placeholder.VENDOR, vendorName)));
 
                             plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
 
                             if (shop.getVendor().isOnline() && Config.enableVendorMessages) {
                                 shop.getVendor().getPlayer().sendMessage(LanguageUtils.getMessage(Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                        new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice)),
+                                        new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newRealPrice)),
                                         new Replacement(Placeholder.PLAYER, executor.getName())));
                             } else if(!shop.getVendor().isOnline() && Config.enableVendorBungeeMessages){
                                 String message = LanguageUtils.getMessage( Message.SOMEONE_BOUGHT, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
@@ -849,20 +855,20 @@ public class ShopInteractListener implements Listener {
                         } else {
                             plugin.debug("Economy transaction failed (r2): " + r2.errorMessage + " (#" + shop.getID() + ")");
                             executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r2.errorMessage)));
-                            econ.withdrawPlayer(shop.getVendor(), worldName, newPrice);
-                            econ.depositPlayer(executor, worldName, newPrice);
+                            econ.withdrawPlayer(shop.getVendor(), worldName, newRealPrice);
+                            econ.depositPlayer(executor, worldName, newTaxedPrice);
                         }
                     } else {
-                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY, newAmount, newPrice);
+                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.BUY, newAmount, newRealPrice, newTaxedPrice);
                         Bukkit.getPluginManager().callEvent(event);
 
                         if (event.isCancelled()) {
-                            econ.depositPlayer(executor, worldName, newPrice);
+                            econ.depositPlayer(executor, worldName, newTaxedPrice);
                             plugin.debug("Buy event cancelled (#" + shop.getID() + ")");
                             return;
                         }
 
-                        database.logEconomy(executor, shop, newProduct, newPrice, ShopBuySellEvent.Type.BUY, null);
+                        database.logEconomy(executor, shop, newProduct, newRealPrice, newTaxedPrice, ShopBuySellEvent.Type.BUY, null);
 
                         addToInventory(inventory, newProduct);
                         executor.updateInventory();
@@ -877,14 +883,14 @@ public class ShopInteractListener implements Listener {
                         }.runTaskLater(plugin, 1L);
 
                         executor.sendMessage(LanguageUtils.getMessage(Message.BUY_SUCCESS_ADMIN, new Replacement(Placeholder.AMOUNT, String.valueOf(newAmount)),
-                                new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newPrice))));
+                                new Replacement(Placeholder.ITEM_NAME, newProduct.getLocalizedName()), new Replacement(Placeholder.BUY_PRICE, String.valueOf(newTaxedPrice))));
 
                         plugin.debug(executor.getName() + " successfully bought (#" + shop.getID() + ")");
                     }
                 } else {
                     plugin.debug("Economy transaction failed (r): " + r.errorMessage + " (#" + shop.getID() + ")");
                     executor.sendMessage(LanguageUtils.getMessage(Message.ERROR_OCCURRED, new Replacement(Placeholder.ERROR, r.errorMessage)));
-                    econ.depositPlayer(executor, worldName, newPrice);
+                    econ.depositPlayer(executor, worldName, newTaxedPrice);
                 }
             } else {
                 executor.sendMessage(LanguageUtils.getMessage(Message.NOT_ENOUGH_INVENTORY_SPACE));
@@ -971,7 +977,7 @@ public class ShopInteractListener implements Listener {
 
                     if (r2 != null) {
                         if (r2.transactionSuccess()) {
-                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL, newAmount, newPrice);
+                            ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL, newAmount, newPrice, 0);
                             Bukkit.getPluginManager().callEvent(event);
 
                             if (event.isCancelled()) {
@@ -981,7 +987,7 @@ public class ShopInteractListener implements Listener {
                                 return;
                             }
 
-                            database.logEconomy(executor, shop, newProduct, newPrice, ShopBuySellEvent.Type.SELL, null);
+                            database.logEconomy(executor, shop, newProduct, newPrice, 0, ShopBuySellEvent.Type.SELL, null);
 
                             addToInventory(inventory, newProduct);
                             removeFromInventory(executor.getInventory(), newProduct);
@@ -1022,7 +1028,7 @@ public class ShopInteractListener implements Listener {
                         }
 
                     } else {
-                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL, newAmount, newPrice);
+                        ShopBuySellEvent event = new ShopBuySellEvent(executor, shop, ShopBuySellEvent.Type.SELL, newAmount, newPrice, 0);
                         Bukkit.getPluginManager().callEvent(event);
 
                         if (event.isCancelled()) {
@@ -1031,7 +1037,7 @@ public class ShopInteractListener implements Listener {
                             return;
                         }
 
-                        database.logEconomy(executor, shop, newProduct, newPrice, ShopBuySellEvent.Type.SELL, null);
+                        database.logEconomy(executor, shop, newProduct, newPrice, 0, ShopBuySellEvent.Type.SELL, null);
 
                         removeFromInventory(executor.getInventory(), newProduct);
                         executor.updateInventory();

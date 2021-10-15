@@ -12,6 +12,7 @@ public enum Placeholder {
     MAX_PRICE("%MAX-PRICE%"),
     VERSION("%VERSION%"),
     BUY_PRICE("%BUY-PRICE%"),
+    BUY_TAXED_PRICE("%BUY-TAXED-PRICE%"),
     SELL_PRICE("%SELL-PRICE%"),
     LIMIT("%LIMIT%"),
     PLAYER("%PLAYER%"),

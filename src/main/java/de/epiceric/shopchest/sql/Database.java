@@ -641,9 +641,9 @@ public abstract class Database {
      * @param type Whether the executor bought or sold
      * @param callback Callback that - if succeeded - returns {@code null}
      */
-    public void logEconomy(final Player executor, Shop shop, ShopProduct product, double price, Type type, final Callback<Void> callback) {
+    public void logEconomy(final Player executor, Shop shop, ShopProduct product, double price, double taxedPrice, Type type, final Callback<Void> callback) {
         final String query = "INSERT INTO " + tableLogs + " (shop_id,timestamp,time,player_name,player_uuid,product_name,product,amount,"
-                + "vendor_name,vendor_uuid,admin,world,x,y,z,price,type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "vendor_name,vendor_uuid,admin,world,x,y,z,price,taxed_price,type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         if (Config.enableEconomyLog) {
             new BukkitRunnable() {
@@ -670,7 +670,8 @@ public abstract class Database {
                         ps.setInt(14, shop.getLocation().getBlockY());
                         ps.setInt(15, shop.getLocation().getBlockZ());
                         ps.setDouble(16, price);
-                        ps.setString(17, type.toString());
+                        ps.setDouble(17, taxedPrice);
+                        ps.setString(18, type.toString());
                         ps.executeUpdate();
 
                         if (callback != null) {
