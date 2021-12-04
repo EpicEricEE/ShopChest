@@ -1064,6 +1064,7 @@ item.minecraft.phantom_membrane
 item.minecraft.phantom_spawn_egg
 item.minecraft.pig_spawn_egg
 item.minecraft.piglin_banner_pattern.desc
+item.minecraft.piglin_brute_spawn_egg
 item.minecraft.piglin_spawn_egg
 item.minecraft.pillager_spawn_egg
 item.minecraft.pink_dye

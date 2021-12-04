@@ -187,6 +187,8 @@ public class ShopChest extends JavaPlugin {
             case "v1_14_R1":
             case "v1_15_R1":
             case "v1_16_R1":
+            case "v1_16_R2":
+            case "v1_16_R3":
                 break;
             default:
                 debug("Server version not officially supported: " + Utils.getServerVersion() + "!");
@@ -256,10 +258,8 @@ public class ShopChest extends JavaPlugin {
             shopCreationThreadPool.shutdown();
         }
         
-        for (Shop shop : shopUtils.getShops()) {
-            shopUtils.removeShop(shop, false);
-            debug("Removed shop (#" + shop.getID() + ")");
-        }
+        shopUtils.removeShops();
+        debug("Removed shops");
 
         if (database != null && database.isInitialized()) {
             if (database instanceof SQLite) {

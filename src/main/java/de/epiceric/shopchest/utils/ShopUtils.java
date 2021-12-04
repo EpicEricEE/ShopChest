@@ -132,6 +132,20 @@ public class ShopUtils {
         addShop(shop, addToDatabase, null);
     }
 
+    /**
+     * Removes (i.e. unloads) all currently loaded shops
+     */
+    public void removeShops() {
+        shopLocation.forEach((location, shop) -> {
+            if (!shop.isCreated()) return;
+
+            plugin.debug("Removing shop " + shop.getID());
+            shop.removeItem();
+            shop.removeHologram();
+        });
+        shopLocation.clear();
+    }
+
     /** Remove a shop. May not work properly if double chest doesn't exist!
      * @param shop Shop to remove
      * @param removeFromDatabase Whether the shop should also be removed from the database

@@ -4,6 +4,7 @@ import de.epiceric.shopchest.*;
 import de.epiceric.shopchest.config.Config;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
+import com.bgsoftware.superiorskyblock.api.island.IslandFlag;
 import com.bgsoftware.superiorskyblock.api.island.IslandPrivilege;
 
 public class SuperiorSkyblockShopIslandPermission {
@@ -13,6 +14,8 @@ public class SuperiorSkyblockShopIslandPermission {
     	if(!Config.SuperiorSkyblockEnableIslandPrivilege) return;
 		try {
     		IslandPrivilege.register(name);
+    		IslandFlag.register(name);
+    		
     		SuperiorSkyblockAPI.getSuperiorSkyblock().getMenus().updatePermission(IslandPrivilege.getByName(name));
 
     		plugin.debug("Registered SuperiorSkyblock shop Island Privilege");
