@@ -84,7 +84,7 @@
         <!-- AreaShop repo -->
         <repository>
             <id>areashop-repo</id>
-            <url>http://wiefferink.me:8080/plugin/repository/everything/</url>
+            <url>http://maven.wiefferink.me</url>
         </repository>
     </repositories>
 
