@@ -71,15 +71,20 @@
             <id>intellectualsites-snapshots-repo</id>
             <url>https://mvn.intellectualsites.com/content/repositories/public/</url>
         </repository>
-        <!-- AreaShop repo (AreaShop) -->
-        <repository>
-            <id>nlthijs48</id>
-            <url>http://maven.wiefferink.me</url>
-        </repository>
         <!-- Inventive Talent repo (ReflectionHelper) -->
         <repository>
             <id>inventive-repo</id>
             <url>https://repo.inventivetalent.org/content/groups/public/</url>
+        </repository>
+        <!-- EngineHub repo (WorldGuard from WorldGuardWrapper) -->
+        <repository>
+            <id>enginehub-repo</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+        <!-- AreaShop repo -->
+        <repository>
+            <id>areashop-repo</id>
+            <url>http://wiefferink.me:8080/plugin/repository/everything/</url>
         </repository>
     </repositories>
 
@@ -130,7 +135,6 @@
             <groupId>me.wiefferink</groupId>
             <artifactId>areashop</artifactId>
             <version>2.6.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>world.bentobox</groupId>
@@ -140,7 +144,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.IntellectualSites.PlotSquared</groupId>
-            <artifactId>Bukkit</artifactId>
+            <artifactId>Core</artifactId>
             <version>4.453</version>
             <scope>provided</scope>
         </dependency>
