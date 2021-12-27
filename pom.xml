@@ -11,6 +11,8 @@
 
     <modules>
         <module>plugin</module>
+        <module>nms/interface</module>
+        <module>nms/v1_17_R1</module>
     </modules>
 
     <name>ShopChest</name>
@@ -168,6 +170,15 @@
                 <scope>provided</scope>
             </dependency>
 
+            <!-- Nms dependency -->
+            <dependency>
+                <groupId>org.spigotmc</groupId>
+                <artifactId>spigot</artifactId>
+                <version>${spigot.version}</version>
+                <classifier>remapped-mojang</classifier>
+                <scope>provided</scope>
+            </dependency>
+
             <!-- Only required for build to succeed ? -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -201,6 +212,18 @@
                 <groupId>org.inventivetalent</groupId>
                 <artifactId>reflectionhelper</artifactId>
                 <version>1.18.4-SNAPSHOT</version>
+            </dependency>
+
+            <!-- Internal nms shaded dependencies -->
+            <dependency>
+                <groupId>de.epiceric</groupId>
+                <artifactId>shopchest-nms-interface</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>de.epiceric</groupId>
+                <artifactId>shopchest-nms-v1_17_R1</artifactId>
+                <version>1.0.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -244,11 +267,10 @@
                                 <shadedPattern>de.epiceric.shopchest.dependencies.reflectionhelper</shadedPattern>
                             </relocation>
                         </relocations>
-                        <artifactSet>
-                        </artifactSet>
                         <filters>
                             <filter>
-                                <artifact>de.epiceric:ShopChest:*:*</artifact>
+                                <artifact>de.epiceric:ShopChest</artifact>
+                                <excludeDefaults>false</excludeDefaults>
                                 <includes>
                                     <include>META-INF/**</include>
                                     <include>META-INF/**/*</include>
@@ -301,8 +323,41 @@
                         <tagNameFormat>v@{project.version}</tagNameFormat>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>net.md-5</groupId>
+                    <artifactId>specialsource-maven-plugin</artifactId>
+                    <version>1.2.4</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>remap</goal>
+                            </goals>
+                            <id>remap-obf</id>
+                            <configuration>
+                                <srgIn>org.spigotmc:minecraft-server:${spigot.version}:txt:maps-mojang</srgIn>
+                                <reverse>true</reverse>
+                                <remappedDependencies>org.spigotmc:spigot:${spigot.version}:jar:remapped-mojang</remappedDependencies>
+                                <remappedArtifactAttached>true</remappedArtifactAttached>
+                                <remappedClassifierName>remapped-obf</remappedClassifierName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>remap</goal>
+                            </goals>
+                            <id>remap-spigot</id>
+                            <configuration>
+                                <inputFile>${project.build.directory}/${project.artifactId}-${project.version}-remapped-obf.jar</inputFile>
+                                <srgIn>org.spigotmc:minecraft-server:${spigot.version}:csrg:maps-spigot</srgIn>
+                                <remappedDependencies>org.spigotmc:spigot:${spigot.version}:jar:remapped-obf</remappedDependencies>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
-            </pluginManagement>
+        </pluginManagement>
     </build>
 
 </project>

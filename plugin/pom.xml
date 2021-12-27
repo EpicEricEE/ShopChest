@@ -84,6 +84,14 @@
             <groupId>org.inventivetalent</groupId>
             <artifactId>reflectionhelper</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.epiceric</groupId>
+            <artifactId>shopchest-nms-interface</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.epiceric</groupId>
+            <artifactId>shopchest-nms-v1_17_R1</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
