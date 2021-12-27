@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>plugin</artifactId>
+    <artifactId>ShopChest</artifactId>
 
     <dependencies>
         <dependency>
@@ -60,14 +60,10 @@
             <groupId>pl.gnacik.islandworld</groupId>
             <artifactId>IslandWorld</artifactId>
         </dependency>
-
-        <!-- Only required for build to succeed ? -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-
-        <!-- Shaded dependencies -->
         <dependency>
             <groupId>org.codemc.worldguardwrapper</groupId>
             <artifactId>worldguardwrapper</artifactId>
