@@ -23,6 +23,10 @@
             <artifactId>spigot</artifactId>
             <classifier>remapped-mojang</classifier>
         </dependency>
+        <dependency>
+            <groupId>de.epiceric</groupId>
+            <artifactId>shopchest-nms-interface</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
