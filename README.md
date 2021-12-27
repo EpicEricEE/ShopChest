@@ -25,7 +25,7 @@ To use the API, you need to add the following repository and dependency in your 
 You can find the javadoc here: https://epicericee.github.io/ShopChest/javadoc/
 
 ## Build
-Clone this repository and use ``mvn clean package`` or ``mvn clean install``.
+Clone this repository and use ``sh lib/install_local_depedencies.sh`` to import local dependencies. Use ``mvn clean package`` or ``mvn clean install``.
 After the build succeeded, the ShopChest.jar is found in the ``/target/`` folder.
 
 ## Issues
