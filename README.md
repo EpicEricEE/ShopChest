@@ -26,7 +26,7 @@ You can find the javadoc here: https://epicericee.github.io/ShopChest/javadoc/
 
 ## Build
 Clone this repository and use ``sh lib/install_local_depedencies.sh`` to import local dependencies. Use ``mvn clean package`` or ``mvn clean install``.
-After the build succeeded, the ShopChest.jar is found in the ``/target/`` folder.
+After the build succeeded, the ShopChest.jar is found in the ``/plugin/target/`` folder.
 
 ## Issues
 If you find any issues, please provide them in the [Issues Section](https://github.com/EpicEricEE/ShopChest/issues) with a good description of how to reproduce it. If you get any error messages in the console, please also provide them.
