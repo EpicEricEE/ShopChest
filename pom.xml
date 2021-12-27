@@ -5,8 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.epiceric</groupId>
-    <artifactId>ShopChest</artifactId>
+    <artifactId>ShopChest-parent</artifactId>
     <version>1.14.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>plugin</module>
+    </modules>
 
     <name>ShopChest</name>
     <url>https://www.spigotmc.org/resources/shopchest.11431/</url>
