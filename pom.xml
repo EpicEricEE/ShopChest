@@ -244,6 +244,26 @@
                                 <shadedPattern>de.epiceric.shopchest.dependencies.reflectionhelper</shadedPattern>
                             </relocation>
                         </relocations>
+                        <artifactSet>
+                        </artifactSet>
+                        <filters>
+                            <filter>
+                                <artifact>de.epiceric:ShopChest:*:*</artifact>
+                                <includes>
+                                    <include>META-INF/**</include>
+                                    <include>META-INF/**/*</include>
+                                    <include>**/module-info.class</include>
+                                </includes>
+                            </filter>
+                            <filter>
+                                <artifact>*:*</artifact>
+                                <excludes>
+                                    <exclude>META-INF/**</exclude>
+                                    <exclude>META-INF/**/*</exclude>
+                                    <exclude>**/module-info.class</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
                     </configuration>
                 </plugin>
                 <plugin>
