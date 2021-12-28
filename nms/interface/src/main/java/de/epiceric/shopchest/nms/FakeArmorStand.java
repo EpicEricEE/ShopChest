@@ -9,10 +9,10 @@ public interface FakeArmorStand {
 
     void sendData(String name, Iterable<Player> receivers);
 
-    void remove();
+    void remove(Iterable<Player> receivers);
 
-    void setLocation(Location location);
+    void setLocation(Location location, Iterable<Player> receivers);
 
-    void spawn();
+    void spawn(Iterable<Player> receivers);
 
 }

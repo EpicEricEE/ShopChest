@@ -1,11 +1,14 @@
 package de.epiceric.shopchest.nms.v1_17_R1;
 
 import de.epiceric.shopchest.nms.FakeArmorStand;
+import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
@@ -103,17 +106,26 @@ public class FakeArmorStandImpl implements FakeArmorStand {
     }
 
     @Override
-    public void remove() {
+    public void remove(Iterable<Player> receivers) {
 
     }
 
     @Override
-    public void setLocation(Location location) {
-
+    public void setLocation(Location location, Iterable<Player> receivers) {
+        final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeVarInt(entityId);
+        buffer.writeDouble(location.getX());
+        buffer.writeDouble(location.getY() + 1.975);
+        buffer.writeDouble(location.getZ());
+        buffer.writeByte(0);
+        buffer.writeByte(0);
+        buffer.writeBoolean(false);
+        final ClientboundTeleportEntityPacket positionPacket = new ClientboundTeleportEntityPacket(buffer);
+        sendPacket(positionPacket, receivers);
     }
 
     @Override
-    public void spawn() {
+    public void spawn(Iterable<Player> receivers) {
 
     }
 }
