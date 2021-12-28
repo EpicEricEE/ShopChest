@@ -12,6 +12,7 @@
     <modules>
         <module>plugin</module>
         <module>nms/interface</module>
+        <module>nms/reflection</module>
         <module>nms/v1_17_R1</module>
     </modules>
 
@@ -218,6 +219,11 @@
             <dependency>
                 <groupId>de.epiceric</groupId>
                 <artifactId>shopchest-nms-interface</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>de.epiceric</groupId>
+                <artifactId>shopchest-nms-reflection</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <dependency>
