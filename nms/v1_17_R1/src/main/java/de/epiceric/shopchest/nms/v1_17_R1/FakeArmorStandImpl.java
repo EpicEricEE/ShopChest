@@ -1,12 +1,17 @@
 package de.epiceric.shopchest.nms.v1_17_R1;
 
 import de.epiceric.shopchest.nms.FakeArmorStand;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -61,8 +66,14 @@ public class FakeArmorStandImpl implements FakeArmorStand {
         return entityId;
     }
 
+    private void sendPacket(Packet<?> packet, Iterable<Player> receivers){
+        for(Player receiver : receivers){
+            ((CraftPlayer)receiver).getHandle().connection.send(packet);
+        }
+    }
+
     @Override
-    public void sendData(String name) {
+    public void sendData(String name, Iterable<Player> receivers) {
         // Create packet
         final SynchedEntityData entityData = new SynchedEntityData(null);
         final ClientboundSetEntityDataPacket dataPacket = new ClientboundSetEntityDataPacket(entityId, entityData, false);
@@ -71,9 +82,13 @@ public class FakeArmorStandImpl implements FakeArmorStand {
         // Setup data
         packedItems.add(new SynchedEntityData.DataItem<>(DATA_SHARED_FLAGS_ID, INVISIBLE_FLAG));
         packedItems.add(new SynchedEntityData.DataItem<>(DATA_NO_GRAVITY, true));
-        packedItems.add(new SynchedEntityData.DataItem<>(DATA_CUSTOM_NAME, Optional.ofNullable(Component.Serializer.fromJson(
-                "" // TODO Use chat-api to serialize the name
-        ))));
+        packedItems.add(new SynchedEntityData.DataItem<>(DATA_CUSTOM_NAME, Optional.ofNullable(
+                Component.Serializer.fromJson(
+                    ComponentSerializer.toString(
+                            TextComponent.fromLegacyText(name)
+                    )
+                )
+        )));
         packedItems.add(new SynchedEntityData.DataItem<>(DATA_CUSTOM_NAME_VISIBLE, true));
         packedItems.add(new SynchedEntityData.DataItem<>(DATA_SILENT, true));
 
@@ -84,7 +99,7 @@ public class FakeArmorStandImpl implements FakeArmorStand {
         }
 
         // Send packet
-
+        sendPacket(dataPacket, receivers);
     }
 
     @Override
