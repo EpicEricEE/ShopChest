@@ -7,11 +7,15 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -20,6 +24,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FakeArmorStandImpl implements FakeArmorStand {
@@ -32,6 +37,7 @@ public class FakeArmorStandImpl implements FakeArmorStand {
     private static final EntityDataAccessor<Boolean> DATA_CUSTOM_NAME_VISIBLE;
     private static final EntityDataAccessor<Boolean> DATA_SILENT;
     private final static Field packedItemField;
+    private final static float MARKER_ARMOR_STAND_OFFSET = 1.975f;
 
     static {
         try {
@@ -107,7 +113,8 @@ public class FakeArmorStandImpl implements FakeArmorStand {
 
     @Override
     public void remove(Iterable<Player> receivers) {
-
+        final ClientboundRemoveEntityPacket removePacket = new ClientboundRemoveEntityPacket(entityId);
+        sendPacket(removePacket, receivers);
     }
 
     @Override
@@ -115,7 +122,7 @@ public class FakeArmorStandImpl implements FakeArmorStand {
         final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeVarInt(entityId);
         buffer.writeDouble(location.getX());
-        buffer.writeDouble(location.getY() + 1.975);
+        buffer.writeDouble(location.getY() + MARKER_ARMOR_STAND_OFFSET);
         buffer.writeDouble(location.getZ());
         buffer.writeByte(0);
         buffer.writeByte(0);
@@ -125,7 +132,19 @@ public class FakeArmorStandImpl implements FakeArmorStand {
     }
 
     @Override
-    public void spawn(Iterable<Player> receivers) {
-
+    public void spawn(UUID uuid, Location location, Iterable<Player> receivers) {
+        final ClientboundAddEntityPacket spawnPacket = new ClientboundAddEntityPacket(
+                entityId,
+                uuid,
+                location.getX(),
+                location.getY() + MARKER_ARMOR_STAND_OFFSET,
+                location.getZ(),
+                0f,
+                0f,
+                EntityType.ARMOR_STAND,
+                0,
+                Vec3.ZERO
+        );
+        sendPacket(spawnPacket, receivers);
     }
 }
