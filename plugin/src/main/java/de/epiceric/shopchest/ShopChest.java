@@ -18,6 +18,9 @@ import java.util.stream.Stream;
 import com.palmergames.bukkit.towny.Towny;
 import com.wasteofplastic.askyblock.ASkyBlock;
 
+import de.epiceric.shopchest.nms.Platform;
+import de.epiceric.shopchest.nms.reflection.PlatformImpl;
+import de.epiceric.shopchest.nms.reflection.ShopChestDebug;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
@@ -82,6 +85,7 @@ public class ShopChest extends JavaPlugin {
     private static ShopChest instance;
 
     private Config config;
+    private Platform platform;
     private HologramFormat hologramFormat;
     private ShopCommand shopCommand;
     private Economy econ = null;
@@ -188,12 +192,17 @@ public class ShopChest extends JavaPlugin {
             case "v1_16_R1":
             case "v1_16_R2":
             case "v1_16_R3":
+                platform = new PlatformImpl(new ShopChestDebug(getLogger(), this::debug, this::debug));
+                break;
+            case "v1_17_R1":
+                platform = new de.epiceric.shopchest.nms.v1_17_R1.PlatformImpl();
                 break;
             default:
                 debug("Server version not officially supported: " + Utils.getServerVersion() + "!");
-                debug("Plugin may still work, but more errors are expected!");
+                //debug("Plugin may still work, but more errors are expected!");
                 getLogger().warning("Server version not officially supported: " + Utils.getServerVersion() + "!");
-                getLogger().warning("Plugin may still work, but more errors are expected!");
+                //getLogger().warning("Plugin may still work, but more errors are expected!");
+                getServer().getPluginManager().disablePlugin(this);
         }
 
         shopUtils = new ShopUtils(this);
@@ -557,6 +566,10 @@ public class ShopChest extends JavaPlugin {
      */
     public ExecutorService getShopCreationThreadPool() {
         return shopCreationThreadPool;
+    }
+
+    public Platform getPlatform() {
+        return platform;
     }
 
     public HologramFormat getHologramFormat() {

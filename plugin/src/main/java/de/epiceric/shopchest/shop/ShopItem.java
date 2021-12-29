@@ -1,59 +1,28 @@
 package de.epiceric.shopchest.shop;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
+import de.epiceric.shopchest.ShopChest;
+import de.epiceric.shopchest.nms.FakeItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.inventivetalent.reflection.resolver.minecraft.NMSClassResolver;
-import org.inventivetalent.reflection.resolver.minecraft.OBCClassResolver;
 
-import de.epiceric.shopchest.ShopChest;
-import de.epiceric.shopchest.utils.Utils;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ShopItem {
-    private final ShopChest plugin;
 
     // concurrent since update task is in async thread
     private final Set<UUID> viewers = ConcurrentHashMap.newKeySet();
     private final ItemStack itemStack;
     private final Location location;
     private final UUID uuid = UUID.randomUUID();
-    private final int entityId;
-
-    private final NMSClassResolver nmsClassResolver = new NMSClassResolver();
-    private final OBCClassResolver obcClassResolver = new OBCClassResolver();
-    private final Class<?> packetPlayOutEntityDestroyClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutEntityDestroy");
-    private final Class<?> packetPlayOutEntityVelocityClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutEntityVelocity");
-    private final Class<?> packetPlayOutEntityMetadataClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutEntityMetadata");
-    private final Class<?> dataWatcherClass = nmsClassResolver.resolveSilent("network.syncher.DataWatcher");
-    private final Class<?> vec3dClass = nmsClassResolver.resolveSilent("world.phys.Vec3D");
-    private final Class<?> craftItemStackClass = obcClassResolver.resolveSilent("inventory.CraftItemStack");
-    private final Class<?> nmsItemStackClass = nmsClassResolver.resolveSilent("world.item.ItemStack");
+    private final FakeItem fakeItem;
 
     public ShopItem(ShopChest plugin, ItemStack itemStack, Location location) {
-        this.plugin = plugin;
         this.itemStack = itemStack;
         this.location = location;
-        this.entityId = Utils.getFreeEntityId();
-
-        Class<?>[] requiredClasses = new Class<?>[] {
-                nmsItemStackClass, craftItemStackClass, packetPlayOutEntityMetadataClass, dataWatcherClass,
-                packetPlayOutEntityDestroyClass, packetPlayOutEntityVelocityClass,
-        };
-
-        for (Class<?> c : requiredClasses) {
-            if (c == null) {
-                plugin.debug("Failed to create shop item: Could not find all required classes");
-                return;
-            }
-        }
+        this.fakeItem = plugin.getPlatform().createFakeItem();
     }
 
     /**
@@ -91,22 +60,10 @@ public class ShopItem {
      */
     public void showPlayer(Player p, boolean force) {
         if (viewers.add(p.getUniqueId()) || force) {
-            try {
-                Object nmsItemStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, itemStack);
-                Object dataWatcher = Utils.createDataWatcher(null, nmsItemStack);
-                Utils.sendPacket(plugin, Utils.createPacketSpawnEntity(plugin, entityId, uuid, location, EntityType.DROPPED_ITEM), p);
-                Utils.sendPacket(plugin, packetPlayOutEntityMetadataClass.getConstructor(int.class, dataWatcherClass, boolean.class).newInstance(entityId, dataWatcher, true), p);
-                if (Utils.getMajorVersion() < 14) {
-                    Utils.sendPacket(plugin, packetPlayOutEntityVelocityClass.getConstructor(int.class, double.class, double.class, double.class).newInstance(entityId, 0D, 0D, 0D), p);
-                } else {
-                    Object vec3d = vec3dClass.getConstructor(double.class, double.class, double.class).newInstance(0D, 0D, 0D);
-                    Utils.sendPacket(plugin, packetPlayOutEntityVelocityClass.getConstructor(int.class, vec3dClass).newInstance(entityId, vec3d), p);
-                }
-            } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | InstantiationException e) {
-                plugin.getLogger().severe("Failed to create item!");
-                plugin.debug("Failed to create item!");
-                plugin.debug(e);
-            }        
+            final List<Player> receiver = Collections.singletonList(p);
+            fakeItem.spawn(uuid, location, receiver);
+            fakeItem.sendData(itemStack, receiver);
+            fakeItem.resetVelocity(receiver);
         }
     }
 
@@ -123,15 +80,8 @@ public class ShopItem {
      */
     public void hidePlayer(Player p, boolean force) {
         if (viewers.remove(p.getUniqueId()) || force) {
-            try {
-                if (p.isOnline()) {
-                    Object packetPlayOutEntityDestroy = packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[]{entityId});
-                    Utils.sendPacket(plugin, packetPlayOutEntityDestroy, p);
-                }
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                plugin.getLogger().severe("Failed to destroy shop item");
-                plugin.debug("Failed to destroy shop item with reflection");
-                plugin.debug(e);
+            if (p.isOnline()) {
+                fakeItem.remove(Collections.singletonList(p));
             }
         }
     }
