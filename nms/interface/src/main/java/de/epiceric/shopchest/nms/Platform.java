@@ -6,4 +6,6 @@ public interface Platform {
 
     FakeItem createFakeItem();
 
+    TextComponentHelper getTextComponentHelper();
+
 }

@@ -6,7 +6,6 @@ import de.epiceric.shopchest.language.LanguageUtils;
 import de.epiceric.shopchest.language.Message;
 import de.epiceric.shopchest.language.Replacement;
 import de.epiceric.shopchest.nms.CustomBookMeta;
-import de.epiceric.shopchest.nms.JsonBuilder;
 import de.epiceric.shopchest.shop.Shop;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,22 +21,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.inventivetalent.reflection.resolver.FieldResolver;
-import org.inventivetalent.reflection.resolver.minecraft.NMSClassResolver;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Utils {
-    static NMSClassResolver nmsClassResolver = new NMSClassResolver();
-    static Class<?> entityClass = nmsClassResolver.resolveSilent("world.entity.Entity");
-    static Class<?> entityArmorStandClass = nmsClassResolver.resolveSilent("world.entity.decoration.EntityArmorStand");
-    static Class<?> entityItemClass = nmsClassResolver.resolveSilent("world.entity.item.EntityItem");
-    static Class<?> dataWatcherClass = nmsClassResolver.resolveSilent("network.syncher.DataWatcher");
-    static Class<?> dataWatcherObjectClass = nmsClassResolver.resolveSilent("network.syncher.DataWatcherObject");
-    static Class<?> chatSerializerClass = nmsClassResolver.resolveSilent("ChatSerializer", "network.chat.IChatBaseComponent$ChatSerializer");
 
     private Utils() {}
 
@@ -313,58 +301,13 @@ public class Utils {
      * @param p The player to receive the notification
      */
     public static void sendUpdateMessage(ShopChest plugin, Player p) {
-        JsonBuilder jb = new JsonBuilder(plugin);
-        Map<String, JsonBuilder.Part> hoverEvent = new HashMap<>();
-        hoverEvent.put("action", new JsonBuilder.Part("show_text"));
-        hoverEvent.put("value", new JsonBuilder.Part(LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD)));
-
-        Map<String, JsonBuilder.Part> clickEvent = new HashMap<>();
-        clickEvent.put("action", new JsonBuilder.Part("open_url"));
-        clickEvent.put("value", new JsonBuilder.Part(plugin.getDownloadLink()));
-
-        JsonBuilder.PartMap rootPart = JsonBuilder.parse(LanguageUtils.getMessage(Message.UPDATE_AVAILABLE,
-                new Replacement(Placeholder.VERSION, plugin.getLatestVersion()))).toMap();
-                
-        rootPart.setValue("hoverEvent", new JsonBuilder.PartMap(hoverEvent));
-        rootPart.setValue("clickEvent", new JsonBuilder.PartMap(clickEvent));
-        
-        jb.setRootPart(rootPart);
-        jb.sendJson(p);
-    }
-
-    /**
-     * Send a packet to a player
-     * @param plugin An instance of the {@link ShopChest} plugin
-     * @param packet Packet to send
-     * @param player Player to which the packet should be sent
-     * @return {@code true} if the packet was sent, or {@code false} if an exception was thrown
-     */
-    public static boolean sendPacket(ShopChest plugin, Object packet, Player player) {
-        try {
-            if (packet == null) {
-                plugin.debug("Failed to send packet: Packet is null");
-                return false;
-            }
-
-            Class<?> packetClass = nmsClassResolver.resolveSilent("network.protocol.Packet");
-            if (packetClass == null) {
-                plugin.debug("Failed to send packet: Could not find Packet class");
-                return false;
-            }
-
-            Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
-            Field fConnection = (new FieldResolver(nmsPlayer.getClass())).resolve("playerConnection", "b");
-            Object playerConnection = fConnection.get(nmsPlayer);
-
-            playerConnection.getClass().getMethod("sendPacket", packetClass).invoke(playerConnection, packet);
-
-            return true;
-        } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException | InvocationTargetException e) {
-            plugin.getLogger().severe("Failed to send packet " + packet.getClass().getName());
-            plugin.debug("Failed to send packet " + packet.getClass().getName());
-            plugin.debug(e);
-            return false;
-        }
+        plugin.getPlatform().getTextComponentHelper().sendUpdateMessage(
+                p,
+                LanguageUtils.getMessage(Message.UPDATE_AVAILABLE,
+                        new Replacement(Placeholder.VERSION, plugin.getLatestVersion())),
+                LanguageUtils.getMessage(Message.UPDATE_CLICK_TO_DOWNLOAD),
+                plugin.getDownloadLink()
+        );
     }
 
     /**
