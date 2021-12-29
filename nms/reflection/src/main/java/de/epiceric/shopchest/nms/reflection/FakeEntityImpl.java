@@ -1,12 +1,15 @@
 package de.epiceric.shopchest.nms.reflection;
 
 import de.epiceric.shopchest.nms.FakeEntity;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.inventivetalent.reflection.resolver.minecraft.NMSClassResolver;
 
-import java.util.UUID;
+public abstract class FakeEntityImpl implements FakeEntity {
 
-public class FakeEntityImpl implements FakeEntity {
+    protected final NMSClassResolver nmsClassResolver = new NMSClassResolver();
+    private final Class<?> packetPlayOutEntityDestroyClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutEntityDestroy");
+    protected final Class<?> packetPlayOutEntityMetadataClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutEntityMetadata");
+    protected final Class<?> dataWatcherClass = nmsClassResolver.resolveSilent("network.syncher.DataWatcher");
 
     protected final int entityId;
     protected final ShopChestDebug debug;
@@ -22,12 +25,14 @@ public class FakeEntityImpl implements FakeEntity {
     }
 
     @Override
-    public void spawn(UUID uuid, Location location, Iterable<Player> receivers) {
-
-    }
-
-    @Override
     public void remove(Iterable<Player> receivers) {
-
+        try {
+            for(Player receiver : receivers) {
+                ReflectionUtils.sendPacket(debug, packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[]{entityId}), receiver);
+            }
+        } catch (ReflectiveOperationException e){
+            // TODO Handle this properly
+            throw new RuntimeException(e);
+        }
     }
 }
