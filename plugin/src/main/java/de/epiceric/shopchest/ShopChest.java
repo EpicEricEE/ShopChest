@@ -195,7 +195,13 @@ public class ShopChest extends JavaPlugin {
                 platform = new PlatformImpl(new ShopChestDebug(getLogger(), this::debug, this::debug));
                 break;
             case "v1_17_R1":
-                platform = new de.epiceric.shopchest.nms.v1_17_R1.PlatformImpl();
+                // Need to have an implementation for 1.17.1 and 1.17 -> Change in the name of EntityDestroyPacket
+                if(Bukkit.getBukkitVersion().equals("1.17.1-R0.1-SNAPSHOT")){
+                    platform = new de.epiceric.shopchest.nms.v1_17_1_R1.PlatformImpl();
+                }
+                else {
+                    platform = new de.epiceric.shopchest.nms.v1_17_R1.PlatformImpl();
+                }
                 break;
             default:
                 debug("Server version not officially supported: " + Utils.getServerVersion() + "!");
