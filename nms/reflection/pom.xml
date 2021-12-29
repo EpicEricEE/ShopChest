@@ -21,6 +21,7 @@
         <dependency>
             <groupId>de.epiceric</groupId>
             <artifactId>shopchest-nms-interface</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
