@@ -30,12 +30,16 @@ public abstract class FakeEntityImpl<T> implements FakeEntity {
     static {
         try {
             final Field entityCounterField = Entity.class.getDeclaredField("b"); // ENTITY_COUNTER
+            entityCounterField.setAccessible(true);
             ENTITY_COUNTER = (AtomicInteger) entityCounterField.get(null);
             final Field dataNoGravityField = Entity.class.getDeclaredField("aM"); // DATA_NO_GRAVITY
+            dataNoGravityField.setAccessible(true);
             DATA_NO_GRAVITY = forceCast(dataNoGravityField.get(null));
             final Field dataSilentField = Entity.class.getDeclaredField("aL"); // DATA_SILENT
+            dataSilentField.setAccessible(true);
             DATA_SILENT = forceCast(dataSilentField.get(null));
             packedItemField = ClientboundSetEntityDataPacket.class.getDeclaredField("b"); // packedItems
+            packedItemField.setAccessible(true);
         }catch (ReflectiveOperationException e){
             throw new RuntimeException(e);
         }
