@@ -56,6 +56,9 @@
         <!-- JDK Version -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!-- Default Spigot version for nms implementation. Must be overridden  -->
+        <spigot.version>defaultVersion</spigot.version>
     </properties>
 
     <repositories>
