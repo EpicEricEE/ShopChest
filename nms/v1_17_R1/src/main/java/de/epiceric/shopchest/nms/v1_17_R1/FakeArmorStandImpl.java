@@ -11,6 +11,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -21,9 +22,10 @@ import java.util.Optional;
 public class FakeArmorStandImpl extends FakeEntityImpl<String> implements FakeArmorStand {
 
     private final static byte INVISIBLE_FLAG = 0b100000;
-    protected static final EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID;
-    private static final EntityDataAccessor<Optional<Component>> DATA_CUSTOM_NAME;
-    private static final EntityDataAccessor<Boolean> DATA_CUSTOM_NAME_VISIBLE;
+    private final static byte MARKER_FLAG = 0b10000;
+    private final static EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID;
+    private final static EntityDataAccessor<Optional<Component>> DATA_CUSTOM_NAME;
+    private final static EntityDataAccessor<Boolean> DATA_CUSTOM_NAME_VISIBLE;
     private final static float MARKER_ARMOR_STAND_OFFSET = 1.975f;
 
     static {
@@ -77,7 +79,7 @@ public class FakeArmorStandImpl extends FakeEntityImpl<String> implements FakeAr
                 )
         )));
         packedItems.add(new SynchedEntityData.DataItem<>(DATA_CUSTOM_NAME_VISIBLE, true));
-        // TODO Add Marker (specific to ArmorStand)
+        packedItems.add(new SynchedEntityData.DataItem<>(ArmorStand.DATA_CLIENT_FLAGS, MARKER_FLAG));
     }
 
     @Override
