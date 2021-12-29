@@ -7,7 +7,7 @@ import org.inventivetalent.reflection.resolver.minecraft.NMSClassResolver;
 public abstract class FakeEntityImpl implements FakeEntity {
 
     protected final NMSClassResolver nmsClassResolver = new NMSClassResolver();
-    private final Class<?> packetPlayOutEntityDestroyClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutEntityDestroy");
+    protected final Class<?> packetPlayOutEntityDestroyClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutEntityDestroy");
     protected final Class<?> packetPlayOutEntityMetadataClass = nmsClassResolver.resolveSilent("network.protocol.game.PacketPlayOutEntityMetadata");
     protected final Class<?> dataWatcherClass = nmsClassResolver.resolveSilent("network.syncher.DataWatcher");
 
