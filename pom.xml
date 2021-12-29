@@ -136,6 +136,60 @@
                 <artifactId>askyblock</artifactId>
                 <version>3.0.9.4</version>
                 <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>bukkit.org</groupId>
+                        <artifactId>craftbukkit</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot-1.9.2</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot-1.9.4</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot-1.12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot-1.10</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot-1.11</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot-1.9</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot-1.8</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot.1.8.3</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot.1.8.4</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot.1.8.6</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot.1.8.8</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>spigotmc.org</groupId>
+                        <artifactId>spigot-1649</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.github.TechFortress</groupId>
@@ -148,6 +202,28 @@
                 <artifactId>areashop</artifactId>
                 <version>2.6.0</version>
                 <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>me.wiefferink</groupId>
+                        <artifactId>interactivemessenger</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>me.wiefferink</groupId>
+                        <artifactId>bukkitdo</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sk89q</groupId>
+                        <artifactId>worldedit</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sk89q</groupId>
+                        <artifactId>worldguard</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sk89q.worldguard</groupId>
+                        <artifactId>worldguard-legacy</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>world.bentobox</groupId>
