@@ -7,4 +7,6 @@ public interface FakeItem extends FakeEntity{
 
     void sendData(ItemStack item, Iterable<Player> receivers);
 
+    void resetVelocity(Iterable<Player> receivers);
+
 }
