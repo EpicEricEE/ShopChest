@@ -330,7 +330,7 @@ class ShopCommandExecutor implements CommandExecutor {
     }
 
     /**
-     * <b>SHALL ONLY BE CALLED VIA {@link ShopCommand#createShopAfterSelected()}</b>
+     * <b>SHALL ONLY BE CALLED VIA {@link ShopCommand#createShopAfterSelected(Player player, SelectClickType clickType)}</b>
      */
     protected void create2(Player p, SelectClickType selectClickType) {
         ItemStack itemStack = selectClickType.getItem();
