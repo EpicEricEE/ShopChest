@@ -43,8 +43,9 @@ public class FakeItemImpl extends FakeEntityImpl implements FakeItem {
                 ReflectionUtils.sendPacket(debug, packetPlayOutEntityMetadataClass.getConstructor(int.class, dataWatcherClass, boolean.class).newInstance(entityId, dataWatcher, true), receiver);
             }
         }catch (ReflectiveOperationException e){
-            // TODO Handle this properly
-            throw new RuntimeException(e);
+            debug.getLogger().severe("Failed to send item's data!");
+            debug.debug("Failed to send item's data!");
+            debug.debug(e);
         }
     }
 
@@ -62,8 +63,9 @@ public class FakeItemImpl extends FakeEntityImpl implements FakeItem {
                 ReflectionUtils.sendPacket(debug, velocityPacket, receiver);
             }
         }catch (ReflectiveOperationException e){
-            // TODO Handle this properly
-            throw new RuntimeException(e);
+            debug.getLogger().severe("Failed to reset item's velocity!");
+            debug.debug("Failed to reset item's velocity!");
+            debug.debug(e);
         }
     }
 

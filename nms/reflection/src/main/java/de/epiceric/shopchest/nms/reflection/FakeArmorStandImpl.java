@@ -25,8 +25,9 @@ public class FakeArmorStandImpl extends FakeEntityImpl implements FakeArmorStand
                         .newInstance(entityId, dataWatcher, true), receiver);
             }
         } catch (ReflectiveOperationException e) {
-            // TODO Handle this properly
-            throw new RuntimeException(e);
+            debug.getLogger().severe("Could not set hologram data");
+            debug.debug("Could not set armor stand data");
+            debug.debug(e);
         }
     }
 

@@ -31,8 +31,9 @@ public abstract class FakeEntityImpl implements FakeEntity {
                 ReflectionUtils.sendPacket(debug, packetPlayOutEntityDestroyClass.getConstructor(int[].class).newInstance((Object) new int[]{entityId}), receiver);
             }
         } catch (ReflectiveOperationException e){
-            // TODO Handle this properly
-            throw new RuntimeException(e);
+            debug.getLogger().severe("Could not remove hologram");
+            debug.debug("Could not remove hologram");
+            debug.debug(e);
         }
     }
 }
