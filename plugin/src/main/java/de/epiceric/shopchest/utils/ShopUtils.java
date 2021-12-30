@@ -286,7 +286,7 @@ public class ShopUtils {
     /**
      * Get the amount of shops of a player
      * @param p Player, whose shops should be counted
-     * @return The amount of a shops a player has (if {@link Config#excludeAdminShops} is true, admin shops won't be counted)
+     * @return The amount of a shops a player has (admin shops won't be counted)
      */
     public int getShopAmount(OfflinePlayer p) {
         return playerShopAmount.getOrDefault(p.getUniqueId(), new Counter()).get();
@@ -352,9 +352,8 @@ public class ShopUtils {
 
     /**
      * Gets all shops in the given chunks from the database and adds them to the server
-     * @param chunk The chunks to load shops from
+     * @param chunks The chunks to load shops from
      * @param callback Callback that returns the amount of shops added if succeeded
-     * @see ShopUtils#loadShops(Chunk Callback)
      */
     public void loadShops(final Chunk[] chunks, final Callback<Integer> callback) {
         plugin.getShopDatabase().getShopsInChunks(chunks, new Callback<Collection<Shop>>(plugin) {

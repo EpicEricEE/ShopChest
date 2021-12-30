@@ -36,9 +36,8 @@ public abstract class ShopSubCommand {
      * Execute the sub command
      * @param sender Sender of the command
      * @param command Command which was executed
-     * @param args Arguments of the command ({@code args[0]} is the sub command's name)
      * @param label Alias of the command which was used
-     * @param args Passed command arguments
+     * @param args Arguments of the command ({@code args[0]} is the sub command's name)
      * @return Whether the sender should be sent the help message
      */
     public boolean execute(CommandSender sender, Command command, String label, String[] args) {
