@@ -23,6 +23,11 @@ public interface TextComponentHelper {
         player.spigot().sendMessage(component);
     }
 
+    /**
+     * Get the 'tag' json object containing the item's data
+     * @param itemStack The item stack that will be displayed
+     * @return A string representing a json object of the 'tag'
+     */
     String getNbt(ItemStack itemStack);
 
     default Consumer<Player> getSendableItemInfo(String message, String itemPlaceHolder, ItemStack itemStack, String productName){
