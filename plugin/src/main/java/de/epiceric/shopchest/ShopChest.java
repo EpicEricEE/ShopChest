@@ -209,6 +209,7 @@ public class ShopChest extends JavaPlugin {
                 getLogger().warning("Server version not officially supported: " + Utils.getServerVersion() + "!");
                 //getLogger().warning("Plugin may still work, but more errors are expected!");
                 getServer().getPluginManager().disablePlugin(this);
+                return;
         }
 
         shopUtils = new ShopUtils(this);
