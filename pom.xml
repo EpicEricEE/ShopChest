@@ -407,7 +407,7 @@
                     <executions>
                         <execution>
                             <goals>
-                                <goal>jar</goal>
+                                <goal>aggregate-jar</goal>
                             </goals>
                         </execution>
                     </executions>
