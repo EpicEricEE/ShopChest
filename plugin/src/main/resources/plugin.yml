@@ -1,0 +1,93 @@
+# Do not change anything in here unless you know what you're doing!
+
+name: ${project.name}
+main: de.epiceric.shopchest.ShopChest
+version: ${project.version}
+author: EpicEric
+website: ${project.url}
+description: Create your own nice-looking chest shops and sell your stuff to other players!
+softdepend: [WorldGuard, Towny, AuthMe, PlotSquared, uSkyBlock, ASkyBlock, IslandWorld, GriefPrevention, AreaShop, Multiverse-Core, MultiWorld, BentoBox]
+depend: [Vault]
+api-version: 1.13
+
+permissions:
+  shopchest.*:
+    description: Gives access to all ShopChest permissions.
+    children:
+      shopchest.create: true
+      shopchest.create.buy: true
+      shopchest.create.sell: true
+      shopchest.create.admin: true
+      shopchest.create.protected: true
+      shopchest.remove.other: true
+      shopchest.remove.admin: true
+      shopchest.buy: true
+      shopchest.openOther: true
+      shopchest.notification.update: true
+      shopchest.reload: true
+      shopchest.update: true
+      shopchest.limit.*: true
+      shopchest.config: true
+      shopchest.extend.other: true
+      shopchest.extend.protected: true
+      shopchest.external.bypass: true
+  shopchest.create:
+    description: Allows you to create a shop.
+    children:
+      shopchest.create.buy: true
+      shopchest.create.sell: true
+    default: true
+  shopchest.create.buy:
+    description: Allows you to create a buy-shop.
+    default: true
+  shopchest.create.sell:
+    description: Allows you to create a sell-shop.
+    default: true
+  shopchest.create.admin:
+    description: Allows you to create an admin shop.
+    children:
+      shopchest.create: true
+    default: op
+  shopchest.create.protected:
+    description: Allows you to create a shop on a protected chest or in a protected region.
+    children:
+      shopchest.create: true
+    default: op
+  shopchest.remove.other:
+    description: Allows you to remove other players' shops.
+    default: op
+  shopchest.remove.admin:
+    description: Allows you to remove admin shops.
+    default: op
+  shopchest.buy:
+    description: Allows you to buy something.
+    default: true
+  shopchest.sell:
+    description: Allows you to sell something.
+    default: true
+  shopchest.openOther:
+    description: Allows you to open other players' shops.
+    default: op
+  shopchest.notification.update:
+    description: Allows you to get update notification on join.
+    default: op
+  shopchest.reload:
+    description: Allows you to reload the shops.
+    default: op
+  shopchest.update:
+    description: Allows you to check for updates.
+    default: op
+  shopchest.limit.*:
+    default: op
+  shopchest.config:
+    description: Allows you to change configuration values per command.
+    default: op
+  shopchest.extend.other:
+    description: Allows you to extend other players' shops.
+    default: op
+  shopchest.extend.protected:
+    description: Allows you to extend shops into a protected region.
+    default: op
+  shopchest.external.bypass:
+    description: Allows you to to use shops regions/plots that deny shop use.
+    default: op
