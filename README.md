@@ -1,38 +1,5 @@
 # ShopChest
-ShopChest - Spigot/Bukkit Plugin
+## What is this branch?
+In August 2019, I began working on a full rewrite of this plugin with the goal of making a proper API and just a generally better structured project. However, I never published my progress, so after I eventually stopped working on it in March 2020, this has been lying around for over two years. The last couple commits with a more recent date (2022) were made from uncomitted changes I made back then. I also still have some changes stashed, but they aren't really compatible with the current code and would require some work to solve all the merge conflicts, so I didn't commit them.
 
-## API
-To use the API, you need to add the following repository and dependency in your maven project:
-
-```xml
-<repositories>
-  <repository>
-    <id>shopchest-repo</id>
-    <url>https://epicericee.github.io/ShopChest/maven/</url>
-  </repository>
-</repositories>
-
-<dependencies>
-  <dependency>
-    <groupId>de.epiceric</groupId>
-    <artifactId>ShopChest</artifactId>
-    <version>1.11.1</version>
-    <scope>provided</scope>
-  </dependency>
-</dependencies>
-```
-
-You can find the javadoc here: https://epicericee.github.io/ShopChest/javadoc/
-
-## Build
-Clone this repository and use ``mvn clean package`` or ``mvn clean install``.
-After the build succeeded, the ShopChest.jar is found in the ``/target/`` folder.
-
-## Issues
-If you find any issues, please provide them in the [Issues Section](https://github.com/EpicEricEE/ShopChest/issues) with a good description of how to reproduce it. If you get any error messages in the console, please also provide them.
-
-
-## Download
-This resource/plugin is found on the official spigot page [here](https://www.spigotmc.org/resources/shopchest.11431/).
-You can also download the latest unstable builds on [this page](http://epiceric.square7.de/bukkit/plugins/).
-
+I'm not sure if I'll ever get around to continue working on this, but I thought I'd share it with you all :)
