@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.SimpleCommandMap;
@@ -116,8 +117,8 @@ public class ShopChestImpl extends ShopChest {
 
     private void loadMetrics() {
         Metrics metrics = new Metrics(this, 1726);
-        metrics.addCustomChart(new Metrics.SimplePie("database_type", () -> Config.DATABASE_TYPE.get().toString()));
-        metrics.addCustomChart(new Metrics.SimplePie("creative_setting", () ->
+        metrics.addCustomChart(new SimplePie("database_type", () -> Config.DATABASE_TYPE.get().toString()));
+        metrics.addCustomChart(new SimplePie("creative_setting", () ->
                 Config.FEATURES_CREATIVE_ITEM_SELECTION.get() ? "Enabled" : "Disabled"));
     }
 
