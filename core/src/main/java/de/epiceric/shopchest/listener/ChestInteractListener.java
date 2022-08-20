@@ -41,7 +41,7 @@ public class ChestInteractListener implements Listener {
     }
 
     private void handleShopUse(Shop shop, ShopPlayer player, Type type, Cancellable e) {
-        if (player.ownsShop(shop)) {
+        if (player.isVendor(shop)) {
             return; // vendors cannot use their own shops
         }
         

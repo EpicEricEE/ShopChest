@@ -117,9 +117,11 @@ public interface ShopPlayer {
      * 
      * @param shop the shop
      * @return whether this player is the vendor
+     * @since 1.13
      */
-    default boolean ownsShop(Shop shop) {
-        return shop != null && !shop.isAdminShop()
-                && shop.getVendor().get().getUniqueId().equals(getBukkitPlayer().getUniqueId());
+    default boolean isVendor(Shop shop) {
+        return shop != null && shop.getVendor()
+                .map(vendor -> vendor.getUniqueId().equals(getBukkitPlayer().getUniqueId()))
+                .orElse(false);
     }
 }

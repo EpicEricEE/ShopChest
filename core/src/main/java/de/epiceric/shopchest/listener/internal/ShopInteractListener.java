@@ -60,7 +60,7 @@ public class ShopInteractListener implements Listener {
             return;
         }
 
-        if (!player.ownsShop(shop) && !player.hasPermission("shopchest.edit.other")) {
+        if (!player.isVendor(shop) && !player.hasPermission("shopchest.edit.other")) {
             player.sendMessage("§cYou don't have permission to edit this shop."); // TODO: i18n
             e.setCancelled(true);
             return;
@@ -78,7 +78,7 @@ public class ShopInteractListener implements Listener {
             return;
         }
 
-        if (!player.ownsShop(shop) && !player.hasPermission("shopchest.remove.other")) {
+        if (!player.isVendor(shop) && !player.hasPermission("shopchest.remove.other")) {
             player.sendMessage("§cYou don't have permission to remove this shop."); // TODO: i18n
             e.setCancelled(true);
             return;
