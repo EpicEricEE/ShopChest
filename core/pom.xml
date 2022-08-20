@@ -27,30 +27,6 @@
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
-        <repository>
-            <id>sk89q-repo</id>
-            <url>http://maven.sk89q.com/artifactory/repo/</url>
-        </repository>
-        <repository>
-            <id>athion-repo</id>
-            <url>http://ci.athion.net/job/PlotSquared-Releases/ws/mvn/</url>
-        </repository>
-        <repository>
-            <id>uskyblock-repo</id>
-            <url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
-        </repository>
-        <repository>
-            <id>tastybento-repo</id>
-            <url>http://dl.bintray.com/tastybento/maven-repo</url>
-        </repository>
-        <repository>
-            <id>jitpack-repo</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>nlthijs48-repo</id>
-            <url>http://maven.wiefferink.me</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -59,62 +35,6 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>fr.xephi</groupId>
-            <artifactId>authme</artifactId>
-            <version>5.4.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.intellectualsites.plotsquared</groupId>
-            <artifactId>PlotSquared-API</artifactId>
-            <version>4.226</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.rlf</groupId>
-            <artifactId>uSkyBlock-API</artifactId>
-            <version>2.6.4</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.wasteofplastic</groupId>
-            <artifactId>askyblock</artifactId>
-            <version>3.0.6.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.TechFortress</groupId>
-            <artifactId>GriefPrevention</artifactId>
-            <version>16.11.6</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.wiefferink</groupId>
-            <artifactId>areashop</artifactId>
-            <version>2.6.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>world.bentobox</groupId>
-            <artifactId>bentobox</artifactId>
-            <version>1.11.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.palmergames</groupId>
-            <artifactId>Towny</artifactId>
-            <version>0.93.1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Towny-0.93.1.0.jar</systemPath>
-        </dependency> 
-        <dependency>
-            <groupId>pl.gnacik</groupId>
-            <artifactId>IslandWorld</artifactId>
-            <version>8.5</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/IslandWorld-8.5.jar</systemPath>
         </dependency>
         
         <!-- Shaded dependencies -->
@@ -127,11 +47,6 @@
             <groupId>de.epiceric.shopchest</groupId>
             <artifactId>shopchest-nms</artifactId>
             <version>1.13-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codemc.worldguardwrapper</groupId>
-            <artifactId>worldguardwrapper</artifactId>
-            <version>1.1.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
@@ -170,10 +85,6 @@
                         <relocation>
                             <pattern>org.bstats.bukkit</pattern>
                             <shadedPattern>de.epiceric.shopchest.dependencies.bstats</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.codemc.worldguardwrapper</pattern>
-                            <shadedPattern>de.epiceric.shopchest.dependencies.worldguardwrapper</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>

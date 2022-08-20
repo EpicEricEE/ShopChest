@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.epiceric.shopchest.addon</groupId>
+    <artifactId>shopchest-addon-askyblock</artifactId>
+    <version>3.0.9</version>
+
+    <name>ShopChest ASkyBlock Addon</name>
+
+    <parent>
+        <groupId>de.epiceric.shopchest</groupId>
+        <artifactId>shopchest-parent</artifactId>
+        <version>1.13-SNAPSHOT</version>
+    </parent>
+
+    <repositories>
+        <repository>
+        <id>tastybento-repo</id>
+        <url>http://dl.bintray.com/tastybento/maven-repo</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.epiceric.shopchest</groupId>
+            <artifactId>shopchest-api</artifactId>
+            <version>1.13-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wasteofplastic</groupId>
+            <artifactId>askyblock</artifactId>
+            <version>3.0.9</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

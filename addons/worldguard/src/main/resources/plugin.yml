@@ -1,0 +1,9 @@
+name: ShopChest-Addon-WorldGuard
+author: EpicEric
+version: ${project.version}
+
+main: de.epiceric.shopchest.addon.worldguard.AddonMain
+api-version: 1.16
+depend:
+  - ShopChest
+  - WorldGuard
