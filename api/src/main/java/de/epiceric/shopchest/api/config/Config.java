@@ -42,29 +42,6 @@ public class Config {
     public static final Property<Boolean> ECONOMY_LOG_CLEANUP = new Property<>(Boolean.class, "economy_log", "cleanup", true);
     public static final Property<Integer> ECONOMY_LOG_CLEANUP_DAYS = new Property<>(Integer.class, "economy_log", "cleanup_days", 30);
 
-    public static final Property<Boolean> PLUGINS_ENABLE_AREASHOP = new Property<>(Boolean.class, "plugins.enable", "areashop", true);
-    public static final Property<Boolean> PLUGINS_ENABLE_ASKYBLOCK = new Property<>(Boolean.class, "plugins.enable", "askyblock", true);
-    public static final Property<Boolean> PLUGINS_ENABLE_BENTOBOX = new Property<>(Boolean.class, "plugins.enable", "bentobox", true);
-    public static final Property<Boolean> PLUGINS_ENABLE_AUTHME = new Property<>(Boolean.class, "plugins.enable", "authme", true);
-    public static final Property<Boolean> PLUGINS_ENABLE_GRIEFPREVENTION = new Property<>(Boolean.class, "plugins.enable", "griefprevention", true);
-    public static final Property<Boolean> PLUGINS_ENABLE_ISLANDWORLD = new Property<>(Boolean.class, "plugins.enable", "islandworld", true);
-    public static final Property<Boolean> PLUGINS_ENABLE_PLOTSQUARED = new Property<>(Boolean.class, "plugins.enable", "plotsquared", true);
-    public static final Property<Boolean> PLUGINS_ENABLE_USKYBLOCK = new Property<>(Boolean.class, "plugins.enable", "uskyblock", true);
-    public static final Property<Boolean> PLUGINS_ENABLE_WORLDGUARD = new Property<>(Boolean.class, "plugins.enable", "worldguard", true);
-
-    public static final Property<Boolean> PLUGINS_AREASHOP_REMOVE_ON_DELETE = new Property<>(Boolean.class, "plugins.areashop", "remove_shops_on_delete", true);
-    public static final Property<Boolean> PLUGINS_AREASHOP_REMOVE_ON_UNRENT = new Property<>(Boolean.class, "plugins.areashop", "remove_shops_on_unrent", true);
-    public static final Property<Boolean> PLUGINS_AREASHOP_REMOVE_ON_RESELL = new Property<>(Boolean.class, "plugins.areashop", "remove_shops_on_resell", true);
-    public static final Property<Boolean> PLUGINS_AREASHOP_REMOVE_ON_SELL = new Property<>(Boolean.class, "plugins.areashop", "remove_shops_on_sell", true);
-
-    public static final Property<StringList> PLUGINS_TOWNY_PLOTS_FOR_RESIDENTS = new Property<>(StringList.class, "plugins.towny", "shop_plots_for_residents", new StringList("commercial"));
-    public static final Property<StringList> PLUGINS_TOWNY_PLOTS_FOR_MAYOR = new Property<>(StringList.class, "plugins.towny", "shop_plots_for_mayor", new StringList("commercial"));
-    public static final Property<StringList> PLUGINS_TOWNY_PLOTS_FOR_KING = new Property<>(StringList.class, "plugins.towny", "shop_plots_for_king", new StringList("commercial"));
-
-    public static final Property<Boolean> PLUGINS_WORLDGUARD_ALLOW_CREATE_SHOP = new Property<>(Boolean.class, "plugins.worldguard", "default_allow_create_shop", false);
-    public static final Property<Boolean> PLUGINS_WORLDGUARD_ALLOW_USE_SHOP = new Property<>(Boolean.class, "plugins.worldguard", "default_allow_use_shop", true);
-    public static final Property<Boolean> PLUGINS_WORLDGUARD_ALLOW_USE_ADMIN_SHOP = new Property<>(Boolean.class, "plugins.worldguard", "default_allow_use_admin_shop", true);
-
     public static final Property<DatabaseType> DATABASE_TYPE = new Property<>(DatabaseType.class, "database", "type", DatabaseType.SQLITE);
     public static final Property<String> DATABASE_TABLE_PREFIX = new Property<>(String.class, "database", "table_prefix", "shopchest_");
     public static final Property<String> DATABASE_MYSQL_HOSTNAME = new Property<>(String.class, "database.mysql", "hostname", "");
