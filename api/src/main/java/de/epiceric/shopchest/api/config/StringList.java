@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * A wrapped for {@code List<String>}, optimised for config serialization
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class StringList {
     private List<String> list;
@@ -15,7 +15,7 @@ public class StringList {
      * Creates a list with the given list's entries
      * 
      * @param list the list to wrap
-     * @since 1.13
+     * @since 2.0
      */
     public StringList(List<String> list) {
         this.list = list;
@@ -25,7 +25,7 @@ public class StringList {
      * Creates a list with the given strings
      * 
      * @param strings the strings
-     * @since 1.13
+     * @since 2.0
      */
     public StringList(String... strings) {
         this(Arrays.asList(strings));
@@ -36,7 +36,7 @@ public class StringList {
      * 
      * @param str the comma seperated list
      * @return the parsed list
-     * @since 1.13
+     * @since 2.0
      */
     public static StringList valueOf(String str) {
         if (str.isEmpty()) {
@@ -59,7 +59,7 @@ public class StringList {
      * Gets an instance of the list
      * 
      * @return the list
-     * @since 1.13
+     * @since 2.0
      */
     public List<String> getList() {
         return list;

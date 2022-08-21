@@ -10,7 +10,7 @@ import org.bukkit.Material;
 /**
  * A wrapped for {@code List<Material>}, optimised for config serialization
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class MaterialList {
     private List<Material> list;
@@ -19,7 +19,7 @@ public class MaterialList {
      * Creates a list with the given list's entries
      * 
      * @param list the list to wrap
-     * @since 1.13
+     * @since 2.0
      */
     public MaterialList(List<Material> list) {
         this.list = list;
@@ -29,7 +29,7 @@ public class MaterialList {
      * Creates a list with the given materials
      * 
      * @param materials the materials
-     * @since 1.13
+     * @since 2.0
      */
     public MaterialList(Material... materials) {
         this(Arrays.asList(materials));
@@ -42,7 +42,7 @@ public class MaterialList {
      * 
      * @param str the comma seperated list
      * @return the parsed list
-     * @since 1.13
+     * @since 2.0
      */
     public static MaterialList valueOf(String str) {
         if (str.isEmpty()) {
@@ -66,7 +66,7 @@ public class MaterialList {
      * Gets an instance of the list
      * 
      * @return the list
-     * @since 1.13
+     * @since 2.0
      */
     public List<Material> getList() {
         return list;

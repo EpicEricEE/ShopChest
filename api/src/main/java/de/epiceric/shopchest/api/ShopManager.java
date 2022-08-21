@@ -16,7 +16,7 @@ import de.epiceric.shopchest.api.shop.ShopProduct;
 /**
  * Collection of methods to get, add or remove shops
  * 
- * @since 1.13
+ * @since 2.0
  */
 public interface ShopManager {
 
@@ -32,7 +32,7 @@ public interface ShopManager {
      * 
      * @param id the shop's ID
      * @return the shop or an empty optional if there is no shop loaded
-     * @since 1.13
+     * @since 2.0
      */
     Optional<Shop> getShop(int id);
 
@@ -41,7 +41,7 @@ public interface ShopManager {
      * 
      * @param location the shop's chest location
      * @return the shop or an empty optional if there is no shop loaded
-     * @since 1.13
+     * @since 2.0
      */
     Optional<Shop> getShop(Location location);
 
@@ -50,7 +50,7 @@ public interface ShopManager {
      * 
      * @param vendor the player
      * @return a collection of shops
-     * @since 1.13
+     * @since 2.0
      * @see ShopPlayer#getShops()
      */
     Collection<Shop> getShops(OfflinePlayer vendor);
@@ -60,7 +60,7 @@ public interface ShopManager {
      * 
      * @param world the world
      * @return a collection of shops
-     * @since 1.13
+     * @since 2.0
      */
     Collection<Shop> getShops(World world);
 
@@ -78,7 +78,7 @@ public interface ShopManager {
      * @param buyPrice      the price a player can buy the product for.
      * @param sellPrice     the price a player can sell the product for.
      * @return a completable future returning the new shop
-     * @since 1.13
+     * @since 2.0
      * @see ShopManager#addAdminShop(ShopProduct, Location, double, double)
      */
     CompletableFuture<Shop> addShop(OfflinePlayer vendor, ShopProduct product, Location location, double buyPrice, double sellPrice);
@@ -96,7 +96,7 @@ public interface ShopManager {
      * @param buyPrice      the price a player can buy the product for.
      * @param sellPrice     the price a player can sell the product for.
      * @return a completable future returning the new shop
-     * @since 1.13
+     * @since 2.0
      * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double)
      */
     CompletableFuture<Shop> addAdminShop(ShopProduct product, Location location, double buyPrice, double sellPrice);
@@ -106,7 +106,7 @@ public interface ShopManager {
      * 
      * @param shop the shop to remove
      * @return a completable future returning nothing
-     * @since 1.13
+     * @since 2.0
      */
     CompletableFuture<Void> removeShop(Shop shop);
 
@@ -116,7 +116,7 @@ public interface ShopManager {
      * This does not trigger the {@link ShopReloadEvent}.
      * 
      * @return a completable future returning the loaded shops
-     * @since 1.13
+     * @since 2.0
      */
     CompletableFuture<Collection<Shop>> reloadShops();
 

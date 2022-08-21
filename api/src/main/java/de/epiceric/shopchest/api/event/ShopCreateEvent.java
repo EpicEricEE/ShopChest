@@ -7,7 +7,7 @@ import org.bukkit.event.Cancellable;
 /**
  * Called when a player clicks a chest to create a shop
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopCreateEvent extends ShopEvent implements Cancellable {
     private double creationPrice;
@@ -24,7 +24,7 @@ public class ShopCreateEvent extends ShopEvent implements Cancellable {
      * The price is only paid if the event is not cancelled.
      * 
      * @return the creation price
-     * @since 1.13
+     * @since 2.0
      */
     public double getCreationPrice() {
         return creationPrice;

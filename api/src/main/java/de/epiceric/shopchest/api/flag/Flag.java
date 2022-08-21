@@ -5,7 +5,7 @@ import de.epiceric.shopchest.api.player.ShopPlayer;
 /**
  * Represents a flag a player can have
  * 
- * @since 1.13
+ * @since 2.0
  */
 public interface Flag {
 
@@ -13,7 +13,7 @@ public interface Flag {
      * Called when this flag is assigned to a player
      * 
      * @param player the player
-     * @since 1.13
+     * @since 2.0
      */
     default void onAssign(ShopPlayer player) {};
     
@@ -23,7 +23,7 @@ public interface Flag {
      * The flag will be removed after this method is called.
      * 
      * @param player the player
-     * @since 1.13
+     * @since 2.0
      */
     default void onRemove(ShopPlayer player) {};
 }

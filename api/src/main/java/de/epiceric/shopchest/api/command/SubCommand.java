@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
  * Represents a sub command for the plugin's main command
  * 
  * @see ShopCommand#addSubCommand(SubCommand)
- * @since 1.13
+ * @since 2.0
  */
 public abstract class SubCommand {
     private final String name;
@@ -24,7 +24,7 @@ public abstract class SubCommand {
      * @param name       the name
      * @param onlyPlayer whether only players can run this sub command
      * @see ShopCommand#addSubCommand(SubCommand)
-     * @since 1.13
+     * @since 2.0
      */
     public SubCommand(String name, boolean onlyPlayer) {
         this.name = name;
@@ -35,7 +35,7 @@ public abstract class SubCommand {
      * Gets the name of this sub command
      * 
      * @return the name
-     * @since 1.13
+     * @since 2.0
      */
     public String getName() {
         return name;
@@ -47,7 +47,7 @@ public abstract class SubCommand {
      * If no permission is needed, this should return an empty string.
      * 
      * @return the permission or an empty string
-     * @since 1.13
+     * @since 2.0
      */
     public String getPermission() {
         return "";
@@ -71,7 +71,7 @@ public abstract class SubCommand {
      * 
      * @param sender the sender
      * @return whether the sender can run this sub command
-     * @since 1.13
+     * @since 2.0
      */
     public boolean canExecute(CommandSender sender) {
         return sender instanceof Player || !onlyPlayer;
@@ -81,7 +81,7 @@ public abstract class SubCommand {
      * Gets the description of this sub command
      * 
      * @return the description
-     * @since 1.13
+     * @since 2.0
      */
     public abstract String getDescription();
 
@@ -93,7 +93,7 @@ public abstract class SubCommand {
      * 
      * @param sender the sender
      * @param args   the arguments of the sub command
-     * @since 1.13
+     * @since 2.0
      */
     public abstract void onExecute(CommandSender sender, String... args);
 
@@ -107,7 +107,7 @@ public abstract class SubCommand {
      * @param sender the command sender
      * @param args the arguments of the sub command
      * @return the tab completions
-     * @since 1.13
+     * @since 2.0
      */
     public abstract List<String> onTabComplete(CommandSender sender, String... args);
 

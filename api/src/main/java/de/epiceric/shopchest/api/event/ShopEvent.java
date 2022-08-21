@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 /**
  * Represents a shop related event
  * 
- * @since 1.13
+ * @since 2.0
  */
 public abstract class ShopEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
@@ -25,7 +25,7 @@ public abstract class ShopEvent extends Event {
      * Get the shop which is involved in this event
      * 
      * @return the shop
-     * @since 1.13
+     * @since 2.0
      */
     public Shop getShop() {
         return shop;
@@ -35,7 +35,7 @@ public abstract class ShopEvent extends Event {
      * Gets the player who is involved in this event
      * 
      * @return the player
-     * @since 1.13
+     * @since 2.0
      */
     public ShopPlayer getPlayer() {
         return player;

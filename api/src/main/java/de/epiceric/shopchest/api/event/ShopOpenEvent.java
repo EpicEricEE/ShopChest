@@ -7,7 +7,7 @@ import org.bukkit.event.Cancellable;
 /**
  * Called when a player clicks a shop to open it
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopOpenEvent extends ShopEvent implements Cancellable {
     private boolean cancelled;

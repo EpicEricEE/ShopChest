@@ -7,7 +7,7 @@ import de.epiceric.shopchest.api.database.DatabaseType;
 /**
  * Class to access configuration properties
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class Config {
     private Config() {}

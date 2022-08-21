@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Represents the item that can be bought or sold in one transaction
  * 
- * @since 1.13
+ * @since 2.0
  */
 public abstract class ShopProduct implements Cloneable {
     private ItemStack itemStack;
@@ -20,7 +20,7 @@ public abstract class ShopProduct implements Cloneable {
      * Gets a copy of this product's {@link ItemStack} with an amount of one
      * 
      * @return the item
-     * @since 1.13
+     * @since 2.0
      */
     public ItemStack getItemStack() {
         return itemStack.clone();
@@ -32,7 +32,7 @@ public abstract class ShopProduct implements Cloneable {
      * The passed item stack will be copied and its amount set to one.
      * 
      * @param itemStack the item
-     * @since 1.13
+     * @since 2.0
      */
     public void setItemStack(ItemStack itemStack) {
         this.itemStack = itemStack.clone();
@@ -43,7 +43,7 @@ public abstract class ShopProduct implements Cloneable {
      * Gets the amount of items bought or sold in one transaction
      * 
      * @return the amount
-     * @since 1.13
+     * @since 2.0
      */
     public int getAmount() {
         return amount;
@@ -53,7 +53,7 @@ public abstract class ShopProduct implements Cloneable {
      * Sets the amount of items bought or sold in one transaction
      * 
      * @param amount the amount
-     * @since 1.13
+     * @since 2.0
      */
     public void setAmount(int amount) {
         this.amount = amount;
@@ -63,7 +63,7 @@ public abstract class ShopProduct implements Cloneable {
      * Gets the localized name of this product's item in the configured langauge file
      * 
      * @return the localized name
-     * @since 1.13
+     * @since 2.0
      */
     public abstract String getLocalizedName();
 

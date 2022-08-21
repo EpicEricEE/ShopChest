@@ -34,7 +34,7 @@ public class EditFlag extends TimedFlag {
      * Gets the amount the player has set
      * 
      * @return the amount or -1 if no amount was set
-     * @since 1.13
+     * @since 2.0
      */
     public int getAmount() {
         return amount;
@@ -44,7 +44,7 @@ public class EditFlag extends TimedFlag {
      * Gets the buy price the player has set
      * 
      * @return the buy price or -1 if no buy price was set
-     * @since 1.13
+     * @since 2.0
      */
     public double getBuyPrice() {
         return buyPrice;
@@ -54,7 +54,7 @@ public class EditFlag extends TimedFlag {
      * Gets the sell price the player has set
      * 
      * @return the sell price or -1 if no sell price was set
-     * @since 1.13
+     * @since 2.0
      */
     public double getSellPrice() {
         return sellPrice;

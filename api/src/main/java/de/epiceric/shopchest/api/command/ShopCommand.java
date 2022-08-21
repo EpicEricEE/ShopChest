@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 /**
  * Represents the plugin's main command
  * 
- * @since 1.13
+ * @since 2.0
  */
 public abstract class ShopCommand {
     private List<SubCommand> subCommands = new ArrayList<>();
@@ -21,7 +21,7 @@ public abstract class ShopCommand {
      * Gets the command's name
      * 
      * @return the name
-     * @since 1.13
+     * @since 2.0
      */
     public abstract String getName();
 
@@ -31,7 +31,7 @@ public abstract class ShopCommand {
      * @param subCommand the sub command
      * @return {@code true} if the sub command has been registered, {@code false} if
      *         the name has already been taken
-     * @since 1.13
+     * @since 2.0
      */
     public final boolean addSubCommand(SubCommand subCommand) {
         boolean nameTaken = subCommands.stream().filter(sub -> sub.getName().equalsIgnoreCase(subCommand.getName()))
@@ -49,7 +49,7 @@ public abstract class ShopCommand {
      * Removes a sub command from this command
      * 
      * @param subCommand the sub command
-     * @since 1.13
+     * @since 2.0
      */
     public final void removeSubCommand(SubCommand subCommand) {
         this.subCommands.remove(subCommand);
@@ -66,7 +66,7 @@ public abstract class ShopCommand {
      * 
      * @param sender the command sender
      * @param args   the arguments
-     * @since 1.13
+     * @since 2.0
      */
     public final void onExecute(CommandSender sender, String... args) {
         if (args.length > 0) {
@@ -104,7 +104,7 @@ public abstract class ShopCommand {
      * @param sender the command sender
      * @param args the arguments
      * @return the tab completions
-     * @since 1.13
+     * @since 2.0
      */
     public final List<String> onTabComplete(CommandSender sender, String... args) {
         if (args.length == 1) {
@@ -127,7 +127,7 @@ public abstract class ShopCommand {
      * Sends the help messages for all sub commands to the given sender
      * 
      * @param sender the command sender
-     * @since 1.13
+     * @since 2.0
      */
     public void sendUsage(CommandSender sender) {
         // Use same help format as in default bukkit help message

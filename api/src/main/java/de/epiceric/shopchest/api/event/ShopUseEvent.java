@@ -13,7 +13,7 @@ import org.bukkit.event.EventPriority;
  * If the transaction fails, this should be checked in a listener with
  * {@link EventPriority#MONITOR}.
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopUseEvent extends ShopEvent implements Cancellable {
     private Type type;
@@ -32,7 +32,7 @@ public class ShopUseEvent extends ShopEvent implements Cancellable {
      * Gets whether the shop use is a buy or a sell
      * 
      * @return the type of shop use
-     * @since 1.13
+     * @since 2.0
      */
     public Type getType() {
         return type;
@@ -43,7 +43,7 @@ public class ShopUseEvent extends ShopEvent implements Cancellable {
      * calculation
      * 
      * @return the amount
-     * @since 1.13
+     * @since 2.0
      */
     public int getAmount() {
         return amount;
@@ -55,7 +55,7 @@ public class ShopUseEvent extends ShopEvent implements Cancellable {
      * This might not be equal to the amount specified in {@link Shop#getProduct()}.
      * 
      * @param amount the amount
-     * @since 1.13
+     * @since 2.0
      */
     public void setAmount(int amount) {
         this.amount = amount;
@@ -68,7 +68,7 @@ public class ShopUseEvent extends ShopEvent implements Cancellable {
      * {@link Shop#getSellPrice()} due to automatic item amount calculation.
      * 
      * @return the price
-     * @since 1.13
+     * @since 2.0
      */
     public double getPrice() {
         return price;
@@ -79,7 +79,7 @@ public class ShopUseEvent extends ShopEvent implements Cancellable {
      * receive
      * 
      * @param price the price
-     * @since 1.13
+     * @since 2.0
      */
     public void setPrice(double price) {
         this.price = price;

@@ -7,7 +7,7 @@ import org.bukkit.event.Cancellable;
 /**
  * Called when a player enters the command to remove a shop
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopRemoveEvent extends ShopEvent implements Cancellable {
     private boolean cancelled;

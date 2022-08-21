@@ -190,7 +190,7 @@ public class ShopImpl implements Shop {
      * @param buyPrice the buy price
      * @throws IllegalStateException when a player can neither buy nor sell from this shop
      * @see Database#updateShop(Shop)
-     * @since 1.13
+     * @since 2.0
      */
     public void setBuyPrice(double buyPrice) {
         if (buyPrice <= 0 && !canPlayerSell()) {
@@ -214,7 +214,7 @@ public class ShopImpl implements Shop {
      * @param sellPrice the sell price
      * @throws IllegalStateException when a player can neither buy nor sell from this shop
      * @see Database#updateShop(Shop)
-     * @since 1.13
+     * @since 2.0
      */
     public void setSellPrice(double sellPrice) {
         if (sellPrice <= 0 && !canPlayerBuy()) {

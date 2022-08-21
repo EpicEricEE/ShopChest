@@ -14,7 +14,7 @@ import de.epiceric.shopchest.api.player.ShopPlayer;
  * creative inventory to cancel shop creation.
  * 
  * @see ShopSelectItemEvent
- * @since 1.13
+ * @since 2.0
  */
 public class ShopPreCreateEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -40,7 +40,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * Gets the player who is involved in this event
      * 
      * @return the player
-     * @since 1.13
+     * @since 2.0
      */
     public ShopPlayer getPlayer() {
         return player;
@@ -50,7 +50,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * Gets the item stack the shop will sell or buy
      * 
      * @return the product or {@code null} if it has not been selected
-     * @since 1.13
+     * @since 2.0
      */
     public ItemStack getItemStack() {
         return itemStack == null ? null : itemStack.clone();
@@ -60,7 +60,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * Gets the amount of items the shop will sell or buy
      * 
      * @return the amount
-     * @since 1.13
+     * @since 2.0
      */
     public int getAmount() {
         return amount;
@@ -70,7 +70,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * Gets whether the item has already been selected
      * 
      * @return whether the item has been selected
-     * @since 1.13
+     * @since 2.0
      */
     public boolean isItemSelected() {
         return getItemStack() != null;
@@ -80,7 +80,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * Gets the price for which players will be able to buy from the shop
      * 
      * @return the buy price
-     * @since 1.13
+     * @since 2.0
      */
     public double getBuyPrice() {
         return buyPrice;
@@ -90,7 +90,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * Gets the price for which players will be able to sell to the shop
      * 
      * @return the sell price
-     * @since 1.13
+     * @since 2.0
      */
     public double getSellPrice() {
         return sellPrice;
@@ -100,7 +100,7 @@ public class ShopPreCreateEvent extends Event implements Cancellable {
      * Gets whether the shop will be an admin shop
      * 
      * @return whether the shop will be an admin shop
-     * @since 1.13
+     * @since 2.0
      */
     public boolean isAdminShop() {
         return admin;

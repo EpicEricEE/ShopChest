@@ -38,7 +38,7 @@ public class ShopCommandImpl extends ShopCommand {
      * Gets the {@link PluginCommand plugin command} for registering the command
      * 
      * @return the plugin command
-     * @since 1.13
+     * @since 2.0
      */
     public PluginCommand getPluginCommand() {
         if (pluginCommand == null) {

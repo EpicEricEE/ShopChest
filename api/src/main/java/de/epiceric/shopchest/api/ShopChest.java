@@ -9,7 +9,7 @@ import de.epiceric.shopchest.api.player.ShopPlayer;
 /**
  * The plugin's main entry point
  * 
- * @since 1.13
+ * @since 2.0
  */
 public abstract class ShopChest extends JavaPlugin {
     

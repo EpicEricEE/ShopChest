@@ -9,7 +9,7 @@ import org.bukkit.event.Cancellable;
 /**
  * Called when a player extends a shop's chest to a double chest
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopExtendEvent extends ShopEvent implements Cancellable {
     private boolean cancelled;
@@ -24,7 +24,7 @@ public class ShopExtendEvent extends ShopEvent implements Cancellable {
      * Gets the location of the placed chest
      * 
      * @return the location of the placed chest
-     * @since 1.13
+     * @since 2.0
      */
     public Location getNewChestLocation() {
         return newChestLocation;

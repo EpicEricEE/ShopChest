@@ -11,7 +11,7 @@ import de.epiceric.shopchest.api.player.ShopPlayer;
 /**
  * Called when a player has selected an item
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopSelectItemEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -37,7 +37,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * Gets the player who is involved in this event
      * 
      * @return the player
-     * @since 1.13
+     * @since 2.0
      */
     public ShopPlayer getPlayer() {
         return player;
@@ -47,7 +47,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * Gets the item the player has selected
      * 
      * @return the item
-     * @since 1.13
+     * @since 2.0
      */
     public ItemStack getItem() {
         return item;
@@ -59,7 +59,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * If {@code item} is {@code null}, the event will be cancelled.
      * 
      * @param item the item
-     * @since 1.13
+     * @since 2.0
      */
     public void setItem(ItemStack item) {
         if (item == null) {
@@ -74,7 +74,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * Gets the amount of items the player wants to sell or buy at the shop
      * 
      * @return the amount
-     * @since 1.13
+     * @since 2.0
      */
     public int getAmount() {
         return amount;
@@ -84,7 +84,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * Gets the price for which players will be able to buy from the shop
      * 
      * @return the buy price
-     * @since 1.13
+     * @since 2.0
      */
     public double getBuyPrice() {
         return buyPrice;
@@ -94,7 +94,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * Gets the price for which players will be able to sell to the shop
      * 
      * @return the sell price
-     * @since 1.13
+     * @since 2.0
      */
     public double getSellPrice() {
         return sellPrice;
@@ -106,7 +106,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * @return whether the shop will be an admin shop
      * @see #isNormalShop()
      * @see #isEditingShop()
-     * @since 1.13
+     * @since 2.0
      */
     public boolean isAdminShop() {
         return type == SelectFlag.Type.ADMIN;
@@ -118,7 +118,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * @return whether the shop will be a normal shop
      * @see #isAdminShop()
      * @see #isEditingShop()
-     * @since 1.13
+     * @since 2.0
      */
     public boolean isNormalShop() {
         return type == SelectFlag.Type.NORMAL;
@@ -130,7 +130,7 @@ public class ShopSelectItemEvent extends Event implements Cancellable {
      * @return whether the shop is being edited
      * @see #isAdminShop()
      * @see #isNormalShop()
-     * @since 1.13
+     * @since 2.0
      */
     public boolean isEditingShop() {
         return type == SelectFlag.Type.EDIT;

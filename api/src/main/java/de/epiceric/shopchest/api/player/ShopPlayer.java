@@ -13,7 +13,7 @@ import de.epiceric.shopchest.api.shop.Shop;
 /**
  * A wrapper for a {@link Player} with additional functions
  * 
- * @since 1.13
+ * @since 2.0
  */
 public interface ShopPlayer {
 
@@ -21,7 +21,7 @@ public interface ShopPlayer {
      * Gets the wrapped Bukkit player
      * 
      * @return the wrapped player
-     * @since 1.13
+     * @since 2.0
      */
     Player getBukkitPlayer();
 
@@ -32,7 +32,7 @@ public interface ShopPlayer {
      * 
      * @param message the message (a format string)
      * @param args    the arguments referenced by the format
-     * @since 1.13
+     * @since 2.0
      */
     default void sendMessage(String message, Object... args) {
         getBukkitPlayer().sendMessage(MessageFormat.format(message, args));
@@ -52,7 +52,7 @@ public interface ShopPlayer {
      * Gets this player's flag
      * 
      * @return the flag or an empty optional if the player does not have one
-     * @since 1.13
+     * @since 2.0
      */
     Optional<Flag> getFlag();
 
@@ -60,7 +60,7 @@ public interface ShopPlayer {
      * Sets this player's flag
      * 
      * @param flag the flag
-     * @since 1.13
+     * @since 2.0
      */
     void setFlag(Flag flag);
 
@@ -68,7 +68,7 @@ public interface ShopPlayer {
      * Gets whether this player has a flag
      * 
      * @return whether this player has a flag
-     * @since 1.13
+     * @since 2.0
      */
     default boolean hasFlag() {
         return getFlag().isPresent();
@@ -77,7 +77,7 @@ public interface ShopPlayer {
     /**
      * Removes this player's flag
      * 
-     * @since 1.13
+     * @since 2.0
      */
     default void removeFlag() {
         setFlag(null);
@@ -89,7 +89,7 @@ public interface ShopPlayer {
      * If the player has no shop limit {@link Integer#MAX_VALUE} is returned.
      * 
      * @return the shop limit
-     * @since 1.13
+     * @since 2.0
      */
     int getShopLimit();
 
@@ -99,7 +99,7 @@ public interface ShopPlayer {
      * This number includes shops that are not loaded.
      * 
      * @return the amount of shops
-     * @since 1.13
+     * @since 2.0
      */
     int getShopAmount();
 
@@ -107,7 +107,7 @@ public interface ShopPlayer {
      * Gets the loaded shops this player owns
      * 
      * @return a collection of shops
-     * @since 1.13
+     * @since 2.0
      * @see ShopManager#getShops(org.bukkit.OfflinePlayer)
      */
     Collection<Shop> getShops();
@@ -117,7 +117,7 @@ public interface ShopPlayer {
      * 
      * @param shop the shop
      * @return whether this player is the vendor
-     * @since 1.13
+     * @since 2.0
      */
     default boolean isVendor(Shop shop) {
         return shop != null && shop.getVendor()

@@ -13,7 +13,7 @@ import de.epiceric.shopchest.api.shop.Shop;
  * Called when a player clicks a chest to edit a shop
  * 
  * @see ShopSelectItemEvent
- * @since 1.13
+ * @since 2.0
  */
 public class ShopEditEvent extends ShopEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -36,7 +36,7 @@ public class ShopEditEvent extends ShopEvent implements Cancellable {
      * Gets the new item stack the shop will sell or buy
      * 
      * @return the new product, or the old product if it has not been set
-     * @since 1.13
+     * @since 2.0
      */
     public ItemStack getItemStack() {
         return Optional.ofNullable(itemStack).orElse(getShop().getProduct().getItemStack());
@@ -46,7 +46,7 @@ public class ShopEditEvent extends ShopEvent implements Cancellable {
      * Gets the new amount of items the shop will sell or buy
      * 
      * @return the new amount, or the old amount if it has not been set
-     * @since 1.13
+     * @since 2.0
      */
     public int getAmount() {
         return amount == -1 ? getShop().getProduct().getAmount() : amount;
@@ -56,7 +56,7 @@ public class ShopEditEvent extends ShopEvent implements Cancellable {
      * Gets the new price for which players will be able to buy from the shop
      * 
      * @return the new buy price, or the old buy price if it has not been set
-     * @since 1.13
+     * @since 2.0
      */
     public double getBuyPrice() {
         return buyPrice == -1 ? getShop().getBuyPrice() : buyPrice;
@@ -66,7 +66,7 @@ public class ShopEditEvent extends ShopEvent implements Cancellable {
      * Gets the new price for which players will be able to sell to the shop
      * 
      * @return the new sell price, or the old sell price if it has not been set
-     * @since 1.13
+     * @since 2.0
      */
     public double getSellPrice() {
         return sellPrice == -1 ? getShop().getSellPrice() : sellPrice;

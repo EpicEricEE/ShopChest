@@ -14,7 +14,7 @@ import de.epiceric.shopchest.api.player.ShopPlayer;
  * creative inventory to cancel the shop edit.
  * 
  * @see ShopSelectItemEvent
- * @since 1.13
+ * @since 2.0
  */
 public class ShopPreEditEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -40,7 +40,7 @@ public class ShopPreEditEvent extends Event implements Cancellable {
      * Gets the player who is involved in this event
      * 
      * @return the player
-     * @since 1.13
+     * @since 2.0
      */
     public ShopPlayer getPlayer() {
         return player;
@@ -50,7 +50,7 @@ public class ShopPreEditEvent extends Event implements Cancellable {
      * Gets the item stack the shop will sell or buy
      * 
      * @return the product or null if it has not been selected (yet)
-     * @since 1.13
+     * @since 2.0
      */
     public ItemStack getItemStack() {
         return itemStack == null ? null : itemStack.clone();
@@ -69,7 +69,7 @@ public class ShopPreEditEvent extends Event implements Cancellable {
      * Gets the amount the player has set
      * 
      * @return the amount or -1 if no amount was set
-     * @since 1.13
+     * @since 2.0
      */
     public int getAmount() {
         return amount;
@@ -88,7 +88,7 @@ public class ShopPreEditEvent extends Event implements Cancellable {
      * Gets the buy price the player has set
      * 
      * @return the buy price or -1 if no buy price was set
-     * @since 1.13
+     * @since 2.0
      */
     public double getBuyPrice() {
         return buyPrice;
@@ -107,7 +107,7 @@ public class ShopPreEditEvent extends Event implements Cancellable {
      * Gets the sell price the player has set
      * 
      * @return the sell price or -1 if no sell price was set
-     * @since 1.13
+     * @since 2.0
      */
     public double getSellPrice() {
         return sellPrice;

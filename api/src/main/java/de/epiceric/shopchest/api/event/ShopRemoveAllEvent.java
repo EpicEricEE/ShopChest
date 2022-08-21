@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Called when a player enters the command to remove all shops of a player
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopRemoveAllEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -32,7 +32,7 @@ public class ShopRemoveAllEvent extends Event implements Cancellable {
      * Gets the sender that entered the reload command
      * 
      * @return the sender
-     * @since 1.13
+     * @since 2.0
      */
     public CommandSender getSender() {
         return sender;
@@ -42,7 +42,7 @@ public class ShopRemoveAllEvent extends Event implements Cancellable {
      * Gets the player whose shops will be removed
      * 
      * @return the vendor
-     * @since 1.13
+     * @since 2.0
      */
     public OfflinePlayer getVendor() {
         return vendor;
@@ -54,7 +54,7 @@ public class ShopRemoveAllEvent extends Event implements Cancellable {
      * This list can be modified to include or exclude certain shops.
      * 
      * @return a modifiable list of shops
-     * @since 1.13
+     * @since 2.0
      */
     public List<Shop> getShops() {
         return shops;

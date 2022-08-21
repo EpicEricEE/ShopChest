@@ -6,21 +6,21 @@
 
     <groupId>de.epiceric.shopchest</groupId>
     <artifactId>shopchest-nms-v8r3</artifactId>
-    <version>1.13-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
 
     <name>ShopChest NMS v1.8-R3</name>
 
     <parent>
         <groupId>de.epiceric.shopchest</groupId>
         <artifactId>shopchest-nms-parent</artifactId>
-        <version>1.13-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>de.epiceric.shopchest</groupId>
             <artifactId>shopchest-nms-interfaces</artifactId>
-            <version>1.13-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

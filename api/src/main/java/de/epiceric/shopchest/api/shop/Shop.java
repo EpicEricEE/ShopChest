@@ -13,7 +13,7 @@ import de.epiceric.shopchest.api.exceptions.ChestNotFoundException;
 /**
  * Represents a shop
  * 
- * @since 1.13
+ * @since 2.0
  * @see ShopManager#addShop(OfflinePlayer, ShopProduct, Location, double, double)
  * @see ShopManager#addAdminShop(ShopProduct, Location, double, double)
  */
@@ -24,7 +24,7 @@ public interface Shop {
      * 
      * @return the ID
      * @throws IllegalStateException if the shop has not been added to the database yet
-     * @since 1.13
+     * @since 2.0
      */
     int getId();
 
@@ -32,7 +32,7 @@ public interface Shop {
      * Gets the player who owns this shop
      * 
      * @return the vendor or an empty optional if this shop is an admin shop
-     * @since 1.13
+     * @since 2.0
      */
     Optional<OfflinePlayer> getVendor();
 
@@ -40,7 +40,7 @@ public interface Shop {
      * Gets a copy of the product this shop is buying or selling
      * 
      * @return the product
-     * @since 1.13
+     * @since 2.0
      */
     ShopProduct getProduct();
 
@@ -50,7 +50,7 @@ public interface Shop {
      * If the shop is on a double chest, it returns one of the chest's location.
      * 
      * @return the location
-     * @since 1.13
+     * @since 2.0
      */
     Location getLocation();
 
@@ -58,7 +58,7 @@ public interface Shop {
      * Gets the world this shop is located in
      * 
      * @return the world
-     * @since 1.13
+     * @since 2.0
      */
     default World getWorld() {
         return getLocation().getWorld();
@@ -68,7 +68,7 @@ public interface Shop {
      * Gets whether this shop is on a double chest
      * 
      * @return whether the shop is on a double chest
-     * @since 1.13
+     * @since 2.0
      */
     boolean isDoubleChest();
 
@@ -77,7 +77,7 @@ public interface Shop {
      * 
      * @return the inventory
      * @throws ChestNotFoundException when there is no chest at the shop's location
-     * @since 1.13
+     * @since 2.0
      */
     Inventory getInventory() throws ChestNotFoundException;
 
@@ -85,7 +85,7 @@ public interface Shop {
      * Gets whether this shop is an admin shop
      * 
      * @return whether this shop is an admin shop
-     * @since 1.13
+     * @since 2.0
      */
     default boolean isAdminShop() {
         return !getVendor().isPresent();
@@ -95,7 +95,7 @@ public interface Shop {
      * Gets the price for which a player can buy the product from this shop
      * 
      * @return the buy price
-     * @since 1.13
+     * @since 2.0
      */
     double getBuyPrice();
 
@@ -103,7 +103,7 @@ public interface Shop {
      * Gets whether a player can buy from this shop
      * 
      * @return whether buying is enabled
-     * @since 1.13
+     * @since 2.0
      */
     default boolean canPlayerBuy() {
         return getBuyPrice() > 0;
@@ -113,7 +113,7 @@ public interface Shop {
      * Gets the price for which a player can sell the product to this shop
      * 
      * @return the sell price
-     * @since 1.13
+     * @since 2.0
      */
     double getSellPrice();
 
@@ -121,7 +121,7 @@ public interface Shop {
      * Gets whether a player can sell to this shop
      * 
      * @return whether selling is enabled
-     * @since 1.13
+     * @since 2.0
      */
     default boolean canPlayerSell() {
         return getSellPrice() > 0;

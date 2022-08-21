@@ -13,7 +13,7 @@ import org.bukkit.Material;
  * A wrapper for {@code Map<Material, Double>}, optimised for config
  * serialization
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class MaterialDoubleMap {
     private Map<Material, Double> map;
@@ -22,7 +22,7 @@ public class MaterialDoubleMap {
      * Creates a map with the given map's entries
      * 
      * @param map the map to wrap
-     * @since 1.13
+     * @since 2.0
      */
     public MaterialDoubleMap(Map<Material, Double> map) {
         this.map = map;
@@ -31,7 +31,7 @@ public class MaterialDoubleMap {
     /**
      * Creates an empty map
      * 
-     * @since 1.13
+     * @since 2.0
      */
     public MaterialDoubleMap() {
         this(new EnumMap<>(Material.class));
@@ -46,7 +46,7 @@ public class MaterialDoubleMap {
      * 
      * @param str the comma seperated list of map entries
      * @return the parsed map
-     * @since 1.13
+     * @since 2.0
      */
     public static MaterialDoubleMap valueOf(String str) {
         if (str.isEmpty()) {
@@ -85,7 +85,7 @@ public class MaterialDoubleMap {
      * Gets an instance of the map
      * 
      * @return the map
-     * @since 1.13
+     * @since 2.0
      */
     public Map<Material, Double> getMap() {
         return map;

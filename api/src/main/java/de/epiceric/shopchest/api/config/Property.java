@@ -3,7 +3,7 @@ package de.epiceric.shopchest.api.config;
 /**
  * Represents a configurable property
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class Property<T> {
     private final Class<T> type;
@@ -22,7 +22,7 @@ public class Property<T> {
      * Gets the section of this property
      * 
      * @return the section
-     * @since 1.13
+     * @since 2.0
      */
     public String getSection() {
         return section;
@@ -32,7 +32,7 @@ public class Property<T> {
      * Gets the key of this property
      * 
      * @return the key
-     * @since 1.13
+     * @since 2.0
      */
     public String getKey() {
         return section + "." + key;
@@ -42,7 +42,7 @@ public class Property<T> {
      * Gets the class of this property's type
      * 
      * @return the type
-     * @since 1.13
+     * @since 2.0
      */
     public Class<T> getType() {
         return type;
@@ -52,7 +52,7 @@ public class Property<T> {
      * Gets the current value of this property
      * 
      * @return the value
-     * @since 1.13
+     * @since 2.0
      */
     public T get() {
         return value;
@@ -65,7 +65,7 @@ public class Property<T> {
      * 
      * @param value the value
      * @throws IllegalArgumentException if {@code value} is null
-     * @since 1.13
+     * @since 2.0
      */
     public void set(T value) {
         if (value == null) {

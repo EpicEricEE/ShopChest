@@ -11,7 +11,7 @@ import de.epiceric.shopchest.api.shop.Shop;
 /**
  * Called after shops are loaded from the database due to a chunk load
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopLoadedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
@@ -26,7 +26,7 @@ public class ShopLoadedEvent extends Event {
      * Gets the shops that have been loaded
      * 
      * @return the shops
-     * @since 1.13
+     * @since 2.0
      */
     public Collection<Shop> getShops() {
         return shops;

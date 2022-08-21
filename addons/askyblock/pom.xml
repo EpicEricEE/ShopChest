@@ -13,7 +13,7 @@
     <parent>
         <groupId>de.epiceric.shopchest</groupId>
         <artifactId>shopchest-parent</artifactId>
-        <version>1.13-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
     </parent>
 
     <repositories>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>de.epiceric.shopchest</groupId>
             <artifactId>shopchest-api</artifactId>
-            <version>1.13-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

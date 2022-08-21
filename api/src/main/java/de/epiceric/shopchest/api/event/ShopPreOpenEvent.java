@@ -9,7 +9,7 @@ import de.epiceric.shopchest.api.player.ShopPlayer;
 /**
  * Called when a player enters the command to open a shop
  * 
- * @since 1.13
+ * @since 2.0
  */
 public class ShopPreOpenEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -25,7 +25,7 @@ public class ShopPreOpenEvent extends Event implements Cancellable {
      * Get the player who is involved in this event
      * 
      * @return the player
-     * @since 1.13
+     * @since 2.0
      */
     public ShopPlayer getPlayer() {
         return player;
