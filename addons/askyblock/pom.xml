@@ -6,7 +6,7 @@
 
     <groupId>de.epiceric.shopchest.addon</groupId>
     <artifactId>shopchest-addon-askyblock</artifactId>
-    <version>3.0.9</version>
+    <version>3.0.9.4</version>
 
     <name>ShopChest ASkyBlock Addon</name>
 
@@ -18,8 +18,8 @@
 
     <repositories>
         <repository>
-        <id>tastybento-repo</id>
-        <url>http://dl.bintray.com/tastybento/maven-repo</url>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
     </repositories>
 
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>com.wasteofplastic</groupId>
             <artifactId>askyblock</artifactId>
-            <version>3.0.9</version>
+            <version>3.0.9.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

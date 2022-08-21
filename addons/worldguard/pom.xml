@@ -6,7 +6,7 @@
 
     <groupId>de.epiceric.shopchest.addon</groupId>
     <artifactId>shopchest-addon-worldguard</artifactId>
-    <version>7.0.3</version>
+    <version>7.0.7</version>
 
     <name>ShopChest WorldGuard Addon</name>
 
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.3</version>
+            <version>7.0.7</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>

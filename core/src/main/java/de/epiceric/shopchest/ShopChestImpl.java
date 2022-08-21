@@ -217,7 +217,7 @@ public class ShopChestImpl extends ShopChest {
                 conn.setRequestProperty("User-Agent", "ShopChest/UpdateChecker");
     
                 InputStreamReader reader = new InputStreamReader(conn.getInputStream());
-                JsonElement element = new JsonParser().parse(reader);
+                JsonElement element = JsonParser.parseReader(reader);
     
                 if (element.isJsonArray()) {
                     JsonObject result = element.getAsJsonArray().get(0).getAsJsonObject();

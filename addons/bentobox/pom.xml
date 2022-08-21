@@ -6,7 +6,7 @@
 
     <groupId>de.epiceric.shopchest.addon</groupId>
     <artifactId>shopchest-addon-bentobox</artifactId>
-    <version>1.14.0-SNAPSHOT</version>
+    <version>1.20.1</version>
 
     <name>ShopChest BentoBox Addon</name>
 
@@ -15,6 +15,13 @@
         <artifactId>shopchest-parent</artifactId>
         <version>1.13-SNAPSHOT</version>
     </parent>
+
+    <repositories>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -26,7 +33,7 @@
         <dependency>
             <groupId>world.bentobox</groupId>
             <artifactId>bentobox</artifactId>
-            <version>1.14.0-SNAPSHOT</version>
+            <version>1.20.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
