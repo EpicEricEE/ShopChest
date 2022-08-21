@@ -21,6 +21,7 @@ public class Config {
     public static final Property<Material> CORE_SHOP_INFO_ITEM = new Property<>(Material.class, "core", "shop_info_item", Material.STICK);
 
     public static final Property<Double> SHOP_CREATION_PRICE = new Property<>(Double.class, "shop_creation", "price", 5d);
+    public static final Property<Boolean> SHOP_CREATION_REFUND_PRICE = new Property<>(Boolean.class, "shop_creation", "refund_price", false);
     public static final Property<Boolean> SHOP_CREATION_ALLOW_DECIMAL_PRICES = new Property<>(Boolean.class, "shop_creation", "allow_decimal_prices", true);
     public static final Property<Boolean> SHOP_CREATION_ALLOW_BROKEN_ITEMS = new Property<>(Boolean.class, "shop_creation", "allow_broken_items", false);
     public static final Property<MaterialList> SHOP_CREATION_BLACKLIST = new Property<>(MaterialList.class, "shop_creation", "blacklist", new MaterialList());
@@ -30,7 +31,6 @@ public class Config {
 
     public static final Property<Boolean> FEATURES_CONFIRM_SHOPPING = new Property<>(Boolean.class, "features", "confirm_shopping", false);
     public static final Property<Boolean> FEATURES_CREATIVE_ITEM_SELECTION = new Property<>(Boolean.class, "features", "creative_item_selection", true);
-    public static final Property<Boolean> FEATURES_REFUND_SHOP_CREATION = new Property<>(Boolean.class, "features", "refund_shop_creation", false);
     public static final Property<Boolean> FEATURES_VENDOR_MESSAGES = new Property<>(Boolean.class, "features", "vendor_messages", true);
     public static final Property<Boolean> FEATURES_VENDOR_MONEY_PROTECTION = new Property<>(Boolean.class, "features", "vendor_money_protection", true);
     public static final Property<Boolean> FEATURES_AUTO_ADJUST_ITEM_AMOUNT = new Property<>(Boolean.class, "features", "auto_adjust_item_amount", false);
