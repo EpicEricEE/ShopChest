@@ -57,7 +57,7 @@ public class ConfigManager {
                 .add("# You can find item names in the 'item_names.txt' file.")
                 .add("")
                 .add("# The documentation for this config file can be found here:")
-                .add("# https://epiceric.de/shopchest/config")
+                .add("# https://github.com/EpicEricEE/ShopChest/wiki/Configuration")
                 .toString();
     }
 
